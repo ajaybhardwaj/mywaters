@@ -63,7 +63,7 @@
         cell.accessoryView = hintsSwitch;
     }
     
-    UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, cell.bounds.size.width, 0.5)];
+    UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, settingsTableView.bounds.size.width, 0.5)];
     [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:cellSeperator];
     

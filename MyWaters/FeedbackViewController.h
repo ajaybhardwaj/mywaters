@@ -7,7 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface FeedbackViewController : UIViewController
+@interface FeedbackViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate> {
+    
+    AppDelegate *appDelegate;
+    
+    UITableView *feedbackTableView;
+    BOOL isFloodSubmission;
+    
+    NSArray *feedbackTypeArray,*severityTypeArray;
+    UITextField *cellTextField;
+    
+    NSInteger fieldIndex;
+    UIView *pickerbackground;
+    UIPickerView *feedbackPickerView;
+}
 
 @end

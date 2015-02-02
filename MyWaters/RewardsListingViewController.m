@@ -58,7 +58,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.title = @"REWARDS";
+    self.title = @"Rewards";
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     

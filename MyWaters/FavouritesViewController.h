@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface FavouritesViewController : UIViewController
+@interface FavouritesViewController : UIViewController {
+    
+    AppDelegate *appDelegate;
+    
+    //*************** Demo App Variables
+    UIImageView *bgImageView;
+    UIButton *favouritesDetailButton;
+}
 
 @end

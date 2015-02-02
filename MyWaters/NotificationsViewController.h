@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface NotificationsViewController : UIViewController
+@interface NotificationsViewController : UIViewController {
+    
+    AppDelegate *appDelegate;
+    
+    //*************** Demo App Variables
+    UIImageView *bgImageView;
+    UIButton *detailButton;
+}
 
 @end

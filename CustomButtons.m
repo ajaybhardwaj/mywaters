@@ -29,8 +29,8 @@ static CustomButtons *sharedInstance;
 -(UIBarButtonItem *)_PYaddCustomBackButton2Target:(id)target{
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:BTN_BACK_HEADER_BAR];
-    imageView.frame = CGRectMake(BACK_BUTTON_LEFT_MARGIN, 0, BTN_BACK_HEADER_BAR.size.width, BTN_BACK_HEADER_BAR.size.height);
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, BTN_BACK_HEADER_BAR.size.width + BACK_BUTTON_LEFT_MARGIN, BTN_BACK_HEADER_BAR.size.height)];
+    imageView.frame = CGRectMake(0, 0, BTN_BACK_HEADER_BAR.size.width, BTN_BACK_HEADER_BAR.size.height);
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(-20, 0, BTN_BACK_HEADER_BAR.size.width + BACK_BUTTON_LEFT_MARGIN, BTN_BACK_HEADER_BAR.size.height)];
     [view addSubview:imageView];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:target action:@selector(pop2Dismiss:)];
     [view addGestureRecognizer:tap];

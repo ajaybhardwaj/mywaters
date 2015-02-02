@@ -1858,9 +1858,14 @@ static AuxilaryService *sharedInstance_ = nil;  // -- shared instacne class obje
 #pragma mark - Navigation Bar & Navigation Item Helper
 +(void)setNavigationTitleStyle_ToPY:(UINavigationBar*)navBar{
 
-    [navBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:RGB(255, 255, 255),NSForegroundColorAttributeName,[UIFont fontWithName:OPEN_SANS_REGULAR size:20.0f],NSFontAttributeName,[UIColor clearColor],NSShadowAttributeName,CGSizeZero,NSShadowAttributeName, nil]];
+//    [navBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:RGB(255, 255, 255),NSForegroundColorAttributeName,[UIFont fontWithName:ROBOTO_MEDIUM size:20.0f],NSFontAttributeName,[UIColor clearColor],NSShadowAttributeName,CGSizeZero,NSShadowAttributeName, nil]];
 
 //    [navBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:RGB(255, 255, 255),NSForegroundColorAttributeName,[UIFont fontWithName:ROBOTO_MEDIUM size:20.0f],NSFontAttributeName,[UIColor clearColor],NSShadowAttributeName,CGSizeZero,NSShadowAttributeName, nil]];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [navBar setTitleTextAttributes:titleBarAttributes];
 }
 
 

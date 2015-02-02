@@ -83,7 +83,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_homeNavController) {
         
         HomeViewController *home = [[HomeViewController alloc] init];
-        [home setTitle:@"HOME"];
+        [home setTitle:@"Home"];
         _homeNavController = [[UINavigationController alloc] initWithRootViewController:home];
         
         [self setNavigationBarStyle_Transclucent:_homeNavController.navigationBar];
@@ -110,7 +110,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_notificationsNavController) {
         
         NotificationsViewController *notification = [[NotificationsViewController alloc] init];
-        [notification setTitle:@"NOTIFICATIONS"];
+        [notification setTitle:@"Notifications"];
         _notificationsNavController = [[UINavigationController alloc] initWithRootViewController:notification];
         
         [self setNavigationBarStyle_Transclucent:_notificationsNavController.navigationBar];
@@ -138,7 +138,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_whatsupNavController) {
         
         WhatsUpViewController *whatsup = [[WhatsUpViewController alloc] init];
-        [whatsup setTitle:@"WHAT'S UP"];
+        [whatsup setTitle:@"What's Up"];
         _whatsupNavController = [[UINavigationController alloc] initWithRootViewController:whatsup];
         
         [self setNavigationBarStyle_Transclucent:_whatsupNavController.navigationBar];
@@ -166,7 +166,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_floodmapNavController) {
         
         QuickMapViewController *floodmap = [[QuickMapViewController alloc] init];
-        [floodmap setTitle:@"QUICK MAP"];
+        [floodmap setTitle:@"Quick Map"];
         _floodmapNavController = [[UINavigationController alloc] initWithRootViewController:floodmap];
         
         [self setNavigationBarStyle_Transclucent:_floodmapNavController.navigationBar];
@@ -194,12 +194,12 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_abcwatersNavController) {
         
         ABCWatersViewController *abcwaters = [[ABCWatersViewController alloc] init];
-        [abcwaters setTitle:@"ABC WATERS"];
+        [abcwaters setTitle:@"ABC Waters"];
         _abcwatersNavController = [[UINavigationController alloc] initWithRootViewController:abcwaters];
         
         [self setNavigationBarStyle_Transclucent:_abcwatersNavController.navigationBar];
         [[[abcwaters navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(36,158,242) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,156,249) frame:CGRectMake(0, 0, 1, 1)];
         [[[abcwaters navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_abcwatersNavController.view setAutoresizesSubviews:TRUE];
@@ -222,7 +222,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_eventsNavController) {
         
         EventsViewController *events = [[EventsViewController alloc] init];
-        [events setTitle:@"EVENTS"];
+        [events setTitle:@"Events"];
         _eventsNavController = [[UINavigationController alloc] initWithRootViewController:events];
         
         [self setNavigationBarStyle_Transclucent:_eventsNavController.navigationBar];
@@ -250,7 +250,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_bookingNavController) {
         
         BookingViewController *booking = [[BookingViewController alloc] init];
-        [booking setTitle:@"BOOKING"];
+        [booking setTitle:@"Booking"];
         _bookingNavController = [[UINavigationController alloc] initWithRootViewController:booking];
         
         [self setNavigationBarStyle_Transclucent:_bookingNavController.navigationBar];
@@ -278,7 +278,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_feedbackNavController) {
         
         FeedbackViewController *feedback = [[FeedbackViewController alloc] init];
-        [feedback setTitle:@"FEEDBACK"];
+        [feedback setTitle:@"Report/Feedback"];
         _feedbackNavController = [[UINavigationController alloc] initWithRootViewController:feedback];
         
         [self setNavigationBarStyle_Transclucent:_feedbackNavController.navigationBar];
@@ -306,7 +306,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_settingsNavController) {
         
         SettingsViewController *settings = [[SettingsViewController alloc] init];
-        [settings setTitle:@"SETTINGS"];
+        [settings setTitle:@"Settings"];
         _settingsNavController = [[UINavigationController alloc] initWithRootViewController:settings];
         
         [self setNavigationBarStyle_Transclucent:_settingsNavController.navigationBar];
@@ -334,7 +334,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_profileNavController) {
         
         ProfileViewController *profile = [[ProfileViewController alloc] init];
-        [profile setTitle:@"PROFILE"];
+        [profile setTitle:@"Profile"];
         _profileNavController = [[UINavigationController alloc] initWithRootViewController:profile];
         
         [self setNavigationBarStyle_Transclucent:_profileNavController.navigationBar];
@@ -362,7 +362,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_favouritesNavController) {
         
         FavouritesViewController *favourites = [[FavouritesViewController alloc] init];
-        [favourites setTitle:@"FAVOURITES"];
+        [favourites setTitle:@"Favourites"];
         _favouritesNavController = [[UINavigationController alloc] initWithRootViewController:favourites];
         
         [self setNavigationBarStyle_Transclucent:_favouritesNavController.navigationBar];

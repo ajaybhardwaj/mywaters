@@ -42,9 +42,11 @@
     
     if (button.tag==1) {
         [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwaters_grid.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [self.navigationItem setRightBarButtonItem:nil];
     }
     else if (button.tag==2) {
         [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwaters_list.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_filter"]];
     }
 }
 

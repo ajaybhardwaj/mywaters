@@ -41,6 +41,8 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_3dots"]];
+
     
     [self createDemoAppControls];
 }

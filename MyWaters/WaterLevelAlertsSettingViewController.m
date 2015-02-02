@@ -50,7 +50,7 @@
     cell.accessoryView = switchControls;
     
     
-    UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, cell.bounds.size.width, 0.5)];
+    UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, iAlertsTable.bounds.size.width, 0.5)];
     [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:cellSeperator];
     
@@ -76,7 +76,8 @@
     self.title = @"Water Level Sensors iAlerts";
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-    
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_3dots"]];
+
     
     tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Sensor 1",@"Sensor 2", nil];
     

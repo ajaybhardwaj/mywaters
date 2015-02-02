@@ -64,16 +64,16 @@
     
     UIImageView *cellSeperator;
     if (indexPath.row==0) {
-        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44-0.5, cell.bounds.size.width, 0.5)];
+        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
     else if (indexPath.row==1) {
-        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, cell.bounds.size.width, 0.5)];
+        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
     else if (indexPath.row==2) {
-        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, cell.bounds.size.width, 0.5)];
+        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
     else if (indexPath.row==3) {
-        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44-0.5, cell.bounds.size.width, 0.5)];
+        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
     [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:cellSeperator];

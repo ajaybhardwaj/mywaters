@@ -34,8 +34,8 @@
     [lbl setBackgroundColor:[UIColor clearColor]];
     lbl.textColor = [UIColor whiteColor];
     lbl.font = [UIFont fontWithName:SIDE_MENU_CELL_FONT size:10.0f];
-    [lbl setShadowColor:[UIColor darkGrayColor]];
-    [lbl setShadowOffset:CGSizeMake(0, 1)];
+//    [lbl setShadowColor:[UIColor darkGrayColor]];
+//    [lbl setShadowOffset:CGSizeMake(0, 1)];
     [lbl setNumberOfLines:1];
     [cell.contentView addSubview:lbl];
     
@@ -303,7 +303,7 @@
     UILabel *lbl = (UILabel *)[cell.contentView viewWithTag:901];
     [lbl setText:lblTxt];
     
-    [lbl setFont:[UIFont fontWithName:SIDE_MENU_CELL_FONT size:10.0]];
+    [lbl setFont:[UIFont fontWithName:ROBOTO_BOLD size:16.0]];
     [lbl setTextColor:RGB(83, 83, 83)];
     
     UIImageView *img = (UIImageView *)[cell.contentView viewWithTag:900];

@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FE7FD0841A7F3933002A05CB /* favourites.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0831A7F3933002A05CB /* favourites.png */; };
+		FE7FD0891A7F50E5002A05CB /* notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0881A7F50E5002A05CB /* notifications.png */; };
+		FE7FD08B1A7F5317002A05CB /* whatsup_explore.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */; };
+		FE7FD08E1A7F53CE002A05CB /* icn_3dots@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD08C1A7F53CE002A05CB /* icn_3dots@3x.png */; };
+		FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD08D1A7F53CE002A05CB /* icn_filter@3x.png */; };
+		FE7FD0951A7F6FBD002A05CB /* BEBAS___.TTF in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0931A7F6FBD002A05CB /* BEBAS___.TTF */; };
+		FE7FD0961A7F6FBD002A05CB /* BebasNeue.otf in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0941A7F6FBD002A05CB /* BebasNeue.otf */; };
 		FE99BDF01A7B28C3000B83E8 /* ABCWaterDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE99BDEF1A7B28C3000B83E8 /* ABCWaterDetailViewController.m */; };
 		FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */ = {isa = PBXBuildFile; fileRef = FE99BDF11A7B295D000B83E8 /* waterlevelsensor_detail.png */; };
 		FE99BDF51A7B2CD7000B83E8 /* abcwaters_grid.png in Resources */ = {isa = PBXBuildFile; fileRef = FE99BDF31A7B2CD7000B83E8 /* abcwaters_grid.png */; };
@@ -82,7 +89,7 @@
 		FEA730AD1A77356A00D274A6 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA730AC1A77356A00D274A6 /* ProfileViewController.m */; };
 		FEA730B01A77357300D274A6 /* FavouritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA730AF1A77357300D274A6 /* FavouritesViewController.m */; };
 		FEA730B41A77395700D274A6 /* dashboard.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B31A77395700D274A6 /* dashboard.png */; };
-		FEA730B71A77396800D274A6 /* icn_menu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B61A77396800D274A6 /* icn_menu@2x.png */; };
+		FEA730B71A77396800D274A6 /* icn_menu@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B61A77396800D274A6 /* icn_menu@3x.png */; };
 		FEB13FB41A77658A0061CE74 /* QuickMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */; };
 		FEB13FC11A7766410061CE74 /* icn_abcwaters@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FB61A7766410061CE74 /* icn_abcwaters@3x.png */; };
 		FEB13FC21A7766410061CE74 /* icn_booking@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FB71A7766410061CE74 /* icn_booking@3x.png */; };
@@ -97,7 +104,6 @@
 		FEB13FCB1A7766410061CE74 /* icn_whatsup@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FC01A7766410061CE74 /* icn_whatsup@3x.png */; };
 		FEB13FD21A7788610061CE74 /* CCTVListingController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB13FD11A7788610061CE74 /* CCTVListingController.m */; };
 		FEB13FD51A778D2B0061CE74 /* whatsup_feed.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD31A778D2B0061CE74 /* whatsup_feed.png */; };
-		FEB13FD61A778D2B0061CE74 /* whatsup_explore.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD41A778D2B0061CE74 /* whatsup_explore.png */; };
 		FEB13FD91A77968B0061CE74 /* quickmap_expanded.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD71A77968B0061CE74 /* quickmap_expanded.png */; };
 		FEB13FDA1A77968B0061CE74 /* quickmap.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD81A77968B0061CE74 /* quickmap.png */; };
 		FEF43C241A79EE7B00237CAD /* events_listing.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF43C231A79EE7B00237CAD /* events_listing.png */; };
@@ -119,6 +125,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FE7FD0831A7F3933002A05CB /* favourites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favourites.png; sourceTree = "<group>"; };
+		FE7FD0881A7F50E5002A05CB /* notifications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notifications.png; sourceTree = "<group>"; };
+		FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_explore.png; sourceTree = "<group>"; };
+		FE7FD08C1A7F53CE002A05CB /* icn_3dots@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_3dots@3x.png"; sourceTree = "<group>"; };
+		FE7FD08D1A7F53CE002A05CB /* icn_filter@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_filter@3x.png"; sourceTree = "<group>"; };
+		FE7FD0931A7F6FBD002A05CB /* BEBAS___.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BEBAS___.TTF"; sourceTree = "<group>"; };
+		FE7FD0941A7F6FBD002A05CB /* BebasNeue.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BebasNeue.otf; sourceTree = "<group>"; };
 		FE99BDEE1A7B28C3000B83E8 /* ABCWaterDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABCWaterDetailViewController.h; sourceTree = "<group>"; };
 		FE99BDEF1A7B28C3000B83E8 /* ABCWaterDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABCWaterDetailViewController.m; sourceTree = "<group>"; };
 		FE99BDF11A7B295D000B83E8 /* waterlevelsensor_detail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = waterlevelsensor_detail.png; sourceTree = "<group>"; };
@@ -239,7 +252,7 @@
 		FEA730AE1A77357300D274A6 /* FavouritesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesViewController.h; sourceTree = "<group>"; };
 		FEA730AF1A77357300D274A6 /* FavouritesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavouritesViewController.m; sourceTree = "<group>"; };
 		FEA730B31A77395700D274A6 /* dashboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dashboard.png; sourceTree = "<group>"; };
-		FEA730B61A77396800D274A6 /* icn_menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_menu@2x.png"; sourceTree = "<group>"; };
+		FEA730B61A77396800D274A6 /* icn_menu@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_menu@3x.png"; sourceTree = "<group>"; };
 		FEA730B81A773A8100D274A6 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		FEB13FB21A77658A0061CE74 /* QuickMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickMapViewController.h; sourceTree = "<group>"; };
 		FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuickMapViewController.m; sourceTree = "<group>"; };
@@ -257,7 +270,6 @@
 		FEB13FD01A7788610061CE74 /* CCTVListingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTVListingController.h; sourceTree = "<group>"; };
 		FEB13FD11A7788610061CE74 /* CCTVListingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTVListingController.m; sourceTree = "<group>"; };
 		FEB13FD31A778D2B0061CE74 /* whatsup_feed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_feed.png; sourceTree = "<group>"; };
-		FEB13FD41A778D2B0061CE74 /* whatsup_explore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_explore.png; sourceTree = "<group>"; };
 		FEB13FD71A77968B0061CE74 /* quickmap_expanded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quickmap_expanded.png; sourceTree = "<group>"; };
 		FEB13FD81A77968B0061CE74 /* quickmap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quickmap.png; sourceTree = "<group>"; };
 		FEF43C231A79EE7B00237CAD /* events_listing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = events_listing.png; sourceTree = "<group>"; };
@@ -300,6 +312,8 @@
 		FE99BE201A7B7D21000B83E8 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				FE7FD0931A7F6FBD002A05CB /* BEBAS___.TTF */,
+				FE7FD0941A7F6FBD002A05CB /* BebasNeue.otf */,
 				FE99BE211A7B7D2B000B83E8 /* Roboto-Black.ttf */,
 				FE99BE221A7B7D2B000B83E8 /* Roboto-BlackItalic.ttf */,
 				FE99BE231A7B7D2B000B83E8 /* Roboto-Bold.ttf */,
@@ -614,6 +628,8 @@
 		FEA730B21A77394900D274A6 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				FE7FD0881A7F50E5002A05CB /* notifications.png */,
+				FE7FD0831A7F3933002A05CB /* favourites.png */,
 				FE99BE121A7B6F5E000B83E8 /* settings.png */,
 				FE99BE131A7B6F5E000B83E8 /* settings_dashboard.png */,
 				FE99BE141A7B6F5E000B83E8 /* settings_notification.png */,
@@ -625,7 +641,7 @@
 				FEB13FD81A77968B0061CE74 /* quickmap.png */,
 				FEA730B31A77395700D274A6 /* dashboard.png */,
 				FEB13FD31A778D2B0061CE74 /* whatsup_feed.png */,
-				FEB13FD41A778D2B0061CE74 /* whatsup_explore.png */,
+				FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */,
 				FEF43C231A79EE7B00237CAD /* events_listing.png */,
 				FEF43C251A79EE9400237CAD /* events_filter.png */,
 				FEF43C281A79F17500237CAD /* events_detail_options.png */,
@@ -641,7 +657,9 @@
 		FEA730B51A77395B00D274A6 /* Header Images */ = {
 			isa = PBXGroup;
 			children = (
-				FEA730B61A77396800D274A6 /* icn_menu@2x.png */,
+				FEA730B61A77396800D274A6 /* icn_menu@3x.png */,
+				FE7FD08C1A7F53CE002A05CB /* icn_3dots@3x.png */,
+				FE7FD08D1A7F53CE002A05CB /* icn_filter@3x.png */,
 			);
 			name = "Header Images";
 			sourceTree = "<group>";
@@ -766,11 +784,14 @@
 				FE99BE3B1A7B7E69000B83E8 /* Roboto-MediumItalic.ttf in Resources */,
 				FE99BE3C1A7B7E69000B83E8 /* Roboto-Regular.ttf in Resources */,
 				FE99BE3D1A7B7E69000B83E8 /* Roboto-Thin.ttf in Resources */,
+				FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */,
 				FE99BE3E1A7B7E69000B83E8 /* Roboto-ThinItalic.ttf in Resources */,
 				FE99BE3F1A7B7E69000B83E8 /* RobotoCondensed-Bold.ttf in Resources */,
 				FE99BE401A7B7E69000B83E8 /* RobotoCondensed-BoldItalic.ttf in Resources */,
+				FE7FD08E1A7F53CE002A05CB /* icn_3dots@3x.png in Resources */,
 				FE99BE411A7B7E69000B83E8 /* RobotoCondensed-Italic.ttf in Resources */,
 				FE99BE421A7B7E69000B83E8 /* RobotoCondensed-Light.ttf in Resources */,
+				FE7FD0951A7F6FBD002A05CB /* BEBAS___.TTF in Resources */,
 				FE99BE431A7B7E69000B83E8 /* RobotoCondensed-LightItalic.ttf in Resources */,
 				FE99BE441A7B7E69000B83E8 /* RobotoCondensed-Regular.ttf in Resources */,
 				FE99BE171A7B6F5E000B83E8 /* settings_dashboard.png in Resources */,
@@ -778,16 +799,17 @@
 				FE99BE191A7B6F5E000B83E8 /* waterlevelsensor_ialerts.png in Resources */,
 				FEA730B41A77395700D274A6 /* dashboard.png in Resources */,
 				FEB13FC81A7766410061CE74 /* icn_profile@3x.png in Resources */,
+				FE7FD0891A7F50E5002A05CB /* notifications.png in Resources */,
 				FEB13FCA1A7766410061CE74 /* icn_settings@3x.png in Resources */,
 				FEB13FCB1A7766410061CE74 /* icn_whatsup@3x.png in Resources */,
 				FE99BE161A7B6F5E000B83E8 /* settings.png in Resources */,
 				FEA730291A772FDD00D274A6 /* Main.storyboard in Resources */,
-				FEB13FD61A778D2B0061CE74 /* whatsup_explore.png in Resources */,
 				FEB13FD91A77968B0061CE74 /* quickmap_expanded.png in Resources */,
 				FEF43C2F1A7A0F9B00237CAD /* cctv_detail_options.png in Resources */,
 				FE99BDF51A7B2CD7000B83E8 /* abcwaters_grid.png in Resources */,
 				FE99BE011A7B40B8000B83E8 /* icn_back_old@2x.png in Resources */,
 				FEA7302E1A772FDD00D274A6 /* LaunchScreen.xib in Resources */,
+				FE7FD08B1A7F5317002A05CB /* whatsup_explore.png in Resources */,
 				FEB13FC61A7766410061CE74 /* icn_home@3x.png in Resources */,
 				FE99BDF81A7B3D51000B83E8 /* abcwaters_detail_options.png in Resources */,
 				FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */,
@@ -797,14 +819,16 @@
 				FEA7302B1A772FDD00D274A6 /* Images.xcassets in Resources */,
 				FEB13FC31A7766410061CE74 /* icn_events@3x.png in Resources */,
 				FE99BE111A7B687A000B83E8 /* icn_back@2x.png in Resources */,
+				FE7FD0961A7F6FBD002A05CB /* BebasNeue.otf in Resources */,
 				FEB13FC51A7766410061CE74 /* icn_feedback@3x.png in Resources */,
 				FEB13FDA1A77968B0061CE74 /* quickmap.png in Resources */,
 				FEB13FD51A778D2B0061CE74 /* whatsup_feed.png in Resources */,
+				FE7FD0841A7F3933002A05CB /* favourites.png in Resources */,
 				FEF43C2A1A79F17500237CAD /* events_detail_options.png in Resources */,
 				FEB13FC71A7766410061CE74 /* icn_notifications@3x.png in Resources */,
 				FE99BE181A7B6F5E000B83E8 /* settings_notification.png in Resources */,
 				FEB13FC11A7766410061CE74 /* icn_abcwaters@3x.png in Resources */,
-				FEA730B71A77396800D274A6 /* icn_menu@2x.png in Resources */,
+				FEA730B71A77396800D274A6 /* icn_menu@3x.png in Resources */,
 				FEF43C261A79EE9400237CAD /* events_filter.png in Resources */,
 				FE99BDF61A7B2CD7000B83E8 /* abcwaters_list.png in Resources */,
 				FE99BE031A7B6316000B83E8 /* profile.png in Resources */,

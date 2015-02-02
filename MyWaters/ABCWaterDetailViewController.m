@@ -41,17 +41,11 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
 
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
-    self.title = @"ABC WATERS INFO";
-//    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:RGB(255, 255, 255),UITextAttributeTextColor,[UIFont fontWithName:OPEN_SANS_REGULAR size:20.0f],UITextAttributeFont,[UIColor clearColor],UITextAttributeTextShadowColor,CGSizeZero,UITextAttributeTextShadowOffset, nil]];
-
-    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:RGB(255, 255, 255),UITextAttributeTextColor,[UIFont fontWithName:OPEN_SANS_REGULAR size:20.0f],UITextAttributeFont,[UIColor clearColor],UITextAttributeTextShadowColor,CGSizeZero,UITextAttributeTextShadowOffset, nil]];
-
-    UIImage *headerImage = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
-    [[[self navigationController] navigationBar] setBackgroundImage:headerImage forBarMetrics:UIBarMetricsDefault];
+    self.title = @"ABC Waters";
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_3dots"]];
 
     
     [self createDemoAppControls];
