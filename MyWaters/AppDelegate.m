@@ -13,9 +13,88 @@
 @end
 
 @implementation AppDelegate
+@synthesize RESOURCE_FOLDER_PATH;
 
+//*************** Create Deck View Controller For App ***************//
+
+- (void) createViewDeckController {
+    
+    id deckCenterController = [_rootDeckController centerController];
+    //    BOOL isIntroShown = [[NSUserDefaults standardUserDefaults] boolForKey:IS_INTRO_SCREEN_SHOWN_ALREADY];
+    //    if (!isIntroShown) {
+    //
+    //        RDLog(@"\n\n - %s ",__FUNCTION__);
+    //
+    //        if (!deckCenterController) {
+    //            _rootDeckController = [[IIViewDeckController alloc] initWithCenterViewController:nil leftViewController:nil rightViewController:nil topViewController:nil bottomViewController:nil];
+    //            _rootDeckController.delegateMode = IIViewDeckDelegateOnly;
+    //            _rootDeckController.delegate = self;
+    //
+    //            [[iMViewControllerHelper viewControllerHelper] enableThisController:INTRO_SCREEN_CONTROLLER onCenter:YES withAnimate:NO];
+    //        }
+    //        else{
+    //            [[iMViewControllerHelper viewControllerHelper] enableThisController:INTRO_SCREEN_CONTROLLER onCenter:YES withAnimate:NO];
+    //        }
+    //
+    //        return;
+    //    }
+    
+    
+    // -- after first time it will flow from this screen...
+    //    if (![[SharedObject sharedClass] isSSCUserSignedIn]) {
+    //        if (!deckCenterController && ![[(UINavigationController*)deckCenterController topViewController] isKindOfClass:[iMSigninController class]]) {
+    //
+    //
+    //            _rootDeckController = [[IIViewDeckController alloc] initWithCenterViewController:nil leftViewController:nil rightViewController:nil topViewController:nil bottomViewController:nil];
+    //            _rootDeckController.delegateMode = IIViewDeckDelegateOnly;
+    //            _rootDeckController.delegate = self;
+    //
+    //            [[iMViewControllerHelper viewControllerHelper] enableThisController:SIGN_IN_CONTROLLER onCenter:YES withAnimate:NO];
+    //        }
+    //    }
+    //    else{
+    
+    if (!deckCenterController && ![[(UINavigationController*)deckCenterController topViewController] isKindOfClass:[HomeViewController class]]) {
+        
+        _rootDeckController = [[IIViewDeckController alloc] initWithCenterViewController:nil leftViewController:nil rightViewController:nil topViewController:nil bottomViewController:nil];
+        _rootDeckController.delegateMode = IIViewDeckDelegateOnly;
+        _rootDeckController.delegate = self;
+        
+        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:NO];
+        
+        //        }
+        
+    }
+    
+}
+
+
+
+# pragma mark - App Lifecycle Methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    RESOURCE_FOLDER_PATH = [[NSBundle mainBundle] resourcePath];
+    
+    // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    [self.window makeKeyAndVisible];
+    self.window.backgroundColor = [UIColor clearColor];
+    
+    [self createViewDeckController];
+    [self.window setRootViewController:_rootDeckController];
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+    {
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    }
+    else
+    {
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+    }
+    
     // Override point for customization after application launch.
     return YES;
 }

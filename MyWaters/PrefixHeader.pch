@@ -1,0 +1,98 @@
+//
+//  PrefixHeader.pch
+//  PUBDemoApp
+//
+//  Created by Ajay Bhardwaj on 21/1/15.
+//  Copyright (c) 2015 iAppsAsia. All rights reserved.
+//
+
+#ifndef MyWaters_PrefixHeader_pch
+#define MyWaters_PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif
+
+
+#pragma mark - Device Version
+#define CURRENT_VERSION [[[UIDevice currentDevice] systemVersion] integerValue]
+#define IOS3 3
+#define IOS4 4
+#define IOS5 5
+#define IOS6 6
+#define IOS7 7
+#define IOS8 8
+#define IOS9 9
+
+#define IS_IOS3() (CURRENT_VERSION>=IOS3 && CURRENT_VERSION<IOS4) ? YES : NO
+#define IS_IOS4() (CURRENT_VERSION>=IOS4 && CURRENT_VERSION<IOS5) ? YES : NO
+#define IS_IOS5() (CURRENT_VERSION>=IOS5 && CURRENT_VERSION<IOS6) ? YES : NO
+#define IS_IOS6() (CURRENT_VERSION>=IOS6 && CURRENT_VERSION<IOS7) ? YES : NO
+#define IS_IOS7() (CURRENT_VERSION>=IOS7 && CURRENT_VERSION<IOS8) ? YES : NO
+#define IS_IOS8() (CURRENT_VERSION>=IOS8 && CURRENT_VERSION<IOS9) ? YES : NO
+#define IS_MORE_IOS6() (CURRENT_VERSION>=IOS6) ? YES : NO
+#define OSVersionIsAtLeastiOS7() (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+
+#ifndef RGB
+#define RGB(R,G,B) [UIColor colorWithRed:R/255.0f green:G/255.0f blue:B/255.0f alpha:1.0f]
+#endif
+
+#ifndef RGBALPHA
+#define RGBALPHA(R,G,B,A) [UIColor colorWithRed:R/255.0f green:G/255.0f blue:B/255.0f alpha:A]
+#endif
+
+#define HEADER_BACKGROUND [UIImage imageNamed:@"headerbar_1px"]
+#define MAIN_SCREEN_BOUNDS [UIScreen mainScreen].bounds
+
+#pragma mark - View Constants
+#define LEFT_MARGIN 10
+#define RIGHT_MARGIN 10
+#define TOP_MARGIN 10
+#define BOTTOM_MARGIN 10
+#define GAP_BETWEEN_IMAGE 10
+#define LEFT_IMAGEVIEW_MARGIN 40
+#define MINIMAL_IMAGE_COUNT 8
+#define BANNER_IMAGE_WIDTH_ 200
+
+
+#pragma mark - defaults and notifications
+#define USER_DEFAULTS [NSUserDefaults standardUserDefaults]
+#define NOTIFICATION_CENTER [NSNotificationCenter defaultCenter]
+#define NOTIFICATIONS_ARRAY @"notifications_Array"
+#define NOTIFICATION_OBSERVER @"notification_observer"
+#define NOTIFICATIONS_NAME @"notification_name"
+#define NOTIFICATIONS_OBJECT @"notification_obj"
+#define NOTIFICATIONS_SELECTOR @"notification_selector"
+
+#pragma mark - Table View UI STYLE
+#define CELL_WIDTH_PLAIN_CELL 300
+#define CELL_WIDTH_FULL_SCREEN 320
+#define CELL_CONTENT_WIDTH 280
+#define CELL_CONTENT_MARGIN 8.0f
+#define STYLE_TABLE_CELL_FONT_SIZE_18x 18.0f
+#define STYLE_TABLE_CELL_FONT_SIZE_12x 12.0f
+#define STYLE_TABLE_LIST_FONT_14x 14.0f
+#define STYLE_GENERAL_BUTTON_CORNER_RADIUS 8.0f
+#define STYLE_GENERAL_BUTTON_BORDER_WIDTH 1.0f
+
+#pragma mark - Main Images
+#define BACK_GROUND_IMG_NAME @"background_640by960"
+#define BACK_GROUND [UIImage imageNamed:@"background_640by960"]
+#define HEADER_BACKGROUND [UIImage imageNamed:@"headerbar_1px"]
+#define BTN_BACK_HEADER_BAR_NAME @"icn_back"
+#define BTN_BACK_HEADER_BAR [UIImage imageNamed:@"icn_back"]
+#define SEPERATOR_IMG [UIImage imageNamed:@"cell_line"]
+#define SEPERATOR_IMG_IPAD [UIImage imageNamed:@"line_divider"]
+#define CELL_ACCESSORYVIEW [UIImage imageNamed:@"arrowright_blue"]
+
+#pragma mark - Put global constants for  third party images also
+#define SEPERATOR_IMG_CONSTANT 99999999
+#define SEPERATOR_COLOR_OFFSET 999988
+#define SEPERATOR_IMG_CONSTANT_OFFSET 99998888
+#define VIEW_SEPERATOR_IMG_CONSTANT 9998
+#define VIEW_SEPERATOR_IMG_CONSTANT_OFFSET 9999
+//#define PLACEHOLDER_IMG_CONSTANT 99776
+
+
+#define CONST_ARROW_IMAGE [UIImage imageNamed:@"icn_directionarrow"]
