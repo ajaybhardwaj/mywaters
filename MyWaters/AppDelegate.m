@@ -13,7 +13,8 @@
 @end
 
 @implementation AppDelegate
-@synthesize RESOURCE_FOLDER_PATH;
+@synthesize RESOURCE_FOLDER_PATH,database;
+@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID;
 
 //*************** Create Deck View Controller For App ***************//
 
@@ -70,9 +71,157 @@
 
 
 
+//*************** Method To Read Dashboard Preferences
+
+- (void) retrieveDashboardPreferences {
+    
+    [DASHBOARD_PREFERENCES_ARRAY removeAllObjects];
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    sqlite3_stmt    *statement;
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        NSString *querySQL = [NSString stringWithFormat: @"SELECT id, component, status FROM dashboard_preferences"];
+        const char *query_stmt = [querySQL UTF8String];
+        
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                char *field0 = (char *)sqlite3_column_text(statement, 0);
+                NSString *columnId = field0 ? [[NSString alloc] initWithUTF8String:field0] : @" ";
+                char *field1 = (char *)sqlite3_column_text(statement, 1);
+                NSString *component = field1 ? [[NSString alloc] initWithUTF8String:field1] : @" ";
+                char *field2= (char *)sqlite3_column_text(statement, 2);
+                NSString *status = field2 ? [[NSString alloc] initWithUTF8String:field2] : @" ";
+                
+                NSMutableDictionary *dataDict = [[NSMutableDictionary alloc] init];
+                [dataDict setObject:columnId forKey:@"id"];
+                [dataDict setObject:component forKey:@"component"];
+                [dataDict setObject:status forKey:@"status"];
+                
+                [DASHBOARD_PREFERENCES_ARRAY addObject:dataDict];
+            }
+        }
+        sqlite3_close(database);
+    }
+}
+
+
+
+//*************** Method To Update Dashboard Preferences
+
+- (void) updateDashboardPreference {
+    
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        NSString *updateSQL = [NSString stringWithFormat: @"UPDATE dashboard_preferences SET status=\"%ld\" WHERE id = %ld", (long)NEW_DASHBOARD_STATUS, (long)DASHBOARD_PREFERENCE_ID];
+        const char *update_stmt = [updateSQL UTF8String];
+        
+        sqlite3_prepare_v2(database, update_stmt, -1, &statement, NULL);
+        if (sqlite3_step(statement) == SQLITE_DONE)
+        {
+            NSLog(@"Row updated");
+        }
+        
+        else {
+            NSLog(@"Failed to update row");
+        }
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+}
+
+
+
+# pragma mark - SQLite Create & Open Methods
+
+
+//*************** Method To Give The Destination Path To Save Database
+
+- (NSString*) getdestinationPath{
+    
+    NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+    NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:@"MyWaters/MyWaters.sqlite"];
+    
+    NSLog(@"Destination Path %@",destinationPath);
+    
+    return destinationPath;
+}
+
+
+
+//*************** Method To Check Availability Of Database
+
+- (void) chkAndCreateDatbase {
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
+    NSString *dataPath = [documentsDirectory stringByAppendingPathComponent:@"MyWaters"];
+    
+    NSFileManager *fileManger=[NSFileManager defaultManager];
+    NSError* error;
+    
+    if (![fileManger fileExistsAtPath:dataPath]){
+        
+        
+        if(  [[NSFileManager defaultManager] createDirectoryAtPath:dataPath withIntermediateDirectories:NO attributes:nil error:&error])
+            ;// success
+        else
+        {
+            NSLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+        }
+    }
+    
+    
+    NSString *destinationPath=[self getdestinationPath];
+    if ([fileManger fileExistsAtPath:destinationPath]){
+        //NSLog(@"database localtion %@",destinationPath);
+        return;
+    }
+    NSString *sourcePath=[[[NSBundle mainBundle] resourcePath]stringByAppendingPathComponent:@"MyWaters.sqlite"];
+    [fileManger copyItemAtPath:sourcePath toPath:destinationPath error:&error];
+}
+
+
+
+//*************** Method For Opening The Database
+
+- (void) openDatabase {
+    
+    NSString *path=[self getdestinationPath];
+    if (sqlite3_open([path UTF8String], &database)==SQLITE_OK) {
+        NSLog(@"dataBaseOpen");
+    }
+    else {
+        sqlite3_close(database);
+        NSLog(@"dataBaseNotOpen");
+    }
+}
+
+
+
 # pragma mark - App Lifecycle Methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [self chkAndCreateDatbase];
+    
+    DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
+    [self retrieveDashboardPreferences];
     
     RESOURCE_FOLDER_PATH = [[NSBundle mainBundle] resourcePath];
     

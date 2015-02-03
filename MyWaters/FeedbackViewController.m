@@ -17,6 +17,67 @@
 @implementation FeedbackViewController
 
 
+//*************** Method To Animate To Show Picker View
+
+- (void) showPickerView {
+    
+    if (isShowingPicker) {
+        [feedbackPickerView reloadAllComponents];
+    }
+    else {
+        isShowingPicker = YES;
+        
+        [UIView beginAnimations:@"feedbackPicker" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint pickerBgView = pickerbackground.center;
+        pickerBgView.y = self.view.bounds.size.height-40;
+        pickerbackground.center = pickerBgView;
+        [UIView commitAnimations];
+    }
+}
+
+
+
+//*************** Method To Hide Picker View
+
+- (void) cancelPickerView {
+    
+    isShowingPicker = NO;
+    
+    [UIView beginAnimations:@"feedbackPicker" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pickerBgView = pickerbackground.center;
+    pickerBgView.y = self.view.bounds.size.height+180;
+    pickerbackground.center = pickerBgView;
+    [UIView commitAnimations];
+}
+
+
+//*************** Method To Hide Picker View
+
+- (void) selectPickerViewValue {
+    
+    isShowingPicker = NO;
+    NSLog(@"%ld",(long)fieldIndex);
+    
+    UITextField *newField = (UITextField *)[self.view viewWithTag:fieldIndex];
+
+    if (fieldIndex==1) {
+        newField.text = [feedbackTypeArray objectAtIndex:selectedPickerIndex];
+    }
+    else if (fieldIndex==3) {
+        newField.text = [severityTypeArray objectAtIndex:selectedPickerIndex];
+    }
+    
+    [UIView beginAnimations:@"feedbackPicker" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pickerBgView = pickerbackground.center;
+    pickerBgView.y = self.view.bounds.size.height+180;
+    pickerbackground.center = pickerBgView;
+    [UIView commitAnimations];
+}
+
+
 //*************** Method To Open Side Menu
 
 - (void) openDeckMenu:(id) sender {
@@ -49,10 +110,10 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
     
-    if (fieldIndex==0) {
+    if (fieldIndex==1) {
         return feedbackTypeArray.count;
     }
-    else if (fieldIndex==2) {
+    else if (fieldIndex==3) {
         return severityTypeArray.count;
     }
     
@@ -63,26 +124,29 @@
 
 # pragma mark - UIPickerViewDelegate Method
 
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
     
-    if (fieldIndex==0) {
-        return [feedbackTypeArray objectAtIndex:row];
+    UILabel *rowTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
+    if (fieldIndex==1) {
+        rowTitle.text = [feedbackTypeArray objectAtIndex:row];
     }
-    else if (fieldIndex==2) {
-        return [severityTypeArray objectAtIndex:row];
+    else if (fieldIndex==3) {
+        rowTitle.text = [severityTypeArray objectAtIndex:row];
     }
+    rowTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:17.0];
+    rowTitle.textColor = RGB(35, 35, 35);
+    rowTitle.textAlignment = NSTextAlignmentCenter;
+    rowTitle.backgroundColor = [UIColor clearColor];
     
-    return nil;
+    return rowTitle;
 }
 
 
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
+    selectedPickerIndex = row;
+}
 
-# pragma mark - UITableViewDelegate Methods
-
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    
-//    
-//}
 
 
 # pragma mark - UITableViewDataSource Methods
@@ -108,7 +172,7 @@
     
     
     if (isFloodSubmission) {
-     
+        
         cellTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
         cellTextField.textColor = RGB(35, 35, 35);
         cellTextField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
@@ -121,6 +185,10 @@
         if (indexPath.row==0) {
             cellTextField.placeholder=@"Select Feedback Type";
             cellTextField.text = [feedbackTypeArray objectAtIndex:0];
+            
+            UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+            [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+            cell.accessoryView = dropDownButton;
         }
         else if (indexPath.row==1) {
             cellTextField.placeholder=@"Location *";
@@ -139,7 +207,7 @@
         }
         cellTextField.backgroundColor = [UIColor clearColor];
         cellTextField.delegate = self;
-        cellTextField.tag = indexPath.row;
+        cellTextField.tag = indexPath.row+1;
         [cellTextField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         [cell.contentView addSubview:cellTextField];
     }
@@ -162,6 +230,33 @@
 }
 
 
+# pragma mark - UITextFieldDelegate Methods
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    if (isFloodSubmission) {
+        if (textField.tag == 1 || textField.tag == 3) {
+            fieldIndex = textField.tag;
+            selectedPickerIndex = 0;
+            [feedbackPickerView reloadComponent:0];
+            [self showPickerView];
+            return NO;
+        }
+        else {
+            return YES;
+        }
+    }
+    else {
+        if (textField.tag == 1) {
+            return NO;
+        }
+        else {
+            return YES;
+        }
+    }
+}
+
+
 
 # pragma mark - View Lifecycle Methods
 
@@ -175,7 +270,7 @@
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_filter"]];
     
-    fieldIndex = 0;
+    fieldIndex = 1;
     isFloodSubmission = YES;
     feedbackTypeArray = [[NSArray alloc] initWithObjects:@"Dirty/Choked Drain",@"Flood Area Submission",@"Water Leak",@"Poor Water Pressure Quality",@"Reports Feeds",@"Sewer Choke/Overflow/Smell",@"Others", nil];
     severityTypeArray = [[NSArray alloc] initWithObjects:@"Light",@"Heavy",@"Severe", nil];
@@ -201,20 +296,20 @@
     [self createFeedbackTableHeader];
     
     
-    pickerbackground = [[UIView alloc]initWithFrame:CGRectMake(0, self.view.bounds.size.height-266, self.view.bounds.size.width, 266)];
+    pickerbackground = [[UIView alloc]initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, 220)];
     
-    UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
+    UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 40)];
     toolBar.barStyle = UIBarStyleBlackOpaque;
     
-    UIBarButtonItem *cancelPicker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:nil];
-    UIBarButtonItem *selectPicker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:nil];
+    UIBarButtonItem *cancelPicker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelPickerView)];
+    UIBarButtonItem *selectPicker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(selectPickerViewValue)];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     
     [toolBar setItems:[NSArray arrayWithObjects:cancelPicker,flexibleSpace,selectPicker, nil]];
     [pickerbackground addSubview:toolBar];
     
     
-    feedbackPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 44, 320, 216)];
+    feedbackPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 40, self.view.bounds.size.width, 180)];
     feedbackPickerView.delegate=self;
     feedbackPickerView.dataSource=self;
     feedbackPickerView.backgroundColor = RGB(247, 247, 247);
@@ -231,13 +326,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

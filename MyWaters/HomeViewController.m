@@ -119,7 +119,6 @@
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     
     [self createDemoAppControls];
-
 }
 
 - (void)didReceiveMemoryWarning {

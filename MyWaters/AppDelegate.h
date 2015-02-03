@@ -11,19 +11,24 @@
 #import "SharedObject.h"
 #import "HomeViewController.h"
 #import "ViewControllerHelper.h"
+#import <sqlite3.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,IIViewDeckControllerDelegate> {
     
-    
+    NSString *DATABASE_PATH;
 }
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) IIViewDeckController *rootDeckController;
+@property (nonatomic,assign) sqlite3 *database;
 @property (nonatomic, assign) NSInteger left_deck_width;
 @property (nonatomic, retain) NSString *RESOURCE_FOLDER_PATH;
-
+@property (nonatomic, retain) NSMutableArray *DASHBOARD_PREFERENCES_ARRAY;
+@property (nonatomic, assign) NSInteger NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID;
 
 - (void) createViewDeckController;
+- (void) retrieveDashboardPreferences;
+- (void) updateDashboardPreference;
 
 @end
 

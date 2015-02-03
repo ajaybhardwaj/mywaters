@@ -14,7 +14,7 @@
     AppDelegate *appDelegate;
     
     UITableView *feedbackTableView;
-    BOOL isFloodSubmission;
+    BOOL isFloodSubmission,isShowingPicker;
     
     NSArray *feedbackTypeArray,*severityTypeArray;
     UITextField *cellTextField;
@@ -22,6 +22,7 @@
     NSInteger fieldIndex;
     UIView *pickerbackground;
     UIPickerView *feedbackPickerView;
+    NSInteger selectedPickerIndex;
 }
 
 @end

@@ -112,6 +112,12 @@
 		FEF43C2D1A7A099A00237CAD /* EventsDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF43C2C1A7A099900237CAD /* EventsDetailsViewController.m */; };
 		FEF43C2F1A7A0F9B00237CAD /* cctv_detail_options.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF43C2E1A7A0F9B00237CAD /* cctv_detail_options.png */; };
 		FEF43C321A7A156D00237CAD /* CCTVDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF43C311A7A156D00237CAD /* CCTVDetailViewController.m */; };
+		FEFBFF211A80AB9400E485E9 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */; };
+		FEFBFF251A80B2BF00E485E9 /* MyWaters.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF241A80B2BF00E485E9 /* MyWaters.sqlite */; };
+		FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */; };
+		FEFBFF2C1A80D24E00E485E9 /* icn_call@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */; };
+		FEFBFF2D1A80D24E00E485E9 /* icn_image@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */; };
+		FEFBFF2E1A80D24E00E485E9 /* icn_lcoation@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF2A1A80D24E00E485E9 /* icn_lcoation@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -280,6 +286,12 @@
 		FEF43C2E1A7A0F9B00237CAD /* cctv_detail_options.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cctv_detail_options.png; sourceTree = "<group>"; };
 		FEF43C301A7A156D00237CAD /* CCTVDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTVDetailViewController.h; sourceTree = "<group>"; };
 		FEF43C311A7A156D00237CAD /* CCTVDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTVDetailViewController.m; sourceTree = "<group>"; };
+		FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		FEFBFF241A80B2BF00E485E9 /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
+		FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_arrow_down@3x.png"; sourceTree = "<group>"; };
+		FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_call@3x.png"; sourceTree = "<group>"; };
+		FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_image@3x.png"; sourceTree = "<group>"; };
+		FEFBFF2A1A80D24E00E485E9 /* icn_lcoation@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_lcoation@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -287,6 +299,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FEFBFF211A80AB9400E485E9 /* libsqlite3.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +316,10 @@
 		FE99BDFF1A7B40B1000B83E8 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */,
+				FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */,
+				FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */,
+				FEFBFF2A1A80D24E00E485E9 /* icn_lcoation@3x.png */,
 				FE99BE101A7B687A000B83E8 /* icn_back@2x.png */,
 				FE99BE001A7B40B8000B83E8 /* icn_back_old@2x.png */,
 			);
@@ -339,6 +356,7 @@
 		FEA730111A772FDD00D274A6 = {
 			isa = PBXGroup;
 			children = (
+				FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */,
 				FEA7307E1A77342F00D274A6 /* Controllers & Helpers */,
 				FEA730591A77341400D274A6 /* UIHelpers */,
 				FEA730551A77340300D274A6 /* Header Files */,
@@ -389,6 +407,7 @@
 		FEA7301D1A772FDD00D274A6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FEFBFF241A80B2BF00E485E9 /* MyWaters.sqlite */,
 				FE99BE201A7B7D21000B83E8 /* Fonts */,
 				FEA730B81A773A8100D274A6 /* PrefixHeader.pch */,
 				FEA730B11A77394300D274A6 /* Images */,
@@ -780,8 +799,10 @@
 				FE99BE371A7B7E69000B83E8 /* Roboto-Italic.ttf in Resources */,
 				FE99BE381A7B7E69000B83E8 /* Roboto-Light.ttf in Resources */,
 				FE99BE391A7B7E69000B83E8 /* Roboto-LightItalic.ttf in Resources */,
+				FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */,
 				FE99BE3A1A7B7E69000B83E8 /* Roboto-Medium.ttf in Resources */,
 				FE99BE3B1A7B7E69000B83E8 /* Roboto-MediumItalic.ttf in Resources */,
+				FEFBFF251A80B2BF00E485E9 /* MyWaters.sqlite in Resources */,
 				FE99BE3C1A7B7E69000B83E8 /* Roboto-Regular.ttf in Resources */,
 				FE99BE3D1A7B7E69000B83E8 /* Roboto-Thin.ttf in Resources */,
 				FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */,
@@ -805,12 +826,14 @@
 				FE99BE161A7B6F5E000B83E8 /* settings.png in Resources */,
 				FEA730291A772FDD00D274A6 /* Main.storyboard in Resources */,
 				FEB13FD91A77968B0061CE74 /* quickmap_expanded.png in Resources */,
+				FEFBFF2C1A80D24E00E485E9 /* icn_call@3x.png in Resources */,
 				FEF43C2F1A7A0F9B00237CAD /* cctv_detail_options.png in Resources */,
 				FE99BDF51A7B2CD7000B83E8 /* abcwaters_grid.png in Resources */,
 				FE99BE011A7B40B8000B83E8 /* icn_back_old@2x.png in Resources */,
 				FEA7302E1A772FDD00D274A6 /* LaunchScreen.xib in Resources */,
 				FE7FD08B1A7F5317002A05CB /* whatsup_explore.png in Resources */,
 				FEB13FC61A7766410061CE74 /* icn_home@3x.png in Resources */,
+				FEFBFF2D1A80D24E00E485E9 /* icn_image@3x.png in Resources */,
 				FE99BDF81A7B3D51000B83E8 /* abcwaters_detail_options.png in Resources */,
 				FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */,
 				FEB13FC91A7766410061CE74 /* icn_quickmap@3x.png in Resources */,
@@ -818,6 +841,7 @@
 				FE99BE0A1A7B63FB000B83E8 /* profile_rewards_detail.png in Resources */,
 				FEA7302B1A772FDD00D274A6 /* Images.xcassets in Resources */,
 				FEB13FC31A7766410061CE74 /* icn_events@3x.png in Resources */,
+				FEFBFF2E1A80D24E00E485E9 /* icn_lcoation@3x.png in Resources */,
 				FE99BE111A7B687A000B83E8 /* icn_back@2x.png in Resources */,
 				FE7FD0961A7F6FBD002A05CB /* BebasNeue.otf in Resources */,
 				FEB13FC51A7766410061CE74 /* icn_feedback@3x.png in Resources */,

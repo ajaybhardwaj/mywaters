@@ -19,6 +19,36 @@
 }
 
 
+//*************** Method To Reload Dashboard Setting Table
+
+- (void) reloadDashboardSettingTable {
+    
+    [dashboardSettingsTable reloadData];
+}
+
+
+//*************** Method To Change Dashboard Preferences
+
+- (void) changeDashboardPreferences:(id) sender {
+    
+    UISwitch *switchControl = (id) sender;
+    
+    if ([switchControl isOn]) {
+        [switchControl setOn:YES animated:YES];
+        appDelegate.NEW_DASHBOARD_STATUS = 1;
+    }
+    else {
+        [switchControl setOn:NO animated:YES];
+        appDelegate.NEW_DASHBOARD_STATUS = 0;
+    }
+    appDelegate.DASHBOARD_PREFERENCE_ID = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:switchControl.tag] objectForKey:@"id"] intValue];
+    [appDelegate updateDashboardPreference];
+    [appDelegate retrieveDashboardPreferences];
+    
+    [self performSelector:@selector(reloadDashboardSettingTable) withObject:nil afterDelay:0.5];
+}
+
+
 
 # pragma mark - UITableViewDataSource Methods
 
@@ -45,8 +75,15 @@
     //***** Later Check the preference values and show on/off status accordingly
     
     UISwitch *switchControls = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
-    [switchControls addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
+    [switchControls addTarget:self action:@selector(changeDashboardPreferences:) forControlEvents:UIControlEventValueChanged];
     switchControls.tag = indexPath.row;
+    
+    if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:indexPath.row] objectForKey:@"status"] isEqualToString:@"1"]) {
+        [switchControls setOn:YES];
+    }
+    else {
+        [switchControls setOn:NO];
+    }
     cell.accessoryView = switchControls;
     
     UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, dashboardSettingsTable.bounds.size.width, 0.5)];
@@ -95,7 +132,6 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
-    
     tableTitleDataSource = [[NSArray alloc] initWithObjects:@"CCTV",@"Events",@"Quick Map",@"What's Up",@"Weather",@"Water Level Sensor", nil];
     
     dashboardSettingsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
@@ -105,9 +141,7 @@
     dashboardSettingsTable.backgroundColor = RGB(247, 247, 247);
     dashboardSettingsTable.backgroundView = nil;
     dashboardSettingsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
-    
 }
-
 
 
 - (void)didReceiveMemoryWarning {
