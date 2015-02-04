@@ -14,7 +14,6 @@
     AppDelegate *appDelegate;
     
     UITableView *dashboardSettingsTable;
-    NSArray *tableTitleDataSource;
 
 }
 

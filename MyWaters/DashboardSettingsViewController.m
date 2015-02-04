@@ -54,7 +54,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return tableTitleDataSource.count;
+    return appDelegate.DASHBOARD_PREFERENCES_ARRAY.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -66,7 +66,7 @@
     
     cell.backgroundColor = RGB(247, 247, 247);
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.textLabel.text = [tableTitleDataSource objectAtIndex:indexPath.row];
+    cell.textLabel.text = [[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:indexPath.row] objectForKey:@"component"];
     cell.textLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     cell.textLabel.textColor = RGB(35, 35, 35);
     cell.textLabel.numberOfLines = 0;
@@ -132,8 +132,8 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"CCTV",@"Events",@"Quick Map",@"What's Up",@"Weather",@"Water Level Sensor", nil];
-    
+    NSLog(@"%@",appDelegate.DASHBOARD_PREFERENCES_ARRAY);
+        
     dashboardSettingsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
     dashboardSettingsTable.delegate = self;
     dashboardSettingsTable.dataSource = self;

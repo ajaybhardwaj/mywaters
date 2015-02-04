@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FE6E93D21A821FD700BEA436 /* MyWaters.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = FE6E93D11A821FD700BEA436 /* MyWaters.sqlite */; };
 		FE7FD0841A7F3933002A05CB /* favourites.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0831A7F3933002A05CB /* favourites.png */; };
 		FE7FD0891A7F50E5002A05CB /* notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0881A7F50E5002A05CB /* notifications.png */; };
 		FE7FD08B1A7F5317002A05CB /* whatsup_explore.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */; };
@@ -113,7 +114,6 @@
 		FEF43C2F1A7A0F9B00237CAD /* cctv_detail_options.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF43C2E1A7A0F9B00237CAD /* cctv_detail_options.png */; };
 		FEF43C321A7A156D00237CAD /* CCTVDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF43C311A7A156D00237CAD /* CCTVDetailViewController.m */; };
 		FEFBFF211A80AB9400E485E9 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */; };
-		FEFBFF251A80B2BF00E485E9 /* MyWaters.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF241A80B2BF00E485E9 /* MyWaters.sqlite */; };
 		FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */; };
 		FEFBFF2C1A80D24E00E485E9 /* icn_call@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */; };
 		FEFBFF2D1A80D24E00E485E9 /* icn_image@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */; };
@@ -131,6 +131,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FE6E93D11A821FD700BEA436 /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
 		FE7FD0831A7F3933002A05CB /* favourites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favourites.png; sourceTree = "<group>"; };
 		FE7FD0881A7F50E5002A05CB /* notifications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notifications.png; sourceTree = "<group>"; };
 		FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_explore.png; sourceTree = "<group>"; };
@@ -287,7 +288,6 @@
 		FEF43C301A7A156D00237CAD /* CCTVDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTVDetailViewController.h; sourceTree = "<group>"; };
 		FEF43C311A7A156D00237CAD /* CCTVDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTVDetailViewController.m; sourceTree = "<group>"; };
 		FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
-		FEFBFF241A80B2BF00E485E9 /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
 		FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_arrow_down@3x.png"; sourceTree = "<group>"; };
 		FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_call@3x.png"; sourceTree = "<group>"; };
 		FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_image@3x.png"; sourceTree = "<group>"; };
@@ -407,7 +407,7 @@
 		FEA7301D1A772FDD00D274A6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				FEFBFF241A80B2BF00E485E9 /* MyWaters.sqlite */,
+				FE6E93D11A821FD700BEA436 /* MyWaters.sqlite */,
 				FE99BE201A7B7D21000B83E8 /* Fonts */,
 				FEA730B81A773A8100D274A6 /* PrefixHeader.pch */,
 				FEA730B11A77394300D274A6 /* Images */,
@@ -802,7 +802,6 @@
 				FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */,
 				FE99BE3A1A7B7E69000B83E8 /* Roboto-Medium.ttf in Resources */,
 				FE99BE3B1A7B7E69000B83E8 /* Roboto-MediumItalic.ttf in Resources */,
-				FEFBFF251A80B2BF00E485E9 /* MyWaters.sqlite in Resources */,
 				FE99BE3C1A7B7E69000B83E8 /* Roboto-Regular.ttf in Resources */,
 				FE99BE3D1A7B7E69000B83E8 /* Roboto-Thin.ttf in Resources */,
 				FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */,
@@ -846,6 +845,7 @@
 				FE7FD0961A7F6FBD002A05CB /* BebasNeue.otf in Resources */,
 				FEB13FC51A7766410061CE74 /* icn_feedback@3x.png in Resources */,
 				FEB13FDA1A77968B0061CE74 /* quickmap.png in Resources */,
+				FE6E93D21A821FD700BEA436 /* MyWaters.sqlite in Resources */,
 				FEB13FD51A778D2B0061CE74 /* whatsup_feed.png in Resources */,
 				FE7FD0841A7F3933002A05CB /* favourites.png in Resources */,
 				FEF43C2A1A79F17500237CAD /* events_detail_options.png in Resources */,

@@ -18,6 +18,13 @@
     
     AppDelegate *appDelegate;
     
+    UIView *welcomeView;
+    UIImageView *profileImageView;
+    UIScrollView *backgroundScrollView;
+    UIButton *reportIncidentButton;
+    
+    NSInteger leftCoulumnIndex,rightColumnIndex;
+    float left_yAxis,right_yAxis;
     
     //*************** Demo App UI Variables
     UIButton *quickMapButton,*whatsUpButton,*cctvButton,*reportButton;

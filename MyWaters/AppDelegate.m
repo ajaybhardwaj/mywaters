@@ -84,7 +84,7 @@
     
     if (sqlite3_open(dbpath, &database) == SQLITE_OK)
     {
-        NSString *querySQL = [NSString stringWithFormat: @"SELECT id, component, status FROM dashboard_preferences"];
+        NSString *querySQL = [NSString stringWithFormat: @"SELECT * FROM dashboard_preferences"];
         const char *query_stmt = [querySQL UTF8String];
         
         if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
@@ -97,12 +97,20 @@
                 NSString *component = field1 ? [[NSString alloc] initWithUTF8String:field1] : @" ";
                 char *field2= (char *)sqlite3_column_text(statement, 2);
                 NSString *status = field2 ? [[NSString alloc] initWithUTF8String:field2] : @" ";
+                char *field3= (char *)sqlite3_column_text(statement, 3);
+                NSString *height = field3 ? [[NSString alloc] initWithUTF8String:field3] : @" ";
+                char *field4= (char *)sqlite3_column_text(statement, 4);
+                NSString *color = field4 ? [[NSString alloc] initWithUTF8String:field4] : @" ";
+
                 
                 NSMutableDictionary *dataDict = [[NSMutableDictionary alloc] init];
                 [dataDict setObject:columnId forKey:@"id"];
                 [dataDict setObject:component forKey:@"component"];
                 [dataDict setObject:status forKey:@"status"];
-                
+                [dataDict setObject:height forKey:@"height"];
+                [dataDict setObject:color forKey:@"color"];
+
+
                 [DASHBOARD_PREFERENCES_ARRAY addObject:dataDict];
             }
         }

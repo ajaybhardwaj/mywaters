@@ -78,7 +78,7 @@
     reportButton.tag = 4;
     [reportButton addTarget:self action:@selector(handleDemoControls:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:reportButton];
-
+    
     if (IS_IPHONE_4_OR_LESS) {
         quickMapButton.frame = CGRectMake(10, 75, (self.view.bounds.size.width-30)/2, 105);
         cctvButton.frame = CGRectMake(10, 300, (self.view.bounds.size.width-30)/2, 100);
@@ -103,13 +103,15 @@
         whatsUpButton.frame = CGRectMake(20+(self.view.bounds.size.width-30)/2, 125, (self.view.bounds.size.width-30)/2, 335);
         reportButton.frame = CGRectMake(20+(self.view.bounds.size.width-30)/2, 480, (self.view.bounds.size.width-30)/2, 165);
     }
-
+    
 }
 
 
 
--(void) setMaskTo:(UIView*)view byRoundingCorners:(UIRectCorner)corners
-{
+//*************** Method To Create Specific Corner Round For Views
+
+- (void) setMaskTo:(UIView*)view byRoundingCorners:(UIRectCorner)corners {
+    
     UIBezierPath* rounded = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(10.0, 10.0)];
     
     CAShapeLayer* shape = [[CAShapeLayer alloc] init];
@@ -119,23 +121,106 @@
 }
 
 
+- (UIColor*) colorWithHexString:(NSString*)hex {
+    
+    NSString *cString = [[hex stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
+    
+    // String should be 6 or 8 characters
+    if ([cString length] < 6) return [UIColor grayColor];
+    
+    // strip 0X if it appears
+    if ([cString hasPrefix:@"0X"]) cString = [cString substringFromIndex:2];
+    
+    if ([cString length] != 6) return  [UIColor grayColor];
+    
+    // Separate into r, g, b substrings
+    NSRange range;
+    range.location = 0;
+    range.length = 2;
+    NSString *rString = [cString substringWithRange:range];
+    
+    range.location = 2;
+    NSString *gString = [cString substringWithRange:range];
+    
+    range.location = 4;
+    NSString *bString = [cString substringWithRange:range];
+    
+    // Scan values
+    unsigned int r, g, b;
+    [[NSScanner scannerWithString:rString] scanHexInt:&r];
+    [[NSScanner scannerWithString:gString] scanHexInt:&g];
+    [[NSScanner scannerWithString:bString] scanHexInt:&b];
+    
+    return [UIColor colorWithRed:((float) r / 255.0f)
+                           green:((float) g / 255.0f)
+                            blue:((float) b / 255.0f)
+                           alpha:1.0f];
+}
+
+
 //*************** Method To Create Home Page UI
 
-- (void) createUI {
+- (void) createDynamicUIColumns {
     
-    UIView *welcomeView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.view.bounds.size.width-20, 100)];
-    welcomeView.backgroundColor = [UIColor whiteColor];
-    welcomeView.layer.cornerRadius = 10;
-    [self.view addSubview:welcomeView];
+    for (int i=0; i<appDelegate.DASHBOARD_PREFERENCES_ARRAY.count; i++) {
+        if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"status"] isEqualToString:@"1"]) {
+            
+            if (left_yAxis < right_yAxis) {
+                
+                UIView *columnView = [[UIView alloc] initWithFrame:CGRectMake(10, left_yAxis, (self.view.bounds.size.width-30)/2, [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"height"] floatValue])];
+                columnView.backgroundColor = [UIColor whiteColor];
+                columnView.layer.cornerRadius = 10;
+                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
+                [columnView.layer setShadowOpacity:1];
+                [columnView.layer setShadowRadius:1.0];
+                columnView.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                [backgroundScrollView addSubview:columnView];
+                
+                UILabel *columnViewHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, columnView.bounds.size.width, 20)];
+                columnViewHeaderLabel.text = [NSString stringWithFormat:@"   %@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"component"]];
+                columnViewHeaderLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
+                columnViewHeaderLabel.textColor = [UIColor whiteColor];
+                columnViewHeaderLabel.backgroundColor = [self colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
+                [columnView addSubview:columnViewHeaderLabel];
+                
+                [self setMaskTo:columnViewHeaderLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
+                
+                left_yAxis = left_yAxis + columnView.bounds.size.height + 10;
+                
+            }
+            else {
+                
+                UIView *columnView = [[UIView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/2)+5, right_yAxis, (self.view.bounds.size.width-30)/2, [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"height"] floatValue])];
+                columnView.backgroundColor = [UIColor whiteColor];
+                columnView.layer.cornerRadius = 10;
+                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
+                [columnView.layer setShadowOpacity:1];
+                [columnView.layer setShadowRadius:1.0];
+                columnView.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                [backgroundScrollView addSubview:columnView];
+                
+                UILabel *columnViewHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, columnView.bounds.size.width, 20)];
+                columnViewHeaderLabel.text = [NSString stringWithFormat:@"   %@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"component"]];
+                columnViewHeaderLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
+                columnViewHeaderLabel.textColor = [UIColor whiteColor];
+                columnViewHeaderLabel.backgroundColor = [self colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
+                [columnView addSubview:columnViewHeaderLabel];
+                
+                [self setMaskTo:columnViewHeaderLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
+                
+                right_yAxis = right_yAxis + columnView.bounds.size.height + 10;
+            }
+        }
+    }
     
-    UILabel *welcomeHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, welcomeView.bounds.size.width, 20)];
-    welcomeHeaderLabel.text = @"   Welcome!";
-    welcomeHeaderLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
-    welcomeHeaderLabel.textColor = [UIColor whiteColor];
-    welcomeHeaderLabel.backgroundColor = RGB(67, 79, 93);
-    [welcomeView addSubview:welcomeHeaderLabel];
-    
-    [self setMaskTo:welcomeHeaderLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
+    if (right_yAxis > left_yAxis) {
+        backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, right_yAxis+80);
+    }
+    else {
+        backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, left_yAxis+80);
+    }
 
 }
 
@@ -152,11 +237,60 @@
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     
-//    [self createDemoAppControls];
-    [self createUI];
+    //    [self createDemoAppControls];
     
+    backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    backgroundScrollView.showsHorizontalScrollIndicator = NO;
+    backgroundScrollView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:backgroundScrollView];
+    backgroundScrollView.backgroundColor = [UIColor clearColor];
     
 }
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    for (UIView * view in backgroundScrollView.subviews) {
+        [view removeFromSuperview];
+    }
+    
+    welcomeView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.view.bounds.size.width-20, 100)];
+    welcomeView.backgroundColor = [UIColor whiteColor];
+    welcomeView.layer.cornerRadius = 10;
+    [welcomeView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+    [welcomeView.layer setShadowOffset:CGSizeMake(2, 2)];
+    [welcomeView.layer setShadowOpacity:1];
+    [welcomeView.layer setShadowRadius:1.0];
+    [backgroundScrollView addSubview:welcomeView];
+    
+    UILabel *welcomeHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, welcomeView.bounds.size.width, 20)];
+    welcomeHeaderLabel.text = @"   Welcome!";
+    welcomeHeaderLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
+    welcomeHeaderLabel.textColor = [UIColor whiteColor];
+    welcomeHeaderLabel.backgroundColor = RGB(67, 79, 93);
+    [welcomeView addSubview:welcomeHeaderLabel];
+    
+    [self setMaskTo:welcomeHeaderLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
+    
+    reportIncidentButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    reportIncidentButton.frame = CGRectMake(10, welcomeView.frame.origin.y + welcomeView.bounds.size.height + 10, self.view.bounds.size.width-20, 40);
+    [reportIncidentButton setBackgroundColor:RGB(242, 47, 56)];
+    [reportIncidentButton setTitle:@"Report Incident" forState:UIControlStateNormal];
+    reportIncidentButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+    [reportIncidentButton setTintColor:[UIColor whiteColor]];
+    reportIncidentButton.layer.cornerRadius = 10;
+    [reportIncidentButton.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+    [reportIncidentButton.layer setShadowOffset:CGSizeMake(2, 2)];
+    [reportIncidentButton.layer setShadowOpacity:1];
+    [reportIncidentButton.layer setShadowRadius:1.0];
+    [backgroundScrollView addSubview:reportIncidentButton];
+    
+    left_yAxis = reportIncidentButton.frame.origin.y + reportIncidentButton.bounds.size.height + 10;
+    right_yAxis = reportIncidentButton.frame.origin.y + reportIncidentButton.bounds.size.height + 10.1;
+    
+    [self createDynamicUIColumns];
+
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -164,13 +298,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
