@@ -107,6 +107,39 @@
 }
 
 
+
+-(void) setMaskTo:(UIView*)view byRoundingCorners:(UIRectCorner)corners
+{
+    UIBezierPath* rounded = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(10.0, 10.0)];
+    
+    CAShapeLayer* shape = [[CAShapeLayer alloc] init];
+    [shape setPath:rounded.CGPath];
+    
+    view.layer.mask = shape;
+}
+
+
+//*************** Method To Create Home Page UI
+
+- (void) createUI {
+    
+    UIView *welcomeView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.view.bounds.size.width-20, 100)];
+    welcomeView.backgroundColor = [UIColor whiteColor];
+    welcomeView.layer.cornerRadius = 10;
+    [self.view addSubview:welcomeView];
+    
+    UILabel *welcomeHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, welcomeView.bounds.size.width, 20)];
+    welcomeHeaderLabel.text = @"   Welcome!";
+    welcomeHeaderLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
+    welcomeHeaderLabel.textColor = [UIColor whiteColor];
+    welcomeHeaderLabel.backgroundColor = RGB(67, 79, 93);
+    [welcomeView addSubview:welcomeHeaderLabel];
+    
+    [self setMaskTo:welcomeHeaderLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
+
+}
+
+
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
@@ -114,11 +147,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.view.backgroundColor = RGB(245, 245, 245);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     
-    [self createDemoAppControls];
+//    [self createDemoAppControls];
+    [self createUI];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

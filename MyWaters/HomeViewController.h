@@ -12,6 +12,7 @@
 #import "WhatsUpViewController.h"
 #import "FeedbackViewController.h"
 #import "CCTVDetailViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface HomeViewController : UIViewController {
     
