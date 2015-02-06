@@ -79,6 +79,15 @@
 }
 
 
+
+//*************** Method To Pop View Controller To Parent Controller
+
+- (void) pop2Dismiss:(id) sender {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
@@ -88,13 +97,29 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    // -- Right Bar Button Item
+    [self createDemoAppControls];
+}
+
+
+- (void) viewWillAppear:(BOOL)animated {
+    
     if (!isNotWhatsUpController) {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     }
-    
-    
-    [self createDemoAppControls];
+    else {
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+        [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+        
+        NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+        [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+        [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+        [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+        
+        self.title = @"What's Up";
+        
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+        
+    }
 }
 
 

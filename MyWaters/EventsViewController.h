@@ -17,5 +17,6 @@
     //*************** Demo App Variables
     UIButton *eventDetailButton;
 }
+@property (nonatomic, assign) BOOL isNotEventController;
 
 @end

@@ -53,6 +53,7 @@
 		FE99BE431A7B7E69000B83E8 /* RobotoCondensed-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FE99BE311A7B7D2B000B83E8 /* RobotoCondensed-LightItalic.ttf */; };
 		FE99BE441A7B7E69000B83E8 /* RobotoCondensed-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FE99BE321A7B7D2B000B83E8 /* RobotoCondensed-Regular.ttf */; };
 		FE99BE471A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE99BE461A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m */; };
+		FE9C8CAB1A847861001074DC /* icn_location@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE9C8CAA1A847861001074DC /* icn_location@3x.png */; };
 		FEA730201A772FDD00D274A6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA7301F1A772FDD00D274A6 /* main.m */; };
 		FEA730231A772FDD00D274A6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA730221A772FDD00D274A6 /* AppDelegate.m */; };
 		FEA730261A772FDD00D274A6 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA730251A772FDD00D274A6 /* ViewController.m */; };
@@ -90,7 +91,7 @@
 		FEA730AD1A77356A00D274A6 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA730AC1A77356A00D274A6 /* ProfileViewController.m */; };
 		FEA730B01A77357300D274A6 /* FavouritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA730AF1A77357300D274A6 /* FavouritesViewController.m */; };
 		FEA730B41A77395700D274A6 /* dashboard.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B31A77395700D274A6 /* dashboard.png */; };
-		FEA730B71A77396800D274A6 /* icn_menu@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B61A77396800D274A6 /* icn_menu@3x.png */; };
+		FEA730B71A77396800D274A6 /* icn_menu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B61A77396800D274A6 /* icn_menu@2x.png */; };
 		FEB13FB41A77658A0061CE74 /* QuickMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */; };
 		FEB13FC11A7766410061CE74 /* icn_abcwaters@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FB61A7766410061CE74 /* icn_abcwaters@3x.png */; };
 		FEB13FC21A7766410061CE74 /* icn_booking@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FB71A7766410061CE74 /* icn_booking@3x.png */; };
@@ -117,7 +118,6 @@
 		FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */; };
 		FEFBFF2C1A80D24E00E485E9 /* icn_call@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */; };
 		FEFBFF2D1A80D24E00E485E9 /* icn_image@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */; };
-		FEFBFF2E1A80D24E00E485E9 /* icn_lcoation@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF2A1A80D24E00E485E9 /* icn_lcoation@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -184,6 +184,7 @@
 		FE99BE321A7B7D2B000B83E8 /* RobotoCondensed-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoCondensed-Regular.ttf"; sourceTree = "<group>"; };
 		FE99BE451A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterLevelAlertsSettingViewController.h; sourceTree = "<group>"; };
 		FE99BE461A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaterLevelAlertsSettingViewController.m; sourceTree = "<group>"; };
+		FE9C8CAA1A847861001074DC /* icn_location@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_location@3x.png"; sourceTree = "<group>"; };
 		FEA7301A1A772FDD00D274A6 /* MyWaters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyWaters.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEA7301E1A772FDD00D274A6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FEA7301F1A772FDD00D274A6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -259,7 +260,7 @@
 		FEA730AE1A77357300D274A6 /* FavouritesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesViewController.h; sourceTree = "<group>"; };
 		FEA730AF1A77357300D274A6 /* FavouritesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavouritesViewController.m; sourceTree = "<group>"; };
 		FEA730B31A77395700D274A6 /* dashboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dashboard.png; sourceTree = "<group>"; };
-		FEA730B61A77396800D274A6 /* icn_menu@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_menu@3x.png"; sourceTree = "<group>"; };
+		FEA730B61A77396800D274A6 /* icn_menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_menu@2x.png"; sourceTree = "<group>"; };
 		FEA730B81A773A8100D274A6 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		FEB13FB21A77658A0061CE74 /* QuickMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickMapViewController.h; sourceTree = "<group>"; };
 		FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuickMapViewController.m; sourceTree = "<group>"; };
@@ -291,7 +292,6 @@
 		FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_arrow_down@3x.png"; sourceTree = "<group>"; };
 		FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_call@3x.png"; sourceTree = "<group>"; };
 		FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_image@3x.png"; sourceTree = "<group>"; };
-		FEFBFF2A1A80D24E00E485E9 /* icn_lcoation@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_lcoation@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -316,10 +316,6 @@
 		FE99BDFF1A7B40B1000B83E8 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */,
-				FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */,
-				FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */,
-				FEFBFF2A1A80D24E00E485E9 /* icn_lcoation@3x.png */,
 				FE99BE101A7B687A000B83E8 /* icn_back@2x.png */,
 				FE99BE001A7B40B8000B83E8 /* icn_back_old@2x.png */,
 			);
@@ -351,6 +347,24 @@
 				FE99BE321A7B7D2B000B83E8 /* RobotoCondensed-Regular.ttf */,
 			);
 			name = Fonts;
+			sourceTree = "<group>";
+		};
+		FE9C8CAC1A847A18001074DC /* Feedback */ = {
+			isa = PBXGroup;
+			children = (
+				FE9C8CAA1A847861001074DC /* icn_location@3x.png */,
+				FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */,
+				FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */,
+				FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */,
+			);
+			name = Feedback;
+			sourceTree = "<group>";
+		};
+		FE9C8CAD1A847A5E001074DC /* Home */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Home;
 			sourceTree = "<group>";
 		};
 		FEA730111A772FDD00D274A6 = {
@@ -636,6 +650,8 @@
 		FEA730B11A77394300D274A6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FE9C8CAD1A847A5E001074DC /* Home */,
+				FE9C8CAC1A847A18001074DC /* Feedback */,
 				FE99BDFF1A7B40B1000B83E8 /* Common */,
 				FEB13FB51A7766300061CE74 /* Side Menu */,
 				FEA730B51A77395B00D274A6 /* Header Images */,
@@ -676,7 +692,7 @@
 		FEA730B51A77395B00D274A6 /* Header Images */ = {
 			isa = PBXGroup;
 			children = (
-				FEA730B61A77396800D274A6 /* icn_menu@3x.png */,
+				FEA730B61A77396800D274A6 /* icn_menu@2x.png */,
 				FE7FD08C1A7F53CE002A05CB /* icn_3dots@3x.png */,
 				FE7FD08D1A7F53CE002A05CB /* icn_filter@3x.png */,
 			);
@@ -761,9 +777,11 @@
 				TargetAttributes = {
 					FEA730191A772FDD00D274A6 = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = 6ZR73X4FWL;
 					};
 					FEA730321A772FDD00D274A6 = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = 52K4KVJYP2;
 						TestTargetID = FEA730191A772FDD00D274A6;
 					};
 				};
@@ -807,6 +825,7 @@
 				FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */,
 				FE99BE3E1A7B7E69000B83E8 /* Roboto-ThinItalic.ttf in Resources */,
 				FE99BE3F1A7B7E69000B83E8 /* RobotoCondensed-Bold.ttf in Resources */,
+				FE9C8CAB1A847861001074DC /* icn_location@3x.png in Resources */,
 				FE99BE401A7B7E69000B83E8 /* RobotoCondensed-BoldItalic.ttf in Resources */,
 				FE7FD08E1A7F53CE002A05CB /* icn_3dots@3x.png in Resources */,
 				FE99BE411A7B7E69000B83E8 /* RobotoCondensed-Italic.ttf in Resources */,
@@ -840,7 +859,6 @@
 				FE99BE0A1A7B63FB000B83E8 /* profile_rewards_detail.png in Resources */,
 				FEA7302B1A772FDD00D274A6 /* Images.xcassets in Resources */,
 				FEB13FC31A7766410061CE74 /* icn_events@3x.png in Resources */,
-				FEFBFF2E1A80D24E00E485E9 /* icn_lcoation@3x.png in Resources */,
 				FE99BE111A7B687A000B83E8 /* icn_back@2x.png in Resources */,
 				FE7FD0961A7F6FBD002A05CB /* BebasNeue.otf in Resources */,
 				FEB13FC51A7766410061CE74 /* icn_feedback@3x.png in Resources */,
@@ -852,7 +870,7 @@
 				FEB13FC71A7766410061CE74 /* icn_notifications@3x.png in Resources */,
 				FE99BE181A7B6F5E000B83E8 /* settings_notification.png in Resources */,
 				FEB13FC11A7766410061CE74 /* icn_abcwaters@3x.png in Resources */,
-				FEA730B71A77396800D274A6 /* icn_menu@3x.png in Resources */,
+				FEA730B71A77396800D274A6 /* icn_menu@2x.png in Resources */,
 				FEF43C261A79EE9400237CAD /* events_filter.png in Resources */,
 				FE99BDF61A7B2CD7000B83E8 /* abcwaters_list.png in Resources */,
 				FE99BE031A7B6316000B83E8 /* profile.png in Resources */,
@@ -976,6 +994,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -996,6 +1015,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1017,6 +1037,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1030,6 +1051,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1039,11 +1061,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -1052,11 +1077,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
@@ -1065,6 +1093,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -1076,6 +1106,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Debug;
@@ -1084,6 +1115,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -1091,6 +1124,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Release;

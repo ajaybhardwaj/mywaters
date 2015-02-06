@@ -121,41 +121,51 @@
 }
 
 
-- (UIColor*) colorWithHexString:(NSString*)hex {
+//*************** Method To Move To Selected Views
+
+- (void) handleColumnsTouchEvent:(UIButton *) sender {
     
-    NSString *cString = [[hex stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
+    UIButton *touchedView = (id) sender;
     
-    // String should be 6 or 8 characters
-    if ([cString length] < 6) return [UIColor grayColor];
-    
-    // strip 0X if it appears
-    if ([cString hasPrefix:@"0X"]) cString = [cString substringFromIndex:2];
-    
-    if ([cString length] != 6) return  [UIColor grayColor];
-    
-    // Separate into r, g, b substrings
-    NSRange range;
-    range.location = 0;
-    range.length = 2;
-    NSString *rString = [cString substringWithRange:range];
-    
-    range.location = 2;
-    NSString *gString = [cString substringWithRange:range];
-    
-    range.location = 4;
-    NSString *bString = [cString substringWithRange:range];
-    
-    // Scan values
-    unsigned int r, g, b;
-    [[NSScanner scannerWithString:rString] scanHexInt:&r];
-    [[NSScanner scannerWithString:gString] scanHexInt:&g];
-    [[NSScanner scannerWithString:bString] scanHexInt:&b];
-    
-    return [UIColor colorWithRed:((float) r / 255.0f)
-                           green:((float) g / 255.0f)
-                            blue:((float) b / 255.0f)
-                           alpha:1.0f];
+    if (touchedView.tag==1) {
+        CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:NO];
+    }
+    else if (touchedView.tag==2) {
+        EventsViewController *viewObj = [[EventsViewController alloc] init];
+        viewObj.isNotEventController = YES;
+        [self.navigationController pushViewController:viewObj animated:NO];
+    }
+    else if (touchedView.tag==3) {
+        QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
+        viewObj.isNotQuickMapController = YES;
+        [self.navigationController pushViewController:viewObj animated:NO];
+    }
+    else if (touchedView.tag==4) {
+        WhatsUpViewController *viewObj = [[WhatsUpViewController alloc] init];
+        viewObj.isNotWhatsUpController = YES;
+        [self.navigationController pushViewController:viewObj animated:NO];
+    }
+    else if (touchedView.tag==5) {
+        // Weater Detail Page
+    }
+    else if (touchedView.tag==6) {
+        // Water Level Sensors
+    }
 }
+
+
+
+//*************** Method To Move To Report/Feedback View
+
+- (void) moveToFeedbackView {
+    
+    FeedbackViewController *viewObj = [[FeedbackViewController alloc] init];
+    viewObj.isNotFeedbackController = YES;
+    [self.navigationController pushViewController:viewObj animated:NO];
+
+}
+
 
 
 //*************** Method To Create Home Page UI
@@ -174,20 +184,24 @@
                 [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
                 [columnView.layer setShadowOpacity:1];
                 [columnView.layer setShadowRadius:1.0];
-                columnView.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
                 [backgroundScrollView addSubview:columnView];
                 
                 UILabel *columnViewHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, columnView.bounds.size.width, 20)];
                 columnViewHeaderLabel.text = [NSString stringWithFormat:@"   %@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"component"]];
                 columnViewHeaderLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
                 columnViewHeaderLabel.textColor = [UIColor whiteColor];
-                columnViewHeaderLabel.backgroundColor = [self colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
+                columnViewHeaderLabel.backgroundColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                 [columnView addSubview:columnViewHeaderLabel];
                 
                 [self setMaskTo:columnViewHeaderLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
                 
                 left_yAxis = left_yAxis + columnView.bounds.size.height + 10;
                 
+                UIButton *overlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                overlayButton.frame = CGRectMake(0, 0, columnView.bounds.size.width, columnView.bounds.size.height);
+                overlayButton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                [overlayButton addTarget:self action:@selector(handleColumnsTouchEvent:) forControlEvents:UIControlEventTouchUpInside];
+                [columnView addSubview:overlayButton];
             }
             else {
                 
@@ -198,19 +212,24 @@
                 [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
                 [columnView.layer setShadowOpacity:1];
                 [columnView.layer setShadowRadius:1.0];
-                columnView.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
                 [backgroundScrollView addSubview:columnView];
                 
                 UILabel *columnViewHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, columnView.bounds.size.width, 20)];
                 columnViewHeaderLabel.text = [NSString stringWithFormat:@"   %@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"component"]];
                 columnViewHeaderLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
                 columnViewHeaderLabel.textColor = [UIColor whiteColor];
-                columnViewHeaderLabel.backgroundColor = [self colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
+                columnViewHeaderLabel.backgroundColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                 [columnView addSubview:columnViewHeaderLabel];
                 
                 [self setMaskTo:columnViewHeaderLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
                 
                 right_yAxis = right_yAxis + columnView.bounds.size.height + 10;
+                
+                UIButton *overlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                overlayButton.frame = CGRectMake(0, 0, columnView.bounds.size.width, columnView.bounds.size.height);
+                overlayButton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                [overlayButton addTarget:self action:@selector(handleColumnsTouchEvent:) forControlEvents:UIControlEventTouchUpInside];
+                [columnView addSubview:overlayButton];
             }
         }
     }
@@ -235,8 +254,6 @@
     self.view.backgroundColor = RGB(245, 245, 245);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
-    
     //    [self createDemoAppControls];
     
     backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
@@ -244,10 +261,23 @@
     backgroundScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:backgroundScrollView];
     backgroundScrollView.backgroundColor = [UIColor clearColor];
-    
+    backgroundScrollView.userInteractionEnabled = YES;
 }
 
 - (void) viewWillAppear:(BOOL)animated {
+    
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
+    
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
+    [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+    
+    self.title = @"Home";
+
     
     for (UIView * view in backgroundScrollView.subviews) {
         [view removeFromSuperview];
@@ -282,6 +312,7 @@
     [reportIncidentButton.layer setShadowOffset:CGSizeMake(2, 2)];
     [reportIncidentButton.layer setShadowOpacity:1];
     [reportIncidentButton.layer setShadowRadius:1.0];
+    [reportIncidentButton addTarget:self action:@selector(moveToFeedbackView) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:reportIncidentButton];
     
     left_yAxis = reportIncidentButton.frame.origin.y + reportIncidentButton.bounds.size.height + 10;

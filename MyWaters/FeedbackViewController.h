@@ -17,12 +17,14 @@
     BOOL isFloodSubmission,isShowingPicker;
     
     NSArray *feedbackTypeArray,*severityTypeArray;
-    UITextField *cellTextField;
+    UITextField *feedbackTypeField,*locationField,*commentField,*nameField,*phoneField;
     
     NSInteger fieldIndex;
     UIView *pickerbackground;
     UIPickerView *feedbackPickerView;
     NSInteger selectedPickerIndex;
 }
+
+@property (nonatomic, assign) BOOL isNotFeedbackController;
 
 @end

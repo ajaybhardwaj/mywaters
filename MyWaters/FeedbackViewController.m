@@ -15,7 +15,7 @@
 @end
 
 @implementation FeedbackViewController
-
+@synthesize isNotFeedbackController;
 
 //*************** Method To Animate To Show Picker View
 
@@ -23,9 +23,15 @@
     
     if (isShowingPicker) {
         [feedbackPickerView reloadAllComponents];
+        [feedbackPickerView selectRow:0 inComponent:0 animated:YES];
+
     }
     else {
         isShowingPicker = YES;
+        
+        [feedbackPickerView reloadAllComponents];
+        [feedbackPickerView selectRow:0 inComponent:0 animated:YES];
+
         
         [UIView beginAnimations:@"feedbackPicker" context:NULL];
         [UIView setAnimationDuration:0.5];
@@ -53,20 +59,27 @@
 }
 
 
-//*************** Method To Hide Picker View
+//*************** Method To Select Picker View Value
 
 - (void) selectPickerViewValue {
     
     isShowingPicker = NO;
-    NSLog(@"%ld",(long)fieldIndex);
     
-    UITextField *newField = (UITextField *)[self.view viewWithTag:fieldIndex];
-
     if (fieldIndex==1) {
-        newField.text = [feedbackTypeArray objectAtIndex:selectedPickerIndex];
+        feedbackTypeField.text = [feedbackTypeArray objectAtIndex:selectedPickerIndex];
+        if (selectedPickerIndex==1) {
+            isFloodSubmission = YES;
+        }
+        else {
+            isFloodSubmission = NO;
+        }
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:2 inSection:0];
+        NSArray *indexPaths = [[NSArray alloc] initWithObjects:indexPath, nil];
+        [feedbackTableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
     }
     else if (fieldIndex==3) {
-        newField.text = [severityTypeArray objectAtIndex:selectedPickerIndex];
+        commentField.text = [severityTypeArray objectAtIndex:selectedPickerIndex];
     }
     
     [UIView beginAnimations:@"feedbackPicker" context:NULL];
@@ -75,6 +88,7 @@
     pickerBgView.y = self.view.bounds.size.height+180;
     pickerbackground.center = pickerBgView;
     [UIView commitAnimations];
+    
 }
 
 
@@ -91,8 +105,13 @@
 
 - (void) createFeedbackTableHeader {
     
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 100)];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 150)];
     [headerView setBackgroundColor:RGB(247, 247, 247)];
+    
+    UIButton *picUploadbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+    picUploadbutton.frame = CGRectMake((headerView.bounds.size.width/2)-40, 35, 80, 80);
+    [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_image.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [headerView addSubview:picUploadbutton];
     
     [feedbackTableView setTableHeaderView:headerView];
 }
@@ -148,7 +167,6 @@
 }
 
 
-
 # pragma mark - UITableViewDataSource Methods
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -171,48 +189,117 @@
     cell.detailTextLabel.numberOfLines = 0;
     
     
-    if (isFloodSubmission) {
+    if (indexPath.row==0) {
         
-        cellTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-        cellTextField.textColor = RGB(35, 35, 35);
-        cellTextField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        cellTextField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-        cellTextField.leftViewMode = UITextFieldViewModeAlways;
-        cellTextField.borderStyle = UITextBorderStyleNone;
-        cellTextField.textAlignment=NSTextAlignmentLeft;
-        [cellTextField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        feedbackTypeField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+        feedbackTypeField.textColor = RGB(35, 35, 35);
+        feedbackTypeField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        feedbackTypeField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+        feedbackTypeField.leftViewMode = UITextFieldViewModeAlways;
+        feedbackTypeField.borderStyle = UITextBorderStyleNone;
+        feedbackTypeField.textAlignment=NSTextAlignmentLeft;
+        [feedbackTypeField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        feedbackTypeField.placeholder=@"Select Feedback Type *";
+        feedbackTypeField.text = [feedbackTypeArray objectAtIndex:selectedPickerIndex];
+        [cell.contentView addSubview:feedbackTypeField];
+        feedbackTypeField.backgroundColor = [UIColor clearColor];
+        feedbackTypeField.delegate = self;
+        [feedbackTypeField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+        feedbackTypeField.tag = 1;
         
-        if (indexPath.row==0) {
-            cellTextField.placeholder=@"Select Feedback Type";
-            cellTextField.text = [feedbackTypeArray objectAtIndex:0];
-            
+        UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+        [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        cell.accessoryView = dropDownButton;
+    }
+    else if (indexPath.row==1) {
+        
+        locationField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+        locationField.textColor = RGB(35, 35, 35);
+        locationField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+        locationField.leftViewMode = UITextFieldViewModeAlways;
+        locationField.borderStyle = UITextBorderStyleNone;
+        locationField.textAlignment=NSTextAlignmentLeft;
+        [locationField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        locationField.placeholder=@"Location *";
+        [cell.contentView addSubview:locationField];
+        locationField.backgroundColor = [UIColor clearColor];
+        locationField.delegate = self;
+        [locationField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+        locationField.tag = 2;
+        
+        UIImageView *locationButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+        [locationButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        cell.accessoryView = locationButton;
+
+    }
+    else if (indexPath.row==2) {
+        
+        commentField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+        commentField.textColor = RGB(35, 35, 35);
+        commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        commentField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+        commentField.leftViewMode = UITextFieldViewModeAlways;
+        commentField.borderStyle = UITextBorderStyleNone;
+        commentField.textAlignment=NSTextAlignmentLeft;
+        [commentField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        if (isFloodSubmission) {
+            commentField.placeholder=@"Severity Type *";
+        }
+        else {
+            commentField.placeholder=@"Comments *";
+        }
+        [cell.contentView addSubview:commentField];
+        commentField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        commentField.backgroundColor = [UIColor clearColor];
+        commentField.delegate = self;
+        [commentField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+        commentField.tag = 3;
+
+        if (isFloodSubmission) {
             UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
             [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
             cell.accessoryView = dropDownButton;
         }
-        else if (indexPath.row==1) {
-            cellTextField.placeholder=@"Location *";
-        }
-        else if (indexPath.row==2) {
-            cellTextField.placeholder=@"Severity Type *";
-        }
-        else if (indexPath.row==3) {
-            cellTextField.placeholder=@"Name *";
-            cellTextField.returnKeyType=UIReturnKeyNext;
-            cellTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        }
-        else if (indexPath.row==4) {
-            cellTextField.placeholder=@"Contact No. *";
-            cellTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        }
-        cellTextField.backgroundColor = [UIColor clearColor];
-        cellTextField.delegate = self;
-        cellTextField.tag = indexPath.row+1;
-        [cellTextField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-        [cell.contentView addSubview:cellTextField];
-    }
-    else {
         
+    }
+    else if (indexPath.row==3) {
+        
+        nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+        nameField.textColor = RGB(35, 35, 35);
+        nameField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+        nameField.leftViewMode = UITextFieldViewModeAlways;
+        nameField.borderStyle = UITextBorderStyleNone;
+        nameField.textAlignment=NSTextAlignmentLeft;
+        [nameField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        nameField.placeholder=@"Name *";
+        [cell.contentView addSubview:nameField];
+        nameField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        nameField.backgroundColor = [UIColor clearColor];
+        nameField.delegate = self;
+        [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+        nameField.tag = 4;
+
+    }
+    else if (indexPath.row==4) {
+        
+        phoneField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+        phoneField.textColor = RGB(35, 35, 35);
+        phoneField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        phoneField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+        phoneField.leftViewMode = UITextFieldViewModeAlways;
+        phoneField.borderStyle = UITextBorderStyleNone;
+        phoneField.textAlignment=NSTextAlignmentLeft;
+        [phoneField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        phoneField.placeholder=@"Contact No. *";
+        [cell.contentView addSubview:phoneField];
+        phoneField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        phoneField.backgroundColor = [UIColor clearColor];
+        phoneField.delegate = self;
+        [phoneField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+        phoneField.tag = 5;
+
     }
     
     
@@ -234,9 +321,19 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
+    fieldIndex = textField.tag;
+    
+    CGPoint origin = textField.frame.origin;
+    CGPoint point = [textField.superview convertPoint:origin toView:self.view];
+    float navBarHeight = self.navigationController.navigationBar.frame.size.height;
+    CGPoint offset = feedbackTableView.contentOffset;
+    
+    // Adjust the below value as you need
+    offset.y += (point.y - navBarHeight -50);
+    [feedbackTableView setContentOffset:offset animated:YES];
+    
     if (isFloodSubmission) {
-        if (textField.tag == 1 || textField.tag == 3) {
-            fieldIndex = textField.tag;
+        if (textField == feedbackTypeField || textField == commentField) {
             selectedPickerIndex = 0;
             [feedbackPickerView reloadComponent:0];
             [self showPickerView];
@@ -247,7 +344,11 @@
         }
     }
     else {
-        if (textField.tag == 1) {
+        if (textField == feedbackTypeField) {
+            selectedPickerIndex = 0;
+            [feedbackPickerView reloadComponent:0];
+            [self showPickerView];
+
             return NO;
         }
         else {
@@ -256,6 +357,24 @@
     }
 }
 
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    CGPoint offset;
+    offset.x = 0.0;
+    offset.y = 0.0;
+    [feedbackTableView setContentOffset:offset animated:YES];
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
+//*************** Method To Pop View Controller To Parent Controller
+
+- (void) pop2Dismiss:(id) sender {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 
 # pragma mark - View Lifecycle Methods
@@ -267,11 +386,11 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_filter"]];
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_call"]];
     
     fieldIndex = 1;
-    isFloodSubmission = YES;
+    
+    isFloodSubmission = NO;
     feedbackTypeArray = [[NSArray alloc] initWithObjects:@"Dirty/Choked Drain",@"Flood Area Submission",@"Water Leak",@"Poor Water Pressure Quality",@"Reports Feeds",@"Sewer Choke/Overflow/Smell",@"Others", nil];
     severityTypeArray = [[NSArray alloc] initWithObjects:@"Light",@"Heavy",@"Severe", nil];
     
@@ -282,7 +401,7 @@
     feedbackTableView.backgroundColor = RGB(247, 247, 247);
     feedbackTableView.backgroundView = nil;
     feedbackTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    feedbackTableView.scrollEnabled = NO;
+//    feedbackTableView.scrollEnabled = NO;
     
     
     UIButton *submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -290,7 +409,7 @@
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
-    submitButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:18];
+    submitButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
     [self.view addSubview:submitButton];
     
     [self createFeedbackTableHeader];
@@ -317,6 +436,30 @@
     
     [pickerbackground addSubview:feedbackPickerView];
     [appDelegate.window addSubview:pickerbackground];
+}
+
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    selectedPickerIndex = 0;
+    
+    if (!isNotFeedbackController) {
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
+    }
+    else {
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(139,163,13) frame:CGRectMake(0, 0, 1, 1)];
+        [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+        
+        NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+        [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+        [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+        [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+        
+        self.title = @"Report/Feedback";
+        
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+        
+    }
 }
 
 

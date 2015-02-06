@@ -87,21 +87,29 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    // -- Right Bar Button Item
+    [self createDemoAppControls];
+}
+
+
+- (void) viewWillAppear:(BOOL)animated {
+    
     if (!isNotQuickMapController) {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     }
     else {
-        self.title = @"QUICK MAP";
-        [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:RGB(255, 255, 255),UITextAttributeTextColor,[UIFont fontWithName:OPEN_SANS_REGULAR size:20.0f],UITextAttributeFont,[UIColor clearColor],UITextAttributeTextShadowColor,CGSizeZero,UITextAttributeTextShadowOffset, nil]];
-        UIImage *headerImage = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
-        [[[self navigationController] navigationBar] setBackgroundImage:headerImage forBarMetrics:UIBarMetricsDefault];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(229,0,87) frame:CGRectMake(0, 0, 1, 1)];
+        [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+        
+        NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+        [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+        [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+        [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+        
+        self.title = @"Quick Map";
         
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-
+        
     }
-    
-    [self createDemoAppControls];
 }
 
 
