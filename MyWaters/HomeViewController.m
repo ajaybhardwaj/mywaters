@@ -160,8 +160,11 @@
 
 - (void) moveToFeedbackView {
     
-    FeedbackViewController *viewObj = [[FeedbackViewController alloc] init];
-    viewObj.isNotFeedbackController = YES;
+//    FeedbackViewController *viewObj = [[FeedbackViewController alloc] init];
+//    viewObj.isNotFeedbackController = YES;
+//    [self.navigationController pushViewController:viewObj animated:NO];
+
+    WelcomeViewController *viewObj = [[WelcomeViewController alloc] init];
     [self.navigationController pushViewController:viewObj animated:NO];
 
 }

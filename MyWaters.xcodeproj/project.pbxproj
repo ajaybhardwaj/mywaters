@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FE4F375A1A8862B50028903C /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE4F37591A8862B50028903C /* WelcomeViewController.m */; };
+		FE4F375D1A8862C10028903C /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE4F375C1A8862C10028903C /* LoginViewController.m */; };
+		FE4F37601A8862CD0028903C /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE4F375F1A8862CD0028903C /* SignUpViewController.m */; };
+		FE4F37681A8863390028903C /* btn_blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37621A8863390028903C /* btn_blue@3x.png */; };
+		FE4F37691A8863390028903C /* btn_darkgrey@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37631A8863390028903C /* btn_darkgrey@3x.png */; };
+		FE4F376A1A8863390028903C /* btn_lightgrey@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37641A8863390028903C /* btn_lightgrey@3x.png */; };
+		FE4F376B1A8863390028903C /* image_background@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37651A8863390028903C /* image_background@3x.png */; };
+		FE4F376C1A8863390028903C /* image_mywaters@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37661A8863390028903C /* image_mywaters@3x.png */; };
+		FE4F376D1A8863390028903C /* image_waterwally@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37671A8863390028903C /* image_waterwally@3x.png */; };
+		FE4F376F1A8870DC0028903C /* welcome_background@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F376E1A8870DC0028903C /* welcome_background@3x.png */; };
+		FE4F37721A888A3E0028903C /* image_avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37701A888A3E0028903C /* image_avatar.png */; };
+		FE4F37731A888A3E0028903C /* icn_facebook@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37711A888A3E0028903C /* icn_facebook@3x.png */; };
+		FE4F37791A88A6DC0028903C /* checkbox@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37771A88A6DC0028903C /* checkbox@3x.png */; };
+		FE4F377A1A88A6DC0028903C /* icon_tick@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37781A88A6DC0028903C /* icon_tick@3x.png */; };
 		FE6E93D21A821FD700BEA436 /* MyWaters.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = FE6E93D11A821FD700BEA436 /* MyWaters.sqlite */; };
 		FE7FD0841A7F3933002A05CB /* favourites.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0831A7F3933002A05CB /* favourites.png */; };
 		FE7FD0891A7F50E5002A05CB /* notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0881A7F50E5002A05CB /* notifications.png */; };
@@ -131,6 +145,23 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FE4F37581A8862B50028903C /* WelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeViewController.h; sourceTree = "<group>"; };
+		FE4F37591A8862B50028903C /* WelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
+		FE4F375B1A8862C10028903C /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		FE4F375C1A8862C10028903C /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		FE4F375E1A8862CD0028903C /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
+		FE4F375F1A8862CD0028903C /* SignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpViewController.m; sourceTree = "<group>"; };
+		FE4F37621A8863390028903C /* btn_blue@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_blue@3x.png"; sourceTree = "<group>"; };
+		FE4F37631A8863390028903C /* btn_darkgrey@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_darkgrey@3x.png"; sourceTree = "<group>"; };
+		FE4F37641A8863390028903C /* btn_lightgrey@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_lightgrey@3x.png"; sourceTree = "<group>"; };
+		FE4F37651A8863390028903C /* image_background@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image_background@3x.png"; sourceTree = "<group>"; };
+		FE4F37661A8863390028903C /* image_mywaters@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image_mywaters@3x.png"; sourceTree = "<group>"; };
+		FE4F37671A8863390028903C /* image_waterwally@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image_waterwally@3x.png"; sourceTree = "<group>"; };
+		FE4F376E1A8870DC0028903C /* welcome_background@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "welcome_background@3x.png"; sourceTree = "<group>"; };
+		FE4F37701A888A3E0028903C /* image_avatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image_avatar.png; sourceTree = "<group>"; };
+		FE4F37711A888A3E0028903C /* icn_facebook@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_facebook@3x.png"; sourceTree = "<group>"; };
+		FE4F37771A88A6DC0028903C /* checkbox@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox@3x.png"; sourceTree = "<group>"; };
+		FE4F37781A88A6DC0028903C /* icon_tick@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_tick@3x.png"; sourceTree = "<group>"; };
 		FE6E93D11A821FD700BEA436 /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
 		FE7FD0831A7F3933002A05CB /* favourites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favourites.png; sourceTree = "<group>"; };
 		FE7FD0881A7F50E5002A05CB /* notifications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notifications.png; sourceTree = "<group>"; };
@@ -313,6 +344,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FE4F37571A885AFC0028903C /* Login & Sign Up */ = {
+			isa = PBXGroup;
+			children = (
+				FE4F37581A8862B50028903C /* WelcomeViewController.h */,
+				FE4F37591A8862B50028903C /* WelcomeViewController.m */,
+				FE4F375B1A8862C10028903C /* LoginViewController.h */,
+				FE4F375C1A8862C10028903C /* LoginViewController.m */,
+				FE4F375E1A8862CD0028903C /* SignUpViewController.h */,
+				FE4F375F1A8862CD0028903C /* SignUpViewController.m */,
+			);
+			name = "Login & Sign Up";
+			sourceTree = "<group>";
+		};
+		FE4F37611A8862E70028903C /* Login & SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				FE4F37771A88A6DC0028903C /* checkbox@3x.png */,
+				FE4F37781A88A6DC0028903C /* icon_tick@3x.png */,
+				FE4F37701A888A3E0028903C /* image_avatar.png */,
+				FE4F37711A888A3E0028903C /* icn_facebook@3x.png */,
+				FE4F376E1A8870DC0028903C /* welcome_background@3x.png */,
+				FE4F37621A8863390028903C /* btn_blue@3x.png */,
+				FE4F37631A8863390028903C /* btn_darkgrey@3x.png */,
+				FE4F37641A8863390028903C /* btn_lightgrey@3x.png */,
+				FE4F37651A8863390028903C /* image_background@3x.png */,
+				FE4F37661A8863390028903C /* image_mywaters@3x.png */,
+				FE4F37671A8863390028903C /* image_waterwally@3x.png */,
+			);
+			name = "Login & SignUp";
+			sourceTree = "<group>";
+		};
 		FE99BDFF1A7B40B1000B83E8 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -394,6 +456,7 @@
 		FEA7301C1A772FDD00D274A6 /* MyWaters */ = {
 			isa = PBXGroup;
 			children = (
+				FE4F37571A885AFC0028903C /* Login & Sign Up */,
 				FEB13FCE1A7788330061CE74 /* CCTV Views */,
 				FEA7308F1A77348300D274A6 /* Home */,
 				FEA7308E1A77348000D274A6 /* Notifications */,
@@ -650,6 +713,7 @@
 		FEA730B11A77394300D274A6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FE4F37611A8862E70028903C /* Login & SignUp */,
 				FE9C8CAD1A847A5E001074DC /* Home */,
 				FE9C8CAC1A847A18001074DC /* Feedback */,
 				FE99BDFF1A7B40B1000B83E8 /* Common */,
@@ -815,11 +879,14 @@
 				FE99BE351A7B7E69000B83E8 /* Roboto-Bold.ttf in Resources */,
 				FE99BE361A7B7E69000B83E8 /* Roboto-BoldItalic.ttf in Resources */,
 				FE99BE371A7B7E69000B83E8 /* Roboto-Italic.ttf in Resources */,
+				FE4F37691A8863390028903C /* btn_darkgrey@3x.png in Resources */,
 				FE99BE381A7B7E69000B83E8 /* Roboto-Light.ttf in Resources */,
 				FE99BE391A7B7E69000B83E8 /* Roboto-LightItalic.ttf in Resources */,
 				FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */,
 				FE99BE3A1A7B7E69000B83E8 /* Roboto-Medium.ttf in Resources */,
+				FE4F37721A888A3E0028903C /* image_avatar.png in Resources */,
 				FE99BE3B1A7B7E69000B83E8 /* Roboto-MediumItalic.ttf in Resources */,
+				FE4F376B1A8863390028903C /* image_background@3x.png in Resources */,
 				FE99BE3C1A7B7E69000B83E8 /* Roboto-Regular.ttf in Resources */,
 				FE99BE3D1A7B7E69000B83E8 /* Roboto-Thin.ttf in Resources */,
 				FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */,
@@ -835,6 +902,9 @@
 				FE99BE441A7B7E69000B83E8 /* RobotoCondensed-Regular.ttf in Resources */,
 				FE99BE171A7B6F5E000B83E8 /* settings_dashboard.png in Resources */,
 				FEB13FC41A7766410061CE74 /* icn_favourites@3x.png in Resources */,
+				FE4F37731A888A3E0028903C /* icn_facebook@3x.png in Resources */,
+				FE4F376D1A8863390028903C /* image_waterwally@3x.png in Resources */,
+				FE4F37681A8863390028903C /* btn_blue@3x.png in Resources */,
 				FE99BE191A7B6F5E000B83E8 /* waterlevelsensor_ialerts.png in Resources */,
 				FEA730B41A77395700D274A6 /* dashboard.png in Resources */,
 				FEB13FC81A7766410061CE74 /* icn_profile@3x.png in Resources */,
@@ -845,6 +915,7 @@
 				FEA730291A772FDD00D274A6 /* Main.storyboard in Resources */,
 				FEB13FD91A77968B0061CE74 /* quickmap_expanded.png in Resources */,
 				FEFBFF2C1A80D24E00E485E9 /* icn_call@3x.png in Resources */,
+				FE4F376C1A8863390028903C /* image_mywaters@3x.png in Resources */,
 				FEF43C2F1A7A0F9B00237CAD /* cctv_detail_options.png in Resources */,
 				FE99BDF51A7B2CD7000B83E8 /* abcwaters_grid.png in Resources */,
 				FE99BE011A7B40B8000B83E8 /* icn_back_old@2x.png in Resources */,
@@ -869,13 +940,17 @@
 				FEF43C2A1A79F17500237CAD /* events_detail_options.png in Resources */,
 				FEB13FC71A7766410061CE74 /* icn_notifications@3x.png in Resources */,
 				FE99BE181A7B6F5E000B83E8 /* settings_notification.png in Resources */,
+				FE4F377A1A88A6DC0028903C /* icon_tick@3x.png in Resources */,
+				FE4F37791A88A6DC0028903C /* checkbox@3x.png in Resources */,
 				FEB13FC11A7766410061CE74 /* icn_abcwaters@3x.png in Resources */,
 				FEA730B71A77396800D274A6 /* icn_menu@2x.png in Resources */,
 				FEF43C261A79EE9400237CAD /* events_filter.png in Resources */,
 				FE99BDF61A7B2CD7000B83E8 /* abcwaters_list.png in Resources */,
+				FE4F376F1A8870DC0028903C /* welcome_background@3x.png in Resources */,
 				FE99BE031A7B6316000B83E8 /* profile.png in Resources */,
 				FEB13FC21A7766410061CE74 /* icn_booking@3x.png in Resources */,
 				FEF43C241A79EE7B00237CAD /* events_listing.png in Resources */,
+				FE4F376A1A8863390028903C /* btn_lightgrey@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -907,9 +982,12 @@
 				FE99BE0F1A7B64CF000B83E8 /* RewardDetailsViewController.m in Sources */,
 				FEA730741A77342100D274A6 /* WCAlertView.m in Sources */,
 				FEA730261A772FDD00D274A6 /* ViewController.m in Sources */,
+				FE4F375D1A8862C10028903C /* LoginViewController.m in Sources */,
 				FEA7309E1A77353F00D274A6 /* ABCWatersViewController.m in Sources */,
 				FEA7307A1A77342100D274A6 /* AsyncImageView.m in Sources */,
 				FE99BE1C1A7B7918000B83E8 /* DashboardSettingsViewController.m in Sources */,
+				FE4F37601A8862CD0028903C /* SignUpViewController.m in Sources */,
+				FE4F375A1A8862B50028903C /* WelcomeViewController.m in Sources */,
 				FEA730921A77351F00D274A6 /* HomeViewController.m in Sources */,
 				FEA730471A7733D500D274A6 /* NSDataBase64.m in Sources */,
 				FE99BE061A7B63B4000B83E8 /* RewardsListingViewController.m in Sources */,
