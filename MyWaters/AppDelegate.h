@@ -12,6 +12,7 @@
 #import "HomeViewController.h"
 #import "ViewControllerHelper.h"
 #import <sqlite3.h>
+#import "CommonFunctions.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,IIViewDeckControllerDelegate> {
     

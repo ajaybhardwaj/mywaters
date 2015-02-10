@@ -67,6 +67,8 @@
 		FE99BE431A7B7E69000B83E8 /* RobotoCondensed-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FE99BE311A7B7D2B000B83E8 /* RobotoCondensed-LightItalic.ttf */; };
 		FE99BE441A7B7E69000B83E8 /* RobotoCondensed-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FE99BE321A7B7D2B000B83E8 /* RobotoCondensed-Regular.ttf */; };
 		FE99BE471A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE99BE461A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m */; };
+		FE9B55EE1A89B7B00045E4F9 /* CommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9B55ED1A89B7B00045E4F9 /* CommonFunctions.m */; };
+		FE9B55F51A89D6030045E4F9 /* ForgotPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9B55F41A89D6030045E4F9 /* ForgotPasswordViewController.m */; };
 		FE9C8CAB1A847861001074DC /* icn_location@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE9C8CAA1A847861001074DC /* icn_location@3x.png */; };
 		FEA730201A772FDD00D274A6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA7301F1A772FDD00D274A6 /* main.m */; };
 		FEA730231A772FDD00D274A6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA730221A772FDD00D274A6 /* AppDelegate.m */; };
@@ -215,6 +217,10 @@
 		FE99BE321A7B7D2B000B83E8 /* RobotoCondensed-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoCondensed-Regular.ttf"; sourceTree = "<group>"; };
 		FE99BE451A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterLevelAlertsSettingViewController.h; sourceTree = "<group>"; };
 		FE99BE461A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaterLevelAlertsSettingViewController.m; sourceTree = "<group>"; };
+		FE9B55EC1A89B7B00045E4F9 /* CommonFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonFunctions.h; sourceTree = "<group>"; };
+		FE9B55ED1A89B7B00045E4F9 /* CommonFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonFunctions.m; sourceTree = "<group>"; };
+		FE9B55F31A89D6030045E4F9 /* ForgotPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForgotPasswordViewController.h; sourceTree = "<group>"; };
+		FE9B55F41A89D6030045E4F9 /* ForgotPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForgotPasswordViewController.m; sourceTree = "<group>"; };
 		FE9C8CAA1A847861001074DC /* icn_location@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_location@3x.png"; sourceTree = "<group>"; };
 		FEA7301A1A772FDD00D274A6 /* MyWaters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyWaters.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEA7301E1A772FDD00D274A6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -353,6 +359,8 @@
 				FE4F375C1A8862C10028903C /* LoginViewController.m */,
 				FE4F375E1A8862CD0028903C /* SignUpViewController.h */,
 				FE4F375F1A8862CD0028903C /* SignUpViewController.m */,
+				FE9B55F31A89D6030045E4F9 /* ForgotPasswordViewController.h */,
+				FE9B55F41A89D6030045E4F9 /* ForgotPasswordViewController.m */,
 			);
 			name = "Login & Sign Up";
 			sourceTree = "<group>";
@@ -411,6 +419,15 @@
 			name = Fonts;
 			sourceTree = "<group>";
 		};
+		FE9B55EF1A89B7B50045E4F9 /* CommonFuncitons */ = {
+			isa = PBXGroup;
+			children = (
+				FE9B55EC1A89B7B00045E4F9 /* CommonFunctions.h */,
+				FE9B55ED1A89B7B00045E4F9 /* CommonFunctions.m */,
+			);
+			name = CommonFuncitons;
+			sourceTree = "<group>";
+		};
 		FE9C8CAC1A847A18001074DC /* Feedback */ = {
 			isa = PBXGroup;
 			children = (
@@ -432,6 +449,7 @@
 		FEA730111A772FDD00D274A6 = {
 			isa = PBXGroup;
 			children = (
+				FE9B55EF1A89B7B50045E4F9 /* CommonFuncitons */,
 				FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */,
 				FEA7307E1A77342F00D274A6 /* Controllers & Helpers */,
 				FEA730591A77341400D274A6 /* UIHelpers */,
@@ -980,6 +998,7 @@
 				FE99BDFE1A7B3F93000B83E8 /* CustomButtons.m in Sources */,
 				FEA730521A7733F900D274A6 /* AuxilaryUIService.m in Sources */,
 				FE99BE0F1A7B64CF000B83E8 /* RewardDetailsViewController.m in Sources */,
+				FE9B55F51A89D6030045E4F9 /* ForgotPasswordViewController.m in Sources */,
 				FEA730741A77342100D274A6 /* WCAlertView.m in Sources */,
 				FEA730261A772FDD00D274A6 /* ViewController.m in Sources */,
 				FE4F375D1A8862C10028903C /* LoginViewController.m in Sources */,
@@ -1004,6 +1023,7 @@
 				FEA730951A77352700D274A6 /* NotificationsViewController.m in Sources */,
 				FEA730841A77343D00D274A6 /* ViewControllerHelper.m in Sources */,
 				FEA730A41A77354F00D274A6 /* BookingViewController.m in Sources */,
+				FE9B55EE1A89B7B00045E4F9 /* CommonFunctions.m in Sources */,
 				FE99BE471A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m in Sources */,
 				FE99BDF01A7B28C3000B83E8 /* ABCWaterDetailViewController.m in Sources */,
 				FEA730B01A77357300D274A6 /* FavouritesViewController.m in Sources */,

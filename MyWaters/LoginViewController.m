@@ -24,6 +24,45 @@
 }
 
 
+//*************** Method To Submit Login Inputs
+
+- (void) submitLoginCredentials {
+    
+    // Submit Login Details
+    [emailField resignFirstResponder];
+    [passField resignFirstResponder];
+    
+    if (IS_IPHONE_4_OR_LESS) {
+        
+        [UIView beginAnimations:@"emailField" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = self.view.center;
+        viewPOS.y = self.view.bounds.size.height-240;
+        self.view.center = viewPOS;
+        [UIView commitAnimations];
+        
+    }
+}
+
+
+//*************** Method To Validate Login Inputs
+
+- (void) validateLoginParameters {
+    
+    if ([emailField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+    }
+    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+    }
+    else if ([passField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+    }
+    else {
+        [self submitLoginCredentials];
+    }
+}
+
 
 # pragma mark - UITextFieldDelegate Methods
 
@@ -149,6 +188,7 @@
     loginButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     loginButton.tag = 3;
     loginButton.frame = CGRectMake(0, forgotPassButton.frame.origin.y+forgotPassButton.bounds.size.height+30, self.view.bounds.size.width, 45);
+    [loginButton addTarget:self action:@selector(validateLoginParameters) forControlEvents:UIControlEventTouchUpInside];
     [loginButton setBackgroundColor:RGB(205, 208, 213)];
     [self.view addSubview:loginButton];
     

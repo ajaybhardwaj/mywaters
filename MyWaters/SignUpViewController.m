@@ -40,15 +40,124 @@
 
 
 
+//*************** Method To Submit Signup Inputs
+
+- (void) submitSignupDetails {
+    
+    // Submit Login Details
+    [emailField resignFirstResponder];
+    [passField resignFirstResponder];
+    [nameField resignFirstResponder];
+    [retypePassField resignFirstResponder];
+    
+    if (IS_IPHONE_4_OR_LESS) {
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = backgroundScrollView.center;
+        viewPOS.y = backgroundScrollView.bounds.size.height-261;
+        self.view.center = viewPOS;
+        [UIView commitAnimations];
+        
+    }
+    else if (IS_IPHONE_5) {
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = backgroundScrollView.center;
+        viewPOS.y = backgroundScrollView.bounds.size.height-304;
+        self.view.center = viewPOS;
+        [UIView commitAnimations];
+    }
+    else if (IS_IPHONE_6) {
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = backgroundScrollView.center;
+        viewPOS.y = backgroundScrollView.bounds.size.height-353;
+        self.view.center = viewPOS;
+        [UIView commitAnimations];
+    }
+    else if (IS_IPHONE_6P) {
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = backgroundScrollView.center;
+        viewPOS.y = backgroundScrollView.bounds.size.height-389;
+        self.view.center = viewPOS;
+        [UIView commitAnimations];
+    }
+}
+
+
+//*************** Method To Validate Signup Inputs
+
+- (void) validateSignUpParameters {
+    
+    if ([emailField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+    }
+    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+    }
+    else if ([nameField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+    }
+    else if ([CommonFunctions characterSet1Found:nameField.text]) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+    }
+    else if ([passField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+    }
+    else if ([retypePassField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Retype password is mandatory." cancel:@"OK" otherButton:nil];
+    }
+    else if (![passField.text isEqualToString:retypePassField.text]) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
+    }
+    else {
+        [self submitSignupDetails];
+    }
+}
+
+
+
 # pragma mark - UITextFieldDelegate Methods
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     
     if (IS_IPHONE_4_OR_LESS) {
         
-        if (textField==retypePassField) {
+        if (textField==emailField) {
             
             [UIView beginAnimations:@"emailField" context:NULL];
+            [UIView setAnimationDuration:0.5];
+            CGPoint viewPOS = backgroundScrollView.center;
+            viewPOS.y = backgroundScrollView.bounds.size.height-280;
+            self.view.center = viewPOS;
+            [UIView commitAnimations];
+        }
+        else if (textField==nameField) {
+            
+            [UIView beginAnimations:@"nameField" context:NULL];
+            [UIView setAnimationDuration:0.5];
+            CGPoint viewPOS = backgroundScrollView.center;
+            viewPOS.y = backgroundScrollView.bounds.size.height-310;
+            self.view.center = viewPOS;
+            [UIView commitAnimations];
+        }
+        else if (textField==passField) {
+            
+            [UIView beginAnimations:@"passField" context:NULL];
+            [UIView setAnimationDuration:0.5];
+            CGPoint viewPOS = backgroundScrollView.center;
+            viewPOS.y = backgroundScrollView.bounds.size.height-410;
+            self.view.center = viewPOS;
+            [UIView commitAnimations];
+        }
+        else if (textField==retypePassField) {
+            
+            [UIView beginAnimations:@"retypeField" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = backgroundScrollView.center;
             viewPOS.y = backgroundScrollView.bounds.size.height-510;
@@ -60,7 +169,7 @@
         
         if (textField==retypePassField || textField==passField) {
             
-            [UIView beginAnimations:@"emailField" context:NULL];
+            [UIView beginAnimations:@"passField" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = backgroundScrollView.center;
             viewPOS.y = backgroundScrollView.bounds.size.height-490;
@@ -72,7 +181,7 @@
         
         if (textField==retypePassField) {
             
-            [UIView beginAnimations:@"emailField" context:NULL];
+            [UIView beginAnimations:@"retypeField" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = backgroundScrollView.center;
             viewPOS.y = backgroundScrollView.bounds.size.height-450;
@@ -94,6 +203,7 @@
         [retypePassField becomeFirstResponder];
     }
     else {
+        
         [textField resignFirstResponder];
         
         if (IS_IPHONE_4_OR_LESS) {
@@ -101,7 +211,7 @@
             [UIView beginAnimations:@"retypePass" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = backgroundScrollView.center;
-            viewPOS.y = backgroundScrollView.bounds.size.height-240;
+            viewPOS.y = backgroundScrollView.bounds.size.height-261;
             self.view.center = viewPOS;
             [UIView commitAnimations];
             
@@ -111,7 +221,7 @@
             [UIView beginAnimations:@"retypePass" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = backgroundScrollView.center;
-            viewPOS.y = backgroundScrollView.bounds.size.height-283;
+            viewPOS.y = backgroundScrollView.bounds.size.height-304;
             self.view.center = viewPOS;
             [UIView commitAnimations];
         }
@@ -120,7 +230,7 @@
             [UIView beginAnimations:@"retypePass" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = backgroundScrollView.center;
-            viewPOS.y = backgroundScrollView.bounds.size.height-334;
+            viewPOS.y = backgroundScrollView.bounds.size.height-353;
             self.view.center = viewPOS;
             [UIView commitAnimations];
         }
@@ -129,7 +239,7 @@
             [UIView beginAnimations:@"retypePass" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = backgroundScrollView.center;
-            viewPOS.y = backgroundScrollView.bounds.size.height-370;
+            viewPOS.y = backgroundScrollView.bounds.size.height-389;
             self.view.center = viewPOS;
             [UIView commitAnimations];
         }
@@ -141,20 +251,28 @@
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, -20, self.view.bounds.size.width, self.view.bounds.size.height+20)];
     backgroundScrollView.showsHorizontalScrollIndicator = NO;
     backgroundScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:backgroundScrollView];
     backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
     
-    UIImageView *bgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    UIImageView *bgView = [[UIImageView alloc] init];
+    if (IS_IPHONE_4_OR_LESS) {
+        bgView.frame = CGRectMake(0, 0, self.view.bounds.size.width, 580);
+    }
+    else {
+        bgView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    }
     [bgView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_background.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [backgroundScrollView addSubview:bgView];
+    
     
     facebookButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [facebookButton setTitle:@"CONNECT VIA FACEBOOK" forState:UIControlStateNormal];
@@ -277,7 +395,7 @@
     signUpButton.tag = 4;
     signUpButton.frame = CGRectMake(0, termsButton.frame.origin.y+termsButton.bounds.size.height+30, self.view.bounds.size.width, 45);
     [signUpButton setBackgroundColor:RGB(67, 79, 96)];
-    [signUpButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [signUpButton addTarget:self action:@selector(validateSignUpParameters) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:signUpButton];
     
     
@@ -295,7 +413,7 @@
     [backgroundScrollView addGestureRecognizer:swipeGesture];
     
     if (IS_IPHONE_4_OR_LESS) {
-        backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 650);
+        backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 580);
     }
 }
 
