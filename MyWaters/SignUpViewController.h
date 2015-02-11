@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface SignUpViewController : UIViewController <UITextFieldDelegate> {
+@interface SignUpViewController : UIViewController <UITextFieldDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -20,7 +20,8 @@
     
     UIImageView *profileImageView;
     
-    BOOL isTermsAgree;
+    BOOL isTermsAgree,isProfilePictureSelected;
+    UITapGestureRecognizer *profileImageTap;
 }
 
 @end

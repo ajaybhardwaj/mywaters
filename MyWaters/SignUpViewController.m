@@ -15,6 +15,45 @@
 @implementation SignUpViewController
 
 
+
+//*************** Method For Handling Photo Library Action
+
+- (void) handlePhotoLibraryAction {
+    
+    UIImagePickerController * picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+    [self presentViewController:picker animated:YES completion:NULL];
+}
+
+
+//*************** Method For Handling Camera Action
+
+- (void) handleCameraAction {
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        
+        UIImagePickerController * picker = [[UIImagePickerController alloc] init];
+        picker.delegate = self;
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        [self presentViewController:picker animated:YES completion:NULL];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Camera is not supported by device." cancel:@"OK" otherButton:nil];
+    }
+}
+
+
+//*************** Method To Handle Tap Gesture For Profile Pic
+
+- (void) handleSingleTapGesture: (UITapGestureRecognizer*) sender {
+    
+    if (sender==profileImageTap) {
+        [CommonFunctions showActionSheet:self containerView:self.view title:@"Profile Picture" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Camera",@"Photo Library",@"Cancel",nil];
+    }
+}
+
+
 //*************** Method To Handle Terms Actions
 
 - (void) changeTermsAgreeStatus {
@@ -248,6 +287,38 @@
 }
 
 
+# pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag==1) {
+        if (buttonIndex==0) {
+            [self handleCameraAction];
+        }
+        else if (buttonIndex==1) {
+            [self handlePhotoLibraryAction];
+        }
+    }
+}
+
+# pragma mark - UIImagePickerControllerDelegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    isProfilePictureSelected = YES;
+    UIImage *image=[info objectForKey:UIImagePickerControllerOriginalImage];
+    profileImageView.image=image;
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    isProfilePictureSelected = NO;
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+
+
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
@@ -293,7 +364,12 @@
     [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     profileImageView.layer.cornerRadius = 10;
     [backgroundScrollView addSubview:profileImageView];
+    profileImageView.userInteractionEnabled = YES;
     
+    profileImageTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTapGesture:)];
+    profileImageTap.numberOfTapsRequired = 1;
+    profileImageTap.numberOfTouchesRequired = 1;
+    [profileImageView addGestureRecognizer: profileImageTap];
     
     emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, profileImageView.frame.origin.y+profileImageView.bounds.size.height+15, self.view.bounds.size.width, 40)];
     emailField.textColor = RGB(35, 35, 35);
@@ -429,14 +505,21 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    isProfilePictureSelected = NO;
 }
-*/
+
+
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

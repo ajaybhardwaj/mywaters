@@ -78,6 +78,32 @@ static ViewControllerHelper *sharedViewHelper = nil;
 }
 
 
+-(UINavigationController*)getSignInController{
+    
+    if (!_signInController) {
+        
+        
+        WelcomeViewController *signin = [[WelcomeViewController alloc] init];
+        _signInController = [[UINavigationController alloc] initWithRootViewController:signin];
+        [self setNavigationBarStyle_Transclucent:_signInController.navigationBar];
+        
+        [[[signin navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
+        [[[signin navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+        
+        
+        [_signInController.view setAutoresizesSubviews:TRUE];
+        [_signInController.view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin)];
+        _currentDeckIndex = SIGN_IN_CONTROLLER;
+        
+        return _signInController;
+        
+    }
+    
+    return _signInController;
+}
+
+
 - (UINavigationController*) getHomeController {
     
     if (!_homeNavController) {
@@ -392,7 +418,9 @@ static ViewControllerHelper *sharedViewHelper = nil;
     
     if ([[appDelegate rootDeckController] leftController] == nil)
         [[appDelegate rootDeckController] setLeftController:[[ViewControllerHelper viewControllerHelper] getOptionsController]];
-        
+
+    appDelegate.left_deck_width = appDelegate.screen_width - 180;
+    
     [[appDelegate rootDeckController] setLeftSize:appDelegate.left_deck_width];
     [[appDelegate rootDeckController] toggleLeftViewAnimated:YES];
     
@@ -570,6 +598,23 @@ static ViewControllerHelper *sharedViewHelper = nil;
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:FAVOURITES_CONTROLLER];
             break;
             
+        case SIGN_IN_CONTROLLER:
+            if (center) {
+//                if (!appdelegate.IS_SKIP_REGISTRATION_ACTIVE) {
+                    [[appDelegate rootDeckController] setCenterController:nil];
+                    [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getSignInController]];
+//                }
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getSignInController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:SIGN_IN_CONTROLLER];
+            // -- No need to set the current index here for signin....
+            break;
             
 //        case INTRO_SCREEN_CONTROLLER:
 //            if (center) {

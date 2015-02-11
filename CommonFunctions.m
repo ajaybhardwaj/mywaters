@@ -114,4 +114,33 @@
 }
 
 
+//*************** Common Method For Action Sheet Options
+
++ (void) showActionSheet:(id)dele containerView:(UIView *) view title:(NSString*)sheetTitle msg:(NSString*)alertMessage cancel:(NSString *)cancelTitle tag:(NSInteger)tagValue destructive:(NSString *)destructiveButtonTitle otherButton:(NSString *)otherButtonTitles, ... {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle delegate:dele cancelButtonTitle:cancelTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
+    actionSheet.tag = tagValue;
+    
+    int destructiveButtonIndex = 0;
+    
+    if (otherButtonTitles != nil) {
+        id eachObject;
+        va_list argumentList;
+        if (otherButtonTitles) {
+            va_start(argumentList, otherButtonTitles);
+            while ((eachObject = va_arg(argumentList, id))) {
+                [actionSheet addButtonWithTitle:eachObject];
+                
+                destructiveButtonIndex = destructiveButtonIndex + 1;
+            }
+            va_end(argumentList);
+        }
+    }
+    
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    actionSheet.destructiveButtonIndex = destructiveButtonIndex;
+    [actionSheet showInView:view];
+}
+
+
 @end

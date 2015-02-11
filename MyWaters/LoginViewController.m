@@ -49,18 +49,23 @@
 
 - (void) validateLoginParameters {
     
-    if ([emailField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
-    }
-    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
-    }
-    else if ([passField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
-    }
-    else {
-        [self submitLoginCredentials];
-    }
+//    if ([emailField.text length]==0) {
+//        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+//    }
+//    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+//        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+//    }
+//    else if ([passField.text length]==0) {
+//        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+//    }
+//    else {
+//        [self submitLoginCredentials];
+    
+        // After Validation call it.
+        [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+
+//    }
 }
 
 

@@ -13,6 +13,7 @@
 #import "ViewControllerHelper.h"
 #import <sqlite3.h>
 #import "CommonFunctions.h"
+#import "WelcomeViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,IIViewDeckControllerDelegate> {
     
@@ -22,7 +23,7 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) IIViewDeckController *rootDeckController;
 @property (nonatomic,assign) sqlite3 *database;
-@property (nonatomic, assign) NSInteger left_deck_width;
+@property (nonatomic, assign) NSInteger left_deck_width,screen_width;
 @property (nonatomic, retain) NSString *RESOURCE_FOLDER_PATH;
 @property (nonatomic, retain) NSMutableArray *DASHBOARD_PREFERENCES_ARRAY;
 @property (nonatomic, assign) NSInteger NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID;

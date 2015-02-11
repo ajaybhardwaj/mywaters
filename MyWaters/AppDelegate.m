@@ -15,6 +15,7 @@
 @implementation AppDelegate
 @synthesize RESOURCE_FOLDER_PATH,database;
 @synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID;
+@synthesize screen_width,left_deck_width;
 
 //*************** Create Deck View Controller For App ***************//
 
@@ -41,29 +42,29 @@
     //    }
     
     
-    // -- after first time it will flow from this screen...
-    //    if (![[SharedObject sharedClass] isSSCUserSignedIn]) {
-    //        if (!deckCenterController && ![[(UINavigationController*)deckCenterController topViewController] isKindOfClass:[iMSigninController class]]) {
-    //
-    //
-    //            _rootDeckController = [[IIViewDeckController alloc] initWithCenterViewController:nil leftViewController:nil rightViewController:nil topViewController:nil bottomViewController:nil];
-    //            _rootDeckController.delegateMode = IIViewDeckDelegateOnly;
-    //            _rootDeckController.delegate = self;
-    //
-    //            [[iMViewControllerHelper viewControllerHelper] enableThisController:SIGN_IN_CONTROLLER onCenter:YES withAnimate:NO];
-    //        }
-    //    }
-    //    else{
-    
-    if (!deckCenterController && ![[(UINavigationController*)deckCenterController topViewController] isKindOfClass:[HomeViewController class]]) {
+    //-- after first time it will flow from this screen...
+    if (![[SharedObject sharedClass] isSSCUserSignedIn]) {
         
-        _rootDeckController = [[IIViewDeckController alloc] initWithCenterViewController:nil leftViewController:nil rightViewController:nil topViewController:nil bottomViewController:nil];
-        _rootDeckController.delegateMode = IIViewDeckDelegateOnly;
-        _rootDeckController.delegate = self;
+        if (!deckCenterController && ![[(UINavigationController*)deckCenterController topViewController] isKindOfClass:[WelcomeViewController class]]) {
+            
+            _rootDeckController = [[IIViewDeckController alloc] initWithCenterViewController:nil leftViewController:nil rightViewController:nil topViewController:nil bottomViewController:nil];
+            _rootDeckController.delegateMode = IIViewDeckDelegateOnly;
+            _rootDeckController.delegate = self;
+            
+            [[ViewControllerHelper viewControllerHelper] enableThisController:SIGN_IN_CONTROLLER onCenter:YES withAnimate:NO];
+        }
+    }
+    else{
         
-        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:NO];
-        
-        //        }
+        if (!deckCenterController && ![[(UINavigationController*)deckCenterController topViewController] isKindOfClass:[HomeViewController class]]) {
+            
+            _rootDeckController = [[IIViewDeckController alloc] initWithCenterViewController:nil leftViewController:nil rightViewController:nil topViewController:nil bottomViewController:nil];
+            _rootDeckController.delegateMode = IIViewDeckDelegateOnly;
+            _rootDeckController.delegate = self;
+            
+            [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:NO];
+            
+        }
         
     }
     
@@ -101,7 +102,7 @@
                 NSString *height = field3 ? [[NSString alloc] initWithUTF8String:field3] : @" ";
                 char *field4= (char *)sqlite3_column_text(statement, 4);
                 NSString *color = field4 ? [[NSString alloc] initWithUTF8String:field4] : @" ";
-
+                
                 
                 NSMutableDictionary *dataDict = [[NSMutableDictionary alloc] init];
                 [dataDict setObject:columnId forKey:@"id"];
@@ -109,8 +110,8 @@
                 [dataDict setObject:status forKey:@"status"];
                 [dataDict setObject:height forKey:@"height"];
                 [dataDict setObject:color forKey:@"color"];
-
-
+                
+                
                 [DASHBOARD_PREFERENCES_ARRAY addObject:dataDict];
             }
         }
@@ -230,6 +231,8 @@
     
     DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
     [self retrieveDashboardPreferences];
+    
+    screen_width = self.window.bounds.size.width;
     
     RESOURCE_FOLDER_PATH = [[NSBundle mainBundle] resourcePath];
     

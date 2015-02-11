@@ -21,6 +21,7 @@
 #import "SettingsViewController.h"
 #import "ProfileViewController.h"
 #import "FavouritesViewController.h"
+#import "WelcomeViewController.h"
 
 typedef enum {
   
@@ -35,6 +36,7 @@ typedef enum {
     SETTINGS_CONTROLLER,
     PROFILE_CONTROLLER,
     FAVOURITES_CONTROLLER,
+    SIGN_IN_CONTROLLER,
     
 } appControllers;
 
@@ -59,7 +61,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger currentDeckIndex;
 
 
-@property (nonatomic, retain) UINavigationController *homeNavController,*notificationsNavController,*whatsupNavController,*floodmapNavController,*abcwatersNavController,*eventsNavController,*bookingNavController,*feedbackNavController,*settingsNavController,*profileNavController,*favouritesNavController;
+@property (nonatomic, retain) UINavigationController *homeNavController,*notificationsNavController,*whatsupNavController,*floodmapNavController,*abcwatersNavController,*eventsNavController,*bookingNavController,*feedbackNavController,*settingsNavController,*profileNavController,*favouritesNavController,*signInController;
 
 - (void) clear_All_ControllersInThisNavigationCntrl:(UINavigationController*)navControl;
 - (void) clearAllThe_Controllers;
@@ -81,6 +83,7 @@ typedef enum {
 - (UINavigationController*) getSettingsController;
 - (UINavigationController*) getProfileController;
 - (UINavigationController*) getFavouritesController;
+- (UINavigationController*) getSignInController;
 
 
 //*************** Switch between controllers ***************//
