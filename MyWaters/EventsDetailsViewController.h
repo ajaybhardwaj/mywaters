@@ -12,6 +12,11 @@
 @interface EventsDetailsViewController : UIViewController {
     
     AppDelegate *appDelegate;
+    UIView *topMenu;
+    
+    BOOL isShowingTopMenu;
+    UIButton *notifyButton,*favouritesButton,*shareButton;
+    UILabel *notifyLabel,*addToFavlabel,*shareLabel;
 }
 
 @end
