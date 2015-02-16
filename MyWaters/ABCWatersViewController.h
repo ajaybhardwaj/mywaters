@@ -10,13 +10,19 @@
 #import "AppDelegate.h"
 #import "ABCWaterDetailViewController.h"
 
-@interface ABCWatersViewController : UIViewController {
+@interface ABCWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     
     AppDelegate *appDelegate;
     
-    //*************** Demo App Variables
-    UIImageView *bgImageView;
-    UIButton *gridButton,*listButton;
+//    //*************** Demo App Variables
+//    UIImageView *bgImageView;
+//    UIButton *gridButton,*listButton;
+    
+    UITableView *listTabeView;
+    
+    UISegmentedControl *gridListSegmentedControl;
+    UIView *segmentedControlBackground;
+    UIScrollView *abcWatersScrollView;
 }
 
 @end

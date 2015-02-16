@@ -14,7 +14,7 @@
 
 @implementation AppDelegate
 @synthesize RESOURCE_FOLDER_PATH,database;
-@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID;
+@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY;
 @synthesize screen_width,left_deck_width;
 
 //*************** Create Deck View Controller For App ***************//
@@ -113,6 +113,46 @@
                 
                 
                 [DASHBOARD_PREFERENCES_ARRAY addObject:dataDict];
+            }
+        }
+        sqlite3_close(database);
+    }
+}
+
+
+//*************** Method To Get ABC Waters Listing
+
+- (void) retrieveABCWatersListing {
+    
+    [ABC_WATERS_LISTING_ARRAY removeAllObjects];
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    sqlite3_stmt    *statement;
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        NSString *querySQL = [NSString stringWithFormat: @"SELECT * FROM mywaters_listing"];
+        const char *query_stmt = [querySQL UTF8String];
+        
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                char *field0 = (char *)sqlite3_column_text(statement, 0);
+                NSString *columnId = field0 ? [[NSString alloc] initWithUTF8String:field0] : @" ";
+                char *field1 = (char *)sqlite3_column_text(statement, 1);
+                NSString *name = field1 ? [[NSString alloc] initWithUTF8String:field1] : @" ";
+                char *field2= (char *)sqlite3_column_text(statement, 2);
+                NSString *image = field2 ? [[NSString alloc] initWithUTF8String:field2] : @" ";
+                
+                NSMutableDictionary *dataDict = [[NSMutableDictionary alloc] init];
+                [dataDict setObject:columnId forKey:@"id"];
+                [dataDict setObject:name forKey:@"name"];
+                [dataDict setObject:image forKey:@"image"];
+                
+                [ABC_WATERS_LISTING_ARRAY addObject:dataDict];
             }
         }
         sqlite3_close(database);
@@ -230,6 +270,8 @@
     [self chkAndCreateDatbase];
     
     DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
+    ABC_WATERS_LISTING_ARRAY = [[NSMutableArray alloc] init];
+    
     [self retrieveDashboardPreferences];
     
     screen_width = self.window.bounds.size.width;

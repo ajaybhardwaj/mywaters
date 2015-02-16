@@ -463,6 +463,13 @@
 }
 
 
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    [self cancelPickerView];
+}
+
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
