@@ -32,6 +32,15 @@
 		FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD08D1A7F53CE002A05CB /* icn_filter@3x.png */; };
 		FE7FD0951A7F6FBD002A05CB /* BEBAS___.TTF in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0931A7F6FBD002A05CB /* BEBAS___.TTF */; };
 		FE7FD0961A7F6FBD002A05CB /* BebasNeue.otf in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0941A7F6FBD002A05CB /* BebasNeue.otf */; };
+		FE82AC491A92DBA500CCC94D /* ARViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC481A92DBA500CCC94D /* ARViewController.m */; };
+		FE82AC571A92DE0800CCC94D /* ARCoordinate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC4C1A92DE0800CCC94D /* ARCoordinate.m */; };
+		FE82AC581A92DE0800CCC94D /* ARGeoCoordinate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC4E1A92DE0800CCC94D /* ARGeoCoordinate.m */; };
+		FE82AC591A92DE0800CCC94D /* ARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC501A92DE0800CCC94D /* ARKit.m */; };
+		FE82AC5A1A92DE0800CCC94D /* AugmentedRealityController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC541A92DE0800CCC94D /* AugmentedRealityController.m */; };
+		FE82AC5B1A92DE0800CCC94D /* GEOLocations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC561A92DE0800CCC94D /* GEOLocations.m */; };
+		FE82AC5E1A92E34100CCC94D /* MarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC5D1A92E34100CCC94D /* MarkerView.m */; };
+		FE82AC661A93312700CCC94D /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC651A93312700CCC94D /* Place.m */; };
+		FE82AC681A93363000CCC94D /* MyWaters.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = FE82AC671A93363000CCC94D /* MyWaters.sqlite */; };
 		FE99BDF01A7B28C3000B83E8 /* ABCWaterDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE99BDEF1A7B28C3000B83E8 /* ABCWaterDetailViewController.m */; };
 		FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */ = {isa = PBXBuildFile; fileRef = FE99BDF11A7B295D000B83E8 /* waterlevelsensor_detail.png */; };
 		FE99BDF51A7B2CD7000B83E8 /* abcwaters_grid.png in Resources */ = {isa = PBXBuildFile; fileRef = FE99BDF31A7B2CD7000B83E8 /* abcwaters_grid.png */; };
@@ -171,7 +180,6 @@
 		FE5A46A41A8C57AF00517FB5 /* icn_favorited@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_favorited@3x.png"; sourceTree = "<group>"; };
 		FE5A46A51A8C57AF00517FB5 /* icn_notifyme@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_notifyme@3x.png"; sourceTree = "<group>"; };
 		FE5A46A61A8C57AF00517FB5 /* icn_share@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_share@3x.png"; sourceTree = "<group>"; };
-		FE6229851A91DBB00006A5BA /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
 		FE7FD0831A7F3933002A05CB /* favourites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favourites.png; sourceTree = "<group>"; };
 		FE7FD0881A7F50E5002A05CB /* notifications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notifications.png; sourceTree = "<group>"; };
 		FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_explore.png; sourceTree = "<group>"; };
@@ -179,6 +187,25 @@
 		FE7FD08D1A7F53CE002A05CB /* icn_filter@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_filter@3x.png"; sourceTree = "<group>"; };
 		FE7FD0931A7F6FBD002A05CB /* BEBAS___.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BEBAS___.TTF"; sourceTree = "<group>"; };
 		FE7FD0941A7F6FBD002A05CB /* BebasNeue.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BebasNeue.otf; sourceTree = "<group>"; };
+		FE82AC471A92DBA500CCC94D /* ARViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARViewController.h; sourceTree = "<group>"; };
+		FE82AC481A92DBA500CCC94D /* ARViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARViewController.m; sourceTree = "<group>"; };
+		FE82AC4B1A92DE0800CCC94D /* ARCoordinate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARCoordinate.h; sourceTree = "<group>"; };
+		FE82AC4C1A92DE0800CCC94D /* ARCoordinate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARCoordinate.m; sourceTree = "<group>"; };
+		FE82AC4D1A92DE0800CCC94D /* ARGeoCoordinate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGeoCoordinate.h; sourceTree = "<group>"; };
+		FE82AC4E1A92DE0800CCC94D /* ARGeoCoordinate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARGeoCoordinate.m; sourceTree = "<group>"; };
+		FE82AC4F1A92DE0800CCC94D /* ARKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARKit.h; sourceTree = "<group>"; };
+		FE82AC501A92DE0800CCC94D /* ARKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARKit.m; sourceTree = "<group>"; };
+		FE82AC511A92DE0800CCC94D /* ARLocationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARLocationDelegate.h; sourceTree = "<group>"; };
+		FE82AC521A92DE0800CCC94D /* ARViewProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARViewProtocol.h; sourceTree = "<group>"; };
+		FE82AC531A92DE0800CCC94D /* AugmentedRealityController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AugmentedRealityController.h; sourceTree = "<group>"; };
+		FE82AC541A92DE0800CCC94D /* AugmentedRealityController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AugmentedRealityController.m; sourceTree = "<group>"; };
+		FE82AC551A92DE0800CCC94D /* GEOLocations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEOLocations.h; sourceTree = "<group>"; };
+		FE82AC561A92DE0800CCC94D /* GEOLocations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GEOLocations.m; sourceTree = "<group>"; };
+		FE82AC5C1A92E34100CCC94D /* MarkerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkerView.h; sourceTree = "<group>"; };
+		FE82AC5D1A92E34100CCC94D /* MarkerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkerView.m; sourceTree = "<group>"; };
+		FE82AC641A93312700CCC94D /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
+		FE82AC651A93312700CCC94D /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Place.m; sourceTree = "<group>"; };
+		FE82AC671A93363000CCC94D /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
 		FE99BDEE1A7B28C3000B83E8 /* ABCWaterDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABCWaterDetailViewController.h; sourceTree = "<group>"; };
 		FE99BDEF1A7B28C3000B83E8 /* ABCWaterDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABCWaterDetailViewController.m; sourceTree = "<group>"; };
 		FE99BDF11A7B295D000B83E8 /* waterlevelsensor_detail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = waterlevelsensor_detail.png; sourceTree = "<group>"; };
@@ -401,6 +428,25 @@
 			name = Events;
 			sourceTree = "<group>";
 		};
+		FE82AC4A1A92DDFD00CCC94D /* ARKit */ = {
+			isa = PBXGroup;
+			children = (
+				FE82AC4B1A92DE0800CCC94D /* ARCoordinate.h */,
+				FE82AC4C1A92DE0800CCC94D /* ARCoordinate.m */,
+				FE82AC4D1A92DE0800CCC94D /* ARGeoCoordinate.h */,
+				FE82AC4E1A92DE0800CCC94D /* ARGeoCoordinate.m */,
+				FE82AC4F1A92DE0800CCC94D /* ARKit.h */,
+				FE82AC501A92DE0800CCC94D /* ARKit.m */,
+				FE82AC511A92DE0800CCC94D /* ARLocationDelegate.h */,
+				FE82AC521A92DE0800CCC94D /* ARViewProtocol.h */,
+				FE82AC531A92DE0800CCC94D /* AugmentedRealityController.h */,
+				FE82AC541A92DE0800CCC94D /* AugmentedRealityController.m */,
+				FE82AC551A92DE0800CCC94D /* GEOLocations.h */,
+				FE82AC561A92DE0800CCC94D /* GEOLocations.m */,
+			);
+			name = ARKit;
+			sourceTree = "<group>";
+		};
 		FE99BDFF1A7B40B1000B83E8 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -520,7 +566,7 @@
 		FEA7301D1A772FDD00D274A6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				FE6229851A91DBB00006A5BA /* MyWaters.sqlite */,
+				FE82AC671A93363000CCC94D /* MyWaters.sqlite */,
 				FE99BE201A7B7D21000B83E8 /* Fonts */,
 				FEA730B81A773A8100D274A6 /* PrefixHeader.pch */,
 				FEA730B11A77394300D274A6 /* Images */,
@@ -550,6 +596,7 @@
 		FEA730431A7733BD00D274A6 /* ThirdPartyLibs */ = {
 			isa = PBXGroup;
 			children = (
+				FE82AC4A1A92DDFD00CCC94D /* ARKit */,
 				FEA730481A7733E700D274A6 /* SFHFKeychainUtils.h */,
 				FEA730491A7733E700D274A6 /* SFHFKeychainUtils.m */,
 				FEA730441A7733CA00D274A6 /* NSData+Base64 */,
@@ -706,6 +753,12 @@
 				FEA7309D1A77353F00D274A6 /* ABCWatersViewController.m */,
 				FE99BDEE1A7B28C3000B83E8 /* ABCWaterDetailViewController.h */,
 				FE99BDEF1A7B28C3000B83E8 /* ABCWaterDetailViewController.m */,
+				FE82AC471A92DBA500CCC94D /* ARViewController.h */,
+				FE82AC481A92DBA500CCC94D /* ARViewController.m */,
+				FE82AC5C1A92E34100CCC94D /* MarkerView.h */,
+				FE82AC5D1A92E34100CCC94D /* MarkerView.m */,
+				FE82AC641A93312700CCC94D /* Place.h */,
+				FE82AC651A93312700CCC94D /* Place.m */,
 			);
 			name = "ABC Waters";
 			sourceTree = "<group>";
@@ -922,6 +975,7 @@
 				FE99BE391A7B7E69000B83E8 /* Roboto-LightItalic.ttf in Resources */,
 				FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */,
 				FE99BE3A1A7B7E69000B83E8 /* Roboto-Medium.ttf in Resources */,
+				FE82AC681A93363000CCC94D /* MyWaters.sqlite in Resources */,
 				FE4F37721A888A3E0028903C /* image_avatar.png in Resources */,
 				FE99BE3B1A7B7E69000B83E8 /* Roboto-MediumItalic.ttf in Resources */,
 				FE4F376B1A8863390028903C /* image_background@3x.png in Resources */,
@@ -1017,9 +1071,11 @@
 				FE99BE1F1A7B792B000B83E8 /* NotificationsSettingsViewController.m in Sources */,
 				FEA730531A7733F900D274A6 /* AuxilaryService.m in Sources */,
 				FEA730831A77343D00D274A6 /* SideMenuOptionsViewController.m in Sources */,
+				FE82AC581A92DE0800CCC94D /* ARGeoCoordinate.m in Sources */,
 				FE99BDFE1A7B3F93000B83E8 /* CustomButtons.m in Sources */,
 				FEA730521A7733F900D274A6 /* AuxilaryUIService.m in Sources */,
 				FE99BE0F1A7B64CF000B83E8 /* RewardDetailsViewController.m in Sources */,
+				FE82AC571A92DE0800CCC94D /* ARCoordinate.m in Sources */,
 				FE9B55F51A89D6030045E4F9 /* ForgotPasswordViewController.m in Sources */,
 				FEA730741A77342100D274A6 /* WCAlertView.m in Sources */,
 				FEA730261A772FDD00D274A6 /* ViewController.m in Sources */,
@@ -1029,12 +1085,15 @@
 				FE99BE1C1A7B7918000B83E8 /* DashboardSettingsViewController.m in Sources */,
 				FE4F37601A8862CD0028903C /* SignUpViewController.m in Sources */,
 				FE4F375A1A8862B50028903C /* WelcomeViewController.m in Sources */,
+				FE82AC661A93312700CCC94D /* Place.m in Sources */,
+				FE82AC5A1A92DE0800CCC94D /* AugmentedRealityController.m in Sources */,
 				FEA730921A77351F00D274A6 /* HomeViewController.m in Sources */,
 				FEA730471A7733D500D274A6 /* NSDataBase64.m in Sources */,
 				FE99BE061A7B63B4000B83E8 /* RewardsListingViewController.m in Sources */,
 				FEA730231A772FDD00D274A6 /* AppDelegate.m in Sources */,
 				FEA730751A77342100D274A6 /* UIButtonIndexPathAndBlock.m in Sources */,
 				FEA730731A77342100D274A6 /* UIColor-Expanded.m in Sources */,
+				FE82AC591A92DE0800CCC94D /* ARKit.m in Sources */,
 				FEB13FB41A77658A0061CE74 /* QuickMapViewController.m in Sources */,
 				FEA7307C1A77342100D274A6 /* IIViewDeckController.m in Sources */,
 				FEF43C2D1A7A099A00237CAD /* EventsDetailsViewController.m in Sources */,
@@ -1044,10 +1103,13 @@
 				FEA730771A77342100D274A6 /* UIViewCategories.m in Sources */,
 				FEA730951A77352700D274A6 /* NotificationsViewController.m in Sources */,
 				FEA730841A77343D00D274A6 /* ViewControllerHelper.m in Sources */,
+				FE82AC5E1A92E34100CCC94D /* MarkerView.m in Sources */,
 				FEA730A41A77354F00D274A6 /* BookingViewController.m in Sources */,
 				FE9B55EE1A89B7B00045E4F9 /* CommonFunctions.m in Sources */,
+				FE82AC5B1A92DE0800CCC94D /* GEOLocations.m in Sources */,
 				FE99BE471A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m in Sources */,
 				FE99BDF01A7B28C3000B83E8 /* ABCWaterDetailViewController.m in Sources */,
+				FE82AC491A92DBA500CCC94D /* ARViewController.m in Sources */,
 				FEA730B01A77357300D274A6 /* FavouritesViewController.m in Sources */,
 				FEA7304A1A7733E700D274A6 /* SFHFKeychainUtils.m in Sources */,
 				FEA730AA1A77356000D274A6 /* SettingsViewController.m in Sources */,

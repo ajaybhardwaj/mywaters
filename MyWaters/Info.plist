@@ -46,5 +46,11 @@
 		<string>BEBAS__.TTF</string>
 		<string>BebasNeue.otf</string>
 	</array>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>MyWaters like to access your location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>MyWaters like to access your location.</string>
+	<key>privacy - location usage description</key>
+	<string>MyWaters like to access your location.</string>
 </dict>
 </plist>

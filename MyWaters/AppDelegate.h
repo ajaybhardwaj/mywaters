@@ -25,13 +25,14 @@
 @property (nonatomic,assign) sqlite3 *database;
 @property (nonatomic, assign) NSInteger left_deck_width,screen_width;
 @property (nonatomic, retain) NSString *RESOURCE_FOLDER_PATH;
-@property (nonatomic, retain) NSMutableArray *DASHBOARD_PREFERENCES_ARRAY,*ABC_WATERS_LISTING_ARRAY;
+@property (nonatomic, retain) NSMutableArray *DASHBOARD_PREFERENCES_ARRAY,*ABC_WATERS_LISTING_ARRAY,*POI_ARRAY;
 @property (nonatomic, assign) NSInteger NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID;
 
 - (void) createViewDeckController;
 - (void) retrieveDashboardPreferences;
 - (void) updateDashboardPreference;
 - (void) retrieveABCWatersListing;
+- (void) retrievePointOfInterests:(int) abcwater_id;
 
 @end
 

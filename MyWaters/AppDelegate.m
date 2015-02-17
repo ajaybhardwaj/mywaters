@@ -14,7 +14,7 @@
 
 @implementation AppDelegate
 @synthesize RESOURCE_FOLDER_PATH,database;
-@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY;
+@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY;
 @synthesize screen_width,left_deck_width;
 
 //*************** Create Deck View Controller For App ***************//
@@ -70,6 +70,53 @@
     
 }
 
+
+
+//*************** Method To Get Point Of Interests
+
+- (void) retrievePointOfInterests:(int) abcwater_id {
+    
+    [POI_ARRAY removeAllObjects];
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    sqlite3_stmt    *statement;
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        NSString *querySQL = [NSString stringWithFormat: @"SELECT id, lat, long, name, poi_address FROM poi_listing WHERE abcwater_id=\"%d\"",abcwater_id];
+        const char *query_stmt = [querySQL UTF8String];
+        
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                char *field0 = (char *)sqlite3_column_text(statement, 0);
+                NSString *columnId = field0 ? [[NSString alloc] initWithUTF8String:field0] : @" ";
+                char *field1 = (char *)sqlite3_column_text(statement, 1);
+                NSString *latValue = field1 ? [[NSString alloc] initWithUTF8String:field1] : @" ";
+                char *field2= (char *)sqlite3_column_text(statement, 2);
+                NSString *longValue = field2 ? [[NSString alloc] initWithUTF8String:field2] : @" ";
+                char *field3= (char *)sqlite3_column_text(statement, 3);
+                NSString *name = field3 ? [[NSString alloc] initWithUTF8String:field3] : @" ";
+                char *field4= (char *)sqlite3_column_text(statement, 4);
+                NSString *address = field4 ? [[NSString alloc] initWithUTF8String:field4] : @" ";
+                
+                
+                NSMutableDictionary *dataDict = [[NSMutableDictionary alloc] init];
+                [dataDict setObject:columnId forKey:@"id"];
+                [dataDict setObject:latValue forKey:@"lat"];
+                [dataDict setObject:longValue forKey:@"long"];
+                [dataDict setObject:name forKey:@"name"];
+                [dataDict setObject:address forKey:@"address"];
+                
+                [POI_ARRAY addObject:dataDict];
+            }
+        }
+        sqlite3_close(database);
+    }
+}
 
 
 //*************** Method To Read Dashboard Preferences
@@ -271,6 +318,7 @@
     
     DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
     ABC_WATERS_LISTING_ARRAY = [[NSMutableArray alloc] init];
+    POI_ARRAY = [[NSMutableArray alloc] init];
     
     [self retrieveDashboardPreferences];
     

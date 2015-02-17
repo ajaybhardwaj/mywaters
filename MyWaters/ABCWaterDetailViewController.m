@@ -7,6 +7,7 @@
 //
 
 #import "ABCWaterDetailViewController.h"
+#import "ARViewController.h"
 
 @implementation ABCWaterDetailViewController
 
@@ -31,6 +32,13 @@
 }
 
 
+- (void) moveToARView {
+    
+    ARViewController *viewObj = [[ARViewController alloc] init];
+    [self.navigationController pushViewController:viewObj animated:NO];
+//    [self.navigationController presentViewController:viewObj animated:NO completion:nil];
+}
+
 
 # pragma mark - View Lifecycle Methods
 
@@ -49,6 +57,19 @@
 
     
     [self createDemoAppControls];
+    
+    UIButton *moveToArView = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    moveToArView.frame = CGRectMake(40, 200, 200, 200);
+    moveToArView.backgroundColor = [UIColor redColor];
+    [moveToArView addTarget:self action:@selector(moveToARView) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:moveToArView];
 }
+
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    self.navigationController.navigationBar.hidden = NO;
+}
+
 
 @end
