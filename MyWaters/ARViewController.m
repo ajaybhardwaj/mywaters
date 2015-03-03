@@ -89,6 +89,7 @@
 -(NSMutableArray *)geoLocations {
     
     if(!_geoLocations) {
+        
         [self generateGeoLocations];
     }
     return _geoLocations;
@@ -115,10 +116,12 @@
 #pragma mark - ARMarkerDelegate
 
 -(void)didTapMarker:(ARGeoCoordinate *)coordinate {
+ 
+    
 }
 
-//- (void)didTouchMarkerView:(MarkerView *)markerView {
-//
+- (void)didTouchMarkerView:(MarkerView *)markerView {
+
 //    ARGeoCoordinate *tappedCoordinate = [markerView coordinate];
 //    CLLocation *location = [tappedCoordinate geoLocation];
 //
@@ -138,8 +141,8 @@
 //            NSLog(@"Error: %@", error);
 //        }];
 //    }
-//}
-//
+}
+
 //- (void)showInfoViewForPlace:(Place *)place {
 //    CGRect frame = [[self view] frame];
 //    UITextView *infoView = [[UITextView alloc] initWithFrame:CGRectMake(50.0f, 50.0f, frame.size.width - 100.0f, frame.size.height - 100.0f)];
@@ -151,11 +154,11 @@
 //    [[self view] addSubview:infoView];
 //}
 //
-//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 //    UIView *infoView = [[self view] viewWithTag:kInfoViewTag];
-//
 //    [infoView removeFromSuperview];
-//}
+}
 
 
 

@@ -41,6 +41,7 @@
 		FE82AC5E1A92E34100CCC94D /* MarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC5D1A92E34100CCC94D /* MarkerView.m */; };
 		FE82AC661A93312700CCC94D /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC651A93312700CCC94D /* Place.m */; };
 		FE82AC681A93363000CCC94D /* MyWaters.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = FE82AC671A93363000CCC94D /* MyWaters.sqlite */; };
+		FE8DC62C1A944C1700F3C718 /* icn_volly@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8DC62B1A944C1600F3C718 /* icn_volly@3x.png */; };
 		FE99BDF01A7B28C3000B83E8 /* ABCWaterDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE99BDEF1A7B28C3000B83E8 /* ABCWaterDetailViewController.m */; };
 		FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */ = {isa = PBXBuildFile; fileRef = FE99BDF11A7B295D000B83E8 /* waterlevelsensor_detail.png */; };
 		FE99BDF51A7B2CD7000B83E8 /* abcwaters_grid.png in Resources */ = {isa = PBXBuildFile; fileRef = FE99BDF31A7B2CD7000B83E8 /* abcwaters_grid.png */; };
@@ -206,6 +207,7 @@
 		FE82AC641A93312700CCC94D /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
 		FE82AC651A93312700CCC94D /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Place.m; sourceTree = "<group>"; };
 		FE82AC671A93363000CCC94D /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
+		FE8DC62B1A944C1600F3C718 /* icn_volly@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_volly@3x.png"; sourceTree = "<group>"; };
 		FE99BDEE1A7B28C3000B83E8 /* ABCWaterDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABCWaterDetailViewController.h; sourceTree = "<group>"; };
 		FE99BDEF1A7B28C3000B83E8 /* ABCWaterDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABCWaterDetailViewController.m; sourceTree = "<group>"; };
 		FE99BDF11A7B295D000B83E8 /* waterlevelsensor_detail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = waterlevelsensor_detail.png; sourceTree = "<group>"; };
@@ -450,6 +452,7 @@
 		FE99BDFF1A7B40B1000B83E8 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				FE8DC62B1A944C1600F3C718 /* icn_volly@3x.png */,
 				FE99BE101A7B687A000B83E8 /* icn_back@2x.png */,
 				FE99BE001A7B40B8000B83E8 /* icn_back_old@2x.png */,
 			);
@@ -1016,6 +1019,7 @@
 				FEA7302E1A772FDD00D274A6 /* LaunchScreen.xib in Resources */,
 				FE7FD08B1A7F5317002A05CB /* whatsup_explore.png in Resources */,
 				FEB13FC61A7766410061CE74 /* icn_home@3x.png in Resources */,
+				FE8DC62C1A944C1700F3C718 /* icn_volly@3x.png in Resources */,
 				FEFBFF2D1A80D24E00E485E9 /* icn_image@3x.png in Resources */,
 				FE99BDF81A7B3D51000B83E8 /* abcwaters_detail_options.png in Resources */,
 				FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */,

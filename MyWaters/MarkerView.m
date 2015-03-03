@@ -24,6 +24,8 @@ const float kHeight = 100.0f;
 
 - (id)initWithFrame:(CGRect)frame
 {
+    
+    
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -37,9 +39,11 @@ const float kHeight = 100.0f;
 		_coordinate = coordinate;
 		_delegate = delegate;
 		
+        appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+
 		[self setUserInteractionEnabled:YES];
         
-        UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 100)];
+        UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 260, 100)];
         backgroundView.backgroundColor = RGB(35, 35, 35);
         backgroundView.layer.cornerRadius = 5.0;
         [self addSubview:backgroundView];
@@ -50,6 +54,12 @@ const float kHeight = 100.0f;
         title.numberOfLines = 0;
         title.font = [UIFont fontWithName:ROBOTO_MEDIUM size:20.0f];
         title.backgroundColor = [UIColor clearColor];
+        
+        UIButton *iconVolly = [UIButton buttonWithType:UIButtonTypeCustom];
+        iconVolly.frame = CGRectMake(210, 30, 40, 40);
+        [iconVolly setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_volly.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [backgroundView addSubview:iconVolly];
+        iconVolly.userInteractionEnabled = NO;
 		
 		_lblDistance = [[UILabel alloc] initWithFrame:CGRectMake(20.0f, 40.0f, kWidth-20, 40.0f)];
 		[_lblDistance setTextColor:[UIColor whiteColor]];

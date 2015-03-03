@@ -59,8 +59,8 @@
     [self createDemoAppControls];
     
     UIButton *moveToArView = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    moveToArView.frame = CGRectMake(40, 200, 200, 200);
-    moveToArView.backgroundColor = [UIColor redColor];
+    moveToArView.frame = CGRectMake(10, 0, 80, 40);
+    moveToArView.backgroundColor = [UIColor clearColor];
     [moveToArView addTarget:self action:@selector(moveToARView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:moveToArView];
 }

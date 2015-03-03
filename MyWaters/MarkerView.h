@@ -12,7 +12,10 @@
 @class ARGeoCoordinate;
 @protocol MarkerViewDelegate;
 
-@interface MarkerView : UIView
+@interface MarkerView : UIView {
+    
+    AppDelegate *appDelegate;
+}
 
 @property (nonatomic, strong) ARGeoCoordinate *coordinate;
 @property (nonatomic, weak) id <MarkerViewDelegate> delegate;
