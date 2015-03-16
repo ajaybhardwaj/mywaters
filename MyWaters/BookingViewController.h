@@ -7,7 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface BookingViewController : UIViewController
+@interface BookingViewController : UIViewController <UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate,UITextViewDelegate> {
+    
+    AppDelegate *appDelegate;
+    
+    UIScrollView *bgScrollView;
+    UITextField *contactPersonField,*organisationField,*designationField,*contactNoField,*emailField,*dateField,*startTimeField,*endTimeField,*groupSizeField,*categoryField,*ageRangeField;
+    
+    UIButton *smsContactMethodButton,*emailContactMethodButton,*firstVisitYesButton,*firstVisitNoButton;
+    UIButton *nextButton,*submitButton;
+    UITextView *remarksTextView;
+    
+    UILabel *preferredContactLabel,*smsLabel,*emailLabel,*firstVisitLabel,*yesLabel,*noLabel;
+    
+    BOOL isEmailOpted,isSMSOpted,isFirstVisit;
+}
 
 @end

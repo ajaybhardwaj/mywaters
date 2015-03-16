@@ -263,21 +263,27 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==2) {
                     
-                    whatsUpListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, columnView.bounds.size.height-25) style:UITableViewStylePlain];
+                    whatsUpListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     whatsUpListingTable.delegate = self;
                     whatsUpListingTable.dataSource = self;
                     [columnView addSubview:whatsUpListingTable];
                     whatsUpListingTable.backgroundColor = [UIColor clearColor];
                     whatsUpListingTable.backgroundView = nil;
+                    whatsUpListingTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+                    whatsUpListingTable.scrollEnabled = NO;
+                    
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==3) {
                     
-                    eventsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, columnView.bounds.size.height-25) style:UITableViewStylePlain];
+                    eventsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     eventsListingTable.delegate = self;
                     eventsListingTable.dataSource = self;
                     [columnView addSubview:eventsListingTable];
                     eventsListingTable.backgroundColor = [UIColor clearColor];
                     eventsListingTable.backgroundView = nil;
+                    eventsListingTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+                    eventsListingTable.scrollEnabled = NO;
+                    
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
                     
@@ -297,7 +303,7 @@
                     bigTempSubtitle.numberOfLines = 0;
                     [columnView addSubview:bigTempSubtitle];
                     
-                    smallWeatherTempTitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 75, 30, 30)];
+                    smallWeatherTempTitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 85, 30, 30)];
                     smallWeatherTempTitle1.text = @"28";
                     smallWeatherTempTitle1.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
                     smallWeatherTempTitle1.textColor = [UIColor blackColor];
@@ -305,7 +311,7 @@
                     [smallWeatherTempTitle1 sizeToFit];
                     [columnView addSubview:smallWeatherTempTitle1];
                     
-                    smallTempSubtitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 102, columnView.bounds.size.width/2, 10)];
+                    smallTempSubtitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 112, columnView.bounds.size.width/2, 10)];
                     smallTempSubtitle1.text = @"Cloudy";
                     smallTempSubtitle1.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
                     smallTempSubtitle1.textColor = [UIColor darkGrayColor];
@@ -313,7 +319,7 @@
                     smallTempSubtitle1.numberOfLines = 0;
                     [columnView addSubview:smallTempSubtitle1];
                     
-                    smallWeatherTempTitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 110, 30, 30)];
+                    smallWeatherTempTitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, 30, 30)];
                     smallWeatherTempTitle2.text = @"32";
                     smallWeatherTempTitle2.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
                     smallWeatherTempTitle2.textColor = [UIColor blackColor];
@@ -321,7 +327,7 @@
                     [smallWeatherTempTitle2 sizeToFit];
                     [columnView addSubview:smallWeatherTempTitle2];
                     
-                    smallTempSubtitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 137, columnView.bounds.size.width/2, 10)];
+                    smallTempSubtitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 157, columnView.bounds.size.width/2, 10)];
                     smallTempSubtitle2.text = @"Sunny";
                     smallTempSubtitle2.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
                     smallTempSubtitle2.textColor = [UIColor darkGrayColor];
@@ -346,12 +352,12 @@
                     [columnView addSubview:bigTimeLabel];
                     
                     smallWeatherIcon1 = [UIButton buttonWithType:UIButtonTypeCustom];
-                    smallWeatherIcon1.frame = CGRectMake(90, 70, 28, 28);
+                    smallWeatherIcon1.frame = CGRectMake(90, 80, 28, 28);
                     [smallWeatherIcon1 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:smallWeatherIcon1];
                     smallWeatherIcon1.userInteractionEnabled = NO;
                     
-                    smallTimeLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(90, 98, columnView.bounds.size.width/2, 10)];
+                    smallTimeLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(90, 108, columnView.bounds.size.width/2, 10)];
                     smallTimeLabel1.text = @"05:18 PM";
                     smallTimeLabel1.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
                     smallTimeLabel1.textColor = [UIColor blackColor];
@@ -360,12 +366,12 @@
                     [columnView addSubview:smallTimeLabel1];
                     
                     smallWeatherIcon2 = [UIButton buttonWithType:UIButtonTypeCustom];
-                    smallWeatherIcon2.frame = CGRectMake(90, 110, 28, 28);
+                    smallWeatherIcon2.frame = CGRectMake(90, 130, 28, 28);
                     [smallWeatherIcon2 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_sunny_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:smallWeatherIcon2];
                     smallWeatherIcon2.userInteractionEnabled = NO;
                     
-                    smallTimeLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(90, 138, columnView.bounds.size.width/2, 10)];
+                    smallTimeLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(90, 158, columnView.bounds.size.width/2, 10)];
                     smallTimeLabel2.text = @"08:05 PM";
                     smallTimeLabel2.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
                     smallTimeLabel2.textColor = [UIColor blackColor];
@@ -375,6 +381,10 @@
                     
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5) {
+                    
+                    cctvImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
+                    [cctvImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/cctv_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+                    [columnView addSubview:cctvImageView];
                     
                     cctvLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     cctvLocationImage.frame = CGRectMake(5, 100, 20, 20);
@@ -406,6 +416,10 @@
                     [columnView addSubview:cctvDistanceLabel];
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
+                    
+                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
+                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/water_level_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+                    [columnView addSubview:waterLevelImageView];
                     
                     waterSensorLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     waterSensorLocationImage.frame = CGRectMake(5, 100, 20, 20);
@@ -536,21 +550,27 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==2) {
                     
-                    whatsUpListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, columnView.bounds.size.height-25) style:UITableViewStylePlain];
+                    whatsUpListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     whatsUpListingTable.delegate = self;
                     whatsUpListingTable.dataSource = self;
                     [columnView addSubview:whatsUpListingTable];
                     whatsUpListingTable.backgroundColor = [UIColor clearColor];
                     whatsUpListingTable.backgroundView = nil;
+                    whatsUpListingTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+                    whatsUpListingTable.scrollEnabled = NO;
+                    
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==3) {
                     
-                    eventsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, columnView.bounds.size.height-25) style:UITableViewStylePlain];
+                    eventsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     eventsListingTable.delegate = self;
                     eventsListingTable.dataSource = self;
                     [columnView addSubview:eventsListingTable];
                     eventsListingTable.backgroundColor = [UIColor clearColor];
                     eventsListingTable.backgroundView = nil;
+                    eventsListingTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+                    eventsListingTable.scrollEnabled = NO;
+
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
                     
@@ -570,7 +590,7 @@
                     bigTempSubtitle.numberOfLines = 0;
                     [columnView addSubview:bigTempSubtitle];
                     
-                    smallWeatherTempTitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 75, 30, 30)];
+                    smallWeatherTempTitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 85, 30, 30)];
                     smallWeatherTempTitle1.text = @"28";
                     smallWeatherTempTitle1.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
                     smallWeatherTempTitle1.textColor = [UIColor blackColor];
@@ -578,7 +598,7 @@
                     [smallWeatherTempTitle1 sizeToFit];
                     [columnView addSubview:smallWeatherTempTitle1];
                     
-                    smallTempSubtitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 102, columnView.bounds.size.width/2, 10)];
+                    smallTempSubtitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 112, columnView.bounds.size.width/2, 10)];
                     smallTempSubtitle1.text = @"Cloudy";
                     smallTempSubtitle1.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
                     smallTempSubtitle1.textColor = [UIColor darkGrayColor];
@@ -586,7 +606,7 @@
                     smallTempSubtitle1.numberOfLines = 0;
                     [columnView addSubview:smallTempSubtitle1];
                     
-                    smallWeatherTempTitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 110, 30, 30)];
+                    smallWeatherTempTitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, 30, 30)];
                     smallWeatherTempTitle2.text = @"32";
                     smallWeatherTempTitle2.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
                     smallWeatherTempTitle2.textColor = [UIColor blackColor];
@@ -594,7 +614,7 @@
                     [smallWeatherTempTitle2 sizeToFit];
                     [columnView addSubview:smallWeatherTempTitle2];
                     
-                    smallTempSubtitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 137, columnView.bounds.size.width/2, 10)];
+                    smallTempSubtitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 157, columnView.bounds.size.width/2, 10)];
                     smallTempSubtitle2.text = @"Sunny";
                     smallTempSubtitle2.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
                     smallTempSubtitle2.textColor = [UIColor darkGrayColor];
@@ -619,12 +639,12 @@
                     [columnView addSubview:bigTimeLabel];
                     
                     smallWeatherIcon1 = [UIButton buttonWithType:UIButtonTypeCustom];
-                    smallWeatherIcon1.frame = CGRectMake(90, 70, 28, 28);
+                    smallWeatherIcon1.frame = CGRectMake(90, 80, 28, 28);
                     [smallWeatherIcon1 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:smallWeatherIcon1];
                     smallWeatherIcon1.userInteractionEnabled = NO;
                     
-                    smallTimeLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(90, 98, columnView.bounds.size.width/2, 10)];
+                    smallTimeLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(90, 108, columnView.bounds.size.width/2, 10)];
                     smallTimeLabel1.text = @"05:18 PM";
                     smallTimeLabel1.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
                     smallTimeLabel1.textColor = [UIColor blackColor];
@@ -633,12 +653,12 @@
                     [columnView addSubview:smallTimeLabel1];
                     
                     smallWeatherIcon2 = [UIButton buttonWithType:UIButtonTypeCustom];
-                    smallWeatherIcon2.frame = CGRectMake(90, 110, 28, 28);
+                    smallWeatherIcon2.frame = CGRectMake(90, 130, 28, 28);
                     [smallWeatherIcon2 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_sunny_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:smallWeatherIcon2];
                     smallWeatherIcon2.userInteractionEnabled = NO;
                     
-                    smallTimeLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(90, 138, columnView.bounds.size.width/2, 10)];
+                    smallTimeLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(90, 158, columnView.bounds.size.width/2, 10)];
                     smallTimeLabel2.text = @"08:05 PM";
                     smallTimeLabel2.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
                     smallTimeLabel2.textColor = [UIColor blackColor];
@@ -648,6 +668,10 @@
                     
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5) {
+                    
+                    cctvImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
+                    [cctvImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/cctv_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+                    [columnView addSubview:cctvImageView];
                     
                     cctvLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     cctvLocationImage.frame = CGRectMake(5, 100, 20, 20);
@@ -677,6 +701,10 @@
                     [columnView addSubview:cctvDistanceLabel];
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
+                    
+                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
+                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/water_level_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+                    [columnView addSubview:waterLevelImageView];
                     
                     waterSensorLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     waterSensorLocationImage.frame = CGRectMake(5, 100, 20, 20);
@@ -712,7 +740,7 @@
                     NSLog(@"Dont do anything");
                 }
                 else {
-                
+                    
                     UIButton *overlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
                     overlayButton.frame = CGRectMake(0, 0, columnView.bounds.size.width, columnView.bounds.size.height);
                     overlayButton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
@@ -737,7 +765,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 55.0f;
+    return 56.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -749,19 +777,62 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 5;
+    
+    if (tableView==whatsUpListingTable) {
+        return whatsUpFeedDataSource.count;
+    }
+    else if (tableView==eventsListingTable) {
+        return eventsDataSource.count;
+    }
+    
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
     
+    //    cell.textLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
+    //    cell.detailTextLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:9.0];
+    //
+    //    cell.textLabel.numberOfLines = 0;
+    //    cell.detailTextLabel.numberOfLines = 0;
+    //    cell.textLabel.textColor = RGB(245, 193, 12);
+    
+    UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 45, 45)];
+    [cell.contentView addSubview:cellImageView];
+    
+    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 5, cell.bounds.size.width-60, 25)];
+    cellTitleLabel.backgroundColor = [UIColor clearColor];
+    cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
+    cellTitleLabel.numberOfLines = 0;
+    cellTitleLabel.textColor = RGB(245, 193, 12);
+    [cell.contentView addSubview:cellTitleLabel];
+    
+    UILabel *cellSubTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 31, cell.bounds.size.width-60, 20)];
+    cellSubTitleLabel.backgroundColor = [UIColor clearColor];
+    cellSubTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:9.0];
+    cellSubTitleLabel.numberOfLines = 0;
+    [cell.contentView addSubview:cellSubTitleLabel];
+    
+    
     if (tableView==whatsUpListingTable) {
         
+        cellImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/e%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
+        cellTitleLabel.text = [[whatsUpFeedDataSource objectAtIndex:indexPath.row] objectForKey:@"Title"];
+        cellSubTitleLabel.text = [[whatsUpFeedDataSource objectAtIndex:indexPath.row] objectForKey:@"Subtitle"];
     }
     else if (tableView==eventsListingTable) {
         
+        cellImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
+        cellTitleLabel.text = [[eventsDataSource objectAtIndex:indexPath.row] objectForKey:@"Title"];
+        cellSubTitleLabel.text = [[eventsDataSource objectAtIndex:indexPath.row] objectForKey:@"Date"];
+        
     }
+    
+    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 54.6, cell.bounds.size.width, 0.4)];
+    [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+    [cell.contentView addSubview:seperatorImage];
     
     return cell;
 }
@@ -783,6 +854,9 @@
     [self.view addSubview:backgroundScrollView];
     backgroundScrollView.backgroundColor = [UIColor clearColor];
     backgroundScrollView.userInteractionEnabled = YES;
+    
+    whatsUpFeedDataSource = [[NSMutableArray alloc] init];
+    eventsDataSource = [[NSMutableArray alloc] init];
     
     
 }
@@ -829,7 +903,7 @@
     profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 30, 70, 70)];
     profileImageView.layer.cornerRadius = 35;
     profileImageView.layer.masksToBounds = YES;
-    [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_avatar_image.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [welcomeView addSubview:profileImageView];
     
     
@@ -878,11 +952,34 @@
     if (hour < 12) {
         welcomeUserLabel.text = [NSString stringWithFormat:@"Good Morning, %@",appDelegate.LOGGED_IN_USER_NAME];
     }
-    else if (hour > 12 && hour <16) {
+    else if (hour >= 12 && hour <= 16) {
         welcomeUserLabel.text = [NSString stringWithFormat:@"Good Afternoon, %@",appDelegate.LOGGED_IN_USER_NAME];
     }
     else if (hour > 16) {
         welcomeUserLabel.text = [NSString stringWithFormat:@"Good Evening, %@",appDelegate.LOGGED_IN_USER_NAME];
+    }
+    
+    
+    // Temp DataSoruce Code
+    
+    NSDate *todayDate = [NSDate date];
+    [dateFormatter setDateFormat:@"dd MMM yyyy"];
+    
+    if (whatsUpFeedDataSource.count==0) {
+        for (int i=0; i<5; i++) {
+            NSDictionary *dictEvents = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",i+1],[NSString stringWithFormat:@"Feed Title %d",i+1],[NSString stringWithFormat:@"Feed Sub-Title %d",i+1],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
+            [whatsUpFeedDataSource addObject:dictEvents];
+        }
+    }
+    
+    if (eventsDataSource.count==0) {
+        for (int i=0; i<5; i++) {
+            NSDate *newDate = [todayDate dateByAddingTimeInterval:60*60*24*(i+1)];
+            NSString *newDateString = [dateFormatter stringFromDate:newDate];
+            
+            NSDictionary *dictWhatsUp = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",i+1],[NSString stringWithFormat:@"Event Title %d",i+1],newDateString,nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Date", nil]];
+            [eventsDataSource addObject:dictWhatsUp];
+        }
     }
 }
 

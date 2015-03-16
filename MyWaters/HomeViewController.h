@@ -29,6 +29,8 @@
     float left_yAxis,right_yAxis;
     
     
+    UIImageView *cctvImageView,*waterLevelImageView;
+    
     UILabel *cctvLocationLabel,*cctvDistanceLabel,*waterSensorLocationLabel,*waterSensorDrainDepthLabel,*quickMapLocationLabel,*quickMapDistanceLabel,*nearbyQuickMapLabel,*floodReasonLabel,*floodTagLabel;
     UIButton *cctvLocationImage,*cctvDistanceImage,*waterSensorLocationImage,*waterSensorDrainDepthImage,*quickMapLocationImage,*quickMapDistanceImage,*quickMapFloodIcon;
     
@@ -36,6 +38,7 @@
     UIButton *bigWeatherIcon,*smallWeatherIcon1,*smallWeatherIcon2;
     
     UITableView *eventsListingTable,*whatsUpListingTable;
+    NSMutableArray *eventsDataSource,*whatsUpFeedDataSource;
     
     //*************** Demo App UI Variables
     UIButton *quickMapButton,*whatsUpButton,*cctvButton,*reportButton;

@@ -321,6 +321,9 @@
     ABC_WATERS_LISTING_ARRAY = [[NSMutableArray alloc] init];
     POI_ARRAY = [[NSMutableArray alloc] init];
     
+    // temp Username
+    LOGGED_IN_USER_NAME = @"Mr. William";
+    
     [self retrieveDashboardPreferences];
     
     screen_width = self.window.bounds.size.width;
