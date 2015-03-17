@@ -24,6 +24,14 @@
 }
 
 
+//*************** Method To Move Back To Parent View
+
+- (void) pop2Dismiss:(id) sender {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
 //*************** Method To Submit Login Inputs
 
 - (void) submitLoginCredentials {
@@ -196,6 +204,17 @@
     [loginButton addTarget:self action:@selector(validateLoginParameters) forControlEvents:UIControlEventTouchUpInside];
     [loginButton setBackgroundColor:RGB(205, 208, 213)];
     [self.view addSubview:loginButton];
+    
+    
+    backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backButton setTitle:@"BACK" forState:UIControlStateNormal];
+    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    backButton.tag = 4;
+    backButton.frame = CGRectMake(0, loginButton.frame.origin.y+loginButton.bounds.size.height+15, self.view.bounds.size.width, 45);
+    [backButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
+    [backButton setBackgroundColor:RGB(83, 83, 83)];
+    [self.view addSubview:backButton];
     
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];

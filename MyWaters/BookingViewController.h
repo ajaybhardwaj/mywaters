@@ -23,6 +23,18 @@
     UILabel *preferredContactLabel,*smsLabel,*emailLabel,*firstVisitLabel,*yesLabel,*noLabel;
     
     BOOL isEmailOpted,isSMSOpted,isFirstVisit;
+    
+    UIDatePicker *datePicker;
+    UIPickerView *optionsPicker;
+    
+    UIView *datePickerBgView, *optionsPickerBgView;
+    BOOL isShowingDatePicker,isShowingOptionsPicker;
+    NSInteger fieldIndex,selectedPickerIndex,selectedDesignationIndex,selectedCategoryIndex;
+    NSArray *designationDataSource,*categoryDataSource;
+    
+    BOOL canDetectGesture;
+    NSDateFormatter *formatter;
+    NSDate *selectedDate,*selectedStartTime,*selectedEndTime;
 }
 
 @end

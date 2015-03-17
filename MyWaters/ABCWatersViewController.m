@@ -51,7 +51,7 @@
     
     int gridCount = 0;
     float xAxis = 0;
-    float yAxis = 10;
+    float yAxis = 00;
     
     for (UIView * view in abcWatersScrollView.subviews) {
         [view removeFromSuperview];
@@ -65,18 +65,21 @@
             
             UIButton *gridButton = [UIButton buttonWithType:UIButtonTypeCustom];
             gridButton.frame = CGRectMake(xAxis, yAxis, (segmentedControlBackground.bounds.size.width-2)/3, (segmentedControlBackground.bounds.size.width-2)/3);
-            [gridButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]] forState:UIControlStateNormal];
+//            [gridButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]] forState:UIControlStateNormal];
+            [gridButton setBackgroundImage:[UIImage imageNamed:@"abcwaters_grid_new.png"] forState:UIControlStateNormal];
             [abcWatersScrollView addSubview:gridButton];
             
+
+            // Commented For The Temp
             
-            UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, gridButton.bounds.size.height-40, gridButton.bounds.size.width, 40)];
-            nameLabel.backgroundColor = [UIColor clearColor];
-            nameLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"]];
-            nameLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:12];
-            nameLabel.textColor = [UIColor whiteColor];
-            nameLabel.textAlignment = NSTextAlignmentCenter;
-            nameLabel.numberOfLines = 0;
-            [gridButton addSubview:nameLabel];
+//            UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, gridButton.bounds.size.height-40, gridButton.bounds.size.width, 40)];
+//            nameLabel.backgroundColor = [UIColor clearColor];
+//            nameLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"]];
+//            nameLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:12];
+//            nameLabel.textColor = [UIColor whiteColor];
+//            nameLabel.textAlignment = NSTextAlignmentCenter;
+//            nameLabel.numberOfLines = 0;
+//            [gridButton addSubview:nameLabel];
             
             gridCount = gridCount + 1;
             if (gridCount!=3) {
@@ -200,7 +203,7 @@
     
     if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
         
-        cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]]];
+        cell.imageView.image = [UIImage imageNamed:@"abcwater_list.png"];//[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]]];
         cell.textLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"]];
         
         cell.textLabel.numberOfLines = 0;

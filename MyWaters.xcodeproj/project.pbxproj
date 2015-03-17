@@ -71,6 +71,8 @@
 		FE8C1C3B1AB292FA009D33E4 /* icn_weather_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8C1C2E1AB292FA009D33E4 /* icn_weather_big@3x.png */; };
 		FE8C1C3C1AB292FA009D33E4 /* icn_weather_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8C1C2F1AB292FA009D33E4 /* icn_weather_small@3x.png */; };
 		FE8C1C3D1AB292FA009D33E4 /* icon_report@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8C1C301AB292FA009D33E4 /* icon_report@3x.png */; };
+		FE8D7F411AB7B6BB002BA233 /* abcwater_list@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8D7F3F1AB7B6BB002BA233 /* abcwater_list@3x.png */; };
+		FE8D7F421AB7B6BB002BA233 /* abcwaters_grid_new@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8D7F401AB7B6BB002BA233 /* abcwaters_grid_new@3x.png */; };
 		FE8DC62C1A944C1700F3C718 /* icn_volly@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8DC62B1A944C1600F3C718 /* icn_volly@3x.png */; };
 		FE99BDF01A7B28C3000B83E8 /* ABCWaterDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE99BDEF1A7B28C3000B83E8 /* ABCWaterDetailViewController.m */; };
 		FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */ = {isa = PBXBuildFile; fileRef = FE99BDF11A7B295D000B83E8 /* waterlevelsensor_detail.png */; };
@@ -267,6 +269,8 @@
 		FE8C1C2E1AB292FA009D33E4 /* icn_weather_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_weather_big@3x.png"; sourceTree = "<group>"; };
 		FE8C1C2F1AB292FA009D33E4 /* icn_weather_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_weather_small@3x.png"; sourceTree = "<group>"; };
 		FE8C1C301AB292FA009D33E4 /* icon_report@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_report@3x.png"; sourceTree = "<group>"; };
+		FE8D7F3F1AB7B6BB002BA233 /* abcwater_list@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "abcwater_list@3x.png"; sourceTree = "<group>"; };
+		FE8D7F401AB7B6BB002BA233 /* abcwaters_grid_new@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "abcwaters_grid_new@3x.png"; sourceTree = "<group>"; };
 		FE8DC62B1A944C1600F3C718 /* icn_volly@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_volly@3x.png"; sourceTree = "<group>"; };
 		FE99BDEE1A7B28C3000B83E8 /* ABCWaterDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABCWaterDetailViewController.h; sourceTree = "<group>"; };
 		FE99BDEF1A7B28C3000B83E8 /* ABCWaterDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABCWaterDetailViewController.m; sourceTree = "<group>"; };
@@ -931,6 +935,8 @@
 		FEA730B21A77394900D274A6 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				FE8D7F3F1AB7B6BB002BA233 /* abcwater_list@3x.png */,
+				FE8D7F401AB7B6BB002BA233 /* abcwaters_grid_new@3x.png */,
 				FE8845BF1AB68F02005537C6 /* no_image.png */,
 				FE8845BB1AB67121005537C6 /* cctv_dummy.png */,
 				FE8845BC1AB67121005537C6 /* water_level_dummy.png */,
@@ -1087,6 +1093,7 @@
 				FE5A46AA1A8C57AF00517FB5 /* icn_share@3x.png in Resources */,
 				FE99BE341A7B7E69000B83E8 /* Roboto-BlackItalic.ttf in Resources */,
 				FE8845DE1AB6B3EE005537C6 /* w1.png in Resources */,
+				FE8D7F421AB7B6BB002BA233 /* abcwaters_grid_new@3x.png in Resources */,
 				FE99BE351A7B7E69000B83E8 /* Roboto-Bold.ttf in Resources */,
 				FE99BE361A7B7E69000B83E8 /* Roboto-BoldItalic.ttf in Resources */,
 				FE8845C01AB68F02005537C6 /* no_image.png in Resources */,
@@ -1116,6 +1123,7 @@
 				FE99BE3F1A7B7E69000B83E8 /* RobotoCondensed-Bold.ttf in Resources */,
 				FE9C8CAB1A847861001074DC /* icn_location@3x.png in Resources */,
 				FE8845BE1AB67121005537C6 /* water_level_dummy.png in Resources */,
+				FE8D7F411AB7B6BB002BA233 /* abcwater_list@3x.png in Resources */,
 				FE8C1C371AB292FA009D33E4 /* icn_menu_grey@3x.png in Resources */,
 				FE99BE401A7B7E69000B83E8 /* RobotoCondensed-BoldItalic.ttf in Resources */,
 				FE5A46A91A8C57AF00517FB5 /* icn_notifyme@3x.png in Resources */,

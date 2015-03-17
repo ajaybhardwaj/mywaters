@@ -13,7 +13,7 @@
     
     AppDelegate *appDelegate;
     
-    UIButton *facebookButton,*loginButton,*forgotPassButton;
+    UIButton *facebookButton,*loginButton,*forgotPassButton,*backButton;
     UITextField *emailField,*passField;
 }
 

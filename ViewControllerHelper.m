@@ -463,6 +463,36 @@ static ViewControllerHelper *sharedViewHelper = nil;
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:NOTIFICATIONS_CONTROLLER];
             break;
             
+        case PROFILE_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getProfileController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getProfileController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:PROFILE_CONTROLLER];
+            break;
+            
+        case FAVOURITES_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getFavouritesController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getFavouritesController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:FAVOURITES_CONTROLLER];
+            break;
+            
         case WHATSUP_CONTROLLER:
             if (center) {
                 [[appDelegate rootDeckController] setCenterController:nil];
@@ -566,36 +596,6 @@ static ViewControllerHelper *sharedViewHelper = nil;
                 }
             }
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:SETTINGS_CONTROLLER];
-            break;
-            
-        case PROFILE_CONTROLLER:
-            if (center) {
-                [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getProfileController]];
-            }
-            else{
-                [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getProfileController]];
-                if (animate) {
-                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
-                }
-            }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:PROFILE_CONTROLLER];
-            break;
-            
-        case FAVOURITES_CONTROLLER:
-            if (center) {
-                [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getFavouritesController]];
-            }
-            else{
-                [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getFavouritesController]];
-                if (animate) {
-                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
-                }
-            }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:FAVOURITES_CONTROLLER];
             break;
             
         case SIGN_IN_CONTROLLER:

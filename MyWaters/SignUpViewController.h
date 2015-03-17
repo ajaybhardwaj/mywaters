@@ -15,7 +15,7 @@
     
     UIScrollView *backgroundScrollView;
     
-    UIButton *facebookButton,*checkboxButton,*signUpButton,*termsButton,*skipButton;
+    UIButton *facebookButton,*checkboxButton,*signUpButton,*termsButton,*skipButton,*backButton;
     UITextField *emailField,*nameField,*passField,*retypePassField;
     
     UIImageView *profileImageView;

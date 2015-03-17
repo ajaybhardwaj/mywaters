@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface FeedbackViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate> {
+@interface FeedbackViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate,UITextViewDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -17,7 +17,8 @@
     BOOL isFloodSubmission,isShowingPicker;
     
     NSArray *feedbackTypeArray,*severityTypeArray;
-    UITextField *feedbackTypeField,*locationField,*commentField,*nameField,*phoneField;
+    UITextField *feedbackTypeField,*locationField,*nameField,*phoneField;
+    UITextView *commentField;
     
     NSInteger fieldIndex;
     UIView *pickerbackground;

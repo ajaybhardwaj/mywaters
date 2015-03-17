@@ -54,7 +54,11 @@
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Home",CELL__MAIN_TXT,@"icn_home",CELL__IMG, nil],
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Notifications",CELL__MAIN_TXT,@"icn_notifications",CELL__IMG, nil],
-                               
+                                                                                                
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Profile",CELL__MAIN_TXT,@"icn_profile",CELL__IMG, nil],
+                                
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Favourites",CELL__MAIN_TXT,@"icn_favourites",CELL__IMG, nil],
+
                                [NSDictionary dictionaryWithObjectsAndKeys:@"What's Up?",CELL__MAIN_TXT,@"icn_whatsup",CELL__IMG, nil],
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Quick Map",CELL__MAIN_TXT,@"icn_quickmap",CELL__IMG, nil],
@@ -68,10 +72,6 @@
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Feedback",CELL__MAIN_TXT,@"icn_feedback",CELL__IMG, nil],
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Settings",CELL__MAIN_TXT,@"icn_settings",CELL__IMG, nil],
-                               
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Profile",CELL__MAIN_TXT,@"icn_profile",CELL__IMG, nil],
-                               
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Favourites",CELL__MAIN_TXT,@"icn_favourites",CELL__IMG, nil],
                                                                                              
                                nil],TABLE__SECTION_ARRAY, nil];
     
@@ -127,6 +127,25 @@
                     [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
                     appDelegate.left_deck_width = self.view.bounds.size.width-180;
                     [[ViewControllerHelper viewControllerHelper] enableThisController:NOTIFICATIONS_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
+                case PROFILE_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:PROFILE_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
+                    
+                case FAVOURITES_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:FAVOURITES_CONTROLLER onCenter:TRUE withAnimate:NO];
                     
                 }
                     break;
@@ -195,25 +214,6 @@
                     [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
                     appDelegate.left_deck_width = self.view.bounds.size.width-180;
                     [[ViewControllerHelper viewControllerHelper] enableThisController:SETTINGS_CONTROLLER onCenter:TRUE withAnimate:NO];
-                    
-                }
-                    break;
-                    
-                case PROFILE_CONTROLLER:{
-                    
-                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
-                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:PROFILE_CONTROLLER onCenter:TRUE withAnimate:NO];
-                    
-                }
-                    break;
-                    
-                    
-                case FAVOURITES_CONTROLLER:{
-                    
-                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
-                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:FAVOURITES_CONTROLLER onCenter:TRUE withAnimate:NO];
                     
                 }
                     break;

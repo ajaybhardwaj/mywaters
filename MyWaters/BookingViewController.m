@@ -17,6 +17,153 @@
 @implementation BookingViewController
 
 
+
+//*************** Method TO Handle Right Swipe Gesture
+
+- (void) handleRightSwipe {
+    
+    if (canDetectGesture) {
+        canDetectGesture = NO;
+        [bgScrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    }
+    NSLog(@"Detected Right Gesture");
+}
+
+
+//*************** Method To Animate To Show Options Picker View
+
+- (void) showOptionsPickerView {
+    
+    isShowingOptionsPicker = YES;
+    [optionsPicker reloadAllComponents];
+    if (fieldIndex==3) {
+        [optionsPicker selectRow:selectedDesignationIndex inComponent:0 animated:YES];
+    }
+    else if (fieldIndex==10) {
+        [optionsPicker selectRow:selectedCategoryIndex inComponent:0 animated:YES];
+    }
+    
+    [UIView beginAnimations:@"optionsPicker" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pickerBgView = optionsPickerBgView.center;
+    pickerBgView.y = self.view.bounds.size.height-40;
+    optionsPickerBgView.center = pickerBgView;
+    [UIView commitAnimations];
+    
+}
+
+
+//*************** Method To Animate To Show Options Picker View
+
+- (void) showDatePickerView {
+    
+    isShowingDatePicker = YES;
+    if (fieldIndex==6) {
+        datePicker.date = selectedDate;
+    }
+    else if (fieldIndex==7) {
+        datePicker.date = selectedStartTime;
+    }
+    else if (fieldIndex==8) {
+        datePicker.date = selectedEndTime;
+    }
+    
+    [UIView beginAnimations:@"optionsPicker" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pickerBgView = datePickerBgView.center;
+    pickerBgView.y = self.view.bounds.size.height-40;
+    datePickerBgView.center = pickerBgView;
+    [UIView commitAnimations];
+}
+
+
+
+//*************** Method To Hide Options Picker View
+
+- (void) cancelOptionsPickerView {
+    
+    isShowingOptionsPicker = NO;
+    
+    [UIView beginAnimations:@"optionsPicker" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pickerBgView = optionsPickerBgView.center;
+    pickerBgView.y = self.view.bounds.size.height+180;
+    optionsPickerBgView.center = pickerBgView;
+    [UIView commitAnimations];
+}
+
+
+//*************** Method To Hide Date Picker View
+
+- (void) cancelDatePickerView {
+    
+    isShowingDatePicker = NO;
+    
+    [UIView beginAnimations:@"datePicker" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pickerBgView = datePickerBgView.center;
+    pickerBgView.y = self.view.bounds.size.height+180;
+    datePickerBgView.center = pickerBgView;
+    [UIView commitAnimations];
+}
+
+
+//*************** Method To Select Options Picker View Value
+
+- (void) selectOptionsPickerViewValue {
+    
+    isShowingOptionsPicker = NO;
+    
+    if (fieldIndex==3) {
+        selectedDesignationIndex = selectedPickerIndex;
+        designationField.text = [designationDataSource objectAtIndex:selectedDesignationIndex];
+    }
+    else if (fieldIndex==10) {
+        selectedCategoryIndex = selectedPickerIndex;
+        categoryField.text = [categoryDataSource objectAtIndex:selectedCategoryIndex];
+    }
+    [UIView beginAnimations:@"feedbackPicker" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pickerBgView = optionsPickerBgView.center;
+    pickerBgView.y = self.view.bounds.size.height+180;
+    optionsPickerBgView.center = pickerBgView;
+    [UIView commitAnimations];
+    
+}
+
+
+//*************** Method To Select Date Picker View Value
+
+- (void) selectDatePickerViewValue {
+    
+    isShowingDatePicker = NO;
+    
+    if (fieldIndex==6) {
+        [formatter setDateFormat:@"dd MMM yyyy"];
+        selectedDate = datePicker.date;
+        dateField.text = [formatter stringFromDate:selectedDate];
+    }
+    else if (fieldIndex==7) {
+        [formatter setDateFormat:@"hh:mm a"];
+        selectedStartTime = datePicker.date;
+        startTimeField.text = [formatter stringFromDate:selectedStartTime];
+    }
+    else if (fieldIndex==8) {
+        [formatter setDateFormat:@"hh:mm a"];
+        selectedEndTime = datePicker.date;
+        endTimeField.text = [formatter stringFromDate:selectedEndTime];
+    }
+    
+    [UIView beginAnimations:@"feedbackPicker" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pickerBgView = datePickerBgView.center;
+    pickerBgView.y = self.view.bounds.size.height+180;
+    datePickerBgView.center = pickerBgView;
+    [UIView commitAnimations];
+    
+}
+
+
 //*************** Method To Open Side Menu
 
 - (void) openDeckMenu:(id) sender {
@@ -30,6 +177,7 @@
 
 - (void) slideToSecondPart {
     
+    canDetectGesture = YES;
     [bgScrollView setContentOffset:CGPointMake(self.view.bounds.size.width, 0) animated:YES];
 }
 
@@ -71,7 +219,7 @@
         isFirstVisit = YES;
         [firstVisitYesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/tick.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [firstVisitNoButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/checkbox_untick.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-
+        
     }
     else if (button.tag==2) {
         isFirstVisit = NO;
@@ -142,7 +290,7 @@
     designationDropdown.tag = 1;
     [designationField addSubview:designationDropdown];
     designationDropdown.userInteractionEnabled = NO;
-
+    
     
     contactNoField = [[UITextField alloc] initWithFrame:CGRectMake(0, designationField.frame.origin.y+designationField.bounds.size.height+2, bgScrollView.bounds.size.width, 40)];
     contactNoField.textColor = RGB(35, 35, 35);
@@ -175,7 +323,7 @@
     emailField.delegate = self;
     emailField.keyboardType = UIKeyboardTypeEmailAddress;
     emailField.backgroundColor = [UIColor whiteColor];
-    emailField.returnKeyType = UIReturnKeyNext;
+    emailField.returnKeyType = UIReturnKeyDone;
     [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     emailField.tag = 5;
     
@@ -247,7 +395,7 @@
     [dateDropdown setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down_field.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [dateField addSubview:dateDropdown];
     dateDropdown.userInteractionEnabled = NO;
-
+    
     
     startTimeField = [[UITextField alloc] initWithFrame:CGRectMake(self.view.bounds.size.width, dateField.frame.origin.y+dateField.bounds.size.height+2, (bgScrollView.bounds.size.width/2)-1, 40)];
     startTimeField.textColor = RGB(35, 35, 35);
@@ -272,7 +420,7 @@
     [startTimeDropdown setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down_field.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [startTimeField addSubview:startTimeDropdown];
     startTimeDropdown.userInteractionEnabled = NO;
-
+    
     
     endTimeField = [[UITextField alloc] initWithFrame:CGRectMake(self.view.bounds.size.width+(self.view.bounds.size.width/2)+1, dateField.frame.origin.y+dateField.bounds.size.height+2, (bgScrollView.bounds.size.width/2)-1, 40)];
     endTimeField.textColor = RGB(35, 35, 35);
@@ -297,7 +445,7 @@
     [endTimeDropdown setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down_field.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [endTimeField addSubview:endTimeDropdown];
     endTimeDropdown.userInteractionEnabled = NO;
-
+    
     
     groupSizeField = [[UITextField alloc] initWithFrame:CGRectMake(self.view.bounds.size.width, endTimeField.frame.origin.y+endTimeField.bounds.size.height+2, bgScrollView.bounds.size.width, 40)];
     groupSizeField.textColor = RGB(35, 35, 35);
@@ -332,7 +480,7 @@
     categoryField.returnKeyType = UIReturnKeyNext;
     [categoryField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     categoryField.tag = 10;
-
+    
     UIButton *categoryDropdown = [UIButton buttonWithType:UIButtonTypeCustom];
     categoryDropdown.frame = CGRectMake(categoryField.bounds.size.width-30, 12.5, 15, 15);
     [categoryDropdown addTarget:self action:@selector(selectContactModes:) forControlEvents:UIControlEventTouchUpInside];
@@ -406,7 +554,7 @@
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     submitButton.frame = CGRectMake(self.view.bounds.size.width, bgScrollView.bounds.size.height-108, self.view.bounds.size.width, 45);
-//    [submitButton addTarget:self action:@selector(slideToSecondPart) forControlEvents:UIControlEventTouchUpInside];
+    //    [submitButton addTarget:self action:@selector(slideToSecondPart) forControlEvents:UIControlEventTouchUpInside];
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
     [bgScrollView addSubview:submitButton];
 }
@@ -415,7 +563,7 @@
 # pragma mark - UITextViewDelegate Methods
 
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView{
-
+    
     [remarksTextView resignFirstResponder];
     return YES;
 }
@@ -457,11 +605,113 @@
 }
 
 
+# pragma mark - UIPickerViewDataSource Method
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    
+    return 1;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    
+    if (fieldIndex==3) {
+        return designationDataSource.count;
+    }
+    else if (fieldIndex==10) {
+        return categoryDataSource.count;
+    }
+    
+    return 0;
+}
+
+
+
+# pragma mark - UIPickerViewDelegate Method
+
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
+    
+    UILabel *rowTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
+    if (fieldIndex==3) {
+        rowTitle.text = [designationDataSource objectAtIndex:row];
+    }
+    else if (fieldIndex==10) {
+        rowTitle.text = [categoryDataSource objectAtIndex:row];
+    }
+    rowTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:17.0];
+    rowTitle.textColor = RGB(35, 35, 35);
+    rowTitle.textAlignment = NSTextAlignmentCenter;
+    rowTitle.backgroundColor = [UIColor clearColor];
+    
+    return rowTitle;
+}
+
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
+    selectedPickerIndex = row;
+}
+
 
 # pragma mark - UITextFieldDelegate Methods
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    fieldIndex = textField.tag;
+    
+    if (textField==designationField || textField==dateField || textField==startTimeField || textField==endTimeField || textField==categoryField) {
+        if (textField==dateField) {
+            datePicker.datePickerMode = UIDatePickerModeDate;
+            [self cancelOptionsPickerView];
+            [self showDatePickerView];
+        }
+        else if (textField==startTimeField || textField==endTimeField) {
+            datePicker.datePickerMode = UIDatePickerModeTime;
+            [self cancelOptionsPickerView];
+            [self showDatePickerView];
+        }
+        else if (textField==designationField) {
+            
+            [self cancelDatePickerView];
+            [self showOptionsPickerView];
+            
+        }
+        else if (textField==categoryField) {
+            
+            [self cancelDatePickerView];
+            [self showOptionsPickerView];
+        }
+        
+        return NO;
+    }
+    else {
+        [self cancelDatePickerView];
+        [self cancelOptionsPickerView];
+        return YES;
+    }
+}
+
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
+    if (textField==contactPersonField) {
+        [contactPersonField resignFirstResponder];
+        [organisationField becomeFirstResponder];
+    }
+    else if (textField==organisationField) {
+        [organisationField resignFirstResponder];
+        [designationField becomeFirstResponder];
+    }
+    else if (textField==contactNoField) {
+        [contactNoField resignFirstResponder];
+        [emailField becomeFirstResponder];
+    }
+    else if (textField==emailField) {
+        [emailField resignFirstResponder];
+    }
+    else if (textField==groupSizeField) {
+        [groupSizeField resignFirstResponder];
+        [categoryField becomeFirstResponder];
+    }
     [textField resignFirstResponder];
     return YES;
 }
@@ -484,6 +734,63 @@
     bgScrollView.backgroundColor = RGB(247, 247, 247);
     [self.view addSubview:bgScrollView];
     bgScrollView.scrollEnabled = NO;
+    bgScrollView.userInteractionEnabled = YES;
+    
+    UISwipeGestureRecognizer *rightGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleRightSwipe)];
+    [rightGesture setDirection:(UISwipeGestureRecognizerDirectionRight)];
+    [bgScrollView addGestureRecognizer:rightGesture];
+    
+    designationDataSource = [[NSArray alloc] initWithObjects:@"Designation 1",@"Designation 2",@"Designation 3",@"Designation 4",@"Designation 5", nil];
+    categoryDataSource = [[NSArray alloc] initWithObjects:@"Category 1",@"Category 2",@"Category 3",@"Category 4",@"Category 5", nil];
+    
+    //***** Date Picker Code
+    
+    datePickerBgView = [[UIView alloc]initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, 220)];
+    
+    UIToolbar *datePickerToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 40)];
+    datePickerToolbar.barStyle = UIBarStyleBlackOpaque;
+    
+    UIBarButtonItem *datePickerCancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelDatePickerView)];
+    UIBarButtonItem *datePickerDoneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(selectDatePickerViewValue)];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+    
+    [datePickerToolbar setItems:[NSArray arrayWithObjects:datePickerCancelButton,flexibleSpace,datePickerDoneButton, nil]];
+    [datePickerBgView addSubview:datePickerToolbar];
+    
+    
+    datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, 40, self.view.bounds.size.width, 180)];
+    datePicker.backgroundColor = RGB(247, 247, 247);
+    datePicker.date = [NSDate date];
+    [datePickerBgView addSubview:datePicker];
+    [appDelegate.window addSubview:datePickerBgView];
+    
+    
+    //***** Options Picker Code
+    
+    optionsPickerBgView = [[UIView alloc]initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, 220)];
+    
+    UIToolbar *optionsPickerToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 40)];
+    optionsPickerToolbar.barStyle = UIBarStyleBlackOpaque;
+    
+    UIBarButtonItem *optionsPickerCancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelOptionsPickerView)];
+    UIBarButtonItem *optionsPickerDoneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(selectOptionsPickerViewValue)];
+    
+    [optionsPickerToolbar setItems:[NSArray arrayWithObjects:optionsPickerCancelButton,flexibleSpace,optionsPickerDoneButton, nil]];
+    [optionsPickerBgView addSubview:optionsPickerToolbar];
+    
+    
+    optionsPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 40, self.view.bounds.size.width, 180)];
+    optionsPicker.delegate=self;
+    optionsPicker.dataSource=self;
+    optionsPicker.backgroundColor = RGB(247, 247, 247);
+    optionsPicker.showsSelectionIndicator=YES;
+    
+    [optionsPickerBgView addSubview:optionsPicker];
+    [appDelegate.window addSubview:optionsPickerBgView];
+    
+    
+    formatter = [[NSDateFormatter alloc] init];
+    
 }
 
 
@@ -491,6 +798,19 @@
     
     isFirstVisit = YES;
     [self createBookingForm];
+    [bgScrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    
+    selectedPickerIndex = 0;
+    selectedCategoryIndex = 0;
+    selectedDesignationIndex = 0;
+    canDetectGesture = NO;
+    
+    selectedDate = [NSDate date];
+    [formatter setDateFormat:@"hh:mm a"];
+    selectedStartTime = [formatter dateFromString:[NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]];
+    selectedEndTime = [formatter dateFromString:[NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]];
+    
+    NSLog(@"%@---%@----%@",selectedEndTime,selectedStartTime,selectedDate);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -499,13 +819,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

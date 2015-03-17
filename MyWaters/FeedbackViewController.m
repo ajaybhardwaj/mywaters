@@ -167,6 +167,18 @@
 }
 
 
+# pragma mark - UITableViewDelegate Methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.row==1) {
+        return 120.0f;
+    }
+    
+    return 45.0f;
+}
+
+
 # pragma mark - UITableViewDataSource Methods
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -189,29 +201,29 @@
     cell.detailTextLabel.numberOfLines = 0;
     
     
+//    if (indexPath.row==0) {
+//        
+//        feedbackTypeField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+//        feedbackTypeField.textColor = RGB(35, 35, 35);
+//        feedbackTypeField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+//        feedbackTypeField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+//        feedbackTypeField.leftViewMode = UITextFieldViewModeAlways;
+//        feedbackTypeField.borderStyle = UITextBorderStyleNone;
+//        feedbackTypeField.textAlignment=NSTextAlignmentLeft;
+//        [feedbackTypeField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+//        feedbackTypeField.placeholder=@"Select Feedback Type *";
+//        feedbackTypeField.text = [feedbackTypeArray objectAtIndex:selectedPickerIndex];
+//        [cell.contentView addSubview:feedbackTypeField];
+//        feedbackTypeField.backgroundColor = [UIColor clearColor];
+//        feedbackTypeField.delegate = self;
+//        [feedbackTypeField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+//        feedbackTypeField.tag = 1;
+//        
+//        UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+//        [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//        cell.accessoryView = dropDownButton;
+//    }
     if (indexPath.row==0) {
-        
-        feedbackTypeField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-        feedbackTypeField.textColor = RGB(35, 35, 35);
-        feedbackTypeField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        feedbackTypeField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-        feedbackTypeField.leftViewMode = UITextFieldViewModeAlways;
-        feedbackTypeField.borderStyle = UITextBorderStyleNone;
-        feedbackTypeField.textAlignment=NSTextAlignmentLeft;
-        [feedbackTypeField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        feedbackTypeField.placeholder=@"Select Feedback Type *";
-        feedbackTypeField.text = [feedbackTypeArray objectAtIndex:selectedPickerIndex];
-        [cell.contentView addSubview:feedbackTypeField];
-        feedbackTypeField.backgroundColor = [UIColor clearColor];
-        feedbackTypeField.delegate = self;
-        [feedbackTypeField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-        feedbackTypeField.tag = 1;
-        
-        UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-        [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        cell.accessoryView = dropDownButton;
-    }
-    else if (indexPath.row==1) {
         
         locationField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
         locationField.textColor = RGB(35, 35, 35);
@@ -231,39 +243,58 @@
         UIImageView *locationButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
         [locationButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         cell.accessoryView = locationButton;
+        
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, locationField.bounds.size.height-0.5, locationField.bounds.size.width, 0.5)];
+        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:cellSeperator];
 
+
+    }
+    else if (indexPath.row==1) {
+        
+//        commentField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+//        commentField.textColor = RGB(35, 35, 35);
+//        commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+//        commentField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+//        commentField.leftViewMode = UITextFieldViewModeAlways;
+//        commentField.borderStyle = UITextBorderStyleNone;
+//        commentField.textAlignment=NSTextAlignmentLeft;
+//        [commentField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+//        if (isFloodSubmission) {
+//            commentField.placeholder=@"Severity Type *";
+//        }
+//        else {
+//            commentField.placeholder=@"Comments *";
+//        }
+//        [cell.contentView addSubview:commentField];
+//        commentField.clearButtonMode = UITextFieldViewModeWhileEditing;
+//        commentField.backgroundColor = [UIColor clearColor];
+//        commentField.delegate = self;
+//        [commentField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+//        commentField.tag = 3;
+//
+//        if (isFloodSubmission) {
+//            UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+//            [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//            cell.accessoryView = dropDownButton;
+//        }
+        
+        commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, 120)];
+        commentField.returnKeyType = UIReturnKeyDone;
+        commentField.delegate = self;
+        commentField.text = @"Comments *";
+        commentField.textColor = [UIColor lightGrayColor];
+        commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        commentField.backgroundColor = [UIColor clearColor];
+        [cell.contentView addSubview:commentField];
+        
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, commentField.bounds.size.height-0.5, commentField.bounds.size.width, 0.5)];
+        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:cellSeperator];
+
+        
     }
     else if (indexPath.row==2) {
-        
-        commentField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-        commentField.textColor = RGB(35, 35, 35);
-        commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        commentField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-        commentField.leftViewMode = UITextFieldViewModeAlways;
-        commentField.borderStyle = UITextBorderStyleNone;
-        commentField.textAlignment=NSTextAlignmentLeft;
-        [commentField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        if (isFloodSubmission) {
-            commentField.placeholder=@"Severity Type *";
-        }
-        else {
-            commentField.placeholder=@"Comments *";
-        }
-        [cell.contentView addSubview:commentField];
-        commentField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        commentField.backgroundColor = [UIColor clearColor];
-        commentField.delegate = self;
-        [commentField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-        commentField.tag = 3;
-
-        if (isFloodSubmission) {
-            UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-            [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-            cell.accessoryView = dropDownButton;
-        }
-        
-    }
-    else if (indexPath.row==3) {
         
         nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
         nameField.textColor = RGB(35, 35, 35);
@@ -280,9 +311,14 @@
         nameField.delegate = self;
         [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         nameField.tag = 4;
+        
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, nameField.bounds.size.height-0.5, nameField.bounds.size.width, 0.5)];
+        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:cellSeperator];
+
 
     }
-    else if (indexPath.row==4) {
+    else if (indexPath.row==3) {
         
         phoneField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
         phoneField.textColor = RGB(35, 35, 35);
@@ -300,12 +336,12 @@
         [phoneField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         phoneField.tag = 5;
 
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, phoneField.bounds.size.height-0.5, phoneField.bounds.size.width, 0.5)];
+        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:cellSeperator];
+
     }
     
-    
-    UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
-    [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
-    [cell.contentView addSubview:cellSeperator];
     
     return cell;
 }
@@ -313,8 +349,55 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 5;
+    return 4;
 }
+
+
+
+# pragma mark - UITextViewDelegate Methods
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView{
+    
+    [commentField resignFirstResponder];
+    return YES;
+}
+
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    
+    if([text isEqualToString:@"\n"]) {
+        [commentField resignFirstResponder];
+        if(commentField.text.length == 0){
+            commentField.textColor = [UIColor lightGrayColor];
+            commentField.text = @"Comments";
+            [commentField resignFirstResponder];
+        }
+        return NO;
+    }
+    
+    return YES;
+}
+
+
+- (BOOL) textViewShouldBeginEditing:(UITextView *)textView
+{
+    if (commentField.textColor == [UIColor lightGrayColor]) {
+        commentField.text = @"";
+        commentField.textColor = RGB(35, 35, 35);
+    }
+    
+    return YES;
+}
+
+-(void) textViewDidChange:(UITextView *)textView
+{
+    if(commentField.text.length == 0){
+        commentField.textColor = [UIColor lightGrayColor];
+        commentField.text = @"Comments";
+        [commentField resignFirstResponder];
+    }
+}
+
 
 
 # pragma mark - UITextFieldDelegate Methods
@@ -333,7 +416,8 @@
     [feedbackTableView setContentOffset:offset animated:YES];
     
     if (isFloodSubmission) {
-        if (textField == feedbackTypeField || textField == commentField) {
+//        if (textField == feedbackTypeField || textField == commentField) {
+        if (textField == feedbackTypeField) {
             selectedPickerIndex = 0;
             [feedbackPickerView reloadComponent:0];
             [self showPickerView];
