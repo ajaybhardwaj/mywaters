@@ -18,7 +18,8 @@
 
 
 
-//*************** Method TO Handle Right Swipe Gesture
+
+//*************** Method To Handle Right Swipe Gesture
 
 - (void) handleRightSwipe {
     
@@ -62,10 +63,14 @@
         datePicker.date = selectedDate;
     }
     else if (fieldIndex==7) {
-        datePicker.date = selectedStartTime;
+        if (isStartTimeSet) {
+            datePicker.date = selectedStartTime;
+        }
     }
     else if (fieldIndex==8) {
-        datePicker.date = selectedEndTime;
+        if (isEndTimeSet) {
+            datePicker.date = selectedEndTime;
+        }
     }
     
     [UIView beginAnimations:@"optionsPicker" context:NULL];
@@ -83,6 +88,7 @@
 - (void) cancelOptionsPickerView {
     
     isShowingOptionsPicker = NO;
+    self.view.userInteractionEnabled = YES;
     
     [UIView beginAnimations:@"optionsPicker" context:NULL];
     [UIView setAnimationDuration:0.5];
@@ -98,7 +104,8 @@
 - (void) cancelDatePickerView {
     
     isShowingDatePicker = NO;
-    
+    self.view.userInteractionEnabled = YES;
+
     [UIView beginAnimations:@"datePicker" context:NULL];
     [UIView setAnimationDuration:0.5];
     CGPoint pickerBgView = datePickerBgView.center;
@@ -113,7 +120,8 @@
 - (void) selectOptionsPickerViewValue {
     
     isShowingOptionsPicker = NO;
-    
+    self.view.userInteractionEnabled = YES;
+
     if (fieldIndex==3) {
         selectedDesignationIndex = selectedPickerIndex;
         designationField.text = [designationDataSource objectAtIndex:selectedDesignationIndex];
@@ -122,6 +130,7 @@
         selectedCategoryIndex = selectedPickerIndex;
         categoryField.text = [categoryDataSource objectAtIndex:selectedCategoryIndex];
     }
+    
     [UIView beginAnimations:@"feedbackPicker" context:NULL];
     [UIView setAnimationDuration:0.5];
     CGPoint pickerBgView = optionsPickerBgView.center;
@@ -137,6 +146,7 @@
 - (void) selectDatePickerViewValue {
     
     isShowingDatePicker = NO;
+    self.view.userInteractionEnabled = YES;
     
     if (fieldIndex==6) {
         [formatter setDateFormat:@"dd MMM yyyy"];
@@ -144,11 +154,13 @@
         dateField.text = [formatter stringFromDate:selectedDate];
     }
     else if (fieldIndex==7) {
+        isStartTimeSet = YES;
         [formatter setDateFormat:@"hh:mm a"];
         selectedStartTime = datePicker.date;
         startTimeField.text = [formatter stringFromDate:selectedStartTime];
     }
     else if (fieldIndex==8) {
+        isEndTimeSet = YES;
         [formatter setDateFormat:@"hh:mm a"];
         selectedEndTime = datePicker.date;
         endTimeField.text = [formatter stringFromDate:selectedEndTime];
@@ -364,7 +376,7 @@
     [nextButton setTitle:@"NEXT" forState:UIControlStateNormal];
     [nextButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     nextButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
-    nextButton.frame = CGRectMake(0, bgScrollView.bounds.size.height-108, self.view.bounds.size.width, 45);
+    nextButton.frame = CGRectMake(0, bgScrollView.bounds.size.height-109, self.view.bounds.size.width, 45);
     [nextButton addTarget:self action:@selector(slideToSecondPart) forControlEvents:UIControlEventTouchUpInside];
     [nextButton setBackgroundColor:RGB(82, 82, 82)];
     [bgScrollView addSubview:nextButton];
@@ -553,7 +565,7 @@
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
-    submitButton.frame = CGRectMake(self.view.bounds.size.width, bgScrollView.bounds.size.height-108, self.view.bounds.size.width, 45);
+    submitButton.frame = CGRectMake(self.view.bounds.size.width, bgScrollView.bounds.size.height-109, self.view.bounds.size.width, 45);
     //    [submitButton addTarget:self action:@selector(slideToSecondPart) forControlEvents:UIControlEventTouchUpInside];
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
     [bgScrollView addSubview:submitButton];
@@ -565,6 +577,25 @@
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView{
     
     [remarksTextView resignFirstResponder];
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = self.view.center;
+    if (IS_IPHONE_4_OR_LESS) {
+        pos.y = 272;
+    }
+    else if (IS_IPHONE_5) {
+        pos.y = 316;
+    }
+    else if (IS_IPHONE_6) {
+        pos.y = 366;
+    }
+    else if (IS_IPHONE_6P) {
+        pos.y = 400;
+    }
+    self.view.center = pos;
+    [UIView commitAnimations];
+    
     return YES;
 }
 
@@ -587,6 +618,23 @@
 
 - (BOOL) textViewShouldBeginEditing:(UITextView *)textView
 {
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = self.view.center;
+    if (IS_IPHONE_4_OR_LESS) {
+        pos.y = 90;
+    }
+    else if (IS_IPHONE_5) {
+        pos.y = 130;
+    }
+    else if (IS_IPHONE_6 || IS_IPHONE_6P) {
+        pos.y = 170;
+    }
+
+
+    self.view.center = pos;
+    [UIView commitAnimations];
+    
     if (remarksTextView.textColor == [UIColor lightGrayColor]) {
         remarksTextView.text = @"";
         remarksTextView.textColor = [UIColor blackColor];
@@ -657,6 +705,7 @@
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
     fieldIndex = textField.tag;
+    self.view.userInteractionEnabled = NO;
     
     if (textField==designationField || textField==dateField || textField==startTimeField || textField==endTimeField || textField==categoryField) {
         if (textField==dateField) {
@@ -686,12 +735,26 @@
     else {
         [self cancelDatePickerView];
         [self cancelOptionsPickerView];
+        
+        if (textField==contactNoField || textField==emailField || textField==ageRangeField) {
+            [UIView beginAnimations:@"feedbackPicker" context:NULL];
+            [UIView setAnimationDuration:0.5];
+            CGPoint pos = self.view.center;
+            if (IS_IPHONE_4_OR_LESS) {
+                pos.y = 180;
+            }
+            self.view.center = pos;
+            [UIView commitAnimations];
+        }
+        
         return YES;
     }
 }
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    self.view.userInteractionEnabled = YES;
     
     if (textField==contactPersonField) {
         [contactPersonField resignFirstResponder];
@@ -707,6 +770,15 @@
     }
     else if (textField==emailField) {
         [emailField resignFirstResponder];
+        
+        [UIView beginAnimations:@"feedbackPicker" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint pos = self.view.center;
+        if (IS_IPHONE_4_OR_LESS) {
+            pos.y = 272;
+        }
+        self.view.center = pos;
+        [UIView commitAnimations];
     }
     else if (textField==groupSizeField) {
         [groupSizeField resignFirstResponder];
@@ -806,11 +878,13 @@
     canDetectGesture = NO;
     
     selectedDate = [NSDate date];
-    [formatter setDateFormat:@"hh:mm a"];
-    selectedStartTime = [formatter dateFromString:[NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]];
-    selectedEndTime = [formatter dateFromString:[NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]];
-    
-    NSLog(@"%@---%@----%@",selectedEndTime,selectedStartTime,selectedDate);
+    isStartTimeSet = NO;
+    isEndTimeSet = NO;
+//    [formatter setDateFormat:@"hh:mm a"];
+//    selectedStartTime = [formatter dateFromString:[NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]];
+//    selectedEndTime = [formatter dateFromString:[NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]];
+//    
+//    NSLog(@"%@---%@----%@",selectedEndTime,selectedStartTime,selectedDate);
 }
 
 - (void)didReceiveMemoryWarning {

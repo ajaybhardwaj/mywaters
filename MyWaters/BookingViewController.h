@@ -32,7 +32,7 @@
     NSInteger fieldIndex,selectedPickerIndex,selectedDesignationIndex,selectedCategoryIndex;
     NSArray *designationDataSource,*categoryDataSource;
     
-    BOOL canDetectGesture;
+    BOOL canDetectGesture,isStartTimeSet,isEndTimeSet;
     NSDateFormatter *formatter;
     NSDate *selectedDate,*selectedStartTime,*selectedEndTime;
 }
