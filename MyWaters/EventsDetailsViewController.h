@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "UILabel + Extension.h"
 
 @interface EventsDetailsViewController : UIViewController {
     
@@ -17,6 +18,19 @@
     BOOL isShowingTopMenu;
     UIButton *notifyButton,*favouritesButton,*shareButton;
     UILabel *notifyLabel,*addToFavlabel,*shareLabel;
+    
+    NSDictionary *dataDict;
+
+    
+    UIScrollView *bgScrollView;
+    UIButton *callUsButton,*directionButton;
+    UILabel *callUsLabel;
+    
+    UIView *descLabelBg;
+    UIImageView *eventImageView,*directionIcon,*infoIcon,*arrowIcon;
+    UILabel *eventInfoLabel,*eventTitle,*distanceLabel;
+    
+    UILabel___Extension *descriptionLabel;
 }
 
 @end

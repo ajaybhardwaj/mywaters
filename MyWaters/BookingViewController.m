@@ -18,6 +18,48 @@
 
 
 
+//*************** Method To Submit Forma Data To Server & Move To Confirmation View After Form Submission
+
+- (void) moveToConfirmationView {
+    
+    BookingConfirmationViewController *viewObj = [[BookingConfirmationViewController alloc] init];
+    viewObj.dataDict = [[NSMutableDictionary alloc] init];
+    [viewObj.dataDict setObject:contactPersonField.text forKey:@"personName"];
+    [viewObj.dataDict setObject:organisationField.text forKey:@"organisationName"];
+    [viewObj.dataDict setObject:designationField.text forKey:@"designationName"];
+    [viewObj.dataDict setObject:contactNoField.text forKey:@"contactNumber"];
+    [viewObj.dataDict setObject:emailField.text forKey:@"email"];
+    if (isSMSOpted) {
+        [viewObj.dataDict setObject:@"SMS" forKey:@"preferredContact"];
+    }
+    else if (isEmailOpted) {
+        [viewObj.dataDict setObject:@"Email" forKey:@"preferredContact"];
+    }
+    
+    [viewObj.dataDict setObject:dateField.text forKey:@"date"];
+    [viewObj.dataDict setObject:startTimeField.text forKey:@"startTime"];
+    [viewObj.dataDict setObject:endTimeField.text forKey:@"endTime"];
+    [viewObj.dataDict setObject:groupSizeField.text forKey:@"groupSize"];
+    [viewObj.dataDict setObject:categoryField.text forKey:@"category"];
+    if (isFirstVisit) {
+        [viewObj.dataDict setObject:@"Yes" forKey:@"firstVisit"];
+    }
+    else {
+        [viewObj.dataDict setObject:@"No" forKey:@"firstVisit"];
+    }
+    
+    if ([remarksTextView.text isEqualToString:@"Remarks"] || [remarksTextView.text length]==0) {
+        [viewObj.dataDict setObject:@"NO" forKey:@"remarks"];
+    }
+    else {
+        [viewObj.dataDict setObject:remarksTextView.text forKey:@"remarks"];
+    }
+
+    
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
 
 //*************** Method To Handle Right Swipe Gesture
 
@@ -566,7 +608,7 @@
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     submitButton.frame = CGRectMake(self.view.bounds.size.width, bgScrollView.bounds.size.height-109, self.view.bounds.size.width, 45);
-    //    [submitButton addTarget:self action:@selector(slideToSecondPart) forControlEvents:UIControlEventTouchUpInside];
+    [submitButton addTarget:self action:@selector(moveToConfirmationView) forControlEvents:UIControlEventTouchUpInside];
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
     [bgScrollView addSubview:submitButton];
 }

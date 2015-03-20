@@ -10,9 +10,17 @@
 #import "AppDelegate.h"
 #import "EventsDetailsViewController.h"
 
-@interface EventsViewController : UIViewController {
+@interface EventsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     
     AppDelegate *appDelegate;
+    
+    UITableView *eventsListingTableView,*filterTableView;
+    
+    NSMutableArray *eventsTableDataSource;
+    NSArray *filtersArray;
+    
+    BOOL isShowingFilter;
+    NSInteger selectedFilterIndex;
     
     //*************** Demo App Variables
     UIButton *eventDetailButton;

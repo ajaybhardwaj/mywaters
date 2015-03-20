@@ -18,6 +18,36 @@
 @synthesize isNotEventController;
 
 
+
+//*************** Method To ANimate Filter Table
+
+- (void) animateFilterTable {
+    
+    [UIView beginAnimations:@"filterTable" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = filterTableView.center;
+    
+    if (isShowingFilter) {
+        isShowingFilter = NO;
+        pos.y = -70;
+        
+        eventsListingTableView.alpha = 1.0;
+        eventsListingTableView.userInteractionEnabled = YES;
+        
+    }
+    else {
+        isShowingFilter = YES;
+        pos.y = 64;
+        
+        eventsListingTableView.alpha = 0.5;
+        eventsListingTableView.userInteractionEnabled = NO;
+    }
+    filterTableView.center = pos;
+    [UIView commitAnimations];
+    
+}
+
+
 //*************** Method To Open Side Menu
 
 - (void) openDeckMenu:(id) sender {
@@ -88,6 +118,115 @@
 }
 
 
+
+# pragma mark - UITableViewDelegate Methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView==filterTableView) {
+        return 40.0f;
+    }
+    else if (tableView==eventsListingTableView) {
+        return 80.0f;
+    }
+    
+    return 0;
+}
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (tableView==filterTableView) {
+        selectedFilterIndex = indexPath.row;
+        [filterTableView reloadData];
+    }
+    else if (tableView==eventsListingTableView) {
+        EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:YES];
+    }
+}
+
+
+# pragma mark - UITableViewDataSource Methods
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    if (tableView==eventsListingTableView) {
+        //        return eventsTableDataSource.count;
+        return 10;
+    }
+    else if (tableView==filterTableView) {
+        return filtersArray.count;
+    }
+    
+    return 0;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    
+    if (tableView==filterTableView) {
+        
+        cell.backgroundColor = [UIColor whiteColor];
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, cell.bounds.size.width-10, cell.bounds.size.height)];
+        titleLabel.text = [filtersArray objectAtIndex:indexPath.row];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        [cell.contentView addSubview:titleLabel];
+        
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, cell.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+        
+        if (indexPath.row==selectedFilterIndex) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
+        
+    }
+    else if (tableView==eventsListingTableView) {
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, cell.bounds.size.width-100, 40)];
+        //        titleLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
+        titleLabel.text = [NSString stringWithFormat:@"Event %ld",indexPath.row+1];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.numberOfLines = 0;
+        [cell.contentView addSubview:titleLabel];
+        
+        
+        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, 120, 20)];
+        //        dateLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventDate"];
+        dateLabel.text = [NSString stringWithFormat:@"%@",[NSDate date]];
+        dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        dateLabel.backgroundColor = [UIColor clearColor];
+        dateLabel.textColor = [UIColor lightGrayColor];
+        dateLabel.numberOfLines = 0;
+        [cell.contentView addSubview:dateLabel];
+        
+        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.bounds.size.width-100, 60, 90, 20)];
+        distanceLabel.text = @"10 KM";
+        distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        distanceLabel.backgroundColor = [UIColor clearColor];
+        distanceLabel.textColor = [UIColor lightGrayColor];
+        distanceLabel.numberOfLines = 0;
+        distanceLabel.textAlignment = NSTextAlignmentRight;
+        [cell.contentView addSubview:distanceLabel];
+        
+        
+        
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, cell.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+        
+    }
+    
+    return cell;
+}
+
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
@@ -97,13 +236,35 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    [self createDemoAppControls];
+    selectedFilterIndex = 0;
+    
+    eventsListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
+    eventsListingTableView.delegate = self;
+    eventsListingTableView.dataSource = self;
+    [self.view addSubview:eventsListingTableView];
+    eventsListingTableView.backgroundColor = [UIColor clearColor];
+    eventsListingTableView.backgroundView = nil;
+    eventsListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -128, self.view.bounds.size.width, 128) style:UITableViewStylePlain];
+    filterTableView.delegate = self;
+    filterTableView.dataSource = self;
+    [self.view addSubview:filterTableView];
+    filterTableView.backgroundColor = [UIColor clearColor];
+    filterTableView.backgroundView = nil;
+    filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    filtersArray = [[NSArray alloc] initWithObjects:@"Date",@"Distance",@"Name", nil];
+    
+    
+    //    [self createDemoAppControls];
 }
 
 
 - (void) viewWillAppear:(BOOL)animated {
     
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_filter"]];
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
     
     if (!isNotEventController) {
         
