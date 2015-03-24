@@ -10,9 +10,12 @@
 #import "AppDelegate.h"
 #import "RewardDetailsViewController.h"
 
-@interface RewardsListingViewController : UIViewController {
+@interface RewardsListingViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
     
     AppDelegate *appDelegate;
+    
+    UITableView *rewardsListingTableView;
+    NSArray *rewardsDataSource;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;
