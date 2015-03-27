@@ -39,6 +39,7 @@
 		FE73E57D1AC143C5007B2179 /* 5_color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E5731AC143C5007B2179 /* 5_color@3x.png */; };
 		FE73E57E1AC143C5007B2179 /* 5_grey@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E5741AC143C5007B2179 /* 5_grey@3x.png */; };
 		FE73E5801AC14BDE007B2179 /* dummy_my_pic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E57F1AC14BDE007B2179 /* dummy_my_pic@3x.png */; };
+		FE7BDB621AC254640054DCA6 /* icn_image@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7BDB611AC254640054DCA6 /* icn_image@3x.png */; };
 		FE7FD0841A7F3933002A05CB /* favourites.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0831A7F3933002A05CB /* favourites.png */; };
 		FE7FD0891A7F50E5002A05CB /* notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0881A7F50E5002A05CB /* notifications.png */; };
 		FE7FD08B1A7F5317002A05CB /* whatsup_explore.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */; };
@@ -206,7 +207,6 @@
 		FEFBFF211A80AB9400E485E9 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */; };
 		FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */; };
 		FEFBFF2C1A80D24E00E485E9 /* icn_call@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */; };
-		FEFBFF2D1A80D24E00E485E9 /* icn_image@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -255,6 +255,7 @@
 		FE73E5731AC143C5007B2179 /* 5_color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "5_color@3x.png"; sourceTree = "<group>"; };
 		FE73E5741AC143C5007B2179 /* 5_grey@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "5_grey@3x.png"; sourceTree = "<group>"; };
 		FE73E57F1AC14BDE007B2179 /* dummy_my_pic@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dummy_my_pic@3x.png"; sourceTree = "<group>"; };
+		FE7BDB611AC254640054DCA6 /* icn_image@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_image@3x.png"; sourceTree = "<group>"; };
 		FE7FD0831A7F3933002A05CB /* favourites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favourites.png; sourceTree = "<group>"; };
 		FE7FD0881A7F50E5002A05CB /* notifications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notifications.png; sourceTree = "<group>"; };
 		FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_explore.png; sourceTree = "<group>"; };
@@ -486,7 +487,6 @@
 		FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_arrow_down@3x.png"; sourceTree = "<group>"; };
 		FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_call@3x.png"; sourceTree = "<group>"; };
-		FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_image@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -704,7 +704,7 @@
 				FE9C8CAA1A847861001074DC /* icn_location@3x.png */,
 				FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */,
 				FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */,
-				FEFBFF291A80D24E00E485E9 /* icn_image@3x.png */,
+				FE7BDB611AC254640054DCA6 /* icn_image@3x.png */,
 			);
 			name = Feedback;
 			sourceTree = "<group>";
@@ -1245,6 +1245,7 @@
 				FE8D7F411AB7B6BB002BA233 /* abcwater_list@3x.png in Resources */,
 				FE8C1C371AB292FA009D33E4 /* icn_menu_grey@3x.png in Resources */,
 				FE99BE401A7B7E69000B83E8 /* RobotoCondensed-BoldItalic.ttf in Resources */,
+				FE7BDB621AC254640054DCA6 /* icn_image@3x.png in Resources */,
 				FE5A46A91A8C57AF00517FB5 /* icn_notifyme@3x.png in Resources */,
 				FE7FD08E1A7F53CE002A05CB /* icn_3dots@3x.png in Resources */,
 				FE73E5751AC143C5007B2179 /* 1_color@3x.png in Resources */,
@@ -1288,7 +1289,6 @@
 				FEB13FC61A7766410061CE74 /* icn_home@3x.png in Resources */,
 				FE73E57D1AC143C5007B2179 /* 5_color@3x.png in Resources */,
 				FE8DC62C1A944C1700F3C718 /* icn_volly@3x.png in Resources */,
-				FEFBFF2D1A80D24E00E485E9 /* icn_image@3x.png in Resources */,
 				FE99BDF81A7B3D51000B83E8 /* abcwaters_detail_options.png in Resources */,
 				FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */,
 				FEB13FC91A7766410061CE74 /* icn_quickmap@3x.png in Resources */,

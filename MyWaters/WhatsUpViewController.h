@@ -9,13 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface WhatsUpViewController : UIViewController {
+@interface WhatsUpViewController : UIViewController <UITableViewDelegate,UITableViewDataSource> {
     
     AppDelegate *appDelegate;
     
-    //*************** Demo App Variables
-    UIImageView *bgImageView;
-    UIButton *feedButton,*exploreButton;
+    
+    UISegmentedControl *segmentedControl;
+    UIView *segmentedControlBackground;
+    
+    UITableView *feedTableView,*exploreTableView;
+    
+    NSArray *feedDataSource,*exploreDataSource;
 }
 
 @property (nonatomic, assign) BOOL isNotWhatsUpController;

@@ -14,9 +14,6 @@
     
     AppDelegate *appDelegate;
     
-//    //*************** Demo App Variables
-//    UIImageView *bgImageView;
-//    UIButton *gridButton,*listButton;
     
     UITableView *listTabeView;
     

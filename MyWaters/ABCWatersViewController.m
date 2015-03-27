@@ -97,78 +97,6 @@
 }
 
 
-// Temp Method
-
-- (void) moveToABCWaterDetails {
-    
-    ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
-    [self.navigationController pushViewController:viewObj animated:NO];
-    
-}
-
-////*************** Demo App Controls Action Handler
-//
-//- (void) handleDemoControls:(id) sender {
-//
-//    UIButton *button = (id) sender;
-//
-//    if (button.tag==1) {
-//        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwaters_grid.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-//        [self.navigationItem setRightBarButtonItem:nil];
-//    }
-//    else if (button.tag==2) {
-//        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwaters_list.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-//        [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_filter"]];
-//    }
-//}
-//
-//
-//
-////*************** Demo App UI
-//
-//- (void) createDemoAppControls {
-//
-//    bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60)];
-//    [self.view addSubview:bgImageView];
-//    [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwaters_grid.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-//
-//
-//    gridButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    gridButton.tag = 1;
-//    [gridButton addTarget:self action:@selector(handleDemoControls:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:gridButton];
-//
-//    listButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    listButton.tag = 2;
-//    [listButton addTarget:self action:@selector(handleDemoControls:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:listButton];
-//
-//    if (IS_IPHONE_4_OR_LESS) {
-//        gridButton.frame = CGRectMake(self.view.bounds.size.width/2-90, 5, 90, 25);
-//        listButton.frame = CGRectMake(self.view.bounds.size.width/2, 5, 90, 25);
-//    }
-//    else if (IS_IPHONE_5) {
-//        gridButton.frame = CGRectMake(self.view.bounds.size.width/2-85, 5, 85, 25);
-//        listButton.frame = CGRectMake(self.view.bounds.size.width/2, 5, 85, 25);
-//    }
-//    else if (IS_IPHONE_6) {
-//        gridButton.frame = CGRectMake(self.view.bounds.size.width/2-100, 5, 100, 35);
-//        listButton.frame = CGRectMake(self.view.bounds.size.width/2, 5, 100, 35);
-//    }
-//    else if (IS_IPHONE_6P) {
-//        gridButton.frame = CGRectMake(self.view.bounds.size.width/2-110, 5, 110, 45);
-//        listButton.frame = CGRectMake(self.view.bounds.size.width/2, 5, 110, 45);
-//    }
-//
-//
-//    UIButton *moveToABCWaterDetailsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    moveToABCWaterDetailsButton.frame = CGRectMake(0, 40, self.view.bounds.size.width, self.view.bounds.size.height-40);
-//    [moveToABCWaterDetailsButton addTarget:self action:@selector(moveToABCWaterDetails) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:moveToABCWaterDetailsButton];
-//}
-
-
-
 # pragma mark - UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -234,23 +162,23 @@
     
     gridListSegmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
     if (IS_IPHONE_4_OR_LESS) {
-        gridListSegmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-85, 10, 170, 30);
+        gridListSegmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-85, 12.5, 170, 25);
     }
     else if (IS_IPHONE_5) {
-        gridListSegmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-90, 10, 180, 30);
+        gridListSegmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-90, 12.5, 180, 25);
     }
     else if (IS_IPHONE_6) {
-        gridListSegmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-100, 10, 200, 30);
+        gridListSegmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-100, 12.5, 200, 25);
     }
     else if (IS_IPHONE_6P) {
-        gridListSegmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-110, 10, 220, 30);
+        gridListSegmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-110, 12.5, 220, 25);
     }
     gridListSegmentedControl.selectedSegmentIndex = 0;
     [gridListSegmentedControl addTarget:self action:@selector(handleSegmentedControl:) forControlEvents:UIControlEventValueChanged];
     [segmentedControlBackground addSubview:gridListSegmentedControl];
     
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                [UIFont fontWithName:ROBOTO_BOLD size:14], NSFontAttributeName,
+                                [UIFont fontWithName:ROBOTO_MEDIUM size:13], NSFontAttributeName,
                                 [UIColor whiteColor], NSForegroundColorAttributeName,
                                 nil];
     [gridListSegmentedControl setTitleTextAttributes:attributes forState:UIControlStateNormal];

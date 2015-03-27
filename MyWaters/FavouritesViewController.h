@@ -9,9 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface FavouritesViewController : UIViewController {
+@interface FavouritesViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     
     AppDelegate *appDelegate;
+    
+    UITableView *favouritesListingTableView;
+    NSArray *favouritesDataSource;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

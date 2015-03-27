@@ -25,66 +25,129 @@
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
-//*************** Demo App Controls Action Handler
 
-- (void) handleDemoControls:(id) sender {
-    
-    UIButton *button = (id) sender;
-    
-    if (button.tag==1) {
-        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/whatsup_feed.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    }
-    else if (button.tag==2) {
-        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/whatsup_explore.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    }
-}
+//*************** Method To Handle Segmented Control Action
 
-
-
-//*************** Demo App UI
-
-- (void) createDemoAppControls {
+- (void) handleSegmentedControl:(UISegmentedControl*) sender {
     
-    bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60)];
-    [self.view addSubview:bgImageView];
-    [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/whatsup_feed.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    
-    
-    feedButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    feedButton.tag = 1;
-    [feedButton addTarget:self action:@selector(handleDemoControls:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:feedButton];
-    
-    exploreButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    exploreButton.tag = 2;
-    [exploreButton addTarget:self action:@selector(handleDemoControls:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:exploreButton];
-    
-    if (IS_IPHONE_4_OR_LESS) {
-        feedButton.frame = CGRectMake(self.view.bounds.size.width/2-90, 5, 90, 25);
-        exploreButton.frame = CGRectMake(self.view.bounds.size.width/2, 5, 90, 25);
-    }
-    else if (IS_IPHONE_5) {
-        feedButton.frame = CGRectMake(self.view.bounds.size.width/2-85, 5, 85, 25);
-        exploreButton.frame = CGRectMake(self.view.bounds.size.width/2, 5, 85, 25);
-    }
-    else if (IS_IPHONE_6) {
-        feedButton.frame = CGRectMake(self.view.bounds.size.width/2-100, 5, 100, 35);
-        exploreButton.frame = CGRectMake(self.view.bounds.size.width/2, 5, 100, 35);
-    }
-    else if (IS_IPHONE_6P) {
-        feedButton.frame = CGRectMake(self.view.bounds.size.width/2-110, 5, 110, 45);
-        exploreButton.frame = CGRectMake(self.view.bounds.size.width/2, 5, 110, 45);
+    if (sender==segmentedControl) {
+        if (sender.selectedSegmentIndex==0) {
+            exploreTableView.hidden = YES;
+            feedTableView.hidden = NO;
+        }
+        else if (sender.selectedSegmentIndex==1) {
+            exploreTableView.hidden = NO;
+            feedTableView.hidden = YES;
+        }
     }
 }
 
 
+# pragma mark - UITableViewDelegate Methods
 
-//*************** Method To Pop View Controller To Parent Controller
-
-- (void) pop2Dismiss:(id) sender {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self.navigationController popViewControllerAnimated:YES];
+    if (tableView==feedTableView) {
+        return 90.0f;
+    }
+    else if (tableView==exploreTableView) {
+        return 75.0f;
+    }
+    return 0.0f;
+}
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (tableView==exploreTableView) {
+
+    }
+    else if (tableView==feedTableView) {
+
+    }
+}
+
+
+# pragma mark - UITableViewDataSource Methods
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    if (tableView==feedTableView) {
+//        return feedDataSource.count;
+        return 10;
+    }
+    else if (tableView==exploreTableView) {
+//        return exploreDataSource.count;
+        return 5;
+    }
+    
+    return 0;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    cell.backgroundColor = RGB(247, 247, 247);
+
+    if (tableView==exploreTableView) {
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, cell.bounds.size.width-100, 40)];
+        //                titleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedTitle"];
+        titleLabel.text = [NSString stringWithFormat:@"Explore %ld",indexPath.row+1];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.textColor = RGB(247,196,9);
+        titleLabel.numberOfLines = 0;
+        [cell.contentView addSubview:titleLabel];
+        
+        
+        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, cell.bounds.size.width-100, 15)];
+        //                dateLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
+        subtitleLabel.text = [NSString stringWithFormat:@"Explore Subtitle %ld",indexPath.row+1];
+        subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+        subtitleLabel.backgroundColor = [UIColor clearColor];
+        subtitleLabel.textColor = [UIColor blackColor];
+        subtitleLabel.numberOfLines = 0;
+        [cell.contentView addSubview:subtitleLabel];
+        
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 74.5, cell.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+        
+        
+    }
+    else if (tableView==feedTableView) {
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, cell.bounds.size.width-100, 40)];
+//                titleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedTitle"];
+        titleLabel.text = [NSString stringWithFormat:@"Feed %ld",indexPath.row+1];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.textColor = RGB(247,196,9);
+        titleLabel.numberOfLines = 0;
+        [cell.contentView addSubview:titleLabel];
+        
+        
+        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, cell.bounds.size.width-100, 30)];
+//                subtitleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
+        subtitleLabel.text = [NSString stringWithFormat:@"Feed Subtitle %ld",indexPath.row+1];
+        subtitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        subtitleLabel.backgroundColor = [UIColor clearColor];
+        subtitleLabel.textColor = [UIColor blackColor];
+        subtitleLabel.numberOfLines = 0;
+        [cell.contentView addSubview:subtitleLabel];
+        
+        
+        
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 89.5, cell.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+        
+    }
+    
+    return cell;
 }
 
 
@@ -96,8 +159,59 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    self.view.backgroundColor = RGB(247, 247, 247);
     
-    [self createDemoAppControls];
+    segmentedControlBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50)];
+    segmentedControlBackground.backgroundColor = RGB(247,196,9);
+    [self.view addSubview:segmentedControlBackground];
+    
+    NSArray *itemArray = [NSArray arrayWithObjects: @"FEED", @"EXPLORE", nil];
+    
+    segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
+    if (IS_IPHONE_4_OR_LESS) {
+        segmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-85, 12.5, 170, 25);
+    }
+    else if (IS_IPHONE_5) {
+        segmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-90, 12.5, 180, 25);
+    }
+    else if (IS_IPHONE_6) {
+        segmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-100, 12.5, 200, 25);
+    }
+    else if (IS_IPHONE_6P) {
+        segmentedControl.frame = CGRectMake(segmentedControlBackground.bounds.size.width/2-110, 12.5, 220, 25);
+    }
+    segmentedControl.selectedSegmentIndex = 0;
+    [segmentedControl addTarget:self action:@selector(handleSegmentedControl:) forControlEvents:UIControlEventValueChanged];
+    [segmentedControlBackground addSubview:segmentedControl];
+    
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                [UIFont fontWithName:ROBOTO_MEDIUM size:13], NSFontAttributeName,
+                                [UIColor whiteColor], NSForegroundColorAttributeName,
+                                nil];
+    [segmentedControl setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    NSDictionary *highlightedAttributes = [NSDictionary dictionaryWithObject:RGB(247,196,9) forKey:NSForegroundColorAttributeName];
+    [segmentedControl setTitleTextAttributes:highlightedAttributes forState:UIControlStateHighlighted];
+    segmentedControlBackground.tintColor = [UIColor whiteColor];
+    
+    
+    feedTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, self.view.bounds.size.width, self.view.bounds.size.height-114) style:UITableViewStylePlain];
+    feedTableView.delegate = self;
+    feedTableView.dataSource = self;
+    [self.view addSubview:feedTableView];
+    feedTableView.backgroundColor = [UIColor clearColor];
+    feedTableView.backgroundView = nil;
+    feedTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
+    
+    exploreTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, self.view.bounds.size.width, self.view.bounds.size.height-114) style:UITableViewStylePlain];
+    exploreTableView.delegate = self;
+    exploreTableView.dataSource = self;
+    [self.view addSubview:exploreTableView];
+    exploreTableView.backgroundColor = [UIColor clearColor];
+    exploreTableView.backgroundView = nil;
+    exploreTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    exploreTableView.hidden = YES;
+
 }
 
 

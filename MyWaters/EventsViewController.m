@@ -258,7 +258,6 @@
     filtersArray = [[NSArray alloc] initWithObjects:@"Date",@"Distance",@"Name", nil];
     
     
-    //    [self createDemoAppControls];
 }
 
 

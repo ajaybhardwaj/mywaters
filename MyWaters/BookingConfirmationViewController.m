@@ -395,7 +395,7 @@
     doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [doneButton setTitle:@"DONE" forState:UIControlStateNormal];
     [doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    doneButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    doneButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
     doneButton.frame = CGRectMake(0, self.view.bounds.size.height-109, self.view.bounds.size.width, 45);
     [doneButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
     [doneButton setBackgroundColor:RGB(82, 82, 82)];
