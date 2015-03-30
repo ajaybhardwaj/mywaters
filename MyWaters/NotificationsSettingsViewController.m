@@ -49,17 +49,17 @@
     cell.detailTextLabel.numberOfLines = 0;
     
     
-    if (indexPath.row==3) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
-    else {
+//    if (indexPath.row==3) {
+//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//    }
+//    else {
         //***** Later Check the preference values and show on/off status accordingly
 
         UISwitch *switchControls = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
         [switchControls addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
         switchControls.tag = indexPath.row;
         cell.accessoryView = switchControls;
-    }
+//    }
     
     
     UIImageView *cellSeperator;
@@ -73,7 +73,7 @@
         cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
     else if (indexPath.row==3) {
-        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
+        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
     [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:cellSeperator];
@@ -89,14 +89,14 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
     if (indexPath.row==3) {
-        WaterLevelAlertsSettingViewController *viewObj = [[WaterLevelAlertsSettingViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:NO];
+//        WaterLevelAlertsSettingViewController *viewObj = [[WaterLevelAlertsSettingViewController alloc] init];
+//        [self.navigationController pushViewController:viewObj animated:NO];
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row==1 || indexPath.row==2) {
+    if (indexPath.row==1 || indexPath.row==2 || indexPath.row==3) {
         return 80.0f;
     }
     return 44.0f;
@@ -115,8 +115,8 @@
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
     
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications",@"Water Level Sensors iAlerts", nil];
-    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance",@"", nil];
+    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications",@"Read Out Message", nil];
+    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance",@"Notifications will be read out when received.", nil];
 
     notificationSettingsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
     notificationSettingsTable.delegate = self;

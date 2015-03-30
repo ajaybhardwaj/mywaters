@@ -132,7 +132,6 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
-    NSLog(@"%@",appDelegate.DASHBOARD_PREFERENCES_ARRAY);
         
     dashboardSettingsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
     dashboardSettingsTable.delegate = self;

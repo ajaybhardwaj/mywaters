@@ -21,6 +21,7 @@
 
 - (void) openDeckMenu:(id) sender {
     
+    self.view.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -104,6 +105,10 @@
 }
 
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    self.view.alpha = 1.0;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

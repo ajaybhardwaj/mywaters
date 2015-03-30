@@ -22,6 +22,7 @@
 
 - (void) openDeckMenu:(id) sender {
     
+    self.view.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -92,6 +93,8 @@
 
 
 - (void) viewWillAppear:(BOOL)animated {
+    
+    self.view.alpha = 1.0;
     
     if (!isNotQuickMapController) {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];

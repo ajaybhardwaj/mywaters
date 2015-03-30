@@ -73,6 +73,7 @@
         [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
         [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
 
+        appDelegate.IS_COMING_AFTER_LOGIN = YES;
 //    }
 }
 
@@ -216,6 +217,16 @@
     [backButton setBackgroundColor:RGB(83, 83, 83)];
     [self.view addSubview:backButton];
     
+    
+    skipButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [skipButton setTitle:@"or skip for now" forState:UIControlStateNormal];
+    [skipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    skipButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    skipButton.tag = 5;
+    [skipButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    skipButton.frame = CGRectMake(0, backButton.frame.origin.y+backButton.bounds.size.height+15, self.view.bounds.size.width, 45);
+    [skipButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:skipButton];
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
     swipeGesture.direction = UISwipeGestureRecognizerDirectionRight;

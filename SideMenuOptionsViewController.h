@@ -30,11 +30,11 @@ typedef enum {
 
 @interface SideMenuOptionsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     
-    UITableView *optionsTableView;
     AppDelegate *appDelegate;
 }
 @property (nonatomic, retain) NSArray *optionsArray;
 @property (nonatomic, assign) NSInteger currentIndex;
+@property (nonatomic, strong) UITableView *optionsTableView;
 
 
 - (void) resetView;

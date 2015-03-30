@@ -40,6 +40,7 @@
 		FE73E57E1AC143C5007B2179 /* 5_grey@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E5741AC143C5007B2179 /* 5_grey@3x.png */; };
 		FE73E5801AC14BDE007B2179 /* dummy_my_pic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E57F1AC14BDE007B2179 /* dummy_my_pic@3x.png */; };
 		FE7BDB621AC254640054DCA6 /* icn_image@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7BDB611AC254640054DCA6 /* icn_image@3x.png */; };
+		FE7C6CBE1AC8FA4C00912145 /* AboutMyWatersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7C6CBD1AC8FA4C00912145 /* AboutMyWatersViewController.m */; };
 		FE7FD0841A7F3933002A05CB /* favourites.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0831A7F3933002A05CB /* favourites.png */; };
 		FE7FD0891A7F50E5002A05CB /* notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD0881A7F50E5002A05CB /* notifications.png */; };
 		FE7FD08B1A7F5317002A05CB /* whatsup_explore.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */; };
@@ -256,6 +257,8 @@
 		FE73E5741AC143C5007B2179 /* 5_grey@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "5_grey@3x.png"; sourceTree = "<group>"; };
 		FE73E57F1AC14BDE007B2179 /* dummy_my_pic@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dummy_my_pic@3x.png"; sourceTree = "<group>"; };
 		FE7BDB611AC254640054DCA6 /* icn_image@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_image@3x.png"; sourceTree = "<group>"; };
+		FE7C6CBC1AC8FA4C00912145 /* AboutMyWatersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutMyWatersViewController.h; sourceTree = "<group>"; };
+		FE7C6CBD1AC8FA4C00912145 /* AboutMyWatersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutMyWatersViewController.m; sourceTree = "<group>"; };
 		FE7FD0831A7F3933002A05CB /* favourites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favourites.png; sourceTree = "<group>"; };
 		FE7FD0881A7F50E5002A05CB /* notifications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notifications.png; sourceTree = "<group>"; };
 		FE7FD08A1A7F5317002A05CB /* whatsup_explore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_explore.png; sourceTree = "<group>"; };
@@ -937,6 +940,8 @@
 				FE99BE1E1A7B792B000B83E8 /* NotificationsSettingsViewController.m */,
 				FE99BE451A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.h */,
 				FE99BE461A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m */,
+				FE7C6CBC1AC8FA4C00912145 /* AboutMyWatersViewController.h */,
+				FE7C6CBD1AC8FA4C00912145 /* AboutMyWatersViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -1387,6 +1392,7 @@
 				FEA730231A772FDD00D274A6 /* AppDelegate.m in Sources */,
 				FEA730751A77342100D274A6 /* UIButtonIndexPathAndBlock.m in Sources */,
 				FEA730731A77342100D274A6 /* UIColor-Expanded.m in Sources */,
+				FE7C6CBE1AC8FA4C00912145 /* AboutMyWatersViewController.m in Sources */,
 				FE82AC591A92DE0800CCC94D /* ARKit.m in Sources */,
 				FEB13FB41A77658A0061CE74 /* QuickMapViewController.m in Sources */,
 				FEA7307C1A77342100D274A6 /* IIViewDeckController.m in Sources */,

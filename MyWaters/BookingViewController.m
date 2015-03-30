@@ -222,6 +222,7 @@
 
 - (void) openDeckMenu:(id) sender {
     
+    self.view.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -910,6 +911,7 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
+    self.view.alpha = 1.0;
     isFirstVisit = YES;
     [self createBookingForm];
     [bgScrollView setContentOffset:CGPointMake(0, 0) animated:YES];

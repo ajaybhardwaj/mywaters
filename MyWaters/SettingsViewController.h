@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "DashboardSettingsViewController.h"
 #import "NotificationsSettingsViewController.h"
+#import "AboutMyWatersViewController.h"
 
 @interface SettingsViewController : UIViewController <UITableViewDelegate,UITableViewDataSource> {
     

@@ -20,6 +20,7 @@
 
 - (void) openDeckMenu:(id) sender {
     
+    self.view.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -863,6 +864,12 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
+    
+    self.view.alpha = 1.0;
+    if (appDelegate.IS_COMING_AFTER_LOGIN) {
+        appDelegate.IS_COMING_AFTER_LOGIN = NO;
+        self.view.alpha = 0.5;
+    }
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     

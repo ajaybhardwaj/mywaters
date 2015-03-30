@@ -17,6 +17,7 @@
 @synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY;
 @synthesize screen_width,left_deck_width;
 @synthesize LOGGED_IN_USER_NAME;
+@synthesize IS_COMING_AFTER_LOGIN;
 
 //*************** Create Deck View Controller For App ***************//
 

@@ -13,7 +13,7 @@
 @end
 
 @implementation SideMenuOptionsViewController
-
+@synthesize optionsTableView;
 
 
 
@@ -98,6 +98,25 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    //***** Animation Code Added to remove the menu form top view
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = optionsTableView.center;
+    if (IS_IPHONE_4_OR_LESS) {
+        pos.x = -110;
+    }
+    else if (IS_IPHONE_5) {
+        pos.x = -110;
+    }
+    else if (IS_IPHONE_6) {
+        pos.x = -115;
+    }
+    else if (IS_IPHONE_6P) {
+        pos.x = -115;
+    }
+    optionsTableView.center = pos;
+    [UIView commitAnimations];
     
     switch (indexPath.section) {
             
@@ -303,12 +322,16 @@
     UILabel *lbl = (UILabel *)[cell.contentView viewWithTag:901];
     [lbl setText:lblTxt];
     
-    [lbl setFont:[UIFont fontWithName:ROBOTO_BOLD size:16.0]];
+    [lbl setFont:[UIFont fontWithName:ROBOTO_MEDIUM size:15.0]];
     [lbl setTextColor:RGB(83, 83, 83)];
     
     UIImageView *img = (UIImageView *)[cell.contentView viewWithTag:900];
     [img setImage:[UIImage imageNamed:imagTxt]];
     
+    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 43.6, cell.bounds.size.width, 0.4)];
+    [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+    [cell.contentView addSubview:seperatorImage];
+
     
     return cell;
 }
@@ -325,11 +348,13 @@
     
     [self load_TableData];
     
-    optionsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    optionsTableView = [[UITableView alloc] initWithFrame:CGRectMake(-200, 0, self.view.bounds.size.width-150, self.view.bounds.size.height)];
+//    optionsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     optionsTableView.delegate = self;
     optionsTableView.dataSource = self;
     [self.view addSubview:optionsTableView];
     optionsTableView.backgroundColor = RGB(245, 245, 245);
+    optionsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     [optionsTableView.layer setOpaque:NO];
     [optionsTableView setOpaque:NO];

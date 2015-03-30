@@ -21,6 +21,7 @@
 
 - (void) openDeckMenu:(id) sender {
     
+    self.view.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -79,11 +80,15 @@
     
     if (indexPath.row==1) {
         DashboardSettingsViewController *viewObj = [[DashboardSettingsViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (indexPath.row==2) {
         NotificationsSettingsViewController *viewObj = [[NotificationsSettingsViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
+    }
+    else if (indexPath.row==3) {
+        AboutMyWatersViewController *viewObj = [[AboutMyWatersViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
 
@@ -100,7 +105,7 @@
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     
     
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Hints",@"Dashboard",@"Notifications",@"About PUB",@"Terms and Conditions", nil];
+    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Hints",@"Dashboard",@"Notifications",@"About MyWaters",@"Terms and Conditions", nil];
     tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"App will remember where you last left off",@"",@"",@"",@"", nil];
     
     settingsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
@@ -114,6 +119,10 @@
 }
 
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    self.view.alpha = 1.0;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -22,6 +22,7 @@
 
 - (void) openDeckMenu:(id) sender {
     
+    self.view.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -66,6 +67,25 @@
     else if (tableView==feedTableView) {
 
     }
+}
+
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return YES if you want the specified item to be editable.
+    return YES;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        //add code here for when you hit delete
+    }
+}
+
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return @"Report";
 }
 
 
@@ -116,7 +136,9 @@
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
-        
+        UISwipeGestureRecognizer *leftGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:nil];
+        leftGesture.direction = UISwipeGestureRecognizerDirectionLeft;
+        [cell addGestureRecognizer:leftGesture];
     }
     else if (tableView==feedTableView) {
         
@@ -216,6 +238,8 @@
 
 
 - (void) viewWillAppear:(BOOL)animated {
+    
+    self.view.alpha = 1.0;
     
     if (!isNotWhatsUpController) {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];

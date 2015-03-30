@@ -416,15 +416,46 @@ static ViewControllerHelper *sharedViewHelper = nil;
 
 - (void) enableDeckView:(id)sender {
     
-    if ([[appDelegate rootDeckController] leftController] == nil)
+    if ([[appDelegate rootDeckController] leftController] == nil) {
         [[appDelegate rootDeckController] setLeftController:[[ViewControllerHelper viewControllerHelper] getOptionsController]];
+    }
 
-    appDelegate.left_deck_width = appDelegate.screen_width - 180;
+    appDelegate.left_deck_width = appDelegate.screen_width - 1;
     
     [[appDelegate rootDeckController] setLeftSize:appDelegate.left_deck_width];
     [[appDelegate rootDeckController] toggleLeftViewAnimated:YES];
-    
+
     [[appDelegate rootDeckController] setCenterhiddenInteractivity:IIViewDeckCenterHiddenNotUserInteractiveWithTapToClose];
+
+    
+    //***** Code added to bring menu on the top of view, remove it of want menu below the view and minus the "appDelegate.left_deck_width = appDelegate.screen_width - 180;"
+
+    [appDelegate.window addSubview:_sideMenuOptionsController.view];
+    [appDelegate.window bringSubviewToFront:_sideMenuOptionsController.optionsTableView];
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = _sideMenuOptionsController.optionsTableView.center;
+    if (IS_IPHONE_4_OR_LESS) {
+        pos.x = 85;
+    }
+    else if (IS_IPHONE_5) {
+        pos.x = 85;
+    }
+    else if (IS_IPHONE_6) {
+        pos.x = 112;
+    }
+    else if (IS_IPHONE_6P) {
+        pos.x = 130;
+    }
+    _sideMenuOptionsController.optionsTableView.center = pos;
+    [UIView commitAnimations];
+    
+//    [_sideMenuOptionsController.view.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+//    [_sideMenuOptionsController.view.layer setShadowOffset:CGSizeMake(3, 3)];
+//    [_sideMenuOptionsController.view.layer setShadowOpacity:3];
+//    [_sideMenuOptionsController.view.layer setShadowRadius:3.0];
+
 }
 
 
