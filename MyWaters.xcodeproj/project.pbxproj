@@ -205,6 +205,13 @@
 		FEF43C2D1A7A099A00237CAD /* EventsDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF43C2C1A7A099900237CAD /* EventsDetailsViewController.m */; };
 		FEF43C2F1A7A0F9B00237CAD /* cctv_detail_options.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF43C2E1A7A0F9B00237CAD /* cctv_detail_options.png */; };
 		FEF43C321A7A156D00237CAD /* CCTVDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF43C311A7A156D00237CAD /* CCTVDetailViewController.m */; };
+		FEF4C6C91ACB9A2600C57304 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF4C6C81ACB9A2600C57304 /* MapKit.framework */; };
+		FEF4C6CC1ACB9F1300C57304 /* icn_expand@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF4C6CB1ACB9F1300C57304 /* icn_expand@3x.png */; };
+		FEF4C6CE1ACBC13A00C57304 /* icn_floodinfo_pub_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF4C6CD1ACBC13A00C57304 /* icn_floodinfo_pub_big@3x.png */; };
+		FEF4C6D01ACBC14B00C57304 /* icn_floodinfo_userfeedback_submission_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF4C6CF1ACBC14B00C57304 /* icn_floodinfo_userfeedback_submission_big@3x.png */; };
+		FEF4C6D21ACBC15A00C57304 /* icn_rainarea_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF4C6D11ACBC15A00C57304 /* icn_rainarea_big@3x.png */; };
+		FEF4C6D41ACBC16B00C57304 /* icn_cctv_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF4C6D31ACBC16B00C57304 /* icn_cctv_big@3x.png */; };
+		FEF4C6D61ACBC18100C57304 /* icn_waterlevel_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF4C6D51ACBC18100C57304 /* icn_waterlevel_big@3x.png */; };
 		FEFBFF211A80AB9400E485E9 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */; };
 		FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */; };
 		FEFBFF2C1A80D24E00E485E9 /* icn_call@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */; };
@@ -487,6 +494,13 @@
 		FEF43C2E1A7A0F9B00237CAD /* cctv_detail_options.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cctv_detail_options.png; sourceTree = "<group>"; };
 		FEF43C301A7A156D00237CAD /* CCTVDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTVDetailViewController.h; sourceTree = "<group>"; };
 		FEF43C311A7A156D00237CAD /* CCTVDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTVDetailViewController.m; sourceTree = "<group>"; };
+		FEF4C6C81ACB9A2600C57304 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		FEF4C6CB1ACB9F1300C57304 /* icn_expand@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_expand@3x.png"; sourceTree = "<group>"; };
+		FEF4C6CD1ACBC13A00C57304 /* icn_floodinfo_pub_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_pub_big@3x.png"; sourceTree = "<group>"; };
+		FEF4C6CF1ACBC14B00C57304 /* icn_floodinfo_userfeedback_submission_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_userfeedback_submission_big@3x.png"; sourceTree = "<group>"; };
+		FEF4C6D11ACBC15A00C57304 /* icn_rainarea_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_rainarea_big@3x.png"; sourceTree = "<group>"; };
+		FEF4C6D31ACBC16B00C57304 /* icn_cctv_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_cctv_big@3x.png"; sourceTree = "<group>"; };
+		FEF4C6D51ACBC18100C57304 /* icn_waterlevel_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_big@3x.png"; sourceTree = "<group>"; };
 		FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_arrow_down@3x.png"; sourceTree = "<group>"; };
 		FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_call@3x.png"; sourceTree = "<group>"; };
@@ -497,6 +511,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FEF4C6C91ACB9A2600C57304 /* MapKit.framework in Frameworks */,
 				FEFBFF211A80AB9400E485E9 /* libsqlite3.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -738,6 +753,7 @@
 		FEA730111A772FDD00D274A6 = {
 			isa = PBXGroup;
 			children = (
+				FEF4C6C81ACB9A2600C57304 /* MapKit.framework */,
 				FE9B55EF1A89B7B50045E4F9 /* CommonFuncitons */,
 				FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */,
 				FEA7307E1A77342F00D274A6 /* Controllers & Helpers */,
@@ -1033,6 +1049,7 @@
 		FEA730B11A77394300D274A6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FEF4C6CA1ACB9F0600C57304 /* Quick Map */,
 				FE73E56A1AC14340007B2179 /* Badges */,
 				FE73E5651AC11996007B2179 /* Profile */,
 				FE98F03C1ABC167F00D5FB5B /* ABCWaters */,
@@ -1120,6 +1137,19 @@
 				FEF43C311A7A156D00237CAD /* CCTVDetailViewController.m */,
 			);
 			name = "CCTV Views";
+			sourceTree = "<group>";
+		};
+		FEF4C6CA1ACB9F0600C57304 /* Quick Map */ = {
+			isa = PBXGroup;
+			children = (
+				FEF4C6D51ACBC18100C57304 /* icn_waterlevel_big@3x.png */,
+				FEF4C6D31ACBC16B00C57304 /* icn_cctv_big@3x.png */,
+				FEF4C6D11ACBC15A00C57304 /* icn_rainarea_big@3x.png */,
+				FEF4C6CF1ACBC14B00C57304 /* icn_floodinfo_userfeedback_submission_big@3x.png */,
+				FEF4C6CD1ACBC13A00C57304 /* icn_floodinfo_pub_big@3x.png */,
+				FEF4C6CB1ACB9F1300C57304 /* icn_expand@3x.png */,
+			);
+			name = "Quick Map";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1211,6 +1241,7 @@
 				FE8845D51AB6B158005537C6 /* e2.png in Resources */,
 				FE5A46AA1A8C57AF00517FB5 /* icn_share@3x.png in Resources */,
 				FE99BE341A7B7E69000B83E8 /* Roboto-BlackItalic.ttf in Resources */,
+				FEF4C6CC1ACB9F1300C57304 /* icn_expand@3x.png in Resources */,
 				FE8845DE1AB6B3EE005537C6 /* w1.png in Resources */,
 				FE8D7F421AB7B6BB002BA233 /* abcwaters_grid_new@3x.png in Resources */,
 				FE99BE351A7B7E69000B83E8 /* Roboto-Bold.ttf in Resources */,
@@ -1236,8 +1267,10 @@
 				FE99BE3D1A7B7E69000B83E8 /* Roboto-Thin.ttf in Resources */,
 				FE8C1C311AB292FA009D33E4 /* icn_avatar@3x.png in Resources */,
 				FE98F0471ABC16B900D5FB5B /* icn_bookingform@3x.png in Resources */,
+				FEF4C6D41ACBC16B00C57304 /* icn_cctv_big@3x.png in Resources */,
 				FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */,
 				FE8845E01AB6B3EE005537C6 /* w3.png in Resources */,
+				FEF4C6D61ACBC18100C57304 /* icn_waterlevel_big@3x.png in Resources */,
 				FE8C1C321AB292FA009D33E4 /* icn_distance_pink@3x.png in Resources */,
 				FE98F0341ABBC33500D5FB5B /* icn_info@3x.png in Resources */,
 				FE5A46A81A8C57AF00517FB5 /* icn_favorited@3x.png in Resources */,
@@ -1253,6 +1286,7 @@
 				FE7BDB621AC254640054DCA6 /* icn_image@3x.png in Resources */,
 				FE5A46A91A8C57AF00517FB5 /* icn_notifyme@3x.png in Resources */,
 				FE7FD08E1A7F53CE002A05CB /* icn_3dots@3x.png in Resources */,
+				FEF4C6D21ACBC15A00C57304 /* icn_rainarea_big@3x.png in Resources */,
 				FE73E5751AC143C5007B2179 /* 1_color@3x.png in Resources */,
 				FE98F0401ABC16A700D5FB5B /* icn_directions_blue@3x.png in Resources */,
 				FE98F0461ABC16B900D5FB5B /* icn_ARview@3x.png in Resources */,
@@ -1325,6 +1359,7 @@
 				FE98F0411ABC16A700D5FB5B /* icn_info_blue@3x.png in Resources */,
 				FEA730B71A77396800D274A6 /* icn_menu@2x.png in Resources */,
 				FE8845D81AB6B158005537C6 /* e5.png in Resources */,
+				FEF4C6CE1ACBC13A00C57304 /* icn_floodinfo_pub_big@3x.png in Resources */,
 				FE8845CA1AB6AF4A005537C6 /* MyWaters.sqlite in Resources */,
 				FE8845E81AB6C24C005537C6 /* icn_arrow_down_field@3x.png in Resources */,
 				FE8C1C331AB292FA009D33E4 /* icn_distance_turqoise@3x.png in Resources */,
@@ -1333,6 +1368,7 @@
 				FE98F04B1ABC18A000D5FB5B /* icn_camera@3x.png in Resources */,
 				FE99BDF61A7B2CD7000B83E8 /* abcwaters_list.png in Resources */,
 				FE98F0421ABC16A700D5FB5B /* icn_weather@3x.png in Resources */,
+				FEF4C6D01ACBC14B00C57304 /* icn_floodinfo_userfeedback_submission_big@3x.png in Resources */,
 				FE98F0361ABBC85B00D5FB5B /* icn_call_yellow@3x.png in Resources */,
 				FE4F376F1A8870DC0028903C /* welcome_background@3x.png in Resources */,
 				FE99BE031A7B6316000B83E8 /* profile.png in Resources */,

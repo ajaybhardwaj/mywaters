@@ -418,6 +418,10 @@ static ViewControllerHelper *sharedViewHelper = nil;
     
     if ([[appDelegate rootDeckController] leftController] == nil) {
         [[appDelegate rootDeckController] setLeftController:[[ViewControllerHelper viewControllerHelper] getOptionsController]];
+        
+        //***** Code added to add side menu on app window
+        [appDelegate.window addSubview:_sideMenuOptionsController.view];
+        [appDelegate.window bringSubviewToFront:_sideMenuOptionsController.optionsTableView];
     }
 
     appDelegate.left_deck_width = appDelegate.screen_width - 1;
@@ -429,9 +433,6 @@ static ViewControllerHelper *sharedViewHelper = nil;
 
     
     //***** Code added to bring menu on the top of view, remove it of want menu below the view and minus the "appDelegate.left_deck_width = appDelegate.screen_width - 180;"
-
-    [appDelegate.window addSubview:_sideMenuOptionsController.view];
-    [appDelegate.window bringSubviewToFront:_sideMenuOptionsController.optionsTableView];
     
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.5];

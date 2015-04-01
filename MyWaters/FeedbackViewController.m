@@ -184,10 +184,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"feedback"];
-    if (cell==nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"feedback"];
-    }
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"feedback"];;
     
     cell.backgroundColor = RGB(247, 247, 247);
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -283,7 +280,7 @@
         commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, 120)];
         commentField.returnKeyType = UIReturnKeyDone;
         commentField.delegate = self;
-        commentField.text = @"Comments *";
+        commentField.text = @" Comments *";
         commentField.textColor = [UIColor lightGrayColor];
         commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
         commentField.backgroundColor = [UIColor clearColor];

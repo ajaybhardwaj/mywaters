@@ -9,15 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "AuxilaryService.h"
+#import <MapKit/MapKit.h>
 
-@interface QuickMapViewController : UIViewController {
+@interface QuickMapViewController : UIViewController <MKMapViewDelegate> {
     
     AppDelegate *appDelegate;
     BOOL isControlMaximize;
     
+    MKMapView *quickMap;
+    UIButton *maximizeButton,*carButton,*chatButton,*cloudButton,*cameraButton,*dropButton;
+
+    UIView *optionsView;
+    
     //*************** Demo App Variables
     UIImageView *bgImageView;
-    UIButton *maximizeButton;
+    
     
 }
 

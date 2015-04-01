@@ -128,7 +128,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"abclisting"];
-
     
     if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
         
@@ -139,6 +138,11 @@
         cell.textLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
+    
+    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, listTabeView.bounds.size.width, 0.5)];
+    [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+    [cell.contentView addSubview:seperatorImage];
+
     
     return cell;
 }
@@ -202,6 +206,7 @@
     listTabeView.backgroundColor = [UIColor clearColor];
     listTabeView.backgroundView = nil;
     listTabeView.hidden = YES;
+    listTabeView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     [self createGridView];
     //[self createDemoAppControls];

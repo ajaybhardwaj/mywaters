@@ -82,7 +82,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     cell.backgroundColor = RGB(247, 247, 247);
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 5, cell.bounds.size.width-100, 40)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 5, rewardsListingTableView.bounds.size.width-100, 40)];
     //        titleLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"rewardTitle"];
     titleLabel.text = [NSString stringWithFormat:@"Reward %ld",indexPath.row+1];
     titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
@@ -91,7 +91,7 @@
     [cell.contentView addSubview:titleLabel];
     
     
-    UILabel *pointsLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 50, cell.bounds.size.width-100, 13)];
+    UILabel *pointsLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 50, rewardsListingTableView.bounds.size.width-100, 13)];
     //        pointsLabel = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"rewardPoints"];
     pointsLabel.text = @"100 Points";
     pointsLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
@@ -100,7 +100,7 @@
     pointsLabel.numberOfLines = 0;
     [cell.contentView addSubview:pointsLabel];
     
-    UILabel *placeLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 65, cell.bounds.size.width-100, 35)];
+    UILabel *placeLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 65, rewardsListingTableView.bounds.size.width-100, 35)];
     //        placeLabel = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"rewardPlace"];
     placeLabel.text = [NSString stringWithFormat:@"Place %ld",indexPath.row+1];
     placeLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
@@ -110,7 +110,7 @@
     [cell.contentView addSubview:placeLabel];
     
     
-    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 99.5, cell.bounds.size.width, 0.5)];
+    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 99.5, rewardsListingTableView.bounds.size.width, 0.5)];
     [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:seperatorImage];
     

@@ -17,6 +17,68 @@
 
 
 
+//*************** Method To Hide Menu
+
+- (void) dismissOverlayMenu {
+    
+    //***** Animation Code Added to remove the menu form top view
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = optionsTableView.center;
+    if (IS_IPHONE_4_OR_LESS) {
+        pos.x = -110;
+    }
+    else if (IS_IPHONE_5) {
+        pos.x = -110;
+    }
+    else if (IS_IPHONE_6) {
+        pos.x = -115;
+    }
+    else if (IS_IPHONE_6P) {
+        pos.x = -115;
+    }
+    optionsTableView.center = pos;
+    [UIView commitAnimations];
+    
+    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+
+    if (appDelegate.SELECTED_MENU_ID==0) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==1) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:NOTIFICATIONS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==2) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:PROFILE_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==3) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:FAVOURITES_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==4) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:WHATSUP_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==5) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:FLOODMAP_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==6) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:ABCWATERS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==7) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:EVENTS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==8) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:BOOKING_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==9) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:FEEDBACK_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==10) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:SETTINGS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+}
+
+
 //*************** Custom Cell Method For Side Menu Options
 
 - (UITableViewCell *) customizeTableCell:(UITableViewCell *)cell{
@@ -118,11 +180,14 @@
     optionsTableView.center = pos;
     [UIView commitAnimations];
     
+    appDelegate.SELECTED_MENU_ID = indexPath.row;
+
     switch (indexPath.section) {
             
         case 0:
             
             switch (indexPath.row) {
+
 
                 case OPTION_HOME:{
                     
@@ -345,8 +410,14 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    
     [self load_TableData];
+    
+    
+    UIButton *dismissMenuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    dismissMenuButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [dismissMenuButton addTarget:self action:@selector(dismissOverlayMenu) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:dismissMenuButton];
+    
     
     optionsTableView = [[UITableView alloc] initWithFrame:CGRectMake(-200, 0, self.view.bounds.size.width-150, self.view.bounds.size.height)];
 //    optionsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];

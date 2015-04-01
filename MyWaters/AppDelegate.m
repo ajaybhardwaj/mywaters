@@ -18,6 +18,7 @@
 @synthesize screen_width,left_deck_width;
 @synthesize LOGGED_IN_USER_NAME;
 @synthesize IS_COMING_AFTER_LOGIN;
+@synthesize SELECTED_MENU_ID;
 
 //*************** Create Deck View Controller For App ***************//
 
@@ -321,6 +322,7 @@
     DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
     ABC_WATERS_LISTING_ARRAY = [[NSMutableArray alloc] init];
     POI_ARRAY = [[NSMutableArray alloc] init];
+    SELECTED_MENU_ID = 0;
     
     // temp Username
     LOGGED_IN_USER_NAME = @"Mr. William";

@@ -29,15 +29,15 @@
 
 //*************** Demo App Controls Action Handler
 
-- (void) handleDemoControls {
+- (void) handleExpandingControls {
     
     if (isControlMaximize) {
         isControlMaximize = NO;
-        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/quickmap.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        optionsView.hidden = YES;
     }
     else if (!isControlMaximize) {
         isControlMaximize = YES;
-        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/quickmap_expanded.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        optionsView.hidden = NO;
     }
 }
 
@@ -52,22 +52,7 @@
     [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/quickmap.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     
     
-    maximizeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [maximizeButton addTarget:self action:@selector(handleDemoControls) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:maximizeButton];
     
-    if (IS_IPHONE_4_OR_LESS) {
-        maximizeButton.frame = CGRectMake(self.view.bounds.size.width-55, self.view.bounds.size.height-110, 40, 40);
-    }
-    else if (IS_IPHONE_5) {
-        maximizeButton.frame = CGRectMake(self.view.bounds.size.width-55, self.view.bounds.size.height-125, 40, 40);
-    }
-    else if (IS_IPHONE_6) {
-        maximizeButton.frame = CGRectMake(self.view.bounds.size.width-65, self.view.bounds.size.height-135, 45, 45);
-    }
-    else if (IS_IPHONE_6P) {
-        maximizeButton.frame = CGRectMake(self.view.bounds.size.width-75, self.view.bounds.size.height-145, 50, 50);
-    }
 }
 
 
@@ -88,7 +73,80 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    [self createDemoAppControls];
+    
+    quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
+    quickMap.delegate = self;
+    [self.view  addSubview:quickMap];
+    
+    
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(quickMap.userLocation.coordinate, 6000, 6000);
+    viewRegion.span.longitudeDelta  = 0.005;
+    viewRegion.span.latitudeDelta  = 0.005;
+    
+    maximizeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [maximizeButton addTarget:self action:@selector(handleExpandingControls) forControlEvents:UIControlEventTouchUpInside];
+    [maximizeButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_expand.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    
+    if (IS_IPHONE_4_OR_LESS) {
+        maximizeButton.frame = CGRectMake(quickMap.bounds.size.width-55, quickMap.bounds.size.height-60, 40, 40);
+    }
+    else if (IS_IPHONE_5) {
+        maximizeButton.frame = CGRectMake(quickMap.bounds.size.width-55, quickMap.bounds.size.height-65, 40, 40);
+    }
+    else if (IS_IPHONE_6) {
+        maximizeButton.frame = CGRectMake(quickMap.bounds.size.width-65, quickMap.bounds.size.height-75, 45, 45);
+    }
+    else if (IS_IPHONE_6P) {
+        maximizeButton.frame = CGRectMake(quickMap.bounds.size.width-75, quickMap.bounds.size.height-85, 50, 50);
+    }
+    [quickMap addSubview:maximizeButton];
+    
+    
+    optionsView = [[UIView alloc] init];
+    optionsView.backgroundColor = [UIColor clearColor];
+    if (IS_IPHONE_4_OR_LESS) {
+        optionsView.frame = CGRectMake(quickMap.bounds.size.width-55, maximizeButton.frame.origin.y-300, 40, 300);
+    }
+    else if (IS_IPHONE_5) {
+        optionsView.frame = CGRectMake(quickMap.bounds.size.width-55, maximizeButton.frame.origin.y-300, 40, 300);
+    }
+    else if (IS_IPHONE_6) {
+        optionsView.frame = CGRectMake(quickMap.bounds.size.width-65, maximizeButton.frame.origin.y-325, 45, 325);
+    }
+    else if (IS_IPHONE_6P) {
+        optionsView.frame = CGRectMake(quickMap.bounds.size.width-75, maximizeButton.frame.origin.y-350, 50, 350);
+    }
+    [quickMap addSubview:optionsView];
+    optionsView.hidden = YES;
+    
+    
+    carButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    carButton.frame = CGRectMake(0, 10, optionsView.bounds.size.width, optionsView.bounds.size.width);
+    [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_pub_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [optionsView addSubview:carButton];
+    
+    chatButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    chatButton.frame = CGRectMake(0, carButton.frame.origin.y+carButton.bounds.size.height+18, optionsView.bounds.size.width, optionsView.bounds.size.width);
+    [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [optionsView addSubview:chatButton];
+    
+    cloudButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    cloudButton.frame = CGRectMake(0, chatButton.frame.origin.y+chatButton.bounds.size.height+18, optionsView.bounds.size.width, optionsView.bounds.size.width);
+    [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [optionsView addSubview:cloudButton];
+    
+    cameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    cameraButton.frame = CGRectMake(0, cloudButton.frame.origin.y+cloudButton.bounds.size.height+18, optionsView.bounds.size.width, optionsView.bounds.size.width);
+    [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [optionsView addSubview:cameraButton];
+    
+    dropButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    dropButton.frame = CGRectMake(0, cameraButton.frame.origin.y+cameraButton.bounds.size.height+18, optionsView.bounds.size.width, optionsView.bounds.size.width);
+    [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [optionsView addSubview:dropButton];
+    
+
+    //[self createDemoAppControls];
 }
 
 

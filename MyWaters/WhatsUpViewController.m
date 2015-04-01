@@ -113,7 +113,7 @@
 
     if (tableView==exploreTableView) {
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, cell.bounds.size.width-100, 40)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, exploreTableView.bounds.size.width-100, 40)];
         //                titleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedTitle"];
         titleLabel.text = [NSString stringWithFormat:@"Explore %ld",indexPath.row+1];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
@@ -123,7 +123,7 @@
         [cell.contentView addSubview:titleLabel];
         
         
-        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, cell.bounds.size.width-100, 15)];
+        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, exploreTableView.bounds.size.width-100, 15)];
         //                dateLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
         subtitleLabel.text = [NSString stringWithFormat:@"Explore Subtitle %ld",indexPath.row+1];
         subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
@@ -132,7 +132,7 @@
         subtitleLabel.numberOfLines = 0;
         [cell.contentView addSubview:subtitleLabel];
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 74.5, cell.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 74.5, exploreTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -142,7 +142,7 @@
     }
     else if (tableView==feedTableView) {
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, cell.bounds.size.width-100, 40)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, feedTableView.bounds.size.width-100, 40)];
 //                titleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedTitle"];
         titleLabel.text = [NSString stringWithFormat:@"Feed %ld",indexPath.row+1];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
@@ -152,7 +152,7 @@
         [cell.contentView addSubview:titleLabel];
         
         
-        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, cell.bounds.size.width-100, 30)];
+        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, feedTableView.bounds.size.width-100, 30)];
 //                subtitleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
         subtitleLabel.text = [NSString stringWithFormat:@"Feed Subtitle %ld",indexPath.row+1];
         subtitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
@@ -163,7 +163,7 @@
         
         
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 89.5, cell.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 89.5, feedTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         

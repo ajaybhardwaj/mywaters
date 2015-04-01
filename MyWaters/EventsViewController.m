@@ -173,13 +173,13 @@
         
         cell.backgroundColor = [UIColor whiteColor];
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, cell.bounds.size.width-10, cell.bounds.size.height)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, eventsListingTableView.bounds.size.width-10, cell.bounds.size.height)];
         titleLabel.text = [filtersArray objectAtIndex:indexPath.row];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.backgroundColor = [UIColor clearColor];
         [cell.contentView addSubview:titleLabel];
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, cell.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, eventsListingTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -190,7 +190,7 @@
     }
     else if (tableView==eventsListingTableView) {
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, cell.bounds.size.width-100, 40)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, eventsListingTableView.bounds.size.width-100, 40)];
         //        titleLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
         titleLabel.text = [NSString stringWithFormat:@"Event %ld",indexPath.row+1];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
@@ -208,7 +208,7 @@
         dateLabel.numberOfLines = 0;
         [cell.contentView addSubview:dateLabel];
         
-        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.bounds.size.width-100, 60, 90, 20)];
+        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(eventsListingTableView.bounds.size.width-100, 60, 90, 20)];
         distanceLabel.text = @"10 KM";
         distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         distanceLabel.backgroundColor = [UIColor clearColor];
@@ -219,7 +219,7 @@
         
         
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, cell.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, eventsListingTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -236,7 +236,7 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    
+    self.view.backgroundColor = RGB(247, 247, 247);
     selectedFilterIndex = 0;
     
     eventsListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];

@@ -55,7 +55,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     cell.backgroundColor = RGB(247, 247, 247);
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, cell.bounds.size.width-100, 40)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, favouritesListingTableView.bounds.size.width-100, 40)];
     //        titleLabel.text = [[favouritesDataSource objectAtIndex:indexPath.row] objectForKey:@"favouriteTitle"];
     titleLabel.text = [NSString stringWithFormat:@"Favourite %ld",indexPath.row+1];
     titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
@@ -63,7 +63,7 @@
     titleLabel.numberOfLines = 0;
     [cell.contentView addSubview:titleLabel];
     
-    UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, cell.bounds.size.width-100, 20)];
+    UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, favouritesListingTableView.bounds.size.width-100, 20)];
     distanceLabel.text = @"10 KM";
     distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
     distanceLabel.backgroundColor = [UIColor clearColor];
@@ -72,7 +72,7 @@
     [cell.contentView addSubview:distanceLabel];
     
     
-    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, cell.bounds.size.width, 0.5)];
+    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, favouritesListingTableView.bounds.size.width, 0.5)];
     [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:seperatorImage];
     

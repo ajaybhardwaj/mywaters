@@ -16,11 +16,19 @@
 
 
 
+//*************** Method To Pop View Controller To Parent Controller
+
+- (void) pop2Dismiss:(id) sender {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
 //*************** Method To Create Table Header View
 
 - (void) createTableHeader {
     
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, aboutTableView.bounds.size.width, 420)];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, aboutTableView.bounds.size.width, 380)];
     
 //    UILabel *aboutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, aboutTableView.bounds.size.width-20, 20)];
 //    aboutLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:15];
@@ -29,7 +37,7 @@
 //    [headerView addSubview:aboutLabel];
     
     
-    UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, aboutTableView.bounds.size.width-20, 405)];
+    UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, aboutTableView.bounds.size.width-20, 380)];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13];
     descriptionLabel.text = [NSString stringWithFormat:@"As the national water agency. Public Utilities Board (PUB) is responsible for the collection, production, distribution and reclamation of water in Singapore.\n\nIn just five decades, Singapore has overcome water shortage despite its lack of natural water resources and pollution in its rivers.\n\nDriven by a vision of what it takes to be sustainable in water, Singapore has been investing inresearch and technology. Today, the nation has built a robust, diversified and sustainable water supply from four different sources known as the Four National Taps (water from local catchment areas, imported water, reclaimed water knows as NEWater and desalinated water).\n\nBy integrating the system and maximising the efficiency of each of the four taps. Singapore has ensured a stable, sustainable water supply that is weather resilient, capable of catering to the country's continued growth."];
     descriptionLabel.backgroundColor = [UIColor clearColor];
