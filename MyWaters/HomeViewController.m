@@ -49,6 +49,7 @@
         FeedbackViewController *viewObj = [[FeedbackViewController alloc] init];
         [self.navigationController pushViewController:viewObj animated:NO];
     }
+
 }
 
 
@@ -144,7 +145,9 @@
         [self.navigationController pushViewController:viewObj animated:NO];
     }
     else if (touchedView.tag==4) {
-        // Weahter Detail Page
+        WeatherForecastViewController *viewObj = [[WeatherForecastViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:NO];
+
     }
     else if (touchedView.tag==5) {
         CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
@@ -289,7 +292,7 @@
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
                     
                     bigWeatherTempTitle = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, 45, 45)];
-                    bigWeatherTempTitle.text = @"29";
+                    bigWeatherTempTitle.text = [NSString stringWithFormat:@"29%@",@"°"]; //Use shift+option+8
                     bigWeatherTempTitle.font = [UIFont fontWithName:ROBOTO_BOLD size:40];
                     bigWeatherTempTitle.textColor = [UIColor blackColor];
                     bigWeatherTempTitle.backgroundColor = [UIColor clearColor];
@@ -305,7 +308,7 @@
                     [columnView addSubview:bigTempSubtitle];
                     
                     smallWeatherTempTitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 85, 30, 30)];
-                    smallWeatherTempTitle1.text = @"28";
+                    smallWeatherTempTitle1.text = [NSString stringWithFormat:@"28%@",@"°"];
                     smallWeatherTempTitle1.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
                     smallWeatherTempTitle1.textColor = [UIColor blackColor];
                     smallWeatherTempTitle1.backgroundColor = [UIColor clearColor];
@@ -321,7 +324,7 @@
                     [columnView addSubview:smallTempSubtitle1];
                     
                     smallWeatherTempTitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, 30, 30)];
-                    smallWeatherTempTitle2.text = @"32";
+                    smallWeatherTempTitle2.text = [NSString stringWithFormat:@"32%@",@"°"];
                     smallWeatherTempTitle2.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
                     smallWeatherTempTitle2.textColor = [UIColor blackColor];
                     smallWeatherTempTitle2.backgroundColor = [UIColor clearColor];
@@ -576,7 +579,7 @@
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
                     
                     bigWeatherTempTitle = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, 45, 45)];
-                    bigWeatherTempTitle.text = @"29";
+                    bigWeatherTempTitle.text = [NSString stringWithFormat:@"29%@",@"°"];
                     bigWeatherTempTitle.font = [UIFont fontWithName:ROBOTO_BOLD size:40];
                     bigWeatherTempTitle.textColor = [UIColor blackColor];
                     bigWeatherTempTitle.backgroundColor = [UIColor clearColor];
@@ -592,7 +595,7 @@
                     [columnView addSubview:bigTempSubtitle];
                     
                     smallWeatherTempTitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 85, 30, 30)];
-                    smallWeatherTempTitle1.text = @"28";
+                    smallWeatherTempTitle1.text = [NSString stringWithFormat:@"28%@",@"°"];
                     smallWeatherTempTitle1.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
                     smallWeatherTempTitle1.textColor = [UIColor blackColor];
                     smallWeatherTempTitle1.backgroundColor = [UIColor clearColor];
@@ -608,7 +611,7 @@
                     [columnView addSubview:smallTempSubtitle1];
                     
                     smallWeatherTempTitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, 30, 30)];
-                    smallWeatherTempTitle2.text = @"32";
+                    smallWeatherTempTitle2.text = [NSString stringWithFormat:@"32%@",@"°"];
                     smallWeatherTempTitle2.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
                     smallWeatherTempTitle2.textColor = [UIColor blackColor];
                     smallWeatherTempTitle2.backgroundColor = [UIColor clearColor];
