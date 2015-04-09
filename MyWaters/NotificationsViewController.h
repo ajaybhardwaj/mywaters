@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import <AVFoundation/AVFoundation.h>
 
-@interface NotificationsViewController : UIViewController {
+@interface NotificationsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     
     AppDelegate *appDelegate;
+    
+    UITableView *notificationsTable;
+    NSArray *tableDataSource;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

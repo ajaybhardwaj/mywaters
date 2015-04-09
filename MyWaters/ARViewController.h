@@ -12,10 +12,15 @@
 #import "ARKit.h"
 #import "AppDelegate.h"
 #import "Place.h"
+#import "ARGeoCoordinate.h"
+#import "UILabel + Extension.h"
 
 @interface ARViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate, ARLocationDelegate, ARDelegate, ARMarkerDelegate> {
     
     AppDelegate *appDelegate;
+    UIScrollView *overlayScrollview;
+    
+    NSArray *pictureDataSource;
 }
 
 @property (weak, nonatomic) MKMapView *mapView;

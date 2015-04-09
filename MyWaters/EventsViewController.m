@@ -171,7 +171,7 @@
     
     if (tableView==filterTableView) {
         
-        cell.backgroundColor = [UIColor whiteColor];
+        cell.backgroundColor = RGB(247, 247, 247);
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, eventsListingTableView.bounds.size.width-10, cell.bounds.size.height)];
         titleLabel.text = [filtersArray objectAtIndex:indexPath.row];

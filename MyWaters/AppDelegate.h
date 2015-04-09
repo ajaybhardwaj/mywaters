@@ -28,7 +28,7 @@
 @property (nonatomic, retain) NSMutableArray *DASHBOARD_PREFERENCES_ARRAY,*ABC_WATERS_LISTING_ARRAY,*POI_ARRAY;
 @property (nonatomic, assign) NSInteger NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,SELECTED_MENU_ID;
 @property (nonatomic, retain) NSString *LOGGED_IN_USER_NAME;
-@property (nonatomic, assign) BOOL IS_COMING_AFTER_LOGIN;
+@property (nonatomic, assign) BOOL IS_COMING_AFTER_LOGIN,IS_ARVIEW_CUSTOM_LABEL;
 
 - (void) createViewDeckController;
 - (void) retrieveDashboardPreferences;

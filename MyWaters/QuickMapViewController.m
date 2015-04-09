@@ -130,9 +130,14 @@
     [self.view  addSubview:quickMap];
     
     
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(quickMap.userLocation.coordinate, 6000, 6000);
-    viewRegion.span.longitudeDelta  = 0.005;
-    viewRegion.span.latitudeDelta  = 0.005;
+//    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(quickMap.userLocation.coordinate, 50, 50);
+//    viewRegion.span.longitudeDelta  = 0.005;
+//    viewRegion.span.latitudeDelta  = 0.005;
+//    [quickMap setRegion:viewRegion animated:YES];
+
+    MKUserLocation *userLocation = quickMap.userLocation;
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance (userLocation.location.coordinate, 50, 50);
+    [quickMap setRegion:region animated:YES];
     
     maximizeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [maximizeButton addTarget:self action:@selector(handleExpandingControls) forControlEvents:UIControlEventTouchUpInside];

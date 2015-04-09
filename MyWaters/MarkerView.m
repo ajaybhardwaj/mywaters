@@ -10,7 +10,7 @@
 
 #import "ARGeoCoordinate.h"
 
-const float kWidth = 200.0f;
+const float kWidth = 250.0f;
 const float kHeight = 100.0f;
 
 @interface MarkerView ()
@@ -48,29 +48,34 @@ const float kHeight = 100.0f;
         backgroundView.layer.cornerRadius = 5.0;
         [self addSubview:backgroundView];
 		
-		UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(20.0f, 0.0f, kWidth-20, 60.0f)];
+		UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(20.0f, 0.0f, kWidth-90, 60.0f)];
 		[title setTextColor:[UIColor whiteColor]];
 		[title setText:[coordinate title]];
         title.numberOfLines = 0;
-        title.font = [UIFont fontWithName:ROBOTO_MEDIUM size:20.0f];
+        title.font = [UIFont fontWithName:ROBOTO_MEDIUM size:22.0f];
         title.backgroundColor = [UIColor clearColor];
         
-        UIButton *iconVolly = [UIButton buttonWithType:UIButtonTypeCustom];
-        iconVolly.frame = CGRectMake(210, 30, 40, 40);
-        [iconVolly setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_volly.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        [backgroundView addSubview:iconVolly];
-        iconVolly.userInteractionEnabled = NO;
+//        UIButton *iconVolly = [UIButton buttonWithType:UIButtonTypeCustom];
+//        iconVolly.frame = CGRectMake(210, 30, 40, 40);
+//        [iconVolly setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_volly.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+//        [backgroundView addSubview:iconVolly];
+//        iconVolly.userInteractionEnabled = NO;
 		
-		_lblDistance = [[UILabel alloc] initWithFrame:CGRectMake(20.0f, 40.0f, kWidth-20, 40.0f)];
+		_lblDistance = [[UILabel alloc] initWithFrame:CGRectMake(20.0f, 40.0f, kWidth-90, 40.0f)];
 		[_lblDistance setTextColor:[UIColor whiteColor]];
 		[_lblDistance setText:[NSString stringWithFormat:@"%.2f km", [coordinate distanceFromOrigin] / 1000.0f]];
-        _lblDistance.font = [UIFont fontWithName:ROBOTO_MEDIUM size:17.0f];
+        _lblDistance.font = [UIFont fontWithName:ROBOTO_MEDIUM size:18.0f];
         _lblDistance.backgroundColor = [UIColor clearColor];
 		
 		[backgroundView addSubview:title];
 		[backgroundView addSubview:_lblDistance];
 		
 		[self setBackgroundColor:[UIColor clearColor]];
+        
+        CGAffineTransform rotationTransform = CGAffineTransformIdentity;
+        rotationTransform = CGAffineTransformRotate(rotationTransform, degreesToRadians(90));
+        backgroundView.transform = rotationTransform;
+
 	}
 
 	return self;

@@ -19,6 +19,7 @@
 @synthesize LOGGED_IN_USER_NAME;
 @synthesize IS_COMING_AFTER_LOGIN;
 @synthesize SELECTED_MENU_ID;
+@synthesize IS_ARVIEW_CUSTOM_LABEL;
 
 //*************** Create Deck View Controller For App ***************//
 

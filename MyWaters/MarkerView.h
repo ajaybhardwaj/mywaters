@@ -15,10 +15,12 @@
 @interface MarkerView : UIView {
     
     AppDelegate *appDelegate;
+    NSInteger tagValue;
 }
 
 @property (nonatomic, strong) ARGeoCoordinate *coordinate;
 @property (nonatomic, weak) id <MarkerViewDelegate> delegate;
+
 - (id)initWithCoordinate:(ARGeoCoordinate *)coordinate delegate:(id<MarkerViewDelegate>)delegate;
 
 @end

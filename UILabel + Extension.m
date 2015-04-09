@@ -7,6 +7,7 @@
 //
 
 #import "UILabel + Extension.h"
+#import "AppDelegate.h"
 
 @implementation UILabel___Extension
 
@@ -19,9 +20,16 @@
 */
 
 - (id)initWithFrame:(CGRect)frame{
+    
+    AppDelegate *appdelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     self = [super initWithFrame:frame];
     if (self) {
-        self.edgeInsets = UIEdgeInsetsMake(0, 40, 0, 20);
+        if (appdelegate.IS_ARVIEW_CUSTOM_LABEL) {
+            self.edgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+        }
+        else {
+            self.edgeInsets = UIEdgeInsetsMake(0, 40, 0, 20);
+        }
     }
     return self;
 }

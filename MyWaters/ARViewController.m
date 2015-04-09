@@ -16,6 +16,10 @@
 
 @end
 
+@interface UIDevice (MyPrivateNameThatAppleWouldNeverUseGoesHere)
+- (void) setOrientation:(UIInterfaceOrientation)orientation;
+@end
+
 @implementation ARViewController
 
 
@@ -34,6 +38,18 @@
     
     [self.navigationController dismissViewControllerAnimated:NO completion:nil];
     [self.navigationController popViewControllerAnimated:NO];
+}
+
+
+//*************** Method To Remove Overlay ScrollView
+
+- (void) removeOverlayScrollview {
+    
+    for (UIView * view in overlayScrollview.subviews) {
+        [view removeFromSuperview];
+    }
+    
+    overlayScrollview.hidden = YES;
 }
 
 
@@ -57,6 +73,7 @@
             [coordinate calibrateUsingOrigin:[_userLocation location]];
             MarkerView *markerView = [[MarkerView alloc] initWithCoordinate:coordinate delegate:self];
             NSLog(@"Marker view %@", markerView);
+            markerView.tag = i;
             
             [coordinate setDisplayView:markerView];
             [_arController addCoordinate:coordinate];
@@ -117,30 +134,89 @@
 
 -(void)didTapMarker:(ARGeoCoordinate *)coordinate {
  
-    
+
 }
 
-- (void)didTouchMarkerView:(MarkerView *)markerView {
 
-//    ARGeoCoordinate *tappedCoordinate = [markerView coordinate];
-//    CLLocation *location = [tappedCoordinate geoLocation];
-//
-//    int index = [_locations indexOfObjectPassingTest:^(id obj, NSUInteger index, BOOL *stop) {
-//        return [[obj location] isEqual:location];
-//    }];
-//
-//    if(index != NSNotFound) {
-//        Place *tappedPlace = [_locations objectAtIndex:index];
-//        [[PlacesLoader sharedInstance] loadDetailInformation:tappedPlace successHanlder:^(NSDictionary *response) {
-//            NSLog(@"Response: %@", response);
-//            NSDictionary *resultDict = [response objectForKey:@"result"];
-//            [tappedPlace setPhoneNumber:[resultDict objectForKey:kPhoneKey]];
-//            [tappedPlace setWebsite:[resultDict objectForKey:kWebsiteKey]];
-//            [self showInfoViewForPlace:tappedPlace];
-//        } errorHandler:^(NSError *error) {
-//            NSLog(@"Error: %@", error);
-//        }];
-//    }
+- (void)didTouchMarkerView:(MarkerView *)markerView {
+    
+    overlayScrollview.hidden = NO;
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 50, self.view.bounds.size.height-120, 25)];
+    titleLabel.textColor = [UIColor whiteColor];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:18.0];
+    titleLabel.text = [[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"name"];
+    [overlayScrollview addSubview:titleLabel];
+    
+    CLLocation *locationValue=[[CLLocation alloc] initWithLatitude:[[[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"lat"] doubleValue] longitude:[[[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"long"] doubleValue]];
+    ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"name"]];
+    [coordinate calibrateUsingOrigin:[_userLocation location]];
+    
+    UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.height-100, 50, 70, 25)];
+    distanceLabel.textColor = [UIColor whiteColor];
+    distanceLabel.backgroundColor = [UIColor clearColor];
+    distanceLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:18.0];
+    distanceLabel.text = [NSString stringWithFormat:@"%.2f km", [coordinate distanceFromOrigin] / 1000.0f];
+    distanceLabel.textAlignment = NSTextAlignmentRight;
+    [overlayScrollview addSubview:distanceLabel];
+    
+    UIImageView *seperatorImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 80, self.view.bounds.size.height-40, 2)];
+    seperatorImageView.backgroundColor = [UIColor whiteColor];
+    [overlayScrollview addSubview:seperatorImageView];
+    
+    
+    UILabel___Extension *descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(20, seperatorImageView.frame.origin.y+seperatorImageView.bounds.size.height+10, self.view.bounds.size.height-40, 40)];
+    descriptionLabel.backgroundColor = [UIColor clearColor];
+    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
+    descriptionLabel.textColor = [UIColor whiteColor];
+    descriptionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+    descriptionLabel.numberOfLines = 0;
+    descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    //    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"%@",[dataDict objectForKey:@"description"]] sizeWithFont:descriptionLabel.font
+    //                                                                                                              constrainedToSize:descriptionLabel.frame.size
+    //                                                                                                                  lineBreakMode:NSLineBreakByWordWrapping];
+    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n Dummy Description Text. Dummy Description Text. Dummy Description Text"]
+                                           sizeWithFont:descriptionLabel.font
+                                           constrainedToSize:descriptionLabel.frame.size
+                                           lineBreakMode:NSLineBreakByWordWrapping];
+    
+    
+    CGRect newDescriptionLabelFrame = descriptionLabel.frame;
+    newDescriptionLabelFrame.size.height = expectedDescriptionLabelSize.height;
+    descriptionLabel.frame = newDescriptionLabelFrame;
+    [overlayScrollview addSubview:descriptionLabel];
+    [descriptionLabel sizeToFit];
+
+
+    UIScrollView *picturesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, descriptionLabel.frame.origin.y+descriptionLabel.bounds.size.height+10, self.view.bounds.size.height, 80)];
+    picturesScrollView.showsHorizontalScrollIndicator = NO;
+    picturesScrollView.showsVerticalScrollIndicator = NO;
+    [overlayScrollview addSubview:picturesScrollView];
+    picturesScrollView.backgroundColor = [UIColor clearColor];
+    
+    
+    int xAxis = 20;
+    
+    for (int i=0; i<pictureDataSource.count; i++) {
+        
+        UIImageView *image = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, 5, 70, 70)];
+        [image setBackgroundColor:[UIColor lightGrayColor]];
+        image.tag = i;
+        [picturesScrollView addSubview:image];
+        
+        xAxis = xAxis + 90;
+    }
+    
+    UIButton *addPictureButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addPictureButton.frame = CGRectMake(xAxis, 5, 70, 70);
+    [addPictureButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_add.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [picturesScrollView addSubview:addPictureButton];
+    
+    picturesScrollView.contentSize = CGSizeMake((pictureDataSource.count*70 + pictureDataSource.count*20 + 100), 80);
+    
+    overlayScrollview.contentSize = CGSizeMake(self.view.bounds.size.height, 10+titleLabel.bounds.size.height+10+seperatorImageView.bounds.size.height+10+descriptionLabel.bounds.size.height+10+picturesScrollView.bounds.size.height+30);
+    
 }
 
 //- (void)showInfoViewForPlace:(Place *)place {
@@ -207,6 +283,10 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    appDelegate.IS_ARVIEW_CUSTOM_LABEL = YES;
+
+    // Temp data set
+    pictureDataSource = [[NSArray alloc] initWithObjects:@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10", nil];
     
     _locations = [[NSArray alloc] init];
     
@@ -229,7 +309,7 @@
     [_arController setDebugMode:NO];
     
     
-    UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
+    UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(15, 260, self.view.bounds.size.height, 44)];
     toolBar.barStyle = UIBarStyleBlackOpaque;
     
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissARView)];
@@ -238,6 +318,21 @@
     [toolBar setItems:[NSArray arrayWithObjects:doneButton,flexibleSpace, nil]];
     [self.view addSubview:toolBar];
     
+    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
+    
+    CGAffineTransform rotationTransform = CGAffineTransformIdentity;
+    rotationTransform = CGAffineTransformRotate(rotationTransform, degreesToRadians(90));
+    toolBar.transform = rotationTransform;
+    
+    overlayScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(-125, 125, self.view.bounds.size.height, self.view.bounds.size.width)];
+    overlayScrollview.backgroundColor = [UIColor blackColor];
+    overlayScrollview.showsHorizontalScrollIndicator = NO;
+    overlayScrollview.showsVerticalScrollIndicator = NO;
+    overlayScrollview.alpha = 0.5;
+    [self.view addSubview:overlayScrollview];
+    overlayScrollview.hidden = YES;
+    
+    overlayScrollview.transform = rotationTransform;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -247,8 +342,8 @@
 
 
 - (void)viewWillAppear:(BOOL)animated {
-    [self generateGeoLocations];
     
+    [self generateGeoLocations];
     self.navigationController.navigationBar.hidden = YES;
 }
 

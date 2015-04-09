@@ -9,6 +9,11 @@
 #import "ABCWaterDetailViewController.h"
 #import "ARViewController.h"
 
+
+@interface UIDevice (MyPrivateNameThatAppleWouldNeverUseGoesHere)
+- (void) setOrientation:(UIInterfaceOrientation)orientation;
+@end
+
 @implementation ABCWaterDetailViewController
 
 
@@ -278,6 +283,8 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
+    appDelegate.IS_ARVIEW_CUSTOM_LABEL = NO;
+    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
     self.navigationController.navigationBar.hidden = NO;
 }
 
