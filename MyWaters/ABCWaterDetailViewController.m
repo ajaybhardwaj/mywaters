@@ -286,6 +286,18 @@
     appDelegate.IS_ARVIEW_CUSTOM_LABEL = NO;
     [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
     self.navigationController.navigationBar.hidden = NO;
+    
+    // Enable iOS 7 back gesture
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+        self.navigationController.interactivePopGestureRecognizer.delegate = nil;
+    }
+}
+
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    return YES;
 }
 
 

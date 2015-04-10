@@ -27,39 +27,6 @@
 }
 
 
-//*************** Demo App Controls Action Handler
-
-- (void) handleDemoControls:(id) sender {
-    
-    UIButton *button = (id) sender;
-    
-    if (button.tag==1) {
-        
-    }
-}
-
-
-
-//*************** Demo App UI
-
-- (void) createDemoAppControls {
-    
-    bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60)];
-    [self.view addSubview:bgImageView];
-    [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/notifications.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    
-    
-    detailButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    detailButton.tag = 1;
-    detailButton.frame = CGRectMake(0, self.view.bounds.size.height-100, self.view.bounds.size.width, 50);
-    [detailButton addTarget:self action:@selector(handleDemoControls:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:detailButton];
-    
-    
-    
-}
-
-
 # pragma mark - UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -98,7 +65,12 @@
     
     cell.backgroundColor = RGB(247, 247, 247);
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, notificationsTable.bounds.size.width-100, 40)];
+    
+    UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 50, 50)];
+    [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_announcements_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [cell.contentView addSubview:cellImageView];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, notificationsTable.bounds.size.width-80, 40)];
     //        titleLabel.text = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationTitle"];
     titleLabel.text = [tableDataSource objectAtIndex:indexPath.row];
     titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
@@ -107,7 +79,7 @@
     [cell.contentView addSubview:titleLabel];
     
     
-    UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, notificationsTable.bounds.size.width-100, 20)];
+    UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 60, notificationsTable.bounds.size.width-80, 20)];
     //        dateLabel = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"];
     dateLabel.text = @"Monday 27, March 2015 @ 8:13 AM";
     dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
@@ -150,8 +122,6 @@
     
     
     tableDataSource = [[NSArray alloc] initWithObjects:@"Flood at Marina bay coast",@"Flood warning near clarke quay", nil];
-    
-    //[self createDemoAppControls];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

@@ -132,6 +132,12 @@
         subtitleLabel.numberOfLines = 0;
         [cell.contentView addSubview:subtitleLabel];
         
+        UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        socialButton.frame = CGRectMake(feedTableView.bounds.size.width-25, 55, 15, 15);
+        [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_facebook_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [cell.contentView addSubview:socialButton];
+
+        
         UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 74.5, exploreTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
@@ -161,6 +167,10 @@
         subtitleLabel.numberOfLines = 0;
         [cell.contentView addSubview:subtitleLabel];
         
+        UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        socialButton.frame = CGRectMake(feedTableView.bounds.size.width-25, 70, 15, 15);
+        [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [cell.contentView addSubview:socialButton];
         
         
         UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 89.5, feedTableView.bounds.size.width, 0.5)];

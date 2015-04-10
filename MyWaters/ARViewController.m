@@ -345,6 +345,21 @@
     
     [self generateGeoLocations];
     self.navigationController.navigationBar.hidden = YES;
+    
+    // Disable iOS 7 back gesture
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+        self.navigationController.interactivePopGestureRecognizer.delegate = self;
+    }
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if (gestureRecognizer == self.navigationController.interactivePopGestureRecognizer) {
+        return NO;
+    }
+    // add whatever logic you would otherwise have
+    return YES;
 }
 
 
