@@ -236,6 +236,9 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+
+    
     self.view.backgroundColor = RGB(247, 247, 247);
     selectedFilterIndex = 0;
     

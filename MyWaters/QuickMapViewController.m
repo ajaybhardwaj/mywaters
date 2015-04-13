@@ -42,6 +42,34 @@
 }
 
 
+//*************** Method To ANimate Filter Table
+
+- (void) animateFilterTable {
+    
+    [UIView beginAnimations:@"filterTable" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = filterTableView.center;
+    
+    if (isShowingFilter) {
+        isShowingFilter = NO;
+        pos.y = -70;
+        
+        quickMap.alpha = 1.0;
+        quickMap.userInteractionEnabled = YES;
+        
+    }
+    else {
+        isShowingFilter = YES;
+        pos.y = 64;
+        
+        quickMap.alpha = 0.5;
+        quickMap.userInteractionEnabled = NO;
+    }
+    filterTableView.center = pos;
+    [UIView commitAnimations];
+    
+}
+
 
 //*************** Demo App UI
 
@@ -70,6 +98,8 @@
 - (void) handleMapOptions:(id) sender {
     
     UIButton *button = (id) sender;
+    
+    self.navigationItem.rightBarButtonItem = nil;
     
     if (button.tag==1) {
         
@@ -110,7 +140,72 @@
         [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        
+        [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
     }
+}
+
+
+# pragma mark - UITableViewDelegate Methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView==filterTableView) {
+        return 40.0f;
+    }
+    
+    return 0;
+}
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (tableView==filterTableView) {
+        selectedFilterIndex = indexPath.row;
+        [filterTableView reloadData];
+    }
+}
+
+
+# pragma mark - UITableViewDataSource Methods
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    if (tableView==filterTableView) {
+        return filterDataSource.count;
+    }
+    
+    return 0;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    
+    if (tableView==filterTableView) {
+        
+        cell.backgroundColor = RGB(247, 247, 247);
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, filterTableView.bounds.size.width-10, cell.bounds.size.height)];
+        titleLabel.text = [filterDataSource objectAtIndex:indexPath.row];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        [cell.contentView addSubview:titleLabel];
+        
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+        
+        if (indexPath.row==selectedFilterIndex) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
+        
+    }
+    
+    return cell;
 }
 
 
@@ -121,9 +216,10 @@
     
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    selectedFilterIndex = 0;
+
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
     
     quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
     quickMap.delegate = self;
@@ -211,6 +307,16 @@
     [dropButton addTarget:self action:@selector(handleMapOptions:) forControlEvents:UIControlEventTouchUpInside];
     [optionsView addSubview:dropButton];
     
+    
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -128, self.view.bounds.size.width, 128) style:UITableViewStylePlain];
+    filterTableView.delegate = self;
+    filterTableView.dataSource = self;
+    [self.view addSubview:filterTableView];
+    filterTableView.backgroundColor = [UIColor clearColor];
+    filterTableView.backgroundView = nil;
+    filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    filterDataSource = [[NSArray alloc] initWithObjects:@"<75%",@"75%-90%",@">90%", nil];
 
     //[self createDemoAppControls];
 }

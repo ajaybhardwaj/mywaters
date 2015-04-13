@@ -34,20 +34,20 @@
     if (button.tag==1) {
         QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
         viewObj.isNotQuickMapController = YES;
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (button.tag==2) {
         CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (button.tag==3) {
         WhatsUpViewController *viewObj = [[WhatsUpViewController alloc] init];
         viewObj.isNotWhatsUpController = YES;
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (button.tag==4) {
         FeedbackViewController *viewObj = [[FeedbackViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
 
 }
@@ -132,26 +132,26 @@
     if (touchedView.tag==1) {
         QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
         viewObj.isNotQuickMapController = YES;
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==2) {
         WhatsUpViewController *viewObj = [[WhatsUpViewController alloc] init];
         viewObj.isNotWhatsUpController = YES;
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==3) {
         EventsViewController *viewObj = [[EventsViewController alloc] init];
         viewObj.isNotEventController = YES;
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==4) {
         WeatherForecastViewController *viewObj = [[WeatherForecastViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
 
     }
     else if (touchedView.tag==5) {
         CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:NO];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==6) {
         // Water Level Sensors
@@ -166,7 +166,7 @@
     
     FeedbackViewController *viewObj = [[FeedbackViewController alloc] init];
     viewObj.isNotFeedbackController = YES;
-    [self.navigationController pushViewController:viewObj animated:NO];
+    [self.navigationController pushViewController:viewObj animated:YES];
     
 }
 

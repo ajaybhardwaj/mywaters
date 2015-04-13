@@ -264,12 +264,22 @@
     addPhotoLabel.text = @"Add Photo";
     [topMenu addSubview:addPhotoLabel];
     
+    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 55)];
+    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
+    [topMenu addSubview:seperatorOne];
+
+    
     galleryLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 40, topMenu.bounds.size.width/3, 10)];
     galleryLabel.backgroundColor = [UIColor clearColor];
     galleryLabel.textAlignment = NSTextAlignmentCenter;
     galleryLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     galleryLabel.text = @"Gallery";
     [topMenu addSubview:galleryLabel];
+    
+    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(galleryLabel.frame.origin.x+galleryLabel.bounds.size.width-1, 0, 0.5, 55)];
+    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
+    [topMenu addSubview:seperatorTwo];
+
     
     shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 40, topMenu.bounds.size.width/3, 10)];
     shareLabel.backgroundColor = [UIColor clearColor];

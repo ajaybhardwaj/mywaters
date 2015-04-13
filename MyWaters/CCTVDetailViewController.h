@@ -9,9 +9,22 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface CCTVDetailViewController : UIViewController {
+@interface CCTVDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     
     AppDelegate *appDelegate;
+    
+    UIView *topMenu;
+    
+    BOOL isShowingTopMenu;
+    UIButton *exploreMapButton,*addToFavButton,*refreshButton,*shareButton;
+    UILabel *exploreMapLabel,*addToFavLabel,*refreshLabel,*shareLabel;
+    
+    UIButton *directionButton;
+    UIImageView *directionIcon,*arrowIcon;
+    UILabel *cctvTitleLabel,*distanceLabel;
+    
+    UITableView *cctvListingTable;
+    NSArray *tableDataSource;
 }
 
 @end
