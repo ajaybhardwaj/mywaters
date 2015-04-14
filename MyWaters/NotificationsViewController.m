@@ -121,7 +121,7 @@
     notificationsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
-    tableDataSource = [[NSArray alloc] initWithObjects:@"Flood at Marina bay coast",@"Flood warning near clarke quay", nil];
+    tableDataSource = [[NSArray alloc] initWithObjects:@"Sg Pandan Kechil (West Coast Highway): Water level falls below 75%. Moderate Flood Risk.",@"Sg Pandan Kechil (West Coast Highway): Water level rises above 75%. Moderate Flood Risk.",@"NEA: Moderate to heavy thundery showers & gusty winds expected over north, east & central SG btwn 14:30 to 15:30 hrs. Issued 13:48hrs.", nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

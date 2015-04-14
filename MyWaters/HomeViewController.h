@@ -14,6 +14,7 @@
 #import "CCTVDetailViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "WeatherForecastViewController.h"
+#import "WaterLevelSensorsDetailViewController.h"
 
 @interface HomeViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     

@@ -155,6 +155,8 @@
     }
     else if (touchedView.tag==6) {
         // Water Level Sensors
+        WaterLevelSensorsDetailViewController *viewObj = [[WaterLevelSensorsDetailViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
 

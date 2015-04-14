@@ -210,6 +210,12 @@
 		FEB13FD51A778D2B0061CE74 /* whatsup_feed.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD31A778D2B0061CE74 /* whatsup_feed.png */; };
 		FEB13FD91A77968B0061CE74 /* quickmap_expanded.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD71A77968B0061CE74 /* quickmap_expanded.png */; };
 		FEB13FDA1A77968B0061CE74 /* quickmap.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD81A77968B0061CE74 /* quickmap.png */; };
+		FEBA99701ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEBA996F1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m */; };
+		FEBA99751ADCC62500ED3555 /* icn_meter_line@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA99721ADCC62500ED3555 /* icn_meter_line@3x.png */; };
+		FEBA99761ADCC62500ED3555 /* icn_time@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA99731ADCC62500ED3555 /* icn_time@3x.png */; };
+		FEBA99771ADCC62500ED3555 /* meter_bar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA99741ADCC62500ED3555 /* meter_bar@3x.png */; };
+		FEBA997D1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA997B1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png */; };
+		FEBA997E1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA997C1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png */; };
 		FED72CD61ADB7FED00C4FDDB /* icn_addtofavorites_cctv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED72CD11ADB7FED00C4FDDB /* icn_addtofavorites_cctv@3x.png */; };
 		FED72CD71ADB7FED00C4FDDB /* icn_exploremap_cctv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED72CD21ADB7FED00C4FDDB /* icn_exploremap_cctv@3x.png */; };
 		FED72CD81ADB7FED00C4FDDB /* icn_favorited_cctv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED72CD31ADB7FED00C4FDDB /* icn_favorited_cctv@3x.png */; };
@@ -525,6 +531,13 @@
 		FEB13FD31A778D2B0061CE74 /* whatsup_feed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_feed.png; sourceTree = "<group>"; };
 		FEB13FD71A77968B0061CE74 /* quickmap_expanded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quickmap_expanded.png; sourceTree = "<group>"; };
 		FEB13FD81A77968B0061CE74 /* quickmap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quickmap.png; sourceTree = "<group>"; };
+		FEBA996E1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterLevelSensorsDetailViewController.h; sourceTree = "<group>"; };
+		FEBA996F1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaterLevelSensorsDetailViewController.m; sourceTree = "<group>"; };
+		FEBA99721ADCC62500ED3555 /* icn_meter_line@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_meter_line@3x.png"; sourceTree = "<group>"; };
+		FEBA99731ADCC62500ED3555 /* icn_time@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_time@3x.png"; sourceTree = "<group>"; };
+		FEBA99741ADCC62500ED3555 /* meter_bar@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "meter_bar@3x.png"; sourceTree = "<group>"; };
+		FEBA997B1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_ialert_disabled@3x.png"; sourceTree = "<group>"; };
+		FEBA997C1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_ialert_enabled@3x.png"; sourceTree = "<group>"; };
 		FED72CD11ADB7FED00C4FDDB /* icn_addtofavorites_cctv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_addtofavorites_cctv@3x.png"; sourceTree = "<group>"; };
 		FED72CD21ADB7FED00C4FDDB /* icn_exploremap_cctv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_exploremap_cctv@3x.png"; sourceTree = "<group>"; };
 		FED72CD31ADB7FED00C4FDDB /* icn_favorited_cctv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_favorited_cctv@3x.png"; sourceTree = "<group>"; };
@@ -855,6 +868,7 @@
 		FEA7301C1A772FDD00D274A6 /* MyWaters */ = {
 			isa = PBXGroup;
 			children = (
+				FEBA996D1ADCB3FE00ED3555 /* Water Level Sensors */,
 				FE6679AD1ACCE2140036198D /* Weather Forecast */,
 				FE4F37571A885AFC0028903C /* Login & Sign Up */,
 				FEB13FCE1A7788330061CE74 /* CCTV Views */,
@@ -1126,6 +1140,7 @@
 		FEA730B11A77394300D274A6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FEBA99711ADCC5F700ED3555 /* Water Level Sensors */,
 				FED72CD01ADB7FC500C4FDDB /* CCTV */,
 				FEE04EB31AD7837700BEA6C6 /* Whatsup */,
 				FEE04EA61AD77C7E00BEA6C6 /* Notifications */,
@@ -1227,6 +1242,27 @@
 				FEF43C311A7A156D00237CAD /* CCTVDetailViewController.m */,
 			);
 			name = "CCTV Views";
+			sourceTree = "<group>";
+		};
+		FEBA996D1ADCB3FE00ED3555 /* Water Level Sensors */ = {
+			isa = PBXGroup;
+			children = (
+				FEBA996E1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.h */,
+				FEBA996F1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m */,
+			);
+			name = "Water Level Sensors";
+			sourceTree = "<group>";
+		};
+		FEBA99711ADCC5F700ED3555 /* Water Level Sensors */ = {
+			isa = PBXGroup;
+			children = (
+				FEBA997B1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png */,
+				FEBA997C1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png */,
+				FEBA99721ADCC62500ED3555 /* icn_meter_line@3x.png */,
+				FEBA99731ADCC62500ED3555 /* icn_time@3x.png */,
+				FEBA99741ADCC62500ED3555 /* meter_bar@3x.png */,
+			);
+			name = "Water Level Sensors";
 			sourceTree = "<group>";
 		};
 		FED72CD01ADB7FC500C4FDDB /* CCTV */ = {
@@ -1414,8 +1450,10 @@
 				FE8C1C381AB292FA009D33E4 /* icn_quickmap_car@3x.png in Resources */,
 				FE99BE3E1A7B7E69000B83E8 /* Roboto-ThinItalic.ttf in Resources */,
 				FE99BE3F1A7B7E69000B83E8 /* RobotoCondensed-Bold.ttf in Resources */,
+				FEBA99751ADCC62500ED3555 /* icn_meter_line@3x.png in Resources */,
 				FE6679BF1ACD334A0036198D /* icn_floodinfo_userfeedback_submission_small_greyout@3x.png in Resources */,
 				FE9C8CAB1A847861001074DC /* icn_location@3x.png in Resources */,
+				FEBA997D1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png in Resources */,
 				FE8845BE1AB67121005537C6 /* water_level_dummy.png in Resources */,
 				FEE04EB11AD781C900BEA6C6 /* icn_iAlerts_notification@3x.png in Resources */,
 				FE8D7F411AB7B6BB002BA233 /* abcwater_list@3x.png in Resources */,
@@ -1427,6 +1465,7 @@
 				FE5A46A91A8C57AF00517FB5 /* icn_notifyme@3x.png in Resources */,
 				FE7FD08E1A7F53CE002A05CB /* icn_3dots@3x.png in Resources */,
 				FEF4C6D21ACBC15A00C57304 /* icn_rainarea_big@3x.png in Resources */,
+				FEBA99761ADCC62500ED3555 /* icn_time@3x.png in Resources */,
 				FE73E5751AC143C5007B2179 /* 1_color@3x.png in Resources */,
 				FE6679B71ACD176D0036198D /* icn_sunny_weather@3x.png in Resources */,
 				FE98F0401ABC16A700D5FB5B /* icn_directions_blue@3x.png in Resources */,
@@ -1470,6 +1509,7 @@
 				FEE04EB81AD783B000BEA6C6 /* icn_instagram_whatsup@3x.png in Resources */,
 				FEB02A071AD62D62004B7DDF /* icn_add@3x.png in Resources */,
 				FE99BE011A7B40B8000B83E8 /* icn_back_old@2x.png in Resources */,
+				FEBA997E1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png in Resources */,
 				FEE04EAD1AD781C900BEA6C6 /* icn_announcements_notification@3x.png in Resources */,
 				FEA7302E1A772FDD00D274A6 /* LaunchScreen.xib in Resources */,
 				FE8845BD1AB67121005537C6 /* cctv_dummy.png in Resources */,
@@ -1501,6 +1541,7 @@
 				FED72CDC1ADB7FF500C4FDDB /* divider_cctv@3x.png in Resources */,
 				FEF43C2A1A79F17500237CAD /* events_detail_options.png in Resources */,
 				FEB13FC71A7766410061CE74 /* icn_notifications@3x.png in Resources */,
+				FEBA99771ADCC62500ED3555 /* meter_bar@3x.png in Resources */,
 				FE8845DF1AB6B3EE005537C6 /* w2.png in Resources */,
 				FE73E57E1AC143C5007B2179 /* 5_grey@3x.png in Resources */,
 				FE99BE181A7B6F5E000B83E8 /* settings_notification.png in Resources */,
@@ -1554,6 +1595,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FEBA99701ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m in Sources */,
 				FEA730721A77342100D274A6 /* ArrowImageView.m in Sources */,
 				FEA7307D1A77342100D274A6 /* IIWrapController.m in Sources */,
 				FEA730AD1A77356A00D274A6 /* ProfileViewController.m in Sources */,
@@ -1672,8 +1714,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1693,7 +1735,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1715,8 +1757,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1729,7 +1771,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1739,14 +1781,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -1755,14 +1797,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
@@ -1771,8 +1813,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -1784,7 +1826,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Debug;
@@ -1793,8 +1835,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -1802,7 +1844,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Release;
