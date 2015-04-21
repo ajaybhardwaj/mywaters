@@ -97,11 +97,25 @@
 
 - (void) handleMapOptions:(id) sender {
     
+    
+    //copy your annotations to an array
+    NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithArray: quickMap.annotations];
+    //Remove the object userlocation
+    [annotationsToRemove removeObject: quickMap.userLocation];
+    //Remove all annotations in the array from the mapView
+    [quickMap removeAnnotations: annotationsToRemove];
+    
     UIButton *button = (id) sender;
     
     self.navigationItem.rightBarButtonItem = nil;
     
     if (button.tag==1) {
+        
+        isShowingFlood = YES;
+        isShowingUserFeedback = NO;
+        isShowingRain = NO;
+        isShowingCamera = NO;
+        isShowingDrain = NO;
         
         [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_pub_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -111,6 +125,12 @@
     }
     else if (button.tag==2) {
         
+        isShowingFlood = NO;
+        isShowingUserFeedback = YES;
+        isShowingRain = NO;
+        isShowingCamera = NO;
+        isShowingDrain = NO;
+        
         [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -118,6 +138,12 @@
         [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if (button.tag==3) {
+        
+        isShowingFlood = NO;
+        isShowingUserFeedback = NO;
+        isShowingRain = YES;
+        isShowingCamera = NO;
+        isShowingDrain = NO;
         
         [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -127,6 +153,12 @@
     }
     else if (button.tag==4) {
         
+        isShowingFlood = NO;
+        isShowingUserFeedback = NO;
+        isShowingRain = NO;
+        isShowingCamera = YES;
+        isShowingDrain = NO;
+        
         [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -134,6 +166,12 @@
         [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if (button.tag==5) {
+        
+        isShowingFlood = NO;
+        isShowingUserFeedback = NO;
+        isShowingRain = NO;
+        isShowingCamera = NO;
+        isShowingDrain = YES;
         
         [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -143,6 +181,25 @@
         
         [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
     }
+    
+    //Set Default location to zoom
+    CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.900708, -2.083160); //Create the CLLocation from user cordinates
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 50000, 50000); //Set zooming level
+    MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
+    [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
+    
+    MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
+    annotationRegion.center.latitude = 51.900708; // Make lat dynamic later
+    annotationRegion.center.longitude = -2.083160; // Make long dynamic later
+    annotationRegion.span.latitudeDelta = 0.02f;
+    annotationRegion.span.longitudeDelta = 0.02f;
+    
+    // Place Annotation Point
+    QuickMapAnnotations *annotation1 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+    annotation1.coordinate = annotationRegion.center;
+    annotation1.title = @"Test Annotation 1";
+    annotation1.subtitle = @"Subtitle For Annotation 1";
+    [quickMap addAnnotation:annotation1];
 }
 
 
@@ -210,6 +267,45 @@
 
 
 
+# pragma mark - MKMapViewDelegate Methods
+
+
+-(MKAnnotationView *)mapView:(MKMapView *)mV viewForAnnotation:(id <MKAnnotation>)annotation {
+    
+    MKAnnotationView *pinView = nil;
+    
+    if(annotation != quickMap.userLocation) {
+        
+        static NSString *defaultPinID = @"com.invasivecode.pin";
+        pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
+        if ( pinView == nil )
+            pinView = [[MKAnnotationView alloc]
+                       initWithAnnotation:annotation reuseIdentifier:defaultPinID];
+        
+        pinView.canShowCallout = YES;
+        if (isShowingFlood) {
+            pinView.image = [UIImage imageNamed:@"icn_floodinfo_small.png"];
+        }
+        else if (isShowingUserFeedback) {
+            pinView.image = [UIImage imageNamed:@"icn_floodinfo_userfeedback_submission_small.png"];
+        }
+        else if (isShowingRain) {
+            pinView.image = [UIImage imageNamed:@"icn_rainarea_small.png"];
+        }
+        else if (isShowingCamera) {
+            pinView.image = [UIImage imageNamed:@"icn_cctv_small.png"];
+        }
+        else if (isShowingDrain) {
+            pinView.image = [UIImage imageNamed:@"icn_waterlevel_small.png"];
+        }
+    }
+    else {
+        [quickMap.userLocation setTitle:@"You are here..!!"];
+    }
+    return pinView;
+}
+
+
 # pragma mark - View Lifecycle Methods
 
 - (void) viewDidLoad {
@@ -223,7 +319,40 @@
     
     quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
     quickMap.delegate = self;
+    [quickMap setMapType:MKMapTypeStandard];
+    [quickMap setZoomEnabled:YES];
+    [quickMap setScrollEnabled:YES];
     [self.view  addSubview:quickMap];
+    
+    
+    
+    isShowingFlood = NO;
+    isShowingUserFeedback = NO;
+    isShowingRain = NO;
+    isShowingCamera = NO;
+    isShowingDrain = YES;
+    
+    //Set Default location to zoom
+    CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.900708, -2.083160); //Create the CLLocation from user cordinates
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 50000, 50000); //Set zooming level
+    MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
+    [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
+    
+    MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
+    annotationRegion.center.latitude = 51.900708;
+    annotationRegion.center.longitude = -2.083160;
+    annotationRegion.span.latitudeDelta = 0.02f;
+    annotationRegion.span.longitudeDelta = 0.02f;
+    
+    // Place Annotation Point
+    QuickMapAnnotations *annotation1 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+    annotation1.coordinate = annotationRegion.center;
+//    [annotation1 setTitleString:@"Test Annotation 1"];
+//    [annotation1 setSubtitleString:@"Subtitle For Annotation 1"];
+    annotation1.title = @"Test Annotation 1";
+    annotation1.subtitle = @"Subtitle For Annotation 1";
+    [quickMap addAnnotation:annotation1];
+    
     
     
 //    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(quickMap.userLocation.coordinate, 50, 50);
@@ -231,9 +360,9 @@
 //    viewRegion.span.latitudeDelta  = 0.005;
 //    [quickMap setRegion:viewRegion animated:YES];
 
-    MKUserLocation *userLocation = quickMap.userLocation;
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance (userLocation.location.coordinate, 50, 50);
-    [quickMap setRegion:region animated:YES];
+//    MKUserLocation *userLocation = quickMap.userLocation;
+//    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance (userLocation.location.coordinate, 50, 50);
+//    [quickMap setRegion:region animated:YES];
     
     maximizeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [maximizeButton addTarget:self action:@selector(handleExpandingControls) forControlEvents:UIControlEventTouchUpInside];
@@ -319,6 +448,9 @@
     filterDataSource = [[NSArray alloc] initWithObjects:@"<75%",@"75%-90%",@">90%", nil];
 
     //[self createDemoAppControls];
+    
+    
+    
 }
 
 

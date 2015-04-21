@@ -66,6 +66,12 @@
 		FE82AC5B1A92DE0800CCC94D /* GEOLocations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC561A92DE0800CCC94D /* GEOLocations.m */; };
 		FE82AC5E1A92E34100CCC94D /* MarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC5D1A92E34100CCC94D /* MarkerView.m */; };
 		FE82AC661A93312700CCC94D /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC651A93312700CCC94D /* Place.m */; };
+		FE8691471AE0A05C00EC2A77 /* icn_cctv_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8691421AE0A05C00EC2A77 /* icn_cctv_small@3x.png */; };
+		FE8691481AE0A05C00EC2A77 /* icn_floodinfo_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8691431AE0A05C00EC2A77 /* icn_floodinfo_small@3x.png */; };
+		FE8691491AE0A05C00EC2A77 /* icn_floodinfo_userfeedback_submission_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8691441AE0A05C00EC2A77 /* icn_floodinfo_userfeedback_submission_small@3x.png */; };
+		FE86914A1AE0A05C00EC2A77 /* icn_rainarea_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8691451AE0A05C00EC2A77 /* icn_rainarea_small@3x.png */; };
+		FE86914B1AE0A05C00EC2A77 /* icn_waterlevel_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8691461AE0A05C00EC2A77 /* icn_waterlevel_small@3x.png */; };
+		FE86914E1AE0B15E00EC2A77 /* QuickMapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE86914D1AE0B15E00EC2A77 /* QuickMapAnnotations.m */; };
 		FE8845BD1AB67121005537C6 /* cctv_dummy.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8845BB1AB67121005537C6 /* cctv_dummy.png */; };
 		FE8845BE1AB67121005537C6 /* water_level_dummy.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8845BC1AB67121005537C6 /* water_level_dummy.png */; };
 		FE8845C01AB68F02005537C6 /* no_image.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8845BF1AB68F02005537C6 /* no_image.png */; };
@@ -335,6 +341,13 @@
 		FE82AC5D1A92E34100CCC94D /* MarkerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkerView.m; sourceTree = "<group>"; };
 		FE82AC641A93312700CCC94D /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
 		FE82AC651A93312700CCC94D /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Place.m; sourceTree = "<group>"; };
+		FE8691421AE0A05C00EC2A77 /* icn_cctv_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_cctv_small@3x.png"; sourceTree = "<group>"; };
+		FE8691431AE0A05C00EC2A77 /* icn_floodinfo_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_small@3x.png"; sourceTree = "<group>"; };
+		FE8691441AE0A05C00EC2A77 /* icn_floodinfo_userfeedback_submission_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_userfeedback_submission_small@3x.png"; sourceTree = "<group>"; };
+		FE8691451AE0A05C00EC2A77 /* icn_rainarea_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_rainarea_small@3x.png"; sourceTree = "<group>"; };
+		FE8691461AE0A05C00EC2A77 /* icn_waterlevel_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_small@3x.png"; sourceTree = "<group>"; };
+		FE86914C1AE0B15E00EC2A77 /* QuickMapAnnotations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickMapAnnotations.h; sourceTree = "<group>"; };
+		FE86914D1AE0B15E00EC2A77 /* QuickMapAnnotations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuickMapAnnotations.m; sourceTree = "<group>"; };
 		FE8845BB1AB67121005537C6 /* cctv_dummy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cctv_dummy.png; sourceTree = "<group>"; };
 		FE8845BC1AB67121005537C6 /* water_level_dummy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = water_level_dummy.png; sourceTree = "<group>"; };
 		FE8845BF1AB68F02005537C6 /* no_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = no_image.png; sourceTree = "<group>"; };
@@ -1106,6 +1119,8 @@
 			children = (
 				FEB13FB21A77658A0061CE74 /* QuickMapViewController.h */,
 				FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */,
+				FE86914C1AE0B15E00EC2A77 /* QuickMapAnnotations.h */,
+				FE86914D1AE0B15E00EC2A77 /* QuickMapAnnotations.m */,
 			);
 			name = "Quick Map";
 			sourceTree = "<group>";
@@ -1268,6 +1283,11 @@
 		FED72CD01ADB7FC500C4FDDB /* CCTV */ = {
 			isa = PBXGroup;
 			children = (
+				FE8691421AE0A05C00EC2A77 /* icn_cctv_small@3x.png */,
+				FE8691431AE0A05C00EC2A77 /* icn_floodinfo_small@3x.png */,
+				FE8691441AE0A05C00EC2A77 /* icn_floodinfo_userfeedback_submission_small@3x.png */,
+				FE8691451AE0A05C00EC2A77 /* icn_rainarea_small@3x.png */,
+				FE8691461AE0A05C00EC2A77 /* icn_waterlevel_small@3x.png */,
 				FED72CDD1ADBBC3D00C4FDDB /* icn_directions_cctv@3x.png */,
 				FED72CD11ADB7FED00C4FDDB /* icn_addtofavorites_cctv@3x.png */,
 				FED72CDB1ADB7FF500C4FDDB /* divider_cctv@3x.png */,
@@ -1402,6 +1422,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE8691471AE0A05C00EC2A77 /* icn_cctv_small@3x.png in Resources */,
 				FE73E5761AC143C5007B2179 /* 1_grey@3x.png in Resources */,
 				FE8C1C351AB292FA009D33E4 /* icn_location_pink@3x.png in Resources */,
 				FE99BE331A7B7E69000B83E8 /* Roboto-Black.ttf in Resources */,
@@ -1424,6 +1445,7 @@
 				FED72CD71ADB7FED00C4FDDB /* icn_exploremap_cctv@3x.png in Resources */,
 				FE98F0331ABBC33500D5FB5B /* icn_directions@3x.png in Resources */,
 				FE99BE381A7B7E69000B83E8 /* Roboto-Light.ttf in Resources */,
+				FE86914A1AE0A05C00EC2A77 /* icn_rainarea_small@3x.png in Resources */,
 				FE99BE391A7B7E69000B83E8 /* Roboto-LightItalic.ttf in Resources */,
 				FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */,
 				FE8C1C3C1AB292FA009D33E4 /* icn_weather_small@3x.png in Resources */,
@@ -1466,6 +1488,7 @@
 				FE7FD08E1A7F53CE002A05CB /* icn_3dots@3x.png in Resources */,
 				FEF4C6D21ACBC15A00C57304 /* icn_rainarea_big@3x.png in Resources */,
 				FEBA99761ADCC62500ED3555 /* icn_time@3x.png in Resources */,
+				FE86914B1AE0A05C00EC2A77 /* icn_waterlevel_small@3x.png in Resources */,
 				FE73E5751AC143C5007B2179 /* 1_color@3x.png in Resources */,
 				FE6679B71ACD176D0036198D /* icn_sunny_weather@3x.png in Resources */,
 				FE98F0401ABC16A700D5FB5B /* icn_directions_blue@3x.png in Resources */,
@@ -1498,6 +1521,7 @@
 				FE73E57B1AC143C5007B2179 /* 4_color@3x.png in Resources */,
 				FEA730291A772FDD00D274A6 /* Main.storyboard in Resources */,
 				FE98F04E1ABC1E7800D5FB5B /* icn_call_blue@3x.png in Resources */,
+				FE8691491AE0A05C00EC2A77 /* icn_floodinfo_userfeedback_submission_small@3x.png in Resources */,
 				FE6679C11ACD334A0036198D /* icn_waterlevel_small_greyout@3x.png in Resources */,
 				FEB13FD91A77968B0061CE74 /* quickmap_expanded.png in Resources */,
 				FEFBFF2C1A80D24E00E485E9 /* icn_call@3x.png in Resources */,
@@ -1536,6 +1560,7 @@
 				FE73E57A1AC143C5007B2179 /* 3_grey@3x.png in Resources */,
 				FEB13FD51A778D2B0061CE74 /* whatsup_feed.png in Resources */,
 				FE7FD0841A7F3933002A05CB /* favourites.png in Resources */,
+				FE8691481AE0A05C00EC2A77 /* icn_floodinfo_small@3x.png in Resources */,
 				FE5A46A71A8C57AF00517FB5 /* icn_addtofavorites@3x.png in Resources */,
 				FE98F04C1ABC18A000D5FB5B /* icn_gallery@3x.png in Resources */,
 				FED72CDC1ADB7FF500C4FDDB /* divider_cctv@3x.png in Resources */,
@@ -1652,6 +1677,7 @@
 				FEA730AA1A77356000D274A6 /* SettingsViewController.m in Sources */,
 				FEA730201A772FDD00D274A6 /* main.m in Sources */,
 				FEA730981A77352F00D274A6 /* WhatsUpViewController.m in Sources */,
+				FE86914E1AE0B15E00EC2A77 /* QuickMapAnnotations.m in Sources */,
 				FEA7307B1A77342100D274A6 /* AutoResizeImageView.m in Sources */,
 				FEA730781A77342100D274A6 /* UnderlinedLabel.m in Sources */,
 				FEA730541A7733F900D274A6 /* SharedObject.m in Sources */,

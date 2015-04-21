@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "AuxilaryService.h"
 #import <MapKit/MapKit.h>
+#import "QuickMapAnnotations.h"
 
 @interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate> {
     
@@ -18,11 +19,14 @@
     
     MKMapView *quickMap;
     UIButton *maximizeButton,*carButton,*chatButton,*cloudButton,*cameraButton,*dropButton;
+    BOOL isShowingFlood,isShowingUserFeedback,isShowingRain,isShowingCamera,isShowingDrain;
 
     UIView *optionsView;
     UITableView *filterTableView;
     NSArray *filterDataSource;
     NSInteger selectedFilterIndex;
+    
+    NSDictionary *locationsDict;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;
