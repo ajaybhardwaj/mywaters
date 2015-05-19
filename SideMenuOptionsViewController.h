@@ -24,6 +24,7 @@ typedef enum {
     OPTION_BOOKING,
     OPTION_FEEDBACK,
     OPTION_SETTINGS,
+    OPTION_ABOUT_PUB,
     
 } SideMenuOptions;
 

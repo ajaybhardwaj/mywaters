@@ -16,6 +16,7 @@
 @implementation HomeViewController
 
 
+
 //*************** Method To Open Side Menu
 
 - (void) openDeckMenu:(id) sender {
@@ -808,27 +809,34 @@
     UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 45, 45)];
     [cell.contentView addSubview:cellImageView];
     
-    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 5, cell.bounds.size.width-60, 25)];
+//    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 5, cell.bounds.size.width-60, 25)];
+//    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 5, cell.bounds.size.width-60, cell.bounds.size.height)];
+    UILabel *cellTitleLabel = [[UILabel alloc] init];
     cellTitleLabel.backgroundColor = [UIColor clearColor];
     cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
     cellTitleLabel.numberOfLines = 0;
     cellTitleLabel.textColor = RGB(245, 193, 12);
     [cell.contentView addSubview:cellTitleLabel];
     
-    UILabel *cellSubTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 31, cell.bounds.size.width-60, 20)];
-    cellSubTitleLabel.backgroundColor = [UIColor clearColor];
-    cellSubTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:9.0];
-    cellSubTitleLabel.numberOfLines = 0;
-    [cell.contentView addSubview:cellSubTitleLabel];
     
     
     if (tableView==whatsUpListingTable) {
         
+        cellTitleLabel.frame = CGRectMake(55, 5, cell.bounds.size.width-60, cell.bounds.size.height);
         cellImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/e%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
         cellTitleLabel.text = [[whatsUpFeedDataSource objectAtIndex:indexPath.row] objectForKey:@"Title"];
-        cellSubTitleLabel.text = [[whatsUpFeedDataSource objectAtIndex:indexPath.row] objectForKey:@"Subtitle"];
+//        cellSubTitleLabel.text = [[whatsUpFeedDataSource objectAtIndex:indexPath.row] objectForKey:@"Subtitle"];
     }
     else if (tableView==eventsListingTable) {
+        
+        cellTitleLabel.frame = CGRectMake(55, 5, cell.bounds.size.width-60, 25);
+        
+        UILabel *cellSubTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 31, cell.bounds.size.width-60, 20)];
+        cellSubTitleLabel.backgroundColor = [UIColor clearColor];
+        cellSubTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:9.0];
+        cellSubTitleLabel.numberOfLines = 0;
+        [cell.contentView addSubview:cellSubTitleLabel];
+
         
         cellImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
         cellTitleLabel.text = [[eventsDataSource objectAtIndex:indexPath.row] objectForKey:@"Title"];

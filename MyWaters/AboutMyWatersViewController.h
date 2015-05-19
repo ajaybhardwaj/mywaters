@@ -9,8 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "Constants.h"
 #import "CustomButtons.h"
+#import "ViewControllerHelper.h"
+#import "AppDelegate.h"
+#import "BookingWebViewController.h"
 
 @interface AboutMyWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
+    
+    AppDelegate *appDelegate;
     
     UITableView *aboutTableView;
     NSArray *tableTitleDataSource;

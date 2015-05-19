@@ -26,6 +26,12 @@
     
     if (button.tag==1) {
         
+        // Temp Action For Skip Button
+        appDelegate.IS_COMING_AFTER_LOGIN = YES;
+        
+        [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+
     }
     else if (button.tag==2) {
         LoginViewController *viewObj = [[LoginViewController alloc] init];

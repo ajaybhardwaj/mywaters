@@ -19,7 +19,7 @@
 
 
 
-//*************** Method To ANimate Filter Table
+//*************** Method To Animate Filter Table
 
 - (void) animateFilterTable {
     

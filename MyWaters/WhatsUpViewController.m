@@ -123,14 +123,14 @@
         [cell.contentView addSubview:titleLabel];
         
         
-        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, exploreTableView.bounds.size.width-100, 15)];
-        //                dateLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
-        subtitleLabel.text = [NSString stringWithFormat:@"Explore Subtitle %ld",indexPath.row+1];
-        subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
-        subtitleLabel.backgroundColor = [UIColor clearColor];
-        subtitleLabel.textColor = [UIColor blackColor];
-        subtitleLabel.numberOfLines = 0;
-        [cell.contentView addSubview:subtitleLabel];
+//        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, exploreTableView.bounds.size.width-100, 15)];
+//        //                dateLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
+//        subtitleLabel.text = [NSString stringWithFormat:@"Explore Subtitle %ld",indexPath.row+1];
+//        subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+//        subtitleLabel.backgroundColor = [UIColor clearColor];
+//        subtitleLabel.textColor = [UIColor blackColor];
+//        subtitleLabel.numberOfLines = 0;
+//        [cell.contentView addSubview:subtitleLabel];
         
         UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
         socialButton.frame = CGRectMake(feedTableView.bounds.size.width-25, 55, 15, 15);
@@ -158,14 +158,14 @@
         [cell.contentView addSubview:titleLabel];
         
         
-        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, feedTableView.bounds.size.width-100, 30)];
-//                subtitleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
-        subtitleLabel.text = [NSString stringWithFormat:@"Feed Subtitle %ld",indexPath.row+1];
-        subtitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-        subtitleLabel.backgroundColor = [UIColor clearColor];
-        subtitleLabel.textColor = [UIColor blackColor];
-        subtitleLabel.numberOfLines = 0;
-        [cell.contentView addSubview:subtitleLabel];
+//        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, feedTableView.bounds.size.width-100, 30)];
+////                subtitleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
+//        subtitleLabel.text = [NSString stringWithFormat:@"Feed Subtitle %ld",indexPath.row+1];
+//        subtitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+//        subtitleLabel.backgroundColor = [UIColor clearColor];
+//        subtitleLabel.textColor = [UIColor blackColor];
+//        subtitleLabel.numberOfLines = 0;
+//        [cell.contentView addSubview:subtitleLabel];
         
         UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
         socialButton.frame = CGRectMake(feedTableView.bounds.size.width-25, 70, 15, 15);

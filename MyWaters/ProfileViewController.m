@@ -17,6 +17,23 @@
 @implementation ProfileViewController
 
 
+- (void) swipedScreen:(UISwipeGestureRecognizer*)swipeGesture {
+    // do stuff
+    NSLog(@"Swipe Detected");
+    self.view.alpha = 0.5;
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+    
+}
+
+//*************** Method To Move To Edit Profile View
+
+- (void) moveToEditProfile {
+    
+    EditProfileViewController *viewObj = [[EditProfileViewController alloc] init];
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
 //*************** Method To Open Side Menu
 
 - (void) openDeckMenu:(id) sender {
@@ -118,7 +135,7 @@
     self.view.backgroundColor = RGB(247, 247, 247);
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
-    UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:nil];
+    UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(moveToEditProfile)];
     self.navigationItem.rightBarButtonItem = editButton;
     editButton.tintColor = [UIColor whiteColor];
     
@@ -195,18 +212,18 @@
     [bgContentScrollView addSubview:photosScrollView];
     
     
-    joinFriendOfWatersButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    joinFriendOfWatersButton.frame = CGRectMake(0, photosScrollView.frame.origin.y+photosScrollView.bounds.size.height+30, self.view.bounds.size.width, 30);
-    [joinFriendOfWatersButton setTitleColor:RGB(20, 46, 74) forState:UIControlStateNormal];
-    NSMutableAttributedString *buttonTitle = [[NSMutableAttributedString alloc] initWithString:@"JOIN FRIEND OF WATER"];
-    [buttonTitle addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:NSMakeRange(0, [buttonTitle length])];
-    [joinFriendOfWatersButton setAttributedTitle:buttonTitle forState:UIControlStateNormal];
-    joinFriendOfWatersButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    [bgContentScrollView addSubview:joinFriendOfWatersButton];
+//    joinFriendOfWatersButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    joinFriendOfWatersButton.frame = CGRectMake(0, photosScrollView.frame.origin.y+photosScrollView.bounds.size.height+30, self.view.bounds.size.width, 30);
+//    [joinFriendOfWatersButton setTitleColor:RGB(20, 46, 74) forState:UIControlStateNormal];
+//    NSMutableAttributedString *buttonTitle = [[NSMutableAttributedString alloc] initWithString:@"JOIN FRIEND OF WATER"];
+//    [buttonTitle addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:NSMakeRange(0, [buttonTitle length])];
+//    [joinFriendOfWatersButton setAttributedTitle:buttonTitle forState:UIControlStateNormal];
+//    joinFriendOfWatersButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+//    [bgContentScrollView addSubview:joinFriendOfWatersButton];
     
     
     rewardsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    rewardsButton.frame = CGRectMake(0, joinFriendOfWatersButton.frame.origin.y+joinFriendOfWatersButton.bounds.size.height+30, self.view.bounds.size.width, 50);
+    rewardsButton.frame = CGRectMake(0, photosScrollView.frame.origin.y+photosScrollView.bounds.size.height+30, self.view.bounds.size.width, 50);
     rewardsButton.backgroundColor = RGB(85,49,118);
     [rewardsButton setTitle:@"REWARDS" forState:UIControlStateNormal];
     [rewardsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -231,6 +248,17 @@
     //[self createDemoAppControls];
 }
 
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
+
+}
 
 - (void) viewWillAppear:(BOOL)animated {
     

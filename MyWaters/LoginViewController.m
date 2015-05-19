@@ -226,7 +226,8 @@
     skipButton.tag = 5;
     [skipButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     skipButton.frame = CGRectMake(0, backButton.frame.origin.y+backButton.bounds.size.height+15, self.view.bounds.size.width, 45);
-    [skipButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    // Temp Action For Skip Button
+    [skipButton addTarget:self action:@selector(validateLoginParameters) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:skipButton];
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];

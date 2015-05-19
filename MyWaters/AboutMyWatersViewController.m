@@ -15,6 +15,14 @@
 @implementation AboutMyWatersViewController
 
 
+//*************** Method To Open Side Menu
+
+- (void) openDeckMenu:(id) sender {
+    
+    self.view.alpha = 0.5;
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+}
+
 
 //*************** Method To Pop View Controller To Parent Controller
 
@@ -73,6 +81,20 @@
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
+    if (indexPath.row==0) {
+        cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_web_settings.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    else if (indexPath.row==1) {
+        cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_facebook_settings.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    else if (indexPath.row==2) {
+        cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_twitter_settings.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    else if (indexPath.row==3) {
+        cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_settings.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    
+    
     UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, aboutTableView.bounds.size.width, 0.5)];
     [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:cellSeperator];
@@ -86,7 +108,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+    if (indexPath.row==0) {
+        BookingWebViewController *viewObj = [[BookingWebViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:YES];
+    }
 }
 
 
@@ -97,10 +122,13 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.title = @"About MyWaters";
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    
+    self.title = @"About PUB";
+//    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
 
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram", nil];
+    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"Join Friends of Water", nil];
     
     aboutTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     aboutTableView.delegate = self;
@@ -112,6 +140,13 @@
     
     [self createTableHeader];
 }
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    self.view.alpha = 1.0;
+
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

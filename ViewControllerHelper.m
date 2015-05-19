@@ -141,7 +141,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_notificationsNavController.navigationBar];
         [[[notification navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(139,163,13) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(140,164,0) frame:CGRectMake(0, 0, 1, 1)];
         [[[notification navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_notificationsNavController.view setAutoresizesSubviews:TRUE];
@@ -275,7 +275,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
     
     if (!_bookingNavController) {
         
-        BookingViewController *booking = [[BookingViewController alloc] init];
+//        BookingViewController *booking = [[BookingViewController alloc] init];
+        BookingWebViewController *booking = [[BookingWebViewController alloc] init];
         [booking setTitle:@"Booking"];
         _bookingNavController = [[UINavigationController alloc] initWithRootViewController:booking];
         
@@ -309,7 +310,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_feedbackNavController.navigationBar];
         [[[feedback navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(139,163,13) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(140,164,0) frame:CGRectMake(0, 0, 1, 1)];
         [[[feedback navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_feedbackNavController.view setAutoresizesSubviews:TRUE];
@@ -337,7 +338,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_settingsNavController.navigationBar];
         [[[settings navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(139,163,11) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(140,164,0) frame:CGRectMake(0, 0, 1, 1)];
         [[[settings navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_settingsNavController.view setAutoresizesSubviews:TRUE];
@@ -409,6 +410,35 @@ static ViewControllerHelper *sharedViewHelper = nil;
     
     return _favouritesNavController;
 }
+
+
+- (UINavigationController*) getAboutPUBController {
+    
+    if (!_aboutPUBController) {
+        
+        AboutMyWatersViewController *aboutPUB = [[AboutMyWatersViewController alloc] init];
+        [aboutPUB setTitle:@"About PUB"];
+        _aboutPUBController = [[UINavigationController alloc] initWithRootViewController:aboutPUB];
+        
+        [self setNavigationBarStyle_Transclucent:_aboutPUBController.navigationBar];
+        [[[aboutPUB navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(140,164,0) frame:CGRectMake(0, 0, 1, 1)];
+        [[[aboutPUB navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+        
+        [_aboutPUBController.view setAutoresizesSubviews:TRUE];
+        [_aboutPUBController.view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin)];
+        _currentDeckIndex = ABOUT_PUB_CONTROLLER;
+        
+        [_aboutPUBController popToRootViewControllerAnimated:NO];
+        
+    }
+    else {
+        [_aboutPUBController popToRootViewControllerAnimated:NO];
+    }
+    
+    return _aboutPUBController;
+}
+
 
 
 
@@ -630,6 +660,21 @@ static ViewControllerHelper *sharedViewHelper = nil;
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:SETTINGS_CONTROLLER];
             break;
             
+        case ABOUT_PUB_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getAboutPUBController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getAboutPUBController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:ABOUT_PUB_CONTROLLER];
+            break;
+            
         case SIGN_IN_CONTROLLER:
             if (center) {
 //                if (!appdelegate.IS_SKIP_REGISTRATION_ACTIVE) {
@@ -738,6 +783,10 @@ static ViewControllerHelper *sharedViewHelper = nil;
     
     [self clear_All_ControllersInThisNavigationCntrl:[self favouritesNavController]];
     [self setFavouritesNavController:nil];
+    
+    [self clear_All_ControllersInThisNavigationCntrl:[self aboutPUBController]];
+    [self setAbcwatersNavController:nil];
+
     
 }
 

@@ -106,11 +106,11 @@
 
 - (void) createFeedbackTableHeader {
     
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 150)];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 120)];
     [headerView setBackgroundColor:RGB(247, 247, 247)];
     
     UIButton *picUploadbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-    picUploadbutton.frame = CGRectMake((headerView.bounds.size.width/2)-40, 35, 80, 80);
+    picUploadbutton.frame = CGRectMake((headerView.bounds.size.width/2)-40, 20, 80, 80);
     [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_image.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [headerView addSubview:picUploadbutton];
     
@@ -339,7 +339,30 @@
         [cell.contentView addSubview:cellSeperator];
 
     }
-    
+    else if (indexPath.row==4) {
+        
+        emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+        emailField.textColor = RGB(35, 35, 35);
+        emailField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+        emailField.leftViewMode = UITextFieldViewModeAlways;
+        emailField.borderStyle = UITextBorderStyleNone;
+        emailField.textAlignment=NSTextAlignmentLeft;
+        [emailField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        emailField.placeholder=@"Email *";
+        [cell.contentView addSubview:emailField];
+        emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        emailField.backgroundColor = [UIColor clearColor];
+        emailField.delegate = self;
+        [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+        emailField.tag = 5;
+        
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, emailField.bounds.size.height-0.5, emailField.bounds.size.width, 0.5)];
+        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:cellSeperator];
+        
+        
+    }
     
     return cell;
 }
@@ -347,7 +370,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 4;
+    return 5;
 }
 
 
@@ -530,7 +553,7 @@
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     }
     else {
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(139,163,13) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(140,164,0) frame:CGRectMake(0, 0, 1, 1)];
         [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];

@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "RewardsListingViewController.h"
 #import "Constants.h"
+#import "EditProfileViewController.h"
 
 @interface ProfileViewController : UIViewController {
     

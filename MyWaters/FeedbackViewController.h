@@ -17,7 +17,7 @@
     BOOL isFloodSubmission,isShowingPicker;
     
     NSArray *feedbackTypeArray,*severityTypeArray;
-    UITextField *feedbackTypeField,*locationField,*nameField,*phoneField;
+    UITextField *feedbackTypeField,*locationField,*nameField,*phoneField,*emailField;
     UITextView *commentField;
     
     NSInteger fieldIndex;

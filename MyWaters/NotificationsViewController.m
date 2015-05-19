@@ -27,11 +27,47 @@
 }
 
 
+//*************** Method To ANimate Filter Table
+
+- (void) animateFilterTable {
+    
+    [UIView beginAnimations:@"filterTable" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = filterTableView.center;
+    
+    if (isShowingFilter) {
+        isShowingFilter = NO;
+        pos.y = -120;
+        
+        notificationsTable.alpha = 1.0;
+        notificationsTable.userInteractionEnabled = YES;
+        
+    }
+    else {
+        isShowingFilter = YES;
+        pos.y = 135;
+        
+        notificationsTable.alpha = 0.5;
+        notificationsTable.userInteractionEnabled = NO;
+    }
+    filterTableView.center = pos;
+    [UIView commitAnimations];
+    
+}
+
+
 # pragma mark - UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 80.0f;
+    if (tableView==filterTableView) {
+        return 40.0f;
+    }
+    else if (tableView==notificationsTable) {
+        return 80.0f;
+    }
+    
+    return 0;
 }
 
 
@@ -39,13 +75,19 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    NSLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
-    
-//    if (self.synthesizer.speaking == NO) {
-    AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:[tableDataSource objectAtIndex:indexPath.row]];
-    utterance.rate = AVSpeechUtteranceMinimumSpeechRate;
-    AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
-    [synth speakUtterance:utterance];
+    if (tableView==filterTableView) {
+        selectedFilterIndex = indexPath.row;
+        [filterTableView reloadData];
+    }
+    else {
+        NSLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
+        
+        //    if (self.synthesizer.speaking == NO) {
+        AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:[tableDataSource objectAtIndex:indexPath.row]];
+        utterance.rate = AVSpeechUtteranceMinimumSpeechRate;
+        AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
+        [synth speakUtterance:utterance];
+    }
 }
 
 
@@ -53,8 +95,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return tableDataSource.count;
+    if (tableView==notificationsTable) {
+        return tableDataSource.count;
+    }
+    else if (tableView==filterTableView) {
+        return filtersArray.count;
+    }
     
+    return 0;
 }
 
 
@@ -62,38 +110,66 @@
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     
-    
     cell.backgroundColor = RGB(247, 247, 247);
     
-    
-    UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 50, 50)];
-    [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_announcements_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    [cell.contentView addSubview:cellImageView];
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, notificationsTable.bounds.size.width-80, 40)];
-    //        titleLabel.text = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationTitle"];
-    titleLabel.text = [tableDataSource objectAtIndex:indexPath.row];
-    titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.numberOfLines = 0;
-    [cell.contentView addSubview:titleLabel];
-    
-    
-    UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 60, notificationsTable.bounds.size.width-80, 20)];
-    //        dateLabel = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"];
-    dateLabel.text = @"Monday 27, March 2015 @ 8:13 AM";
-    dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-    dateLabel.backgroundColor = [UIColor clearColor];
-    dateLabel.textColor = [UIColor lightGrayColor];
-    dateLabel.numberOfLines = 0;
-    dateLabel.textAlignment = NSTextAlignmentRight;
-    [cell.contentView addSubview:dateLabel];
-    
-    
-    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, notificationsTable.bounds.size.width, 0.5)];
-    [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
-    [cell.contentView addSubview:seperatorImage];
-    
+    if (tableView==filterTableView) {
+        
+        cell.backgroundColor = RGB(247, 247, 247);
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, notificationsTable.bounds.size.width-10, cell.bounds.size.height)];
+        titleLabel.text = [filtersArray objectAtIndex:indexPath.row];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        [cell.contentView addSubview:titleLabel];
+        
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, notificationsTable.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+        
+        if (indexPath.row==selectedFilterIndex) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
+        
+    }
+    else if (tableView==notificationsTable) {
+        
+        UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 50, 50)];
+        // ***** Temp Code For DEmo Only
+        if (indexPath.row==0) {
+            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_announcements_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        }
+        else if (indexPath.row==1) {
+            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        }
+        else if (indexPath.row==2) {
+            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_heavyrain_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        }
+        [cell.contentView addSubview:cellImageView];
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, notificationsTable.bounds.size.width-80, 40)];
+        //        titleLabel.text = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationTitle"];
+        titleLabel.text = [tableDataSource objectAtIndex:indexPath.row];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.numberOfLines = 0;
+        [cell.contentView addSubview:titleLabel];
+        
+        
+        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 60, notificationsTable.bounds.size.width-80, 20)];
+        //        dateLabel = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"];
+        dateLabel.text = @"Monday 27, March 2015 @ 8:13 AM";
+        dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        dateLabel.backgroundColor = [UIColor clearColor];
+        dateLabel.textColor = [UIColor lightGrayColor];
+        dateLabel.numberOfLines = 0;
+        dateLabel.textAlignment = NSTextAlignmentRight;
+        [cell.contentView addSubview:dateLabel];
+        
+        
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, notificationsTable.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+    }
     
     return cell;
 }
@@ -110,7 +186,7 @@
     self.view.backgroundColor = RGB(247, 247, 247);
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_filter"]];
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
     
     notificationsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     notificationsTable.delegate = self;
@@ -122,6 +198,17 @@
     
     
     tableDataSource = [[NSArray alloc] initWithObjects:@"Sg Pandan Kechil (West Coast Highway): Water level falls below 75%. Moderate Flood Risk.",@"Sg Pandan Kechil (West Coast Highway): Water level rises above 75%. Moderate Flood Risk.",@"NEA: Moderate to heavy thundery showers & gusty winds expected over north, east & central SG btwn 14:30 to 15:30 hrs. Issued 13:48hrs.", nil];
+    
+    
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -256, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
+    filterTableView.delegate = self;
+    filterTableView.dataSource = self;
+    [self.view addSubview:filterTableView];
+    filterTableView.backgroundColor = [UIColor clearColor];
+    filterTableView.backgroundView = nil;
+    filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    filtersArray = [[NSArray alloc] initWithObjects:@"Announcements",@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

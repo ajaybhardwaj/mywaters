@@ -14,8 +14,13 @@
     
     AppDelegate *appDelegate;
     
-    UITableView *notificationsTable;
+    UITableView *notificationsTable,*filterTableView;
     NSArray *tableDataSource;
+    
+    NSArray *filtersArray;
+    
+    BOOL isShowingFilter;
+    NSInteger selectedFilterIndex;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

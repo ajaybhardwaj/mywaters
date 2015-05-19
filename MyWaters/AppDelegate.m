@@ -21,6 +21,8 @@
 @synthesize SELECTED_MENU_ID;
 @synthesize IS_ARVIEW_CUSTOM_LABEL;
 
+
+
 //*************** Create Deck View Controller For App ***************//
 
 - (void) createViewDeckController {
@@ -352,6 +354,7 @@
     {
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
     }
+    
     
     // Override point for customization after application launch.
     return YES;
