@@ -147,6 +147,16 @@
 
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

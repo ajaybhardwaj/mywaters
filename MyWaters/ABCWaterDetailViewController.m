@@ -29,6 +29,15 @@
 }
 
 
+//*************** Method To Open Side Menu
+
+- (void) openDeckMenu:(id) sender {
+    
+    self.view.alpha = 0.5;
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+}
+
+
 //*************** Method To Pop View Controller To Parent Controller
 
 - (void) pop2Dismiss:(id) sender {
@@ -82,6 +91,7 @@
     }
     
     eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 100)];
+    [eventImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/temp_header.jpg",appDelegate.RESOURCE_FOLDER_PATH]]];
     [bgScrollView addSubview:eventImageView];
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -118,7 +128,7 @@
     eventInfoLabel.backgroundColor = [UIColor whiteColor];
     eventInfoLabel.textAlignment = NSTextAlignmentLeft;
     eventInfoLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    eventInfoLabel.text = @"            Event Info";
+    eventInfoLabel.text = @"            ABC Waters Info";
     [bgScrollView addSubview:eventInfoLabel];
     
     UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, eventInfoLabel.bounds.size.width, 0.5)];
@@ -302,6 +312,17 @@
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;
         self.navigationController.interactivePopGestureRecognizer.delegate = nil;
     }
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
+    
 }
 
 

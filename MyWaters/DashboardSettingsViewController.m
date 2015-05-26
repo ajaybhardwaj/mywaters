@@ -11,11 +11,47 @@
 @implementation DashboardSettingsViewController
 
 
+//*************** Method To Open Side Menu
+
+- (void) openDeckMenu:(id) sender {
+    
+    self.view.alpha = 0.5;
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+}
+
+
 //*************** Method To Pop View Controller To Parent Controller
 
 - (void) pop2Dismiss:(id) sender {
     
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+//*************** Method To Pop View Controller To Dashboard View
+
+- (void) moveToDashboardView {
+    
+    [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+}
+
+
+//*************** Method To Create Table Footer View
+
+- (void) createTableFooter {
+    
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 130)];
+    
+    UIButton *goToDashboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    goToDashboardButton.frame = CGRectMake(0, 40, self.view.bounds.size.width, 45);
+    [goToDashboardButton setBackgroundColor:RGB(71, 178, 182)];
+    [goToDashboardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [goToDashboardButton setTitle:@"GO TO DASHBOARD" forState:UIControlStateNormal];
+    goToDashboardButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    [goToDashboardButton addTarget:self action:@selector(moveToDashboardView) forControlEvents:UIControlEventTouchUpInside];
+    [footerView addSubview:goToDashboardButton];
+    
+    [dashboardSettingsTable setTableFooterView:footerView];
 }
 
 
@@ -140,6 +176,19 @@
     dashboardSettingsTable.backgroundColor = RGB(247, 247, 247);
     dashboardSettingsTable.backgroundView = nil;
     dashboardSettingsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    [self createTableFooter];
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
+    
 }
 
 

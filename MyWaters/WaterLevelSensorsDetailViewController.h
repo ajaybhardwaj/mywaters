@@ -20,7 +20,7 @@
     
     UIView *topMenu,*cctvView;
     UILabel *titleLabel,*timeLabel,*drainDepthLabel;
-    UIButton *clockButton,*levelButton;
+    UIButton *clockButton,*levelButton,*currentLocationButton;
     UIImageView *measurementBar;
     
     UISearchBar *topSearchBar;

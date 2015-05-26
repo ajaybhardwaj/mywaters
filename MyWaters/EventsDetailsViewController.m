@@ -10,6 +10,8 @@
 #import "AppDelegate.h"
 
 @implementation EventsDetailsViewController
+@synthesize descriptionTempString;
+
 
 
 //*************** Demo App UI
@@ -20,6 +22,15 @@
     [self.view addSubview:bgImageView];
     [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/events_detail_options.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     
+}
+
+
+//*************** Method To Open Side Menu
+
+- (void) openDeckMenu:(id) sender {
+    
+    self.view.alpha = 0.5;
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
 
@@ -76,6 +87,7 @@
     }
     
     eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 100)];
+    eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/temp_event_image.jpg",appDelegate.RESOURCE_FOLDER_PATH]];
     [bgScrollView addSubview:eventImageView];
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -127,7 +139,8 @@
     
     descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, eventInfoLabel.frame.origin.y+eventInfoLabel.bounds.size.height, bgScrollView.bounds.size.width, 40)];
     descriptionLabel.backgroundColor = [UIColor whiteColor];
-    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
+//    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
+    descriptionLabel.text = [NSString stringWithFormat:@"\n%@",descriptionTempString];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
     descriptionLabel.numberOfLines = 0;
@@ -135,7 +148,7 @@
 //    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"%@",[dataDict objectForKey:@"description"]] sizeWithFont:descriptionLabel.font
 //                                                                                                              constrainedToSize:descriptionLabel.frame.size
 //                                                                                                                  lineBreakMode:NSLineBreakByWordWrapping];
-    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n Dummy Description Text. Dummy Description Text. Dummy Description Text"]
+    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"\n%@",descriptionTempString]
                                                                                                                sizeWithFont:descriptionLabel.font
                                                                                                                constrainedToSize:descriptionLabel.frame.size
                                                                                                                    lineBreakMode:NSLineBreakByWordWrapping];
@@ -145,7 +158,7 @@
     newDescriptionLabelFrame.size.height = expectedDescriptionLabelSize.height;
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
-    [descriptionLabel sizeToFit];
+//    [descriptionLabel sizeToFit];
     
     bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+100);
 }
@@ -233,6 +246,15 @@
     [topMenu addSubview:shareLabel];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
+    
+}
 
 
 @end

@@ -22,6 +22,18 @@
 }
 
 
+
+//*************** Method To Show Menu On Left To Right Swipe
+
+- (void) swipedScreen:(UISwipeGestureRecognizer*)swipeGesture {
+    // do stuff
+    NSLog(@"Swipe Detected");
+    self.view.alpha = 0.5;
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+    
+}
+
+
 //*************** Method To Pop View Controller To Parent Controller
 
 - (void) pop2Dismiss:(id) sender {
@@ -154,6 +166,17 @@
     [self.view addSubview:redeemNowButton];
     
     //[self createDemoAppControls];
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
+    
 }
 
 

@@ -340,7 +340,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     [self.window makeKeyAndVisible];
-    self.window.backgroundColor = [UIColor clearColor];
+    self.window.backgroundColor = RGB(247, 247, 247);
     
     [self createViewDeckController];
     [self.window setRootViewController:_rootDeckController];

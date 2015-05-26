@@ -17,14 +17,6 @@
 @implementation ProfileViewController
 
 
-- (void) swipedScreen:(UISwipeGestureRecognizer*)swipeGesture {
-    // do stuff
-    NSLog(@"Swipe Detected");
-    self.view.alpha = 0.5;
-    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
-    
-}
-
 //*************** Method To Move To Edit Profile View
 
 - (void) moveToEditProfile {
@@ -251,8 +243,7 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
     swipeGesture.numberOfTouchesRequired = 1;
     swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
     

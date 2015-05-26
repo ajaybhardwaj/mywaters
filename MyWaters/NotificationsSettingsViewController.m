@@ -10,6 +10,17 @@
 
 @implementation NotificationsSettingsViewController
 
+
+
+//*************** Method To Open Side Menu
+
+- (void) openDeckMenu:(id) sender {
+    
+    self.view.alpha = 0.5;
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+}
+
+
 //*************** Method To Pop View Controller To Parent Controller
 
 - (void) pop2Dismiss:(id) sender {
@@ -125,6 +136,17 @@
     notificationSettingsTable.backgroundColor = RGB(247, 247, 247);
     notificationSettingsTable.backgroundView = nil;
     notificationSettingsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
     
 }
 

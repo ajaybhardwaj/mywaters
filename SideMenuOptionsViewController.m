@@ -138,7 +138,7 @@
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Settings",CELL__MAIN_TXT,@"icn_settings",CELL__IMG, nil],
                                                                                                            
-                                [NSDictionary dictionaryWithObjectsAndKeys:@"About PUB",CELL__MAIN_TXT,@"icn_settings",CELL__IMG, nil],
+                                [NSDictionary dictionaryWithObjectsAndKeys:@"About PUB",CELL__MAIN_TXT,@"icn_about_pub",CELL__IMG, nil],
 
                                nil],TABLE__SECTION_ARRAY, nil];
     

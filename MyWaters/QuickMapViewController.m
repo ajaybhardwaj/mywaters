@@ -131,15 +131,16 @@
             isShowingFlood = YES;
             
             //Set Default location to zoom
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.100708, -2.083160); //Create the CLLocation from user cordinates
-            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 50000, 50000); //Set zooming level
+//            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.100708, -2.083160); //Create the CLLocation from user cordinates
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.291176, 103.846584); //Create the CLLocation from user cordinates
+            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 51.100708; // Make lat dynamic later
-            annotationRegion.center.longitude = -2.083160; // Make long dynamic later
+            annotationRegion.center.latitude = 1.291176; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.846584; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
@@ -180,14 +181,14 @@
             isShowingUserFeedback = YES;
             
             //Set Default location to zoom
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.190708, -2.103160); //Create the CLLocation from user cordinates
-            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 50000, 50000); //Set zooming level
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.288345, 103.848751); //Create the CLLocation from user cordinates
+            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 51.190708; // Make lat dynamic later
-            annotationRegion.center.longitude = -2.103160; // Make long dynamic later
+            annotationRegion.center.latitude = 1.288345; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.848751; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
@@ -228,15 +229,15 @@
             isShowingRain = YES;
             
             //Set Default location to zoom
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.270708, -2.153160); //Create the CLLocation from user cordinates
-            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 50000, 50000); //Set zooming level
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.288999, 103.850843); //Create the CLLocation from user cordinates
+            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 51.270708; // Make lat dynamic later
-            annotationRegion.center.longitude = -2.153160; // Make long dynamic later
+            annotationRegion.center.latitude = 1.288999; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.850843; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
@@ -277,14 +278,14 @@
             isShowingCamera = YES;
             
             //Set Default location to zoom
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.380708, -2.200160); //Create the CLLocation from user cordinates
-            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 50000, 50000); //Set zooming level
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.287862, 103.845661); //Create the CLLocation from user cordinates
+            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 51.380708; // Make lat dynamic later
-            annotationRegion.center.longitude = -2.200160; // Make long dynamic later
+            annotationRegion.center.latitude = 1.287862; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.845661; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
@@ -325,14 +326,14 @@
             isShowingDrain = YES;
             
             //Set Default location to zoom
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.450708, -2.283160); //Create the CLLocation from user cordinates
-            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 50000, 50000); //Set zooming level
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.290308, 103.848992); //Create the CLLocation from user cordinates
+            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 51.450708; // Make lat dynamic later
-            annotationRegion.center.longitude = -2.283160; // Make long dynamic later
+            annotationRegion.center.latitude = 1.290308; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.848992; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
@@ -652,6 +653,17 @@
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
         
     }
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
+    
 }
 
 

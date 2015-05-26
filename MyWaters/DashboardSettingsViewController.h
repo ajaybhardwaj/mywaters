@@ -14,7 +14,7 @@
     AppDelegate *appDelegate;
     
     UITableView *dashboardSettingsTable;
-
+    
 }
 
 @end

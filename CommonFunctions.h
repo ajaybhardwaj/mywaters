@@ -11,6 +11,7 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 #import <UIKit/UIKit.h>
+#import "ViewControllerHelper.h"
 
 @interface CommonFunctions : NSObject
 

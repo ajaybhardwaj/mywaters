@@ -33,4 +33,6 @@
     UILabel___Extension *descriptionLabel;
 }
 
+@property (nonatomic, strong) NSString *descriptionTempString;
+
 @end

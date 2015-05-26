@@ -128,7 +128,7 @@
         return 40.0f;
     }
     else if (tableView==eventsListingTableView) {
-        return 80.0f;
+        return 100.0f;
     }
     
     return 0;
@@ -144,6 +144,7 @@
     }
     else if (tableView==eventsListingTableView) {
         EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
+        viewObj.descriptionTempString = [eventsTableDataSource objectAtIndex:(indexPath.row*5)+4];
         [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
@@ -155,7 +156,7 @@
     
     if (tableView==eventsListingTableView) {
         //        return eventsTableDataSource.count;
-        return 10;
+        return 5;
     }
     else if (tableView==filterTableView) {
         return filtersArray.count;
@@ -190,36 +191,42 @@
     }
     else if (tableView==eventsListingTableView) {
         
+        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 15, 70, 70)];
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/default_no_image.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        [cell.contentView addSubview:cellImage];
+        
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, eventsListingTableView.bounds.size.width-100, 40)];
         //        titleLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
-        titleLabel.text = [NSString stringWithFormat:@"Event %ld",indexPath.row+1];
+        titleLabel.text = [NSString stringWithFormat:@"%@",[eventsTableDataSource objectAtIndex:(indexPath.row*5)]];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.numberOfLines = 0;
         [cell.contentView addSubview:titleLabel];
         
         
-        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, 120, 20)];
+        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, 150, 20)];
         //        dateLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventDate"];
-        dateLabel.text = [NSString stringWithFormat:@"%@",[NSDate date]];
-        dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        dateLabel.text = [NSString stringWithFormat:@"%@",[eventsTableDataSource objectAtIndex:(indexPath.row*5)+2]];
+        dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
         dateLabel.backgroundColor = [UIColor clearColor];
-        dateLabel.textColor = [UIColor lightGrayColor];
+        dateLabel.textColor = [UIColor darkGrayColor];
         dateLabel.numberOfLines = 0;
         [cell.contentView addSubview:dateLabel];
         
-        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(eventsListingTableView.bounds.size.width-100, 60, 90, 20)];
-        distanceLabel.text = @"10 KM";
-        distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+//        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(eventsListingTableView.bounds.size.width-100, 80, 90, 20)];
+        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 80, 150, 20)];
+        distanceLabel.text = [NSString stringWithFormat:@"@ %@",[eventsTableDataSource objectAtIndex:(indexPath.row*5)+3]];
+//        distanceLabel.text = @"10 KM";
+        distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:10.5];
         distanceLabel.backgroundColor = [UIColor clearColor];
-        distanceLabel.textColor = [UIColor lightGrayColor];
+        distanceLabel.textColor = [UIColor darkGrayColor];
         distanceLabel.numberOfLines = 0;
-        distanceLabel.textAlignment = NSTextAlignmentRight;
+        distanceLabel.textAlignment = NSTextAlignmentLeft;
         [cell.contentView addSubview:distanceLabel];
         
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
-        
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, eventsListingTableView.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 99.5, eventsListingTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -241,6 +248,13 @@
     
     self.view.backgroundColor = RGB(247, 247, 247);
     selectedFilterIndex = 0;
+    
+    eventsTableDataSource = [[NSMutableArray alloc] initWithObjects:@"Fireworks Display for SEA Games 2015 - CR4",@"Kallang Basin",@"16 May2015 - 16 May 2015",@"9:00pm - 10:00pm",@"Organised by SEA Games 2015 OCC Committee.",
+                                                                    @"Mass Exercise",@"Mac Ritchie",@"21 May 2015 - 21 May 2015",@"4:30pm - 6:00pm",@"Organised by Mount Alvernia Hospital",
+                                                                    @"Cross Country",@"MacRitchie Reservoir",@"22 May 2015 - 22 May 2015",@"7:30am - 12:00pm",@"Organised by St Gabriel's Secondry School",
+                                                                    @"5 Km Reservoir Discovery Series",@"Jurong Lake",@"24 May 2015 - 24 May 2015",@"10:00am - 4:00pm",@"Organised by People's Association",
+                                                                    @"Learning Trail",@"Sengkang Floating Wetland",@"26 May 2015 - 26 May 2015",@"9:00am - 11:00am",@"Organised by Pat's Schoolhouse - Prinsep",
+                             nil];
     
     eventsListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     eventsListingTableView.delegate = self;
@@ -289,6 +303,17 @@
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
         
     }
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
+    
 }
 
 

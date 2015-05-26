@@ -55,6 +55,11 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     cell.backgroundColor = RGB(247, 247, 247);
     
+    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 70, 70)];
+    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/default_no_image.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    [cell.contentView addSubview:cellImage];
+
+    
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, favouritesListingTableView.bounds.size.width-100, 40)];
     //        titleLabel.text = [[favouritesDataSource objectAtIndex:indexPath.row] objectForKey:@"favouriteTitle"];
     titleLabel.text = [NSString stringWithFormat:@"Favourite %ld",indexPath.row+1];
@@ -109,6 +114,18 @@
     
     self.view.alpha = 1.0;
 }
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    swipeGesture.numberOfTouchesRequired = 1;
+    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    
+    [self.view addGestureRecognizer:swipeGesture];
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

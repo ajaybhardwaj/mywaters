@@ -15,6 +15,15 @@
 @implementation WaterLevelSensorsDetailViewController
 
 
+
+//*************** Method To Hide Search Bar Keypad
+
+- (void) hideSearchBarKeypad {
+    
+    [topSearchBar resignFirstResponder];
+}
+
+
 //*************** Method To Pop View Controller To Parent Controller
 
 - (void) pop2Dismiss:(id) sender {
@@ -30,7 +39,6 @@
     if (isShowingTopMenu) {
         
         isShowingTopMenu = NO;
-        [topSearchBar resignFirstResponder];
         
         [UIView beginAnimations:@"topMenu" context:NULL];
         [UIView setAnimationDuration:0.5];
@@ -63,47 +71,53 @@
     topMenu.backgroundColor = RGB(254, 254, 254);
     [self.view addSubview:topMenu];
     
-    topSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 2.5, topMenu.bounds.size.width/2, 50)];
-    topSearchBar.barStyle = UISearchBarStyleMinimal;
-    topSearchBar.delegate = self;
-    topSearchBar.placeholder = @"Search...";
-    [topSearchBar setTintColor:RGB(247, 247, 247)];
-    [topSearchBar setBackgroundImage:[AuxilaryUIService imageWithColor:[UIColor whiteColor] frame:CGRectMake(0, 0, 1, 44)]];
-    topSearchBar.backgroundColor = RGB(247, 247, 247);
-    [topMenu addSubview:topSearchBar];
-
     
     alertButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    alertButton.frame = CGRectMake((topMenu.bounds.size.width/2)+10, 10, 25, 25);
+//    alertButton.frame = CGRectMake((topMenu.bounds.size.width/2)+10, 10, 25, 25);
+    alertButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 10, 25, 25);
     [alertButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_ialert_disabled.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [topMenu addSubview:alertButton];
     
     addToFavButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    addToFavButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)+15, 10, 25, 25);
+//    addToFavButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)+15, 10, 25, 25);
+    addToFavButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 10, 25, 25);
     [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [topMenu addSubview:addToFavButton];
 
     refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    refreshButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)*2+18, 10, 25, 25);
+//    refreshButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)*2+18, 10, 25, 25);
+    refreshButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 10, 25, 25);
     [refreshButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_refresh_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [topMenu addSubview:refreshButton];
     
     
-    iAlertLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+10, 40, (topMenu.bounds.size.width/2)/3, 10)];
+//    iAlertLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+10, 40, (topMenu.bounds.size.width/2)/3, 10)];
+    iAlertLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, topMenu.bounds.size.width/3, 10)];
     iAlertLabel.backgroundColor = [UIColor clearColor];
     iAlertLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     iAlertLabel.text = @"iAlert";
+    iAlertLabel.textAlignment = NSTextAlignmentCenter;
     [topMenu addSubview:iAlertLabel];
     
+    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(iAlertLabel.frame.origin.x+iAlertLabel.bounds.size.width-1, 0, 0.5, 55)];
+    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
+    [topMenu addSubview:seperatorOne];
     
-    addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)-1.5, 40, (topMenu.bounds.size.width/2)/3, 10)];
+    
+//    addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)-1.5, 40, (topMenu.bounds.size.width/2)/3, 10)];
+    addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 40, topMenu.bounds.size.width/3, 10)];
     addToFavLabel.backgroundColor = [UIColor clearColor];
     addToFavLabel.textAlignment = NSTextAlignmentCenter;
     addToFavLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     addToFavLabel.text = @"Add To Fav";
     [topMenu addSubview:addToFavLabel];
     
-    refreshLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)*2+2, 40, (topMenu.bounds.size.width/2)/3, 10)];
+    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(addToFavLabel.frame.origin.x+addToFavLabel.bounds.size.width-1, 0, 0.5, 55)];
+    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
+    [topMenu addSubview:seperatorTwo];
+    
+//    refreshLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)*2+2, 40, (topMenu.bounds.size.width/2)/3, 10)];
+    refreshLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 40, topMenu.bounds.size.width/3, 10)];
     refreshLabel.backgroundColor = [UIColor clearColor];
     refreshLabel.textAlignment = NSTextAlignmentCenter;
     refreshLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
@@ -111,17 +125,17 @@
     [topMenu addSubview:refreshLabel];
     
     
-    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(topSearchBar.frame.origin.x+topSearchBar.bounds.size.width-4, 0, 0.5, 55)];
-    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
-    [topMenu addSubview:seperatorOne];
-    
-    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(alertButton.frame.origin.x+alertButton.bounds.size.width+13, 0, 0.5, 55)];
-    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
-    [topMenu addSubview:seperatorTwo];
-    
-    UIImageView *seperatorThree =[[UIImageView alloc] initWithFrame:CGRectMake(addToFavButton.frame.origin.x+addToFavButton.bounds.size.width+14, 0, 0.5, 55)];
-    [seperatorThree setBackgroundColor:[UIColor lightGrayColor]];
-    [topMenu addSubview:seperatorThree];
+//    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(topSearchBar.frame.origin.x+topSearchBar.bounds.size.width-4, 0, 0.5, 55)];
+//    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
+//    [topMenu addSubview:seperatorOne];
+//    
+//    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(alertButton.frame.origin.x+alertButton.bounds.size.width+13, 0, 0.5, 55)];
+//    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
+//    [topMenu addSubview:seperatorTwo];
+//    
+//    UIImageView *seperatorThree =[[UIImageView alloc] initWithFrame:CGRectMake(addToFavButton.frame.origin.x+addToFavButton.bounds.size.width+14, 0, 0.5, 55)];
+//    [seperatorThree setBackgroundColor:[UIColor lightGrayColor]];
+//    [topMenu addSubview:seperatorThree];
     
 }
 
@@ -132,13 +146,23 @@
     
     wateLevelMapView = [[MKMapView alloc] init];
     if (IS_IPHONE_4_OR_LESS || IS_IPHONE_5) {
-        wateLevelMapView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-234);
+        wateLevelMapView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-154);
     }
     else {
-        wateLevelMapView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-280);
+        wateLevelMapView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-200);
     }
     wateLevelMapView.delegate = self;
     [self.view  addSubview:wateLevelMapView];
+    
+    
+    currentLocationButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [currentLocationButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [currentLocationButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_quick_map.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    currentLocationButton.frame = CGRectMake(15, wateLevelMapView.bounds.size.height-65, 40, 40);
+    [wateLevelMapView addSubview:currentLocationButton];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideSearchBarKeypad)];
+    [wateLevelMapView addGestureRecognizer:tap];
     
     
     //    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(quickMap.userLocation.coordinate, 50, 50);
@@ -146,17 +170,39 @@
     //    viewRegion.span.latitudeDelta  = 0.005;
     //    [quickMap setRegion:viewRegion animated:YES];
     
-    MKUserLocation *userLocation = wateLevelMapView.userLocation;
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance (userLocation.location.coordinate, 50, 50);
-    [wateLevelMapView setRegion:region animated:YES];
+    //Set Default location to zoom
+    CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.287862, 103.845661); //Create the CLLocation from user cordinates
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
+    MKCoordinateRegion adjustedRegion = [wateLevelMapView regionThatFits:viewRegion]; //add location to map
+    [wateLevelMapView setRegion:adjustedRegion animated:YES]; // create animation zooming
+    
+    MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
+    annotationRegion.center.latitude = 1.287862; // Make lat dynamic later
+    annotationRegion.center.longitude = 103.845661; // Make long dynamic later
+    annotationRegion.span.latitudeDelta = 0.02f;
+    annotationRegion.span.longitudeDelta = 0.02f;
     
     
-    cctvView = [[UIView alloc] initWithFrame:CGRectMake(10, wateLevelMapView.frame.origin.y+wateLevelMapView.bounds.size.height+10, self.view.bounds.size.width/2 - 10, self.view.bounds.size.width/2 -10)];
-    cctvView.layer.borderColor = [[UIColor blackColor] CGColor];
-    cctvView.layer.borderWidth = 1.0;
-    [self.view addSubview:cctvView];
+//    MKUserLocation *userLocation = wateLevelMapView.userLocation;
+//    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance (userLocation.location.coordinate, 50, 50);
+//    [wateLevelMapView setRegion:region animated:YES];
     
-    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2 +10, wateLevelMapView.frame.origin.y+wateLevelMapView.bounds.size.height+10, self.view.bounds.size.width/2 - 20, 40)];
+    
+    topSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, wateLevelMapView.bounds.size.width, 50)];
+    topSearchBar.barStyle = UISearchBarStyleMinimal;
+    topSearchBar.delegate = self;
+    topSearchBar.placeholder = @"Search...";
+//    [topSearchBar setTintColor:RGB(247, 247, 247)];
+    [topSearchBar setBackgroundImage:[AuxilaryUIService imageWithColor:[UIColor whiteColor] frame:CGRectMake(0, 0, 1, 44)]];
+    topSearchBar.backgroundColor = [UIColor clearColor];//RGB(247, 247, 247);
+    [wateLevelMapView addSubview:topSearchBar];
+    
+//    cctvView = [[UIView alloc] initWithFrame:CGRectMake(10, wateLevelMapView.frame.origin.y+wateLevelMapView.bounds.size.height+10, self.view.bounds.size.width/2 - 10, self.view.bounds.size.width/2 -10)];
+//    cctvView.layer.borderColor = [[UIColor blackColor] CGColor];
+//    cctvView.layer.borderWidth = 1.0;
+//    [self.view addSubview:cctvView];
+    
+    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, wateLevelMapView.frame.origin.y+wateLevelMapView.bounds.size.height+10, self.view.bounds.size.width - 40, 40)];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     titleLabel.numberOfLines = 0;
@@ -164,48 +210,52 @@
     [self.view addSubview:titleLabel];
     [titleLabel sizeToFit];
     
+    
+    
+    
+//    measurementBar = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2 +40, clockButton.frame.origin.y+clockButton.bounds.size.height+10, 20, 100)];
+//    [measurementBar setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/meter_bar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//    [self.view addSubview:measurementBar];
+    
+//    drainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x+measurementBar.bounds.size.width+5, titleLabel.frame.origin.y+titleLabel.bounds.size.height+40, 80, 80)];
+    drainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, self.view.bounds.size.width-40, 20)];
+    drainDepthLabel.text = @"Drain Depth: 2.8 m";
+    drainDepthLabel.textColor = RGB(26, 158, 241);
+    drainDepthLabel.backgroundColor = [UIColor clearColor];
+    drainDepthLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.5];
+    drainDepthLabel.numberOfLines = 0;
+    [self.view addSubview:drainDepthLabel];
+    
+    
     clockButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    clockButton.frame = CGRectMake(self.view.bounds.size.width/2 +10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 15, 15);
+    clockButton.frame = CGRectMake(20, drainDepthLabel.frame.origin.y+drainDepthLabel.bounds.size.height+5, 15, 15);
     [clockButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_time.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [self.view addSubview:clockButton];
     clockButton.userInteractionEnabled = NO;
     
-    timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockButton.frame.origin.x+clockButton.bounds.size.width+10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 100, 15)];
-    timeLabel.text = @"4:16 PM";
+    timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockButton.frame.origin.x+clockButton.bounds.size.width+10, drainDepthLabel.frame.origin.y+drainDepthLabel.bounds.size.height+5, self.view.bounds.size.width-clockButton.frame.origin.x+clockButton.bounds.size.width+10, 15)];
+    timeLabel.text = @"23 May 2015 @ 4:16 PM";
     timeLabel.backgroundColor = [UIColor clearColor];
     timeLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
     [self.view addSubview:timeLabel];
     
-    
-    measurementBar = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2 +40, clockButton.frame.origin.y+clockButton.bounds.size.height+10, 20, 100)];
-    [measurementBar setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/meter_bar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    [self.view addSubview:measurementBar];
-    
-    drainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x+measurementBar.bounds.size.width+5, titleLabel.frame.origin.y+titleLabel.bounds.size.height+40, 80, 80)];
-    drainDepthLabel.text = @"Drain Depth (m)";
-    drainDepthLabel.backgroundColor = [UIColor clearColor];
-    drainDepthLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
-    drainDepthLabel.textAlignment = NSTextAlignmentCenter;
-    drainDepthLabel.numberOfLines = 0;
-    [self.view addSubview:drainDepthLabel];
-    
-    UILabel *maxValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x-15, measurementBar.frame.origin.y, 10, 10)];
-    maxValueLabel.text = @"4";
-    maxValueLabel.backgroundColor = [UIColor clearColor];
-    maxValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-    [self.view addSubview:maxValueLabel];
-    
-    UILabel *midValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x-15, measurementBar.frame.origin.y+measurementBar.bounds.size.height/2-5, 10, 10)];
-    midValueLabel.text = @"2";
-    midValueLabel.backgroundColor = [UIColor clearColor];
-    midValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-    [self.view addSubview:midValueLabel];
-    
-    UILabel *minValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x-15, measurementBar.frame.origin.y+measurementBar.bounds.size.height-10, 10, 10)];
-    minValueLabel.text = @"0";
-    minValueLabel.backgroundColor = [UIColor clearColor];
-    minValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-    [self.view addSubview:minValueLabel];
+//    UILabel *maxValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x-15, measurementBar.frame.origin.y, 10, 10)];
+//    maxValueLabel.text = @"4";
+//    maxValueLabel.backgroundColor = [UIColor clearColor];
+//    maxValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+//    [self.view addSubview:maxValueLabel];
+//    
+//    UILabel *midValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x-15, measurementBar.frame.origin.y+measurementBar.bounds.size.height/2-5, 10, 10)];
+//    midValueLabel.text = @"2";
+//    midValueLabel.backgroundColor = [UIColor clearColor];
+//    midValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+//    [self.view addSubview:midValueLabel];
+//    
+//    UILabel *minValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x-15, measurementBar.frame.origin.y+measurementBar.bounds.size.height-10, 10, 10)];
+//    minValueLabel.text = @"0";
+//    minValueLabel.backgroundColor = [UIColor clearColor];
+//    minValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+//    [self.view addSubview:minValueLabel];
 
 }
 
