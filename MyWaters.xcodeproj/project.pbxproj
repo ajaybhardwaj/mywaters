@@ -36,6 +36,8 @@
 		FE6679BF1ACD334A0036198D /* icn_floodinfo_userfeedback_submission_small_greyout@3x_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FE6679BB1ACD334A0036198D /* icn_floodinfo_userfeedback_submission_small_greyout@3x_old.png */; };
 		FE6679C01ACD334A0036198D /* icn_rainarea_small_greyout@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE6679BC1ACD334A0036198D /* icn_rainarea_small_greyout@3x.png */; };
 		FE6679C11ACD334A0036198D /* icn_waterlevel_small_greyout@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE6679BD1ACD334A0036198D /* icn_waterlevel_small_greyout@3x.png */; };
+		FE6C81D61B155E6F00A8FEDB /* abc_water_temp22.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FE6C81D51B155E6F00A8FEDB /* abc_water_temp22.jpg */; };
+		FE6C81D81B155FC300A8FEDB /* pub_temp_event22.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FE6C81D71B155FC300A8FEDB /* pub_temp_event22.jpg */; };
 		FE73E5681AC11B84007B2179 /* circle_background@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E5661AC11B84007B2179 /* circle_background@3x.png */; };
 		FE73E5691AC11B84007B2179 /* icn_info_purple@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E5671AC11B84007B2179 /* icn_info_purple@3x.png */; };
 		FE73E5751AC143C5007B2179 /* 1_color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E56B1AC143C5007B2179 /* 1_color@3x.png */; };
@@ -319,6 +321,8 @@
 		FE6679BB1ACD334A0036198D /* icn_floodinfo_userfeedback_submission_small_greyout@3x_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_userfeedback_submission_small_greyout@3x_old.png"; sourceTree = "<group>"; };
 		FE6679BC1ACD334A0036198D /* icn_rainarea_small_greyout@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_rainarea_small_greyout@3x.png"; sourceTree = "<group>"; };
 		FE6679BD1ACD334A0036198D /* icn_waterlevel_small_greyout@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_small_greyout@3x.png"; sourceTree = "<group>"; };
+		FE6C81D51B155E6F00A8FEDB /* abc_water_temp22.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = abc_water_temp22.jpg; sourceTree = "<group>"; };
+		FE6C81D71B155FC300A8FEDB /* pub_temp_event22.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pub_temp_event22.jpg; sourceTree = "<group>"; };
 		FE73E5661AC11B84007B2179 /* circle_background@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "circle_background@3x.png"; sourceTree = "<group>"; };
 		FE73E5671AC11B84007B2179 /* icn_info_purple@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_info_purple@3x.png"; sourceTree = "<group>"; };
 		FE73E56B1AC143C5007B2179 /* 1_color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1_color@3x.png"; sourceTree = "<group>"; };
@@ -1235,6 +1239,8 @@
 		FEA730B21A77394900D274A6 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				FE6C81D71B155FC300A8FEDB /* pub_temp_event22.jpg */,
+				FE6C81D51B155E6F00A8FEDB /* abc_water_temp22.jpg */,
 				FE8D7F3F1AB7B6BB002BA233 /* abcwater_list@3x.png */,
 				FE8D7F401AB7B6BB002BA233 /* abcwaters_grid_new@3x.png */,
 				FE8845BF1AB68F02005537C6 /* no_image.png */,
@@ -1505,6 +1511,7 @@
 				FEFCD2711B05A11700B7A0DD /* icn_facebook_settings@3x.png in Resources */,
 				FEF4C6CC1ACB9F1300C57304 /* icn_expand@3x.png in Resources */,
 				FE8845DE1AB6B3EE005537C6 /* w1.png in Resources */,
+				FE6C81D61B155E6F00A8FEDB /* abc_water_temp22.jpg in Resources */,
 				FE78C2FF1B0F124400D909FD /* temp_event_image.jpg in Resources */,
 				FE8D7F421AB7B6BB002BA233 /* abcwaters_grid_new@3x.png in Resources */,
 				FE99BE351A7B7E69000B83E8 /* Roboto-Bold.ttf in Resources */,
@@ -1520,6 +1527,7 @@
 				FE98F0331ABBC33500D5FB5B /* icn_directions@3x.png in Resources */,
 				FE99BE381A7B7E69000B83E8 /* Roboto-Light.ttf in Resources */,
 				FE86914A1AE0A05C00EC2A77 /* icn_rainarea_small@3x.png in Resources */,
+				FE6C81D81B155FC300A8FEDB /* pub_temp_event22.jpg in Resources */,
 				FE99BE391A7B7E69000B83E8 /* Roboto-LightItalic.ttf in Resources */,
 				FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */,
 				FE8C1C3C1AB292FA009D33E4 /* icn_weather_small@3x.png in Resources */,

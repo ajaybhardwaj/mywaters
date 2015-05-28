@@ -90,8 +90,9 @@
         h2 = (h1*self.view.bounds.size.width)/w1;
     }
     
-    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 100)];
-    [eventImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/temp_header.jpg",appDelegate.RESOURCE_FOLDER_PATH]]];
+//    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 100)];
+    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 164)];
+    [eventImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abc_water_temp22.jpg",appDelegate.RESOURCE_FOLDER_PATH]]];
     [bgScrollView addSubview:eventImageView];
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -141,9 +142,13 @@
     [eventInfoLabel addSubview:infoIcon];
     
     
+    
+//    NSString *descTempString = [NSString stringWithFormat:@"Located in the central part of Singapore, Sembawang park features an attractive open waterway with softened banks using plantings which allow for seamless integration with adjacent developments.\n\n A short stretch of the open waterqay is decked over to create an interesting water cascade and a shallow stream.\n\n There are also urban wetlands which help cleanse the water and provide an excellent oppurtunity for outdoor learning for the nearby schools."];
+    
     descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, eventInfoLabel.frame.origin.y+eventInfoLabel.bounds.size.height, bgScrollView.bounds.size.width, 40)];
     descriptionLabel.backgroundColor = [UIColor whiteColor];
-    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
+//    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
+    descriptionLabel.text = [NSString stringWithFormat:@"Located in the central part of Singapore, Sembawang park features an attractive open waterway with softened banks using plantings which allow for seamless integration with adjacent developments.\n\n A short stretch of the open waterqay is decked over to create an interesting water cascade and a shallow stream.\n\n There are also urban wetlands which help cleanse the water and provide an excellent oppurtunity for outdoor learning for the nearby schools."];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
     descriptionLabel.numberOfLines = 0;
@@ -151,7 +156,7 @@
     //    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"%@",[dataDict objectForKey:@"description"]] sizeWithFont:descriptionLabel.font
     //                                                                                                              constrainedToSize:descriptionLabel.frame.size
     //                                                                                                                  lineBreakMode:NSLineBreakByWordWrapping];
-    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n Dummy Description Text. Dummy Description Text. Dummy Description Text"]
+    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"Located in the central part of Singapore, Sembawang park features an attractive open waterway with softened banks using plantings which allow for seamless integration with adjacent developments.\n\n A short stretch of the open waterqay is decked over to create an interesting water cascade and a shallow stream.\n\n There are also urban wetlands which help cleanse the water and provide an excellent oppurtunity for outdoor learning for the nearby schools."]
                                            sizeWithFont:descriptionLabel.font
                                            constrainedToSize:descriptionLabel.frame.size
                                            lineBreakMode:NSLineBreakByWordWrapping];
@@ -323,6 +328,32 @@
     
     [self.view addGestureRecognizer:swipeGesture];
     
+//    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
+    
+}
+
+
+-(BOOL)shouldAutorotate{
+    return YES;
+}
+
+-(NSUInteger)supportedInterfaceOrientations{
+    
+    //    UIInterfaceOrientationMaskLandscape;
+    //    24
+    //
+    //    UIInterfaceOrientationMaskLandscapeLeft;
+    //    16
+    //
+    //    UIInterfaceOrientationMaskLandscapeRight;
+    //    8
+    //
+    //    UIInterfaceOrientationMaskPortrait;
+    //    2
+    
+    //    return UIInterfaceOrientationMaskPortrait;
+    //    or
+    return 2;
 }
 
 

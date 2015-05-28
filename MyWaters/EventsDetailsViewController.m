@@ -86,8 +86,8 @@
         h2 = (h1*self.view.bounds.size.width)/w1;
     }
     
-    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 100)];
-    eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/temp_event_image.jpg",appDelegate.RESOURCE_FOLDER_PATH]];
+    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 179)];
+    eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/pub_temp_event22.jpg",appDelegate.RESOURCE_FOLDER_PATH]];
     [bgScrollView addSubview:eventImageView];
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];

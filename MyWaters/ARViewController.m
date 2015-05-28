@@ -309,7 +309,20 @@
     [_arController setDebugMode:NO];
     
     
-    UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(15, 260, self.view.bounds.size.height, 44)];
+    UIToolbar *toolBar = [[UIToolbar alloc]init];
+    if (IS_IPHONE_4_OR_LESS) {
+        toolBar.frame = CGRectMake(60, 218, self.view.bounds.size.height, 44);
+    }
+    else if (IS_IPHONE_5) {
+        toolBar.frame = CGRectMake(15, 262, self.view.bounds.size.height, 44);
+    }
+    else if (IS_IPHONE_6) {
+        toolBar.frame = CGRectMake(20, 312, self.view.bounds.size.height, 44);
+    }
+    else if (IS_IPHONE_6P) {
+        toolBar.frame = CGRectMake(25, 347, self.view.bounds.size.height, 44);
+    }
+    
     toolBar.barStyle = UIBarStyleBlackOpaque;
     
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissARView)];
@@ -351,6 +364,8 @@
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
         self.navigationController.interactivePopGestureRecognizer.delegate = self;
     }
+    
+
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
@@ -376,7 +391,7 @@
 //
 //-(BOOL)shouldAutorotate
 //{
-//    return YES;
+//    return NO;
 //}
 
 
@@ -387,6 +402,13 @@
         [[segue destinationViewController] setUserLocation:[_mapView userLocation]];
     }
 }
+
+
+-(NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 
 
 /*
