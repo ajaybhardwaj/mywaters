@@ -57,7 +57,8 @@
         h2 = (h1*self.view.bounds.size.width)/w1;
     }
     
-    rewardImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 100)];
+    rewardImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 184)];
+    [rewardImageView setImage:[UIImage imageNamed:@"reward_temp_image.png"]];
     [bgScrollView addSubview:rewardImageView];
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -109,7 +110,8 @@
     
     descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, rewardInfoLabel.frame.origin.y+rewardInfoLabel.bounds.size.height, bgScrollView.bounds.size.width, 40)];
     descriptionLabel.backgroundColor = [UIColor whiteColor];
-    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
+//    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
+    descriptionLabel.text = [NSString stringWithFormat:@"Forest adventure, first and ony tree top adventure course in Singapore. 58 obstacles, 5 giants zip lines. Simply a great day out at Bedok Reservoir Park.\n\nValid From\n3May 15 -31 Dec 15\n\nLocation\nBedok Reservoir\n\nPoints\n50"];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
     descriptionLabel.numberOfLines = 0;
@@ -117,14 +119,15 @@
     //    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"%@",[dataDict objectForKey:@"description"]] sizeWithFont:descriptionLabel.font
     //                                                                                                              constrainedToSize:descriptionLabel.frame.size
     //                                                                                                                  lineBreakMode:NSLineBreakByWordWrapping];
-    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n Dummy Description Text. Dummy Description Text. Dummy Description Text"]
+    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"Forest adventure, first and ony tree top adventure course in Singapore. 58 obstacles, 5 giants zip lines. Simply a great day out at Bedok Reservoir Park.\n\nValid From\n3May 15 -31 Dec 15\n\nLocation\nBedok Reservoir\n\nPoints - 50"]
                                            sizeWithFont:descriptionLabel.font
                                            constrainedToSize:descriptionLabel.frame.size
                                            lineBreakMode:NSLineBreakByWordWrapping];
     
     
+    
     CGRect newDescriptionLabelFrame = descriptionLabel.frame;
-    newDescriptionLabelFrame.size.height = expectedDescriptionLabelSize.height;
+    newDescriptionLabelFrame.size.height = expectedDescriptionLabelSize.height+100;
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
     [descriptionLabel sizeToFit];

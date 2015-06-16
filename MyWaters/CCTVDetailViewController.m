@@ -11,13 +11,27 @@
 @implementation CCTVDetailViewController
 
 
+//*************** Method To Open Side Menu
+
+- (void) openDeckMenu:(id) sender {
+    
+    self.view.alpha = 0.5;
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+}
+
+
 //*************** Method For Creating UI
 
 - (void) createUI {
     
     
+    topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 249)];
+    [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-1.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [self.view addSubview:topImageView];
+
+    
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    directionButton.frame = CGRectMake(0, 150, self.view.bounds.size.width, 40);
+    directionButton.frame = CGRectMake(0, topImageView.frame.origin.y+topImageView.bounds.size.height, self.view.bounds.size.width, 40);
     [directionButton setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:directionButton];
     
@@ -44,7 +58,15 @@
     [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:arrowIcon];
     
-    [cctvListingTable reloadData];
+    
+    cctvListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+64))];
+    cctvListingTable.delegate = self;
+    cctvListingTable.dataSource = self;
+    [self.view addSubview:cctvListingTable];
+    cctvListingTable.backgroundColor = [UIColor clearColor];
+    cctvListingTable.backgroundView = nil;
+    
+//    [cctvListingTable reloadData];
 }
 
 
@@ -128,7 +150,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     //    return eventsTableDataSource.count;
-    return 10;
+    return 5;
 }
 
 
@@ -138,6 +160,12 @@
     
     
     cell.backgroundColor = RGB(247, 247, 247);
+    
+    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 70, 70)];
+//    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
+    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-2.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    [cell.contentView addSubview:cellImage];
+
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, cctvListingTable.bounds.size.width-100, 40)];
     //        titleLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
@@ -179,7 +207,14 @@
     self.view.backgroundColor = RGB(247, 247, 247);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+
+    
+//    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];
     
     
@@ -250,19 +285,14 @@
     [topMenu addSubview:shareLabel];
     
     
-    cctvListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 190, self.view.bounds.size.width, self.view.bounds.size.height-254)];
-    cctvListingTable.delegate = self;
-    cctvListingTable.dataSource = self;
-    [self.view addSubview:cctvListingTable];
-    cctvListingTable.backgroundColor = [UIColor clearColor];
-    cctvListingTable.backgroundView = nil;
-    
     [self createUI];
     //[self createDemoAppControls];
 
 }
 
 - (void) viewWillAppear:(BOOL)animated {
+    
+    self.view.alpha = 1.0;
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

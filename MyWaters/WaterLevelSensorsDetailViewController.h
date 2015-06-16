@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 #import "AppDelegate.h"
 #import "CustomButtons.h"
+#import "QuickMapAnnotations.h"
 
 @interface WaterLevelSensorsDetailViewController : UIViewController <MKMapViewDelegate,UISearchBarDelegate> {
     
@@ -19,13 +20,16 @@
     BOOL isShowingTopMenu;
     
     UIView *topMenu,*cctvView;
-    UILabel *titleLabel,*timeLabel,*drainDepthLabel;
+    UILabel *titleLabel,*timeLabel,*drainDepthLabel,*depthValueLabel;
     UIButton *clockButton,*levelButton,*currentLocationButton;
     UIImageView *measurementBar;
     
     UISearchBar *topSearchBar;
     UIButton *alertButton,*addToFavButton,*refreshButton;
     UILabel *iAlertLabel,*addToFavLabel,*refreshLabel;
+    
+    QuickMapAnnotations *annotation1;
+    
 }
 
 @end

@@ -355,6 +355,8 @@
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
     }
     
+    _rootDeckController.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    
     
     // Override point for customization after application launch.
     return YES;

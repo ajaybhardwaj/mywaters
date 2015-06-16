@@ -20,7 +20,7 @@
     UILabel *exploreMapLabel,*addToFavLabel,*refreshLabel,*shareLabel;
     
     UIButton *directionButton;
-    UIImageView *directionIcon,*arrowIcon;
+    UIImageView *directionIcon,*arrowIcon,*topImageView;
     UILabel *cctvTitleLabel,*distanceLabel;
     
     UITableView *cctvListingTable;

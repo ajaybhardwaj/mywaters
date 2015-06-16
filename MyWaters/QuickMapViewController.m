@@ -132,30 +132,56 @@
             
             //Set Default location to zoom
 //            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.100708, -2.083160); //Create the CLLocation from user cordinates
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.291176, 103.846584); //Create the CLLocation from user cordinates
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.3673320, 103.837475); //Create the CLLocation from user cordinates
             MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 1.291176; // Make lat dynamic later
-            annotationRegion.center.longitude = 103.846584; // Make long dynamic later
+            annotationRegion.center.latitude = 1.3673320; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.837475; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
             annotation1 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
             annotation1.coordinate = annotationRegion.center;
-            annotation1.title = @"Annotation 1";
-            annotation1.subtitle = @"Subtitle For Annotation 1";
+            annotation1.title = @"226H Ang Mo Kio Street 22";
+            annotation1.subtitle = @"";
             [quickMap addAnnotation:annotation1];
+            
+            
+            MKCoordinateRegion annotationRegion11 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion11.center.latitude = 1.366859; // Make lat dynamic later
+            annotationRegion11.center.longitude = 103.837786; // Make long dynamic later
+            annotationRegion11.span.latitudeDelta = 0.02f;
+            annotationRegion11.span.longitudeDelta = 0.02f;
+            
+            annotation11 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation11.coordinate = annotationRegion11.center;
+            annotation11.title = @"225 Ang Mo Kio Avenue 1";
+            annotation11.subtitle = @"";
+            [quickMap addAnnotation:annotation11];
+            
+            
+            MKCoordinateRegion annotationRegion12 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion12.center.latitude = 1.367717; // Make lat dynamic later
+            annotationRegion12.center.longitude = 103.838913; // Make long dynamic later
+            annotationRegion12.span.latitudeDelta = 0.02f;
+            annotationRegion12.span.longitudeDelta = 0.02f;
+            
+            annotation12 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation12.coordinate = annotationRegion12.center;
+            annotation12.title = @"226H Ang Mo Kio Street 22";
+            annotation12.subtitle = @"";
+            [quickMap addAnnotation:annotation12];
             
             [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_pub_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             isShowingFlood = NO;
             
-            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation1, nil];
+            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation1,annotation11,annotation12, nil];
             //Remove all annotations in the array from the mapView
             [quickMap removeAnnotations: annotationsToRemove];
             
@@ -181,29 +207,66 @@
             isShowingUserFeedback = YES;
             
             //Set Default location to zoom
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.288345, 103.848751); //Create the CLLocation from user cordinates
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.371792, 103.846122); //Create the CLLocation from user cordinates
             MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 1.288345; // Make lat dynamic later
-            annotationRegion.center.longitude = 103.848751; // Make long dynamic later
+            annotationRegion.center.latitude = 1.371792; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.846122; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
             annotation2 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
             annotation2.coordinate = annotationRegion.center;
-            annotation2.title = @"Annotation 2";
-            annotation2.subtitle = @"Subtitle For Annotation 2";
+            annotation2.title = @"No more danger warning here.";
+            annotation2.subtitle = @"@blu3_87";
             [quickMap addAnnotation:annotation2];
+            
+            
+            MKCoordinateRegion annotationRegion21 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion21.center.latitude = 1.371943; // Make lat dynamic later
+            annotationRegion21.center.longitude = 103.847367; // Make long dynamic later
+            annotationRegion21.span.latitudeDelta = 0.02f;
+            annotationRegion21.span.longitudeDelta = 0.02f;
+            
+            annotation21 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation21.coordinate = annotationRegion21.center;
+            annotation21.title = @"Flood condition quite bad here, water level reaches till knees.";
+            annotation21.subtitle = @"@migh89";
+            [quickMap addAnnotation:annotation21];
+            
+            MKCoordinateRegion annotationRegion22 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion22.center.latitude = 1.384937; // Make lat dynamic later
+            annotationRegion22.center.longitude = 103.870670; // Make long dynamic later
+            annotationRegion22.span.latitudeDelta = 0.02f;
+            annotationRegion22.span.longitudeDelta = 0.02f;
+            
+            annotation22 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation22.coordinate = annotationRegion22.center;
+            annotation22.title = @"Water level reaches to normal.";
+            annotation22.subtitle = @"@jeff9";
+            [quickMap addAnnotation:annotation22];
+            
+            MKCoordinateRegion annotationRegion23 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion23.center.latitude = 1.385001; // Make lat dynamic later
+            annotationRegion23.center.longitude = 103.872220; // Make long dynamic later
+            annotationRegion23.span.latitudeDelta = 0.02f;
+            annotationRegion23.span.longitudeDelta = 0.02f;
+            
+            annotation23 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation23.coordinate = annotationRegion23.center;
+            annotation23.title = @"Traffic jam coz of flood water.";
+            annotation23.subtitle = @"@miss123";
+            [quickMap addAnnotation:annotation23];
             
             [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             isShowingUserFeedback = NO;
             
-            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation2, nil];
+            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation2,annotation21,annotation22,annotation23, nil];
             //Remove all annotations in the array from the mapView
             [quickMap removeAnnotations: annotationsToRemove];
             
@@ -229,30 +292,67 @@
             isShowingRain = YES;
             
             //Set Default location to zoom
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.288999, 103.850843); //Create the CLLocation from user cordinates
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.375289, 103.852034); //Create the CLLocation from user cordinates
             MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 1.288999; // Make lat dynamic later
-            annotationRegion.center.longitude = 103.850843; // Make long dynamic later
+            annotationRegion.center.latitude = 1.375289; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.852034; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
             annotation3 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
             annotation3.coordinate = annotationRegion.center;
-            annotation3.title = @"Annotation 3";
-            annotation3.subtitle = @"Subtitle For Annotation 3";
+            annotation3.title = @"537 Ang Mo Kio Avenue 5";
+            annotation3.subtitle = @"";
             [quickMap addAnnotation:annotation3];
+            
+            
+            MKCoordinateRegion annotationRegion31 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion31.center.latitude = 1.373820; // Make lat dynamic later
+            annotationRegion31.center.longitude = 103.851058; // Make long dynamic later
+            annotationRegion31.span.latitudeDelta = 0.02f;
+            annotationRegion31.span.longitudeDelta = 0.02f;
+            
+            annotation31 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation31.coordinate = annotationRegion31.center;
+            annotation31.title = @"10 Ang Mo Kio Street 53";
+            annotation31.subtitle = @"";
+            [quickMap addAnnotation:annotation31];
+            
+            MKCoordinateRegion annotationRegion32 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion32.center.latitude = 1.374077; // Make lat dynamic later
+            annotationRegion32.center.longitude = 103.853354; // Make long dynamic later
+            annotationRegion32.span.latitudeDelta = 0.02f;
+            annotationRegion32.span.longitudeDelta = 0.02f;
+            
+            annotation32 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation32.coordinate = annotationRegion32.center;
+            annotation32.title = @"535 Ang Mo Kio Avenue 5";
+            annotation32.subtitle = @"";
+            [quickMap addAnnotation:annotation32];
+            
+            MKCoordinateRegion annotationRegion33 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion33.center.latitude = 1.372736; // Make lat dynamic later
+            annotationRegion33.center.longitude = 103.853171; // Make long dynamic later
+            annotationRegion33.span.latitudeDelta = 0.02f;
+            annotationRegion33.span.longitudeDelta = 0.02f;
+            
+            annotation33 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation33.coordinate = annotationRegion33.center;
+            annotation33.title = @"524 Ang Mo Kio Avenue 5";
+            annotation33.subtitle = @"";
+            [quickMap addAnnotation:annotation33];
             
             [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             isShowingRain = NO;
             
-            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation3, nil];
+            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation3,annotation31,annotation32,annotation33, nil];
             //Remove all annotations in the array from the mapView
             [quickMap removeAnnotations: annotationsToRemove];
             
@@ -278,29 +378,68 @@
             isShowingCamera = YES;
             
             //Set Default location to zoom
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.287862, 103.845661); //Create the CLLocation from user cordinates
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.383194, 103.862344); //Create the CLLocation from user cordinates
             MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 1.287862; // Make lat dynamic later
-            annotationRegion.center.longitude = 103.845661; // Make long dynamic later
+            annotationRegion.center.latitude = 1.383194; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.862344; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
             annotation4 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
             annotation4.coordinate = annotationRegion.center;
-            annotation4.title = @"Annotation 4";
-            annotation4.subtitle = @"Subtitle For Annotation 4";
+            annotation4.title = @"43 Mimosa Rd";
+            annotation4.subtitle = @"";
             [quickMap addAnnotation:annotation4];
+            
+            
+            MKCoordinateRegion annotationRegion41 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion41.center.latitude = 1.383451; // Make lat dynamic later
+            annotationRegion41.center.longitude = 103.859791; // Make long dynamic later
+            annotationRegion41.span.latitudeDelta = 0.02f;
+            annotationRegion41.span.longitudeDelta = 0.02f;
+            
+            annotation41 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation41.coordinate = annotationRegion41.center;
+            annotation41.title = @"40 Mimosa Dr";
+            annotation41.subtitle = @"";
+            [quickMap addAnnotation:annotation41];
+            
+            
+            MKCoordinateRegion annotationRegion42 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion42.center.latitude = 1.386433; // Make lat dynamic later
+            annotationRegion42.center.longitude = 103.871571; // Make long dynamic later
+            annotationRegion42.span.latitudeDelta = 0.02f;
+            annotationRegion42.span.longitudeDelta = 0.02f;
+            
+            annotation42 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation42.coordinate = annotationRegion42.center;
+            annotation42.title = @"22 Seletar Crescent";
+            annotation42.subtitle = @"";
+            [quickMap addAnnotation:annotation42];
+            
+            
+            MKCoordinateRegion annotationRegion43 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion43.center.latitude = 1.385596; // Make lat dynamic later
+            annotationRegion43.center.longitude = 103.871855; // Make long dynamic later
+            annotationRegion43.span.latitudeDelta = 0.02f;
+            annotationRegion43.span.longitudeDelta = 0.02f;
+            
+            annotation43 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation43.coordinate = annotationRegion43.center;
+            annotation43.title = @"2 Jalan Lakum";
+            annotation43.subtitle = @"";
+            [quickMap addAnnotation:annotation43];
             
             [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             isShowingCamera = NO;
             
-            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation4, nil];
+            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation4,annotation41,annotation42,annotation43, nil];
             //Remove all annotations in the array from the mapView
             [quickMap removeAnnotations: annotationsToRemove];
             
@@ -326,29 +465,55 @@
             isShowingDrain = YES;
             
             //Set Default location to zoom
-            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.290308, 103.848992); //Create the CLLocation from user cordinates
+            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.385768, 103.871131); //Create the CLLocation from user cordinates
             MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
             MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
             [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
             MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 1.290308; // Make lat dynamic later
-            annotationRegion.center.longitude = 103.848992; // Make long dynamic later
+            annotationRegion.center.latitude = 1.385768; // Make lat dynamic later
+            annotationRegion.center.longitude = 103.871131; // Make long dynamic later
             annotationRegion.span.latitudeDelta = 0.02f;
             annotationRegion.span.longitudeDelta = 0.02f;
             
             annotation5 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
             annotation5.coordinate = annotationRegion.center;
-            annotation5.title = @"Annotation 5";
-            annotation5.subtitle = @"Subtitle For Annotation 5";
+            annotation5.title = @"11 Jalan Pelajau";
+            annotation5.subtitle = @"Flood level below 75%";
             [quickMap addAnnotation:annotation5];
+            
+            
+            MKCoordinateRegion annotationRegion51 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion51.center.latitude = 1.384052; // Make lat dynamic later
+            annotationRegion51.center.longitude = 103.868910; // Make long dynamic later
+            annotationRegion51.span.latitudeDelta = 0.02f;
+            annotationRegion51.span.longitudeDelta = 0.02f;
+            
+            annotation51 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation51.coordinate = annotationRegion51.center;
+            annotation51.title = @"16 Jalan Lebat Daun";
+            annotation51.subtitle = @"Flood level between 75%-90%";
+            [quickMap addAnnotation:annotation51];
+            
+            
+            MKCoordinateRegion annotationRegion52 = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion52.center.latitude = 1.386444; // Make lat dynamic later
+            annotationRegion52.center.longitude = 103.869157; // Make long dynamic later
+            annotationRegion52.span.latitudeDelta = 0.02f;
+            annotationRegion52.span.longitudeDelta = 0.02f;
+            
+            annotation52 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            annotation52.coordinate = annotationRegion52.center;
+            annotation52.title = @"20 Seletar Rd";
+            annotation52.subtitle = @"Flood level more than 90%";
+            [quickMap addAnnotation:annotation52];
             
             [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             isShowingDrain = NO;
             
-            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation5, nil];
+            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation5,annotation51,annotation52, nil];
             //Remove all annotations in the array from the mapView
             [quickMap removeAnnotations: annotationsToRemove];
             
@@ -467,7 +632,15 @@
             pinView.image = [UIImage imageNamed:@"icn_cctv_small.png"];
         }
         else if (selectedAnnotationButton==5) {
-            pinView.image = [UIImage imageNamed:@"icn_waterlevel_small.png"];
+            if (annotation==annotation5) {
+                pinView.image = [UIImage imageNamed:@"icn_waterlevel_below75.png"];
+            }
+            else if (annotation==annotation51) {
+                pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
+            }
+            else if (annotation==annotation52) {
+                pinView.image = [UIImage imageNamed:@"icn_waterlevel_90.png"];
+            }
         }
     }
     else {
@@ -637,7 +810,7 @@
     self.view.alpha = 1.0;
     
     if (!isNotQuickMapController) {
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     }
     else {
         UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(229,0,87) frame:CGRectMake(0, 0, 1, 1)];

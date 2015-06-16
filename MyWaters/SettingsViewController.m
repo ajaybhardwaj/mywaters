@@ -102,7 +102,7 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;    
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
     
     tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Hints",@"Dashboard",@"Notifications",@"Terms and Conditions", nil];
@@ -116,6 +116,15 @@
     settingsTableView.backgroundView = nil;
     settingsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
+    
+    signoutButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    signoutButton.frame = CGRectMake(0, self.view.bounds.size.height-114, self.view.bounds.size.width, 50);
+//    [signoutButton setBackgroundColor:RGB(135, 135, 135)];
+    [signoutButton setBackgroundColor:[UIColor redColor]];
+    [signoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [signoutButton setTitle:@"SIGN OUT" forState:UIControlStateNormal];
+    signoutButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    [self.view addSubview:signoutButton];
 }
 
 

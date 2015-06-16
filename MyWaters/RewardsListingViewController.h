@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "RewardDetailsViewController.h"
 
-@interface RewardsListingViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
+@interface RewardsListingViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,UIGestureRecognizerDelegate> {
     
     AppDelegate *appDelegate;
     

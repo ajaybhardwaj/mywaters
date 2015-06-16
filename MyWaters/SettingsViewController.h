@@ -20,6 +20,7 @@
     NSArray *tableTitleDataSource,*tableSubTitleDataSource;
     
     UISwitch *hintsSwitch;
+    UIButton *signoutButton;
 }
 
 @end

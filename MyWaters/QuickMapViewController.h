@@ -30,6 +30,8 @@
     
     // Place Annotation Point
     QuickMapAnnotations *annotation1,*annotation2,*annotation3,*annotation4,*annotation5,*annotation6;
+    QuickMapAnnotations *annotation11,*annotation12,*annotation21,*annotation22,*annotation23,*annotation31,*annotation32,*annotation33;
+    QuickMapAnnotations *annotation41,*annotation42,*annotation43,*annotation51,*annotation52;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

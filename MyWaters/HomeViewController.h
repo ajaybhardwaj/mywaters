@@ -32,7 +32,7 @@
     
     UIImageView *cctvImageView,*waterLevelImageView;
     
-    UILabel *cctvLocationLabel,*cctvDistanceLabel,*waterSensorLocationLabel,*waterSensorDrainDepthLabel,*quickMapLocationLabel,*quickMapDistanceLabel,*nearbyQuickMapLabel,*floodReasonLabel,*floodTagLabel;
+    UILabel *cctvLocationLabel,*cctvDistanceLabel,*waterSensorLocationLabel,*waterSensorDrainDepthLabel,*drainDepthValueLabel,*quickMapLocationLabel,*quickMapDistanceLabel,*nearbyQuickMapLabel,*floodReasonLabel,*floodTagLabel;
     UIButton *cctvLocationImage,*cctvDistanceImage,*waterSensorLocationImage,*waterSensorDrainDepthImage,*quickMapLocationImage,*quickMapDistanceImage,*quickMapFloodIcon;
     
     UILabel *bigWeatherTempTitle,*smallWeatherTempTitle1,*smallWeatherTempTitle2,*bigTempSubtitle,*smallTempSubtitle1,*smallTempSubtitle2,*bigTimeLabel,*smallTimeLabel1,*smallTimeLabel2;

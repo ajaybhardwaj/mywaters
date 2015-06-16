@@ -120,7 +120,7 @@
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Notifications",CELL__MAIN_TXT,@"icn_notifications",CELL__IMG, nil],
                                                                                                 
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Profile",CELL__MAIN_TXT,@"icn_profile",CELL__IMG, nil],
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"My Profile",CELL__MAIN_TXT,@"icn_profile",CELL__IMG, nil],
                                 
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Favourites",CELL__MAIN_TXT,@"icn_favourites",CELL__IMG, nil],
 

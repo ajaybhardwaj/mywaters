@@ -93,6 +93,11 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     cell.backgroundColor = RGB(247, 247, 247);
     
+    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 70, 70)];
+    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
+    [cell.contentView addSubview:cellImage];
+
+    
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 5, rewardsListingTableView.bounds.size.width-100, 40)];
     //        titleLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"rewardTitle"];
     titleLabel.text = [NSString stringWithFormat:@"Reward %ld",indexPath.row+1];
@@ -156,8 +161,25 @@
     rewardsListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     //[self createDemoAppControls];
+    
+    
+    // Disable iOS 7 back gesture
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        
+//        __weak id weakSelf = self;
+//        self.navigationController.interactivePopGestureRecognizer.delegate = weakSelf;
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+        self.navigationController.interactivePopGestureRecognizer.delegate = self;
+    }
 }
 
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    __weak id weakSelf = self;
+    self.navigationController.interactivePopGestureRecognizer.delegate = weakSelf;
+
+}
 
 - (void) viewDidAppear:(BOOL)animated {
     
@@ -173,6 +195,20 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if ([gestureRecognizer isEqual:self.navigationController.interactivePopGestureRecognizer]) {
+        
+        return NO;
+        
+    } else {
+        
+        return YES;
+        
+    }
 }
 
 /*

@@ -170,6 +170,8 @@
 		FE9B55EE1A89B7B00045E4F9 /* CommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9B55ED1A89B7B00045E4F9 /* CommonFunctions.m */; };
 		FE9B55F51A89D6030045E4F9 /* ForgotPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9B55F41A89D6030045E4F9 /* ForgotPasswordViewController.m */; };
 		FE9C8CAB1A847861001074DC /* icn_location@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE9C8CAA1A847861001074DC /* icn_location@3x.png */; };
+		FE9D6C9C1B1FFD870063D89D /* icn_menu_white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE9D6C9B1B1FFD870063D89D /* icn_menu_white@3x.png */; };
+		FE9D6C9E1B20068F0063D89D /* reward_temp_image.png in Resources */ = {isa = PBXBuildFile; fileRef = FE9D6C9D1B20068F0063D89D /* reward_temp_image.png */; };
 		FE9F93421ABA6070002A611D /* BookingConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9F93411ABA6070002A611D /* BookingConfirmationViewController.m */; };
 		FEA730201A772FDD00D274A6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA7301F1A772FDD00D274A6 /* main.m */; };
 		FEA730231A772FDD00D274A6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA730221A772FDD00D274A6 /* AppDelegate.m */; };
@@ -232,6 +234,9 @@
 		FEBA99771ADCC62500ED3555 /* meter_bar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA99741ADCC62500ED3555 /* meter_bar@3x.png */; };
 		FEBA997D1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA997B1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png */; };
 		FEBA997E1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA997C1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png */; };
+		FEC631F21B2A6F000006A885 /* CCTV-1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC631F11B2A6F000006A885 /* CCTV-1@3x.png */; };
+		FEC631F41B2A71910006A885 /* CCTV-2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC631F31B2A71910006A885 /* CCTV-2@3x.png */; };
+		FEC631F61B2AC7910006A885 /* temp_feedback@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC631F51B2AC7900006A885 /* temp_feedback@3x.png */; };
 		FED72CD61ADB7FED00C4FDDB /* icn_addtofavorites_cctv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED72CD11ADB7FED00C4FDDB /* icn_addtofavorites_cctv@3x.png */; };
 		FED72CD71ADB7FED00C4FDDB /* icn_exploremap_cctv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED72CD21ADB7FED00C4FDDB /* icn_exploremap_cctv@3x.png */; };
 		FED72CD81ADB7FED00C4FDDB /* icn_favorited_cctv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED72CD31ADB7FED00C4FDDB /* icn_favorited_cctv@3x.png */; };
@@ -239,6 +244,14 @@
 		FED72CDA1ADB7FED00C4FDDB /* icn_share_cctv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED72CD51ADB7FED00C4FDDB /* icn_share_cctv@3x.png */; };
 		FED72CDC1ADB7FF500C4FDDB /* divider_cctv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED72CDB1ADB7FF500C4FDDB /* divider_cctv@3x.png */; };
 		FED72CDE1ADBBC3D00C4FDDB /* icn_directions_cctv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED72CDD1ADBBC3D00C4FDDB /* icn_directions_cctv@3x.png */; };
+		FED779721B2549C1003C1003 /* icn_waterlevel_75-90@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED7796F1B2549C1003C1003 /* icn_waterlevel_75-90@3x.png */; };
+		FED779731B2549C1003C1003 /* icn_waterlevel_90@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED779701B2549C1003C1003 /* icn_waterlevel_90@3x.png */; };
+		FED779741B2549C1003C1003 /* icn_waterlevel_below75@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED779711B2549C1003C1003 /* icn_waterlevel_below75@3x.png */; };
+		FED8A85A1B16FC23008B2341 /* orange_wls@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED8A8591B16FC23008B2341 /* orange_wls@3x.png */; };
+		FED8A85F1B16FD21008B2341 /* blue_wls@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED8A85B1B16FD21008B2341 /* blue_wls@3x.png */; };
+		FED8A8601B16FD21008B2341 /* empty_bucket_level@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED8A85C1B16FD21008B2341 /* empty_bucket_level@3x.png */; };
+		FED8A8611B16FD21008B2341 /* filled_bucket_level@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED8A85D1B16FD21008B2341 /* filled_bucket_level@3x.png */; };
+		FED8A8621B16FD21008B2341 /* red_wls@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FED8A85E1B16FD21008B2341 /* red_wls@3x.png */; };
 		FEE04EAD1AD781C900BEA6C6 /* icn_announcements_notification@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE04EA71AD781C900BEA6C6 /* icn_announcements_notification@3x.png */; };
 		FEE04EAE1AD781C900BEA6C6 /* icn_events_notification@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE04EA81AD781C900BEA6C6 /* icn_events_notification@3x.png */; };
 		FEE04EAF1AD781C900BEA6C6 /* icn_floodinfo_notification@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE04EA91AD781C900BEA6C6 /* icn_floodinfo_notification@3x.png */; };
@@ -479,6 +492,8 @@
 		FE9B55F31A89D6030045E4F9 /* ForgotPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForgotPasswordViewController.h; sourceTree = "<group>"; };
 		FE9B55F41A89D6030045E4F9 /* ForgotPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForgotPasswordViewController.m; sourceTree = "<group>"; };
 		FE9C8CAA1A847861001074DC /* icn_location@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_location@3x.png"; sourceTree = "<group>"; };
+		FE9D6C9B1B1FFD870063D89D /* icn_menu_white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_menu_white@3x.png"; sourceTree = "<group>"; };
+		FE9D6C9D1B20068F0063D89D /* reward_temp_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reward_temp_image.png; sourceTree = "<group>"; };
 		FE9F93401ABA6070002A611D /* BookingConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookingConfirmationViewController.h; sourceTree = "<group>"; };
 		FE9F93411ABA6070002A611D /* BookingConfirmationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookingConfirmationViewController.m; sourceTree = "<group>"; };
 		FEA7301A1A772FDD00D274A6 /* MyWaters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyWaters.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -584,6 +599,9 @@
 		FEBA99741ADCC62500ED3555 /* meter_bar@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "meter_bar@3x.png"; sourceTree = "<group>"; };
 		FEBA997B1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_ialert_disabled@3x.png"; sourceTree = "<group>"; };
 		FEBA997C1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_ialert_enabled@3x.png"; sourceTree = "<group>"; };
+		FEC631F11B2A6F000006A885 /* CCTV-1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CCTV-1@3x.png"; sourceTree = "<group>"; };
+		FEC631F31B2A71910006A885 /* CCTV-2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CCTV-2@3x.png"; sourceTree = "<group>"; };
+		FEC631F51B2AC7900006A885 /* temp_feedback@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_feedback@3x.png"; sourceTree = "<group>"; };
 		FED72CD11ADB7FED00C4FDDB /* icn_addtofavorites_cctv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_addtofavorites_cctv@3x.png"; sourceTree = "<group>"; };
 		FED72CD21ADB7FED00C4FDDB /* icn_exploremap_cctv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_exploremap_cctv@3x.png"; sourceTree = "<group>"; };
 		FED72CD31ADB7FED00C4FDDB /* icn_favorited_cctv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_favorited_cctv@3x.png"; sourceTree = "<group>"; };
@@ -591,6 +609,14 @@
 		FED72CD51ADB7FED00C4FDDB /* icn_share_cctv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_share_cctv@3x.png"; sourceTree = "<group>"; };
 		FED72CDB1ADB7FF500C4FDDB /* divider_cctv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "divider_cctv@3x.png"; sourceTree = "<group>"; };
 		FED72CDD1ADBBC3D00C4FDDB /* icn_directions_cctv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_directions_cctv@3x.png"; sourceTree = "<group>"; };
+		FED7796F1B2549C1003C1003 /* icn_waterlevel_75-90@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_75-90@3x.png"; sourceTree = "<group>"; };
+		FED779701B2549C1003C1003 /* icn_waterlevel_90@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_90@3x.png"; sourceTree = "<group>"; };
+		FED779711B2549C1003C1003 /* icn_waterlevel_below75@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_below75@3x.png"; sourceTree = "<group>"; };
+		FED8A8591B16FC23008B2341 /* orange_wls@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "orange_wls@3x.png"; sourceTree = "<group>"; };
+		FED8A85B1B16FD21008B2341 /* blue_wls@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue_wls@3x.png"; sourceTree = "<group>"; };
+		FED8A85C1B16FD21008B2341 /* empty_bucket_level@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty_bucket_level@3x.png"; sourceTree = "<group>"; };
+		FED8A85D1B16FD21008B2341 /* filled_bucket_level@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filled_bucket_level@3x.png"; sourceTree = "<group>"; };
+		FED8A85E1B16FD21008B2341 /* red_wls@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red_wls@3x.png"; sourceTree = "<group>"; };
 		FEE04EA71AD781C900BEA6C6 /* icn_announcements_notification@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_announcements_notification@3x.png"; sourceTree = "<group>"; };
 		FEE04EA81AD781C900BEA6C6 /* icn_events_notification@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_events_notification@3x.png"; sourceTree = "<group>"; };
 		FEE04EA91AD781C900BEA6C6 /* icn_floodinfo_notification@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_notification@3x.png"; sourceTree = "<group>"; };
@@ -1239,6 +1265,10 @@
 		FEA730B21A77394900D274A6 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				FEC631F51B2AC7900006A885 /* temp_feedback@3x.png */,
+				FEC631F11B2A6F000006A885 /* CCTV-1@3x.png */,
+				FEC631F31B2A71910006A885 /* CCTV-2@3x.png */,
+				FE9D6C9D1B20068F0063D89D /* reward_temp_image.png */,
 				FE6C81D71B155FC300A8FEDB /* pub_temp_event22.jpg */,
 				FE6C81D51B155E6F00A8FEDB /* abc_water_temp22.jpg */,
 				FE8D7F3F1AB7B6BB002BA233 /* abcwater_list@3x.png */,
@@ -1275,6 +1305,7 @@
 		FEA730B51A77395B00D274A6 /* Header Images */ = {
 			isa = PBXGroup;
 			children = (
+				FE9D6C9B1B1FFD870063D89D /* icn_menu_white@3x.png */,
 				FE78C3021B0F17E900D909FD /* icn_menu@3x.png */,
 				FEA730B61A77396800D274A6 /* icn_menu@2x_old.png */,
 				FE7FD08C1A7F53CE002A05CB /* icn_3dots@3x.png */,
@@ -1333,6 +1364,11 @@
 		FEBA99711ADCC5F700ED3555 /* Water Level Sensors */ = {
 			isa = PBXGroup;
 			children = (
+				FED8A85B1B16FD21008B2341 /* blue_wls@3x.png */,
+				FED8A85C1B16FD21008B2341 /* empty_bucket_level@3x.png */,
+				FED8A85D1B16FD21008B2341 /* filled_bucket_level@3x.png */,
+				FED8A85E1B16FD21008B2341 /* red_wls@3x.png */,
+				FED8A8591B16FC23008B2341 /* orange_wls@3x.png */,
 				FEBA997B1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png */,
 				FEBA997C1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png */,
 				FEBA99721ADCC62500ED3555 /* icn_meter_line@3x.png */,
@@ -1409,6 +1445,9 @@
 		FEFCD26C1B05A0D600B7A0DD /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				FED7796F1B2549C1003C1003 /* icn_waterlevel_75-90@3x.png */,
+				FED779701B2549C1003C1003 /* icn_waterlevel_90@3x.png */,
+				FED779711B2549C1003C1003 /* icn_waterlevel_below75@3x.png */,
 				FEFCD26D1B05A11700B7A0DD /* icn_facebook_settings@3x.png */,
 				FEFCD26E1B05A11700B7A0DD /* icn_instagram_settings@3x.png */,
 				FEFCD26F1B05A11700B7A0DD /* icn_twitter_settings@3x.png */,
@@ -1507,6 +1546,7 @@
 				FE8845D51AB6B158005537C6 /* e2.png in Resources */,
 				FE5A46AA1A8C57AF00517FB5 /* icn_share@3x.png in Resources */,
 				FE99BE341A7B7E69000B83E8 /* Roboto-BlackItalic.ttf in Resources */,
+				FEC631F41B2A71910006A885 /* CCTV-2@3x.png in Resources */,
 				FEE04EB21AD781C900BEA6C6 /* icn_tips_notification@3x.png in Resources */,
 				FEFCD2711B05A11700B7A0DD /* icn_facebook_settings@3x.png in Resources */,
 				FEF4C6CC1ACB9F1300C57304 /* icn_expand@3x.png in Resources */,
@@ -1531,6 +1571,7 @@
 				FE99BE391A7B7E69000B83E8 /* Roboto-LightItalic.ttf in Resources */,
 				FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */,
 				FE8C1C3C1AB292FA009D33E4 /* icn_weather_small@3x.png in Resources */,
+				FED8A85F1B16FD21008B2341 /* blue_wls@3x.png in Resources */,
 				FE99BE3A1A7B7E69000B83E8 /* Roboto-Medium.ttf in Resources */,
 				FE8C1C391AB292FA009D33E4 /* icn_sunny_small@3x.png in Resources */,
 				FE4F37721A888A3E0028903C /* image_avatar.png in Resources */,
@@ -1544,15 +1585,18 @@
 				FE99BE3D1A7B7E69000B83E8 /* Roboto-Thin.ttf in Resources */,
 				FE8C1C311AB292FA009D33E4 /* icn_avatar@3x.png in Resources */,
 				FE98F0471ABC16B900D5FB5B /* icn_bookingform@3x.png in Resources */,
+				FED779721B2549C1003C1003 /* icn_waterlevel_75-90@3x.png in Resources */,
 				FEF4C6D41ACBC16B00C57304 /* icn_cctv_big@3x.png in Resources */,
 				FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */,
 				FE8845E01AB6B3EE005537C6 /* w3.png in Resources */,
+				FED779731B2549C1003C1003 /* icn_waterlevel_90@3x.png in Resources */,
 				FEF4C6D61ACBC18100C57304 /* icn_waterlevel_big@3x.png in Resources */,
 				FE8C1C321AB292FA009D33E4 /* icn_distance_pink@3x_old.png in Resources */,
 				FE98F0341ABBC33500D5FB5B /* icn_info@3x.png in Resources */,
 				FE5A46A81A8C57AF00517FB5 /* icn_favorited@3x.png in Resources */,
 				FE8845D71AB6B158005537C6 /* e4.png in Resources */,
 				FE8C1C381AB292FA009D33E4 /* icn_quickmap_car@3x.png in Resources */,
+				FEC631F61B2AC7910006A885 /* temp_feedback@3x.png in Resources */,
 				FE99BE3E1A7B7E69000B83E8 /* Roboto-ThinItalic.ttf in Resources */,
 				FE99BE3F1A7B7E69000B83E8 /* RobotoCondensed-Bold.ttf in Resources */,
 				FEBA99751ADCC62500ED3555 /* icn_meter_line@3x.png in Resources */,
@@ -1573,6 +1617,7 @@
 				FEF4C6D21ACBC15A00C57304 /* icn_rainarea_big@3x.png in Resources */,
 				FEBA99761ADCC62500ED3555 /* icn_time@3x.png in Resources */,
 				FEFCD2741B05A11700B7A0DD /* icn_web_settings@3x.png in Resources */,
+				FED8A8611B16FD21008B2341 /* filled_bucket_level@3x.png in Resources */,
 				FE86914B1AE0A05C00EC2A77 /* icn_waterlevel_small@3x.png in Resources */,
 				FE73E5751AC143C5007B2179 /* 1_color@3x.png in Resources */,
 				FE6679B71ACD176D0036198D /* icn_sunny_weather@3x.png in Resources */,
@@ -1603,9 +1648,11 @@
 				FE8845E21AB6B3EE005537C6 /* w5.png in Resources */,
 				FEB13FCB1A7766410061CE74 /* icn_whatsup@3x.png in Resources */,
 				FE99BE161A7B6F5E000B83E8 /* settings.png in Resources */,
+				FED8A85A1B16FC23008B2341 /* orange_wls@3x.png in Resources */,
 				FE98F0381ABBCC5800D5FB5B /* icn_arrow_grey@3x.png in Resources */,
 				FE73E57B1AC143C5007B2179 /* 4_color@3x.png in Resources */,
 				FEA730291A772FDD00D274A6 /* Main.storyboard in Resources */,
+				FE9D6C9E1B20068F0063D89D /* reward_temp_image.png in Resources */,
 				FE98F04E1ABC1E7800D5FB5B /* icn_call_blue@3x.png in Resources */,
 				FE8691491AE0A05C00EC2A77 /* icn_floodinfo_userfeedback_submission_small@3x_old.png in Resources */,
 				FE6679C11ACD334A0036198D /* icn_waterlevel_small_greyout@3x.png in Resources */,
@@ -1618,6 +1665,7 @@
 				FE99BDF51A7B2CD7000B83E8 /* abcwaters_grid.png in Resources */,
 				FE8C1C3B1AB292FA009D33E4 /* icn_weather_big@3x.png in Resources */,
 				FEE04EB81AD783B000BEA6C6 /* icn_instagram_whatsup@3x.png in Resources */,
+				FEC631F21B2A6F000006A885 /* CCTV-1@3x.png in Resources */,
 				FEFCD2681B059AE700B7A0DD /* icn_distance_turqoise@3x.png in Resources */,
 				FEB02A071AD62D62004B7DDF /* icn_add@3x.png in Resources */,
 				FE78C2FD1B0EDE6E00D909FD /* temp_header.jpg in Resources */,
@@ -1626,6 +1674,8 @@
 				FE99BE011A7B40B8000B83E8 /* icn_back_old@2x.png in Resources */,
 				FEBA997E1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png in Resources */,
 				FEE04EAD1AD781C900BEA6C6 /* icn_announcements_notification@3x.png in Resources */,
+				FE9D6C9C1B1FFD870063D89D /* icn_menu_white@3x.png in Resources */,
+				FED779741B2549C1003C1003 /* icn_waterlevel_below75@3x.png in Resources */,
 				FEA7302E1A772FDD00D274A6 /* LaunchScreen.xib in Resources */,
 				FE8845BD1AB67121005537C6 /* cctv_dummy.png in Resources */,
 				FE7FD08B1A7F5317002A05CB /* whatsup_explore.png in Resources */,
@@ -1637,6 +1687,7 @@
 				FE99BDF81A7B3D51000B83E8 /* abcwaters_detail_options.png in Resources */,
 				FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */,
 				FEB13FC91A7766410061CE74 /* icn_quickmap@3x.png in Resources */,
+				FED8A8601B16FD21008B2341 /* empty_bucket_level@3x.png in Resources */,
 				FE99BE091A7B63FB000B83E8 /* profile_rewards.png in Resources */,
 				FEE04EAF1AD781C900BEA6C6 /* icn_floodinfo_notification@3x.png in Resources */,
 				FE0BD2511AC16C9D005A4CC3 /* icn_directions_purple@3x.png in Resources */,
@@ -1691,6 +1742,7 @@
 				FE8C1C3A1AB292FA009D33E4 /* icn_waterlevel@3x.png in Resources */,
 				FED72CD81ADB7FED00C4FDDB /* icn_favorited_cctv@3x.png in Resources */,
 				FEE04EB01AD781C900BEA6C6 /* icn_heavyrain_notification@3x.png in Resources */,
+				FED8A8621B16FD21008B2341 /* red_wls@3x.png in Resources */,
 				FEB13FC21A7766410061CE74 /* icn_booking@3x.png in Resources */,
 				FE8845CC1AB6B093005537C6 /* icn_avatar_image@3x.png in Resources */,
 				FEF43C241A79EE7B00237CAD /* events_listing.png in Resources */,

@@ -177,7 +177,16 @@
     dashboardSettingsTable.backgroundView = nil;
     dashboardSettingsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    [self createTableFooter];
+//    [self createTableFooter];
+    
+    UIButton *goToDashboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    goToDashboardButton.frame = CGRectMake(0, self.view.bounds.size.height-109, self.view.bounds.size.width, 45);
+    [goToDashboardButton setBackgroundColor:RGB(71, 178, 182)];
+    [goToDashboardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [goToDashboardButton setTitle:@"GO TO DASHBOARD" forState:UIControlStateNormal];
+    goToDashboardButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    [goToDashboardButton addTarget:self action:@selector(moveToDashboardView) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:goToDashboardButton];
 }
 
 

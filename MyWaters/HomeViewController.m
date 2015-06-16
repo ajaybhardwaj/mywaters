@@ -424,9 +424,20 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
                     
-                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
-                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/water_level_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
+                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(columnView.bounds.size.width/2 - 28, 25, 56, 50)];
+                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/filled_bucket_level.png",appDelegate.RESOURCE_FOLDER_PATH]]];
                     [columnView addSubview:waterLevelImageView];
+                    
+                    drainDepthValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 81, columnView.bounds.size.width, 15)];
+                    drainDepthValueLabel.text = @"2.8 m";
+                    drainDepthValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11];
+                    drainDepthValueLabel.textColor = RGB(26, 158, 241);
+                    drainDepthValueLabel.backgroundColor = [UIColor clearColor];
+                    drainDepthValueLabel.numberOfLines = 0;
+                    drainDepthValueLabel.textAlignment = NSTextAlignmentCenter;
+//                    [drainDepthValueLabel sizeToFit];
+                    [columnView addSubview:drainDepthValueLabel];
                     
                     waterSensorLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     waterSensorLocationImage.frame = CGRectMake(5, 100, 20, 20);
@@ -441,7 +452,7 @@
                     waterSensorDrainDepthImage.userInteractionEnabled = NO;
                     
                     waterSensorLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 100, columnView.bounds.size.width-40, 25)];
-                    waterSensorLocationLabel.text = @"Mandalay Road";
+                    waterSensorLocationLabel.text = @"Bukit Timah Road";
                     waterSensorLocationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     waterSensorLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     waterSensorLocationLabel.backgroundColor = [UIColor clearColor];
@@ -450,7 +461,7 @@
                     [columnView addSubview:waterSensorLocationLabel];
                     
                     waterSensorDrainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 125, columnView.bounds.size.width-40, 25)];
-                    waterSensorDrainDepthLabel.text = @"3.1 KM";
+                    waterSensorDrainDepthLabel.text = @"Drain Depth (2.8 m)";
                     waterSensorDrainDepthLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     waterSensorDrainDepthLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     waterSensorDrainDepthLabel.backgroundColor = [UIColor clearColor];
@@ -709,9 +720,24 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
                     
-                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
-                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/water_level_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
+//                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/water_level_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    [columnView addSubview:waterLevelImageView];
+
+                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(columnView.bounds.size.width/2 - 28, 25, 56, 50)];
+                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/filled_bucket_level.png",appDelegate.RESOURCE_FOLDER_PATH]]];
                     [columnView addSubview:waterLevelImageView];
+                    
+                    
+                    drainDepthValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 81, columnView.bounds.size.width, 15)];
+                    drainDepthValueLabel.text = @"2.8 m";
+                    drainDepthValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11];
+                    drainDepthValueLabel.textColor = RGB(26, 158, 241);
+                    drainDepthValueLabel.backgroundColor = [UIColor clearColor];
+                    drainDepthValueLabel.numberOfLines = 0;
+                    drainDepthValueLabel.textAlignment = NSTextAlignmentCenter;
+                    //[drainDepthValueLabel sizeToFit];
+                    [columnView addSubview:drainDepthValueLabel];
                     
                     waterSensorLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     waterSensorLocationImage.frame = CGRectMake(5, 100, 20, 20);
@@ -733,7 +759,7 @@
                     [columnView addSubview:waterSensorLocationLabel];
                     
                     waterSensorDrainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 125, columnView.bounds.size.width-40, 25)];
-                    waterSensorDrainDepthLabel.text = @"Drain Depth (1m)";
+                    waterSensorDrainDepthLabel.text = @"Drain Depth (2.8 m)";
                     waterSensorDrainDepthLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     waterSensorDrainDepthLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     waterSensorDrainDepthLabel.backgroundColor = [UIColor clearColor];
@@ -886,12 +912,14 @@
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
     
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
+//    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(242,242,242) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
-    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+//    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [titleBarAttributes setValue:RGB(93, 93, 93) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
     self.title = @"Home";

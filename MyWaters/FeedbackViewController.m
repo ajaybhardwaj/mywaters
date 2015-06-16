@@ -111,7 +111,8 @@
     
     UIButton *picUploadbutton = [UIButton buttonWithType:UIButtonTypeCustom];
     picUploadbutton.frame = CGRectMake((headerView.bounds.size.width/2)-40, 20, 80, 80);
-    [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_image.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+//    [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_image.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/temp_feedback.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [headerView addSubview:picUploadbutton];
     
     [feedbackTableView setTableHeaderView:headerView];
@@ -550,10 +551,10 @@
     selectedPickerIndex = 0;
     
     if (!isNotFeedbackController) {
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     }
     else {
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(140,164,0) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(113, 75, 51) frame:CGRectMake(0, 0, 1, 1)];
         [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
