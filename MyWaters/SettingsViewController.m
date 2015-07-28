@@ -22,7 +22,17 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+}
+
+
+//*************** Method To Pop View Controller To Login View
+
+- (void) moveToLoginView {
+    
+    self.navigationController.navigationBar.hidden = YES;
+    [[ViewControllerHelper viewControllerHelper] signOut];
 }
 
 
@@ -123,7 +133,9 @@
     [signoutButton setBackgroundColor:[UIColor redColor]];
     [signoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [signoutButton setTitle:@"SIGN OUT" forState:UIControlStateNormal];
-    signoutButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+//    signoutButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    signoutButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:18];
+//    [signoutButton addTarget:self action:@selector(moveToLoginView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:signoutButton];
 }
 
@@ -131,6 +143,8 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
+
 }
 
 

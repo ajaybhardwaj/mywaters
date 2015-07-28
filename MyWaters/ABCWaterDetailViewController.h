@@ -11,7 +11,7 @@
 #import "CustomButtons.h"
 #import "UILabel + Extension.h"
 
-@interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate> {
+@interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate> {
     
     AppDelegate *appDelegate;
     BOOL isControlMaximize;

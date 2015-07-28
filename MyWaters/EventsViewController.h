@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "EventsDetailsViewController.h"
 
-@interface EventsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
+@interface EventsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -19,9 +19,10 @@
     NSMutableArray *eventsTableDataSource;
     NSArray *filtersArray;
     
-    BOOL isShowingFilter;
+    BOOL isShowingFilter,isShowingSearchBar;
     NSInteger selectedFilterIndex;
     
+    UITextField *searchField;
     //*************** Demo App Variables
     UIButton *eventDetailButton;
 }

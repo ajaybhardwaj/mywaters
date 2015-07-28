@@ -20,6 +20,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -93,6 +94,9 @@
     else if (indexPath.row==3) {
         cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_settings.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
+    else if (indexPath.row==4) {
+        cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_youtube_settings.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
     
     
     UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, aboutTableView.bounds.size.width, 0.5)];
@@ -128,7 +132,7 @@
 //    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
 
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"Join Friends of Water", nil];
+    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Join Friends of Water", nil];
     
     aboutTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     aboutTableView.delegate = self;
@@ -144,6 +148,8 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
+
 
 }
 

@@ -22,20 +22,10 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UIStatusBarHidden</key>
-	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>MyWaters like to access your location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>MyWaters like to access your location.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto-Bold.ttf</string>
@@ -44,11 +34,34 @@
 		<string>BEBAS__.TTF</string>
 		<string>BebasNeue.otf</string>
 	</array>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>MyWaters like to access your location.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>MyWaters like to access your location.</string>
+	<key>UILaunchStoryboardName</key>
+	<string>splash_iphone</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
 	<key>privacy - location usage description</key>
 	<string>MyWaters like to access your location.</string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>Icon_76.png</string>
+		<string>Icon_120.png</string>
+		<string>Icon_152.png</string>
+		<string>Icon_180.png</string>
+		<string>Icon_40.png</string>
+		<string>Icon_80.png</string>
+		<string>Icon_29.png</string>
+		<string>Icon_58.png</string>
+	</array>
+	<key>UILaunchImageFile</key>
+	<string>splash_iphone.png</string>
 </dict>
 </plist>

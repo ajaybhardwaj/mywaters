@@ -7,7 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
+#import "CCTVDetailViewController.h"
 
-@interface CCTVListingController : UIViewController
+@interface CCTVListingController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
+    
+    AppDelegate *appDelegate;
+    
+    UITableView *cctvListingTable,*filterTableView;
+    NSArray *cctvDataSource,*filtersArray;
+    
+    BOOL isShowingFilter,isShowingSearchBar;
+    NSInteger selectedFilterIndex;
+
+    UITextField *searchField;
+}
 
 @end

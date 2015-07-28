@@ -35,6 +35,64 @@ static ViewControllerHelper *sharedViewHelper = nil;
 }
 
 
+
+
+-(void) signOut {
+    
+//    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+//    [prefs setObject:@"N" forKey:@"isLoginAlready"];
+//    [prefs synchronize];
+//    
+//    [self deactivateDeviceToken];
+//    appdelegate.IS_SWIM_PASSES_LOADED_FIRST_TIME = NO;
+//    
+//    if ([[AuxilaryService auxFunctions] isFileExists:SUPER_SPORTS_CLUB_USER_PROFILE_DICT]) {
+//        NSError *err;
+//        [[NSFileManager defaultManager] removeItemAtPath:[[AuxilaryService auxFunctions] getDocumentDirectory:SUPER_SPORTS_CLUB_USER_PROFILE_DICT] error:&err];
+//    }
+    
+    
+    // -- Animations
+    
+    //    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    //    if ([[prefs stringForKey:@"shopping_cart_timer_running"] isEqualToString:@"Y"]) {
+    //
+    //        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    //
+    //        NSArray *param = [[NSArray alloc] initWithObjects:@"shopping_cart_id", nil];
+    //        NSArray *value = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"shopping_cart_id"], nil];
+    //
+    //        NSLog(@"%@",[prefs stringForKey:@"shopping_cart_id"]);
+    //
+    //        RDBaseNetworkController *controller = [[RDBaseNetworkController alloc] init];
+    //        [controller postDataToServer:SHOPPING_CART_CLEAR parameters:param values:value avatar:nil];
+    //
+    //        [param release];
+    //        [value release];
+    //
+    //        [prefs setObject:@"N" forKey:@"shopping_cart_timer_running"];
+    //        [prefs synchronize];
+    //
+    //    }
+    
+    // -- remove the user data and enable landing page
+//    [[SharedObject sharedClass] removeSaved_SUPER_SPORTS_CLUB_User];
+    _currentDeckIndex = -1;
+    
+    
+    [[appDelegate rootDeckController] closeLeftView];
+    appDelegate.left_deck_width = 320-180;
+    
+    // -- Clear all the datas.
+    [self clearAllThe_Controllers];
+    [[appDelegate rootDeckController] setLeftController:nil];
+    // -- Push to home page..
+    [[ViewControllerHelper viewControllerHelper] enableThisController:SIGN_IN_CONTROLLER onCenter:YES withAnimate:FALSE];
+    
+}
+
+
+
 # pragma mark - Common Navigation Bar Styles
 
 -(void)setNavigationBar_Style:(UINavigationBar*)navigationBar_{
@@ -83,7 +141,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_signInController) {
         
         
-        WelcomeViewController *signin = [[WelcomeViewController alloc] init];
+//        WelcomeViewController *signin = [[WelcomeViewController alloc] init];
+        LoginViewController *signin = [[LoginViewController alloc] init];
         _signInController = [[UINavigationController alloc] initWithRootViewController:signin];
         [self setNavigationBarStyle_Transclucent:_signInController.navigationBar];
         
@@ -99,7 +158,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
         return _signInController;
         
     }
-    
+
     return _signInController;
 }
 
@@ -270,6 +329,62 @@ static ViewControllerHelper *sharedViewHelper = nil;
     }
     
     return _eventsNavController;
+}
+
+
+- (UINavigationController*) getCCTVController {
+    
+    if (!_cctvNavController) {
+        
+        CCTVListingController *cctv = [[CCTVListingController alloc] init];
+        [cctv setTitle:@"CCTV"];
+        _cctvNavController = [[UINavigationController alloc] initWithRootViewController:cctv];
+        
+        [self setNavigationBarStyle_Transclucent:_cctvNavController.navigationBar];
+        [[[cctv navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
+        [[[cctv navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+        
+        [_cctvNavController.view setAutoresizesSubviews:TRUE];
+        [_cctvNavController.view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin)];
+        _currentDeckIndex = CCTV_CONTROLLER;
+        
+        [_cctvNavController popToRootViewControllerAnimated:NO];
+        
+    }
+    else {
+        [_cctvNavController popToRootViewControllerAnimated:NO];
+    }
+    
+    return _cctvNavController;
+}
+
+
+- (UINavigationController*) getWlsController {
+    
+    if (!_wlsController) {
+        
+        WLSListingViewController *wls = [[WLSListingViewController alloc] init];
+        [wls setTitle:@"Water Level Sensor"];
+        _wlsController = [[UINavigationController alloc] initWithRootViewController:wls];
+        
+        [self setNavigationBarStyle_Transclucent:_wlsController.navigationBar];
+        [[[wls navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
+        [[[wls navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+        
+        [_wlsController.view setAutoresizesSubviews:TRUE];
+        [_wlsController.view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin)];
+        _currentDeckIndex = WLS_CONTROLLER;
+        
+        [_wlsController popToRootViewControllerAnimated:NO];
+        
+    }
+    else {
+        [_wlsController popToRootViewControllerAnimated:NO];
+    }
+    
+    return _wlsController;
 }
 
 
@@ -621,6 +736,37 @@ static ViewControllerHelper *sharedViewHelper = nil;
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:EVENTS_CONTROLLER];
             break;
             
+            
+        case CCTV_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getCCTVController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getCCTVController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:CCTV_CONTROLLER];
+            break;
+            
+        case WLS_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getWlsController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getWlsController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:WLS_CONTROLLER];
+            break;
+            
         case BOOKING_CONTROLLER:
             if (center) {
                 [[appDelegate rootDeckController] setCenterController:nil];
@@ -774,7 +920,13 @@ static ViewControllerHelper *sharedViewHelper = nil;
     
     [self clear_All_ControllersInThisNavigationCntrl:[self eventsNavController]];
     [self setEventsNavController:nil];
-    
+
+    [self clear_All_ControllersInThisNavigationCntrl:[self cctvNavController]];
+    [self setEventsNavController:nil];
+
+    [self clear_All_ControllersInThisNavigationCntrl:[self wlsController]];
+    [self setEventsNavController:nil];
+
     [self clear_All_ControllersInThisNavigationCntrl:[self bookingNavController]];
     [self setBookingNavController:nil];
     

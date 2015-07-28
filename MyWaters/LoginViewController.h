@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "SignUpViewController.h"
 
 @interface LoginViewController : UIViewController <UITextFieldDelegate> {
     
     AppDelegate *appDelegate;
     
-    UIButton *facebookButton,*loginButton,*forgotPassButton,*backButton,*skipButton;
+    UIButton *facebookButton,*loginButton,*forgotPassButton,*backButton,*skipButton,*signupButton;
     UITextField *emailField,*passField;
 }
 

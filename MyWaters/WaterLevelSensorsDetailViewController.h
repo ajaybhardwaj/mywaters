@@ -12,7 +12,7 @@
 #import "CustomButtons.h"
 #import "QuickMapAnnotations.h"
 
-@interface WaterLevelSensorsDetailViewController : UIViewController <MKMapViewDelegate,UISearchBarDelegate> {
+@interface WaterLevelSensorsDetailViewController : UIViewController <MKMapViewDelegate,UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -27,6 +27,13 @@
     UISearchBar *topSearchBar;
     UIButton *alertButton,*addToFavButton,*refreshButton;
     UILabel *iAlertLabel,*addToFavLabel,*refreshLabel;
+    
+    UIImageView *topImageView,*directionIcon,*arrowIcon;
+    UIButton *directionButton;
+    UILabel *cctvTitleLabel,*distanceLabel;
+    
+    UITableView *wlsListingTable;
+    NSArray *nearbyWlsDatasource;
     
     QuickMapAnnotations *annotation1;
     

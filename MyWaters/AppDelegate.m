@@ -20,7 +20,7 @@
 @synthesize IS_COMING_AFTER_LOGIN;
 @synthesize SELECTED_MENU_ID;
 @synthesize IS_ARVIEW_CUSTOM_LABEL;
-
+@synthesize IS_MOVING_TO_WLS_FROM_DASHBOARD,IS_MOVING_TO_CCTV_FROM_DASHBOARD;
 
 
 //*************** Create Deck View Controller For App ***************//
@@ -51,7 +51,7 @@
     //-- after first time it will flow from this screen...
     if (![[SharedObject sharedClass] isSSCUserSignedIn]) {
         
-        if (!deckCenterController && ![[(UINavigationController*)deckCenterController topViewController] isKindOfClass:[WelcomeViewController class]]) {
+        if (!deckCenterController && ![[(UINavigationController*)deckCenterController topViewController] isKindOfClass:[LoginViewController class]]) {
             
             _rootDeckController = [[IIViewDeckController alloc] initWithCenterViewController:nil leftViewController:nil rightViewController:nil topViewController:nil bottomViewController:nil];
             _rootDeckController.delegateMode = IIViewDeckDelegateOnly;

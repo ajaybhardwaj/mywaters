@@ -97,6 +97,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -515,7 +516,8 @@
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
-    submitButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+//    submitButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:18];
     [self.view addSubview:submitButton];
     
     [self createFeedbackTableHeader];
@@ -548,6 +550,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
     selectedPickerIndex = 0;
     
     if (!isNotFeedbackController) {

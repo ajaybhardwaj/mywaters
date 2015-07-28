@@ -23,6 +23,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -113,12 +114,12 @@
 
     if (tableView==exploreTableView) {
         
-        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 70, 70)];
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
-        [cell.contentView addSubview:cellImage];
+//        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 70, 70)];
+//        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
+//        [cell.contentView addSubview:cellImage];
 
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, exploreTableView.bounds.size.width-100, 40)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, exploreTableView.bounds.size.width-20, 40)];
         //                titleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedTitle"];
         titleLabel.text = [NSString stringWithFormat:@"%@",[exploreDataSource objectAtIndex:(indexPath.row*2)]];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
@@ -128,7 +129,7 @@
         [cell.contentView addSubview:titleLabel];
         
         
-        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, exploreTableView.bounds.size.width-100, 15)];
+        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 50, exploreTableView.bounds.size.width-20, 15)];
         //                dateLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
         subtitleLabel.text = [NSString stringWithFormat:@"%@",[exploreDataSource objectAtIndex:(indexPath.row*2)+1]];
         subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
@@ -138,7 +139,7 @@
         [cell.contentView addSubview:subtitleLabel];
         
         UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        socialButton.frame = CGRectMake(feedTableView.bounds.size.width-25, 55, 15, 15);
+        socialButton.frame = CGRectMake(exploreTableView.bounds.size.width-25, 55, 15, 15);
         [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_facebook_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [cell.contentView addSubview:socialButton];
 
@@ -208,7 +209,7 @@
     segmentedControlBackground.backgroundColor = RGB(247,196,9);
     [self.view addSubview:segmentedControlBackground];
     
-    NSArray *itemArray = [NSArray arrayWithObjects: @"FEED", @"EXPLORE", nil];
+    NSArray *itemArray = [NSArray arrayWithObjects: @"FEED", @"CHATTER", nil];
     
     //***** Temp Datasource Content
     feedDataSource = [[NSArray alloc] initWithObjects:@"World Waters Data at Punggol Park",@"So excited to see a huge crowd!",
@@ -275,11 +276,13 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
+
     
-    if (!isNotWhatsUpController) {
+//    if (!isNotWhatsUpController) {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-    }
-    else {
+//    }
+//    else {
         UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
         [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
@@ -290,9 +293,9 @@
         
         self.title = @"What's Up";
         
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-        
-    }
+//        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+//        
+//    }
 }
 
 

@@ -294,7 +294,8 @@
     [_locationManager setDelegate:self];
     [_locationManager setDesiredAccuracy:kCLLocationAccuracyKilometer];
     [_locationManager setDistanceFilter:kCLDistanceFilterNone];
-    [_locationManager requestAlwaysAuthorization];
+//    [_locationManager requestAlwaysAuthorization];
+    [_locationManager requestWhenInUseAuthorization];
     [_locationManager startMonitoringSignificantLocationChanges];
     [_locationManager startUpdatingLocation];
     

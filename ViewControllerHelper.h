@@ -24,6 +24,9 @@
 #import "FavouritesViewController.h"
 #import "WelcomeViewController.h"
 #import "AboutMyWatersViewController.h"
+#import "CCTVListingController.h"
+#import "WLSListingViewController.h"
+#import "LoginViewController.h"
 
 typedef enum {
   
@@ -35,6 +38,8 @@ typedef enum {
     FLOODMAP_CONTROLLER,
     ABCWATERS_CONTROLLER,
     EVENTS_CONTROLLER,
+    CCTV_CONTROLLER,
+    WLS_CONTROLLER,
     BOOKING_CONTROLLER,
     FEEDBACK_CONTROLLER,
     SETTINGS_CONTROLLER,
@@ -64,7 +69,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger currentDeckIndex;
 
 
-@property (nonatomic, retain) UINavigationController *homeNavController,*notificationsNavController,*whatsupNavController,*floodmapNavController,*abcwatersNavController,*eventsNavController,*bookingNavController,*feedbackNavController,*settingsNavController,*profileNavController,*favouritesNavController,*signInController,*aboutPUBController;
+@property (nonatomic, retain) UINavigationController *homeNavController,*notificationsNavController,*whatsupNavController,*floodmapNavController,*abcwatersNavController,*eventsNavController,*cctvNavController,*wlsController,*bookingNavController,*feedbackNavController,*settingsNavController,*profileNavController,*favouritesNavController,*signInController,*aboutPUBController;
 
 - (void) clear_All_ControllersInThisNavigationCntrl:(UINavigationController*)navControl;
 - (void) clearAllThe_Controllers;
@@ -81,6 +86,8 @@ typedef enum {
 - (UINavigationController*) getFloodMapController;
 - (UINavigationController*) getABCWatersController;
 - (UINavigationController*) getEventsController;
+- (UINavigationController*) getCCTVController;
+- (UINavigationController*) getWlsController;
 - (UINavigationController*) getBookingController;
 - (UINavigationController*) getFeedbackController;
 - (UINavigationController*) getSettingsController;
@@ -93,5 +100,6 @@ typedef enum {
 //*************** Switch between controllers ***************//
 -(void)enableDeckView:(id)sender;
 -(void)enableThisController:(appControllers)sender onCenter:(BOOL)center withAnimate:(BOOL)animate;
+-(void) signOut;
 
 @end

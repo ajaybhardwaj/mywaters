@@ -20,6 +20,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -138,6 +139,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(36,160,236) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

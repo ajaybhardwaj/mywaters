@@ -15,8 +15,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import "WeatherForecastViewController.h"
 #import "WaterLevelSensorsDetailViewController.h"
+#import <MapKit/MapKit.h>
+#import "QuickMapAnnotations.h"
+#import <CoreLocation/CoreLocation.h>
 
-@interface HomeViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
+@interface HomeViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,CLLocationManagerDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -41,8 +44,14 @@
     UITableView *eventsListingTable,*whatsUpListingTable;
     NSMutableArray *eventsDataSource,*whatsUpFeedDataSource;
     
+    MKMapView *quickMap;
+    QuickMapAnnotations *annotation1;
+
+    
     //*************** Demo App UI Variables
     UIButton *quickMapButton,*whatsUpButton,*cctvButton,*reportButton;
 }
+@property (nonatomic, strong) CLLocationManager *locationManager;
+@property (nonatomic, assign) MKCoordinateRegion region;
 
 @end

@@ -13,8 +13,12 @@
     
     AppDelegate *appDelegate;
     
-    UITableView *favouritesListingTableView;
-    NSArray *favouritesDataSource;
+    UITableView *favouritesListingTableView,*filterTableView;
+    NSArray *favouritesDataSource,*filtersArray;
+    
+    BOOL isShowingFilter;
+    NSInteger selectedFilterIndex;
+
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

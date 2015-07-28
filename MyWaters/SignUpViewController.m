@@ -16,6 +16,31 @@
 
 
 
+//*************** Method To Skip Sign Up
+
+- (void) skipSignUpProcess {
+    
+    //    if ([emailField.text length]==0) {
+    //        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+    //    }
+    //    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+    //        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+    //    }
+    //    else if ([passField.text length]==0) {
+    //        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+    //    }
+    //    else {
+    //        [self submitLoginCredentials];
+    
+    // After Validation call it.
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+    [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+    
+    appDelegate.IS_COMING_AFTER_LOGIN = YES;
+    //    }
+}
+
+
 //*************** Method To Move Back To Parent View
 
 - (void) pop2Dismiss:(id) sender {
@@ -356,9 +381,9 @@
     facebookButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [facebookButton setTitle:@"CONNECT VIA FACEBOOK" forState:UIControlStateNormal];
     [facebookButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
-    facebookButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    facebookButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
     facebookButton.tag = 1;
-    facebookButton.frame = CGRectMake(0, 40, backgroundScrollView.bounds.size.width, 45);
+    facebookButton.frame = CGRectMake(10, 40, backgroundScrollView.bounds.size.width-20, 40);
     [facebookButton setBackgroundColor:RGB(45, 72, 166)];
     [backgroundScrollView addSubview:facebookButton];
     
@@ -379,9 +404,19 @@
     profileImageTap.numberOfTouchesRequired = 1;
     [profileImageView addGestureRecognizer: profileImageTap];
     
-    emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, profileImageView.frame.origin.y+profileImageView.bounds.size.height+15, self.view.bounds.size.width, 40)];
-    emailField.textColor = RGB(35, 35, 35);
-    emailField.font = [UIFont fontWithName:ROBOTO_REGULAR size:15.0];
+    
+    uploadAvatarLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, profileImageView.frame.origin.y+profileImageView.bounds.size.height, self.view.bounds.size.width, 20)];
+    uploadAvatarLabel.backgroundColor = [UIColor clearColor];
+    uploadAvatarLabel.textAlignment = NSTextAlignmentCenter;
+    uploadAvatarLabel.textColor = RGB(61, 71, 94);
+    uploadAvatarLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    uploadAvatarLabel.text = @"Upload Avatar";
+    [backgroundScrollView addSubview:uploadAvatarLabel];
+    
+    
+    emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, profileImageView.frame.origin.y+profileImageView.bounds.size.height+15, self.view.bounds.size.width-20, 40)];
+    emailField.textColor = RGB(61, 71, 94);
+    emailField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
     emailField.leftViewMode = UITextFieldViewModeAlways;
     emailField.borderStyle = UITextBorderStyleNone;
@@ -392,15 +427,15 @@
     emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
     emailField.delegate = self;
     emailField.keyboardType = UIKeyboardTypeEmailAddress;
-    emailField.backgroundColor = [UIColor whiteColor];
     emailField.returnKeyType = UIReturnKeyNext;
-    [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [emailField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
+    [emailField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     emailField.tag = 1;
     
     
-    nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, emailField.frame.origin.y+emailField.bounds.size.height+1, self.view.bounds.size.width, 40)];
-    nameField.textColor = RGB(35, 35, 35);
-    nameField.font = [UIFont fontWithName:ROBOTO_REGULAR size:15.0];
+    nameField = [[UITextField alloc] initWithFrame:CGRectMake(10, emailField.frame.origin.y+emailField.bounds.size.height+1, self.view.bounds.size.width-20, 40)];
+    nameField.textColor = RGB(61, 71, 94);
+    nameField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
     nameField.leftViewMode = UITextFieldViewModeAlways;
     nameField.borderStyle = UITextBorderStyleNone;
@@ -410,15 +445,15 @@
     [backgroundScrollView addSubview:nameField];
     nameField.clearButtonMode = UITextFieldViewModeWhileEditing;
     nameField.delegate = self;
-    nameField.backgroundColor = [UIColor whiteColor];
     nameField.returnKeyType = UIReturnKeyNext;
-    [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [nameField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
+    [nameField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     nameField.tag = 2;
     
     
-    passField = [[UITextField alloc] initWithFrame:CGRectMake(0, nameField.frame.origin.y+nameField.bounds.size.height+1, self.view.bounds.size.width, 40)];
-    passField.textColor = RGB(35, 35, 35);
-    passField.font = [UIFont fontWithName:ROBOTO_REGULAR size:15.0];
+    passField = [[UITextField alloc] initWithFrame:CGRectMake(10, nameField.frame.origin.y+nameField.bounds.size.height+1, self.view.bounds.size.width-20, 40)];
+    passField.textColor = RGB(61, 71, 94);
+    passField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     passField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
     passField.leftViewMode = UITextFieldViewModeAlways;
     passField.borderStyle = UITextBorderStyleNone;
@@ -429,34 +464,34 @@
     [backgroundScrollView addSubview:passField];
     passField.clearButtonMode = UITextFieldViewModeWhileEditing;
     passField.delegate = self;
-    passField.backgroundColor = [UIColor whiteColor];
     passField.returnKeyType = UIReturnKeyNext;
-    [passField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [passField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
+    [passField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     passField.tag = 3;
     
     
-    retypePassField = [[UITextField alloc] initWithFrame:CGRectMake(0, passField.frame.origin.y+passField.bounds.size.height+1, self.view.bounds.size.width, 40)];
-    retypePassField.textColor = RGB(35, 35, 35);
-    retypePassField.font = [UIFont fontWithName:ROBOTO_REGULAR size:15.0];
+    retypePassField = [[UITextField alloc] initWithFrame:CGRectMake(10, passField.frame.origin.y+passField.bounds.size.height+1, self.view.bounds.size.width-20, 40)];
+    retypePassField.textColor = RGB(61, 71, 94);
+    retypePassField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     retypePassField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
     retypePassField.leftViewMode = UITextFieldViewModeAlways;
     retypePassField.borderStyle = UITextBorderStyleNone;
     retypePassField.textAlignment=NSTextAlignmentLeft;
     [retypePassField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
     retypePassField.secureTextEntry = YES;
-    retypePassField.placeholder=@"Re-type Password *";
+    retypePassField.placeholder=@"Re-enter Password *";
     [backgroundScrollView addSubview:retypePassField];
     retypePassField.clearButtonMode = UITextFieldViewModeWhileEditing;
     retypePassField.delegate = self;
-    retypePassField.backgroundColor = [UIColor whiteColor];
     retypePassField.returnKeyType = UIReturnKeyDone;
-    [retypePassField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [retypePassField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
+    [retypePassField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     retypePassField.tag = 4;
     
     checkboxButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [checkboxButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     checkboxButton.tag = 2;
-    checkboxButton.frame = CGRectMake(15, retypePassField.frame.origin.y+retypePassField.bounds.size.height+35, 20, 20);
+    checkboxButton.frame = CGRectMake(15, retypePassField.frame.origin.y+retypePassField.bounds.size.height+20, 20, 20);
     [checkboxButton addTarget:self action:@selector(changeTermsAgreeStatus) forControlEvents:UIControlEventTouchUpInside];
     [checkboxButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/checkbox.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [backgroundScrollView addSubview:checkboxButton];
@@ -468,39 +503,40 @@
     termsButton.tag = 3;
     termsButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     termsButton.contentEdgeInsets = UIEdgeInsetsMake(0, 45, 0, 0);
-    termsButton.frame = CGRectMake(0, retypePassField.frame.origin.y+retypePassField.bounds.size.height+35, self.view.bounds.size.width, 20);
+    termsButton.frame = CGRectMake(0, retypePassField.frame.origin.y+retypePassField.bounds.size.height+20, self.view.bounds.size.width, 20);
     [termsButton addTarget:self action:@selector(changeTermsAgreeStatus) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:termsButton];
     
     signUpButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [signUpButton setTitle:@"SIGN UP" forState:UIControlStateNormal];
     [signUpButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    signUpButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    signUpButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
     signUpButton.tag = 4;
-    signUpButton.frame = CGRectMake(0, termsButton.frame.origin.y+termsButton.bounds.size.height+30, self.view.bounds.size.width, 45);
-    [signUpButton setBackgroundColor:RGB(67, 79, 96)];
+    signUpButton.frame = CGRectMake(10, termsButton.frame.origin.y+termsButton.bounds.size.height+15, self.view.bounds.size.width-20, 40);
+    [signUpButton setBackgroundColor:RGB(68, 78, 98)];
     [signUpButton addTarget:self action:@selector(validateSignUpParameters) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:signUpButton];
     
-    backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [backButton setTitle:@"BACK" forState:UIControlStateNormal];
-    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
-    backButton.tag = 5;
-    backButton.frame = CGRectMake(0, signUpButton.frame.origin.y+signUpButton.bounds.size.height+15, self.view.bounds.size.width, 45);
-    [backButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
-    [backButton setBackgroundColor:RGB(83, 83, 83)];
-    [self.view addSubview:backButton];
+//    backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [backButton setTitle:@"BACK" forState:UIControlStateNormal];
+//    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+//    backButton.tag = 5;
+//    backButton.frame = CGRectMake(0, signUpButton.frame.origin.y+signUpButton.bounds.size.height+15, self.view.bounds.size.width, 45);
+//    [backButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
+//    [backButton setBackgroundColor:RGB(83, 83, 83)];
+//    [self.view addSubview:backButton];
     
     
-//    skipButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [skipButton setTitle:@"or skip for now" forState:UIControlStateNormal];
-//    [skipButton setTitleColor:RGB(22, 25, 62) forState:UIControlStateNormal];
-//    skipButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:15];
-//    skipButton.tag = 5;
-//    skipButton.frame = CGRectMake(0, signUpButton.frame.origin.y+signUpButton.bounds.size.height+15, self.view.bounds.size.width, 30);
-//    [skipButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
-//    [backgroundScrollView addSubview:skipButton];
+    skipButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [skipButton setTitle:@"or skip for now" forState:UIControlStateNormal];
+    [skipButton setTitleColor:RGB(22, 25, 62) forState:UIControlStateNormal];
+    skipButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:15];
+    skipButton.tag = 5;
+    skipButton.frame = CGRectMake(0, signUpButton.frame.origin.y+signUpButton.bounds.size.height+10, self.view.bounds.size.width, 30);
+    [skipButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [skipButton addTarget:self action:@selector(skipSignUpProcess) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundScrollView addSubview:skipButton];
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
     swipeGesture.direction = UISwipeGestureRecognizerDirectionRight;

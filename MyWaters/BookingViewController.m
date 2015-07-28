@@ -223,6 +223,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -418,7 +419,8 @@
     nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [nextButton setTitle:@"NEXT" forState:UIControlStateNormal];
     [nextButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    nextButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+//    nextButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    nextButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:19];
     nextButton.frame = CGRectMake(0, bgScrollView.bounds.size.height-109, self.view.bounds.size.width, 45);
     [nextButton addTarget:self action:@selector(slideToSecondPart) forControlEvents:UIControlEventTouchUpInside];
     [nextButton setBackgroundColor:RGB(82, 82, 82)];
@@ -607,7 +609,8 @@
     submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    submitButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+//    submitButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:19];
     submitButton.frame = CGRectMake(self.view.bounds.size.width, bgScrollView.bounds.size.height-109, self.view.bounds.size.width, 45);
     [submitButton addTarget:self action:@selector(moveToConfirmationView) forControlEvents:UIControlEventTouchUpInside];
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
@@ -912,6 +915,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
     isFirstVisit = YES;
     [self createBookingForm];
     [bgScrollView setContentOffset:CGPointMake(0, 0) animated:YES];

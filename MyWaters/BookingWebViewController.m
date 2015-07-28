@@ -20,6 +20,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -78,7 +79,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
-
+    self.navigationController.navigationBar.alpha = 1.0;
 }
 
 - (void) viewDidAppear:(BOOL)animated {

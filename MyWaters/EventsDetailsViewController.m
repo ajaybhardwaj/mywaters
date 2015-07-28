@@ -30,6 +30,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -65,7 +66,7 @@
         [UIView beginAnimations:@"topMenu" context:NULL];
         [UIView setAnimationDuration:0.5];
         CGPoint topMenuPos = topMenu.center;
-        topMenuPos.y = 28;
+        topMenuPos.y = 22;
         topMenu.center = topMenuPos;
         [UIView commitAnimations];
     }
@@ -180,7 +181,7 @@
     //    [self createDemoAppControls];
     
     
-    bgScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-124)];
+    bgScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
     bgScrollView.showsHorizontalScrollIndicator = NO;
     bgScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:bgScrollView];
@@ -189,60 +190,67 @@
     
     [self createUI];
     
-    callUsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    callUsButton.frame = CGRectMake((self.view.bounds.size.width/2)-17.5, bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+10, 25, 25);
-    [callUsButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_call_yellow.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [self.view addSubview:callUsButton];
-    
-    
-    callUsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, callUsButton.frame.origin.y+callUsButton.bounds.size.height+4, self.view.bounds.size.width, 15)];
-    callUsLabel.backgroundColor = [UIColor clearColor];
-    callUsLabel.textAlignment = NSTextAlignmentCenter;
-    callUsLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
-    callUsLabel.text = @"Call Us";
-    [self.view addSubview:callUsLabel];
+//    callUsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    callUsButton.frame = CGRectMake((self.view.bounds.size.width/2)-17.5, bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+10, 25, 25);
+//    [callUsButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_call_yellow.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+//    [self.view addSubview:callUsButton];
+//    
+//    
+//    callUsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, callUsButton.frame.origin.y+callUsButton.bounds.size.height+4, self.view.bounds.size.width, 15)];
+//    callUsLabel.backgroundColor = [UIColor clearColor];
+//    callUsLabel.textAlignment = NSTextAlignmentCenter;
+//    callUsLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
+//    callUsLabel.text = @"Call Us";
+//    [self.view addSubview:callUsLabel];
     
     
     //Top Menu Item
     
-    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 55)];
-    topMenu.backgroundColor = [UIColor whiteColor];
+    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 45)];
+    topMenu.backgroundColor = [UIColor blackColor];
+    topMenu.alpha = 0.8;
     [self.view addSubview:topMenu];
     
     notifyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    notifyButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 10, 25, 25);
+    notifyButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [notifyButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_notifyme.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [notifyButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:notifyButton];
     
     favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 10, 25, 25);
+    favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [favouritesButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:favouritesButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 10, 25, 25);
+    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [shareButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:shareButton];
     
-    notifyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, topMenu.bounds.size.width/3, 10)];
+    notifyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/3, 10)];
     notifyLabel.backgroundColor = [UIColor clearColor];
     notifyLabel.textAlignment = NSTextAlignmentCenter;
     notifyLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     notifyLabel.text = @"Notify Me";
+    notifyLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:notifyLabel];
     
-    addToFavlabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 40, topMenu.bounds.size.width/3, 10)];
+    addToFavlabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
     addToFavlabel.backgroundColor = [UIColor clearColor];
     addToFavlabel.textAlignment = NSTextAlignmentCenter;
     addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     addToFavlabel.text = @"Add To Favourite";
+    addToFavlabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:addToFavlabel];
     
-    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 40, topMenu.bounds.size.width/3, 10)];
+    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
     shareLabel.backgroundColor = [UIColor clearColor];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     shareLabel.text = @"Share";
+    shareLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:shareLabel];
 }
 

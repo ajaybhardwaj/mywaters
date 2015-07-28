@@ -23,6 +23,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -45,7 +46,7 @@
     }
     else {
         isShowingFilter = YES;
-        pos.y = 135;
+        pos.y = 128;
         
         notificationsTable.alpha = 0.5;
         notificationsTable.userInteractionEnabled = NO;
@@ -78,6 +79,7 @@
     if (tableView==filterTableView) {
         selectedFilterIndex = indexPath.row;
         [filterTableView reloadData];
+        [self animateFilterTable];
     }
     else {
         NSLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
@@ -114,15 +116,16 @@
     
     if (tableView==filterTableView) {
         
-        cell.backgroundColor = RGB(247, 247, 247);
+        cell.backgroundColor = [UIColor blackColor];//RGB(247, 247, 247);
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, notificationsTable.bounds.size.width-10, cell.bounds.size.height)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, filterTableView.bounds.size.width-10, cell.bounds.size.height)];
         titleLabel.text = [filtersArray objectAtIndex:indexPath.row];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.textColor = [UIColor whiteColor];
         [cell.contentView addSubview:titleLabel];
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, notificationsTable.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -192,7 +195,26 @@
 
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+//    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+    
+    
+    
+    UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
+    [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [btnfilter setFrame:CGRectMake(0, 0, 32, 32)];
+    
+    UIButton *btnSpeaker =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnSpeaker setImage:[UIImage imageNamed:@"icn_speaker"] forState:UIControlStateNormal];
+//    [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
+    [btnSpeaker setFrame:CGRectMake(44, 0, 32, 32)];
+    
+    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
+    [rightBarButtonItems addSubview:btnfilter];
+    [rightBarButtonItems addSubview:btnSpeaker];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
+
     
     notificationsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     notificationsTable.delegate = self;
@@ -213,6 +235,7 @@
     filterTableView.backgroundColor = [UIColor clearColor];
     filterTableView.backgroundView = nil;
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    filterTableView.alpha = 0.8;
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Announcements",@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
 }
@@ -220,6 +243,8 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
+
 }
 
 

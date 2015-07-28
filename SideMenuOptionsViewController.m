@@ -68,15 +68,21 @@
         [[ViewControllerHelper viewControllerHelper] enableThisController:EVENTS_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
     else if (appDelegate.SELECTED_MENU_ID==8) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:BOOKING_CONTROLLER onCenter:TRUE withAnimate:NO];
+        [[ViewControllerHelper viewControllerHelper] enableThisController:CCTV_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
     else if (appDelegate.SELECTED_MENU_ID==9) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:FEEDBACK_CONTROLLER onCenter:TRUE withAnimate:NO];
+        [[ViewControllerHelper viewControllerHelper] enableThisController:WLS_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
     else if (appDelegate.SELECTED_MENU_ID==10) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:SETTINGS_CONTROLLER onCenter:TRUE withAnimate:NO];
+        [[ViewControllerHelper viewControllerHelper] enableThisController:BOOKING_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
     else if (appDelegate.SELECTED_MENU_ID==11) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:FEEDBACK_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==12) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:SETTINGS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==13) {
         [[ViewControllerHelper viewControllerHelper] enableThisController:ABOUT_PUB_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
 }
@@ -89,12 +95,12 @@
     UIImageView *iconImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
     [iconImg setTag:900];
 //    [iconImg setBackgroundColor:RGB(210, 255, 77)];
-    [iconImg setBackgroundColor:RGB(245, 245, 245)];
+    [iconImg setBackgroundColor:RGB(232, 233, 232)];
     [iconImg setContentMode:UIViewContentModeCenter];
     [iconImg setUserInteractionEnabled:YES];
     [cell.contentView addSubview:iconImg];
     
-    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, self.view.bounds.size.width-40, 44)];
+    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, self.view.bounds.size.width-40, 44)];
     [lbl setTag:901];
     [lbl setBackgroundColor:[UIColor clearColor]];
     lbl.textColor = [UIColor whiteColor];
@@ -131,6 +137,10 @@
                                [NSDictionary dictionaryWithObjectsAndKeys:@"ABC Waters",CELL__MAIN_TXT,@"icn_abcwaters",CELL__IMG, nil],
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Events",CELL__MAIN_TXT,@"icn_events",CELL__IMG, nil],
+                                                                                                           
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"CCTV",CELL__MAIN_TXT,@"icn_cctv",CELL__IMG, nil],
+                                                                                                        
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Water Level Sensor",CELL__MAIN_TXT,@"icn_wls",CELL__IMG, nil],
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Booking",CELL__MAIN_TXT,@"icn_booking",CELL__IMG, nil],
                                
@@ -277,6 +287,26 @@
                 }
                     break;
                     
+                case CCTV_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:CCTV_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
+                case WLS_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:WLS_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
                     
                 case BOOKING_CONTROLLER:{
                     
@@ -384,7 +414,7 @@
         
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.selectedBackgroundView = nil;
-        cell.backgroundColor = RGB(245, 245, 245);
+        cell.backgroundColor = RGB(232, 233, 232);
 
         cell = [self customizeTableCell:cell];
         
@@ -402,7 +432,7 @@
     UILabel *lbl = (UILabel *)[cell.contentView viewWithTag:901];
     [lbl setText:lblTxt];
     
-    [lbl setFont:[UIFont fontWithName:ROBOTO_MEDIUM size:15.0]];
+    [lbl setFont:[UIFont fontWithName:ROBOTO_MEDIUM size:14.5]];
     [lbl setTextColor:RGB(83, 83, 83)];
     
     UIImageView *img = (UIImageView *)[cell.contentView viewWithTag:900];

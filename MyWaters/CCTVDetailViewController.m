@@ -16,6 +16,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -100,7 +101,7 @@
         [UIView beginAnimations:@"topMenu" context:NULL];
         [UIView setAnimationDuration:0.5];
         CGPoint topMenuPos = topMenu.center;
-        topMenuPos.y = 28;
+        topMenuPos.y = 21;
         topMenu.center = topMenuPos;
         [UIView commitAnimations];
     }
@@ -195,6 +196,15 @@
 }
 
 
+# pragma mark - UITextFieldDelegate Methods
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
 
 # pragma mark - View Lifecycle Methods
 
@@ -214,85 +224,78 @@
 
     
 //    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
+    if (appDelegate.IS_MOVING_TO_CCTV_FROM_DASHBOARD) {
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
+        appDelegate.IS_MOVING_TO_CCTV_FROM_DASHBOARD = NO;
+    }
+    else {
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    }
+
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];
     
     
+    [self createUI];
+    
     //Top Menu Item
     
-    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 55)];
-    topMenu.backgroundColor = RGB(254, 254, 254);
+    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 45)];
+    topMenu.backgroundColor = [UIColor blackColor];
+    topMenu.alpha = 0.8;
     [self.view addSubview:topMenu];
     
-    exploreMapButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    exploreMapButton.frame = CGRectMake((topMenu.bounds.size.width/4)-(topMenu.bounds.size.width/4)+(topMenu.bounds.size.width/4)/2 - 12.5, 10, 25, 25);
-    [exploreMapButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_exploremap_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [topMenu addSubview:exploreMapButton];
+    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2), 35)];
+    searchField.textColor = RGB(35, 35, 35);
+    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    searchField.leftViewMode = UITextFieldViewModeAlways;
+    searchField.borderStyle = UITextBorderStyleNone;
+    searchField.textAlignment=NSTextAlignmentLeft;
+    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    searchField.placeholder = @"Search...";
+    searchField.layer.borderWidth = 0.5;
+    searchField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    [topMenu addSubview:searchField];
+    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    searchField.delegate = self;
+    searchField.keyboardType = UIKeyboardTypeEmailAddress;
+    searchField.backgroundColor = [UIColor whiteColor];
+    searchField.returnKeyType = UIReturnKeyDone;
+    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     
-    addToFavButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    addToFavButton.frame = CGRectMake(((topMenu.bounds.size.width/4)*2)-(topMenu.bounds.size.width/4)+(topMenu.bounds.size.width/4)/2 - 12.5, 10, 25, 25);
-    [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [topMenu addSubview:addToFavButton];
-    
-    refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    refreshButton.frame = CGRectMake(((topMenu.bounds.size.width/4)*3)-(topMenu.bounds.size.width/4)+(topMenu.bounds.size.width/4)/2 - 12.5, 10, 25, 25);
-    [refreshButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_refresh_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [topMenu addSubview:refreshButton];
+    favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (50), 5, 20, 20);
+    [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [favouritesButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:favouritesButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/4)*4)-(topMenu.bounds.size.width/4)+(topMenu.bounds.size.width/4)/2 - 12.5, 10, 25, 25);
-    [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (10), 5, 20, 20);
+    [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [shareButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:shareButton];
     
-    exploreMapLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, topMenu.bounds.size.width/4, 10)];
-    exploreMapLabel.backgroundColor = [UIColor clearColor];
-    exploreMapLabel.textAlignment = NSTextAlignmentCenter;
-    exploreMapLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    exploreMapLabel.text = @"Explore Map";
-    [topMenu addSubview:exploreMapLabel];
+    addToFavlabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)+50, 30, topMenu.bounds.size.width/3, 10)];
+    addToFavlabel.backgroundColor = [UIColor clearColor];
+    addToFavlabel.textAlignment = NSTextAlignmentCenter;
+    addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    addToFavlabel.text = @"Add To Fav";
+    addToFavlabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:addToFavlabel];
     
-    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(exploreMapLabel.frame.origin.x+exploreMapLabel.bounds.size.width-4, 0, 0.5, 55)];
-    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
-    [topMenu addSubview:seperatorOne];
-    
-    addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/4), 40, topMenu.bounds.size.width/4, 10)];
-    addToFavLabel.backgroundColor = [UIColor clearColor];
-    addToFavLabel.textAlignment = NSTextAlignmentCenter;
-    addToFavLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    addToFavLabel.text = @"Add To Favorities";
-    [topMenu addSubview:addToFavLabel];
-    
-    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(addToFavLabel.frame.origin.x+addToFavLabel.bounds.size.width+2, 0, 0.5, 55)];
-    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
-    [topMenu addSubview:seperatorTwo];
-    
-    refreshLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/4)*2, 40, topMenu.bounds.size.width/4, 10)];
-    refreshLabel.backgroundColor = [UIColor clearColor];
-    refreshLabel.textAlignment = NSTextAlignmentCenter;
-    refreshLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    refreshLabel.text = @"Refresh";
-    [topMenu addSubview:refreshLabel];
-    
-    UIImageView *seperatorThree =[[UIImageView alloc] initWithFrame:CGRectMake(refreshLabel.frame.origin.x+refreshLabel.bounds.size.width-2, 0, 0.5, 55)];
-    [seperatorThree setBackgroundColor:[UIColor lightGrayColor]];
-    [topMenu addSubview:seperatorThree];
-    
-    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/4)*3, 40, topMenu.bounds.size.width/4, 10)];
+    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2+10, 30, topMenu.bounds.size.width/3, 10)];
     shareLabel.backgroundColor = [UIColor clearColor];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     shareLabel.text = @"Share";
+    shareLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:shareLabel];
-    
-    
-    [self createUI];
-    //[self createDemoAppControls];
-
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

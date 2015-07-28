@@ -22,7 +22,9 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+    [searchField resignFirstResponder];
 }
 
 
@@ -31,19 +33,116 @@
 - (void) handleSegmentedControl:(UISegmentedControl*) sender {
     
     if (sender==gridListSegmentedControl) {
+        
         if (sender.selectedSegmentIndex==0) {
             listTabeView.hidden = YES;
             abcWatersScrollView.hidden = NO;
             [self createGridView];
+            
+            self.navigationItem.rightBarButtonItem = nil;
         }
         else if (sender.selectedSegmentIndex==1) {
             listTabeView.hidden = NO;
             abcWatersScrollView.hidden = YES;
             [appDelegate retrieveABCWatersListing];
             [listTabeView reloadData];
+            
+            UIButton *btnSearch =  [UIButton buttonWithType:UIButtonTypeCustom];
+            [btnSearch setImage:[UIImage imageNamed:@"icn_search"] forState:UIControlStateNormal];
+            [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
+            [btnSearch setFrame:CGRectMake(0, 0, 32, 32)];
+            
+            UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
+            [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
+            [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
+            [btnfilter setFrame:CGRectMake(44, 0, 32, 32)];
+            
+            UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
+            [rightBarButtonItems addSubview:btnSearch];
+            [rightBarButtonItems addSubview:btnfilter];
+            
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
+
         }
     }
 }
+
+
+
+//*************** Method To Animate Search Bar
+
+- (void) animateSearchBar {
+    
+    [UIView beginAnimations:@"searchbar" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = searchField.center;
+    
+    if (isShowingSearchBar) {
+        isShowingSearchBar = NO;
+        pos.y = -70;
+        
+        listTabeView.alpha = 1.0;
+        listTabeView.userInteractionEnabled = YES;
+        
+        [searchField resignFirstResponder];
+    }
+    else {
+        isShowingSearchBar = YES;
+        pos.y = 20;
+        
+        if (isShowingFilter) {
+            [self animateFilterTable];
+        }
+        
+        listTabeView.alpha = 0.5;
+        listTabeView.userInteractionEnabled = NO;
+        
+        [searchField becomeFirstResponder];
+    }
+    searchField.center = pos;
+    [UIView commitAnimations];
+}
+
+//*************** Method To Animate Filter Table
+
+- (void) animateFilterTable {
+    
+    [UIView beginAnimations:@"filterTable" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = filterTableView.center;
+    
+    if (isShowingFilter) {
+        isShowingFilter = NO;
+        pos.y = -70;
+        
+        listTabeView.alpha = 1.0;
+        listTabeView.userInteractionEnabled = YES;
+        
+    }
+    else {
+        isShowingFilter = YES;
+        pos.y = 45;
+        
+        if (isShowingSearchBar) {
+            [self animateSearchBar];
+        }
+        
+        listTabeView.alpha = 0.5;
+        listTabeView.userInteractionEnabled = NO;
+    }
+    filterTableView.center = pos;
+    [UIView commitAnimations];
+    
+}
+
+//*************** Method To Move To ABC Water Detail View
+
+- (void) moveToDetailsView {
+    
+    ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
+    [self.navigationController pushViewController:viewObj animated:NO];
+}
+
 
 
 //*************** Method To Create Grid View For ABC Waters
@@ -67,7 +166,8 @@
             UIButton *gridButton = [UIButton buttonWithType:UIButtonTypeCustom];
             gridButton.frame = CGRectMake(xAxis, yAxis, (segmentedControlBackground.bounds.size.width-2)/3, (segmentedControlBackground.bounds.size.width-2)/3);
 //            [gridButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]] forState:UIControlStateNormal];
-            [gridButton setBackgroundImage:[UIImage imageNamed:@"abcwaters_grid_new.png"] forState:UIControlStateNormal];
+            [gridButton setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"abcwaters_grid%d.png",i+1]] forState:UIControlStateNormal];
+            [gridButton addTarget:self action:@selector(moveToDetailsView) forControlEvents:UIControlEventTouchUpInside];
             [abcWatersScrollView addSubview:gridButton];
             
 
@@ -98,19 +198,42 @@
 }
 
 
+# pragma mark - UITextFieldDelegate Methods
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [self animateSearchBar];
+    return YES;
+}
+
+
+
 # pragma mark - UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 80.0f;
+    if (tableView==filterTableView) {
+        return 40.0f;
+    }
+    else if (tableView==listTabeView) {
+        return 80.0f;
+    }
+    return 0.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
-    [self.navigationController pushViewController:viewObj animated:NO];
+    if (tableView==filterTableView) {
+        selectedFilterIndex = indexPath.row;
+        [filterTableView reloadData];
+        [self animateFilterTable];
+    }
+    else {
+        ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:NO];
+    }
 }
 
 
@@ -119,8 +242,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
-        return appDelegate.ABC_WATERS_LISTING_ARRAY.count;
+    if (tableView==listTabeView) {
+        if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
+            return appDelegate.ABC_WATERS_LISTING_ARRAY.count;
+        }
+    }
+    else if (tableView==filterTableView) {
+        return filtersArray.count;
     }
     return 0;
 }
@@ -129,20 +257,58 @@
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"abclisting"];
     
+    
+    if (tableView==filterTableView) {
+        
+        cell.backgroundColor = [UIColor blackColor];//RGB(247, 247, 247);
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, filterTableView.bounds.size.width-10, cell.bounds.size.height)];
+        titleLabel.text = [filtersArray objectAtIndex:indexPath.row];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.textColor = [UIColor whiteColor];
+        [cell.contentView addSubview:titleLabel];
+        //        }
+        
+        if (indexPath.row==selectedFilterIndex) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
+        
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+        
+    }
+    
+    else {
     if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
         
-        cell.imageView.image = [UIImage imageNamed:@"abcwater_list.png"];//[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]]];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"]];
+//        cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"abcwaters_grid%d.png",indexPath.row+1]];//[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]]];
+//        cell.textLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"]];
+//        
+//        cell.textLabel.numberOfLines = 0;
+//        cell.textLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
-        cell.textLabel.numberOfLines = 0;
-        cell.textLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 60, 60)];
+        //        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/default_no_image.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        cellImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"abcwaters_grid%ld.png",indexPath.row+1]];
+        [cell.contentView addSubview:cellImage];
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 40)];
+        //        titleLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
+        titleLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"]];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.numberOfLines = 0;
+        [cell.contentView addSubview:titleLabel];
     }
     
     UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, listTabeView.bounds.size.width, 0.5)];
     [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:seperatorImage];
-
+    }
     
     return cell;
 }
@@ -158,6 +324,7 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
+    
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
@@ -214,14 +381,44 @@
     listTabeView.hidden = YES;
     listTabeView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
+    
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -90, self.view.bounds.size.width, 90) style:UITableViewStylePlain];
+    filterTableView.delegate = self;
+    filterTableView.dataSource = self;
+    [self.view addSubview:filterTableView];
+    filterTableView.backgroundColor = [UIColor clearColor];
+    filterTableView.backgroundView = nil;
+    filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    filterTableView.alpha = 0.8;
+    
+    filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
+    
     [self createGridView];
     //[self createDemoAppControls];
+    
+    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
+    searchField.textColor = RGB(35, 35, 35);
+    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    searchField.leftViewMode = UITextFieldViewModeAlways;
+    searchField.borderStyle = UITextBorderStyleNone;
+    searchField.textAlignment=NSTextAlignmentLeft;
+    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    searchField.placeholder = @"Search...";
+    [self.view addSubview:searchField];
+    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    searchField.delegate = self;
+    searchField.keyboardType = UIKeyboardTypeEmailAddress;
+    searchField.returnKeyType = UIReturnKeyDone;
+    searchField.backgroundColor = [UIColor whiteColor];
+    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
 }
 
-
+ 
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
     self.navigationController.navigationBar.hidden = NO;
 }
 

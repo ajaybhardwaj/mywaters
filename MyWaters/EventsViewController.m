@@ -19,6 +19,40 @@
 
 
 
+//*************** Method To Animate Search Bar
+
+- (void) animateSearchBar {
+
+    [UIView beginAnimations:@"searchbar" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = searchField.center;
+    
+    if (isShowingSearchBar) {
+        isShowingSearchBar = NO;
+        pos.y = -70;
+        
+        eventsListingTableView.alpha = 1.0;
+        eventsListingTableView.userInteractionEnabled = YES;
+        
+        [searchField resignFirstResponder];
+    }
+    else {
+        isShowingSearchBar = YES;
+        pos.y = 20;
+        
+        if (isShowingFilter) {
+            [self animateFilterTable];
+        }
+        
+        eventsListingTableView.alpha = 0.5;
+//        eventsListingTableView.userInteractionEnabled = NO;
+        
+        [searchField becomeFirstResponder];
+    }
+    searchField.center = pos;
+    [UIView commitAnimations];
+}
+
 //*************** Method To Animate Filter Table
 
 - (void) animateFilterTable {
@@ -37,7 +71,11 @@
     }
     else {
         isShowingFilter = YES;
-        pos.y = 64;
+        pos.y = 63;
+        
+        if (isShowingSearchBar) {
+            [self animateSearchBar];
+        }
         
         eventsListingTableView.alpha = 0.5;
         eventsListingTableView.userInteractionEnabled = NO;
@@ -53,7 +91,9 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+    [searchField resignFirstResponder];
 }
 
 
@@ -120,6 +160,16 @@
 
 
 
+# pragma mark - UITextFieldDelegate Methods
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [self animateSearchBar];
+    return YES;
+}
+
+
+
 # pragma mark - UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -137,12 +187,20 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (isShowingSearchBar) {
+        [self animateSearchBar];
+        return;
+    }
+    
     if (tableView==filterTableView) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
         selectedFilterIndex = indexPath.row;
         [filterTableView reloadData];
+        [self animateFilterTable];
     }
     else if (tableView==eventsListingTableView) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
         EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
         viewObj.descriptionTempString = [eventsTableDataSource objectAtIndex:(indexPath.row*5)+4];
         [self.navigationController pushViewController:viewObj animated:YES];
@@ -172,27 +230,49 @@
     
     if (tableView==filterTableView) {
         
-        cell.backgroundColor = RGB(247, 247, 247);
+        cell.backgroundColor = [UIColor blackColor];//RGB(247, 247, 247);
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, eventsListingTableView.bounds.size.width-10, cell.bounds.size.height)];
-        titleLabel.text = [filtersArray objectAtIndex:indexPath.row];
-        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-        titleLabel.backgroundColor = [UIColor clearColor];
-        [cell.contentView addSubview:titleLabel];
-        
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, eventsListingTableView.bounds.size.width, 0.5)];
-        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
-        [cell.contentView addSubview:seperatorImage];
+//        if (indexPath.row==3) {
+//            searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, filterTableView.bounds.size.width, 40)];
+//            searchField.textColor = RGB(35, 35, 35);
+//            searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+//            searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+//            searchField.leftViewMode = UITextFieldViewModeAlways;
+//            searchField.borderStyle = UITextBorderStyleNone;
+//            searchField.textAlignment=NSTextAlignmentLeft;
+//            [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+//            searchField.placeholder=@"Search...";
+//            [cell.contentView addSubview:searchField];
+//            searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
+//            searchField.delegate = self;
+//            searchField.keyboardType = UIKeyboardTypeEmailAddress;
+//            searchField.backgroundColor = [UIColor whiteColor];
+//            searchField.returnKeyType = UIReturnKeyNext;
+//            [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+//        }
+//        else {
+            UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, filterTableView.bounds.size.width-10, cell.bounds.size.height)];
+            titleLabel.text = [filtersArray objectAtIndex:indexPath.row];
+            titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+            titleLabel.backgroundColor = [UIColor clearColor];
+            titleLabel.textColor = [UIColor whiteColor];
+            [cell.contentView addSubview:titleLabel];
+//        }
         
         if (indexPath.row==selectedFilterIndex) {
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
         
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+
     }
     else if (tableView==eventsListingTableView) {
         
         UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 15, 70, 70)];
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/default_no_image.png",appDelegate.RESOURCE_FOLDER_PATH]];
+//        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/default_no_image.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
         [cell.contentView addSubview:cellImage];
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, eventsListingTableView.bounds.size.width-100, 40)];
@@ -204,7 +284,7 @@
         [cell.contentView addSubview:titleLabel];
         
         
-        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, 150, 20)];
+        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, 150, 15)];
         //        dateLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventDate"];
         dateLabel.text = [NSString stringWithFormat:@"%@",[eventsTableDataSource objectAtIndex:(indexPath.row*5)+2]];
         dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
@@ -214,7 +294,7 @@
         [cell.contentView addSubview:dateLabel];
         
 //        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(eventsListingTableView.bounds.size.width-100, 80, 90, 20)];
-        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 80, 150, 20)];
+        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 65, 150, 15)];
         distanceLabel.text = [NSString stringWithFormat:@"@ %@",[eventsTableDataSource objectAtIndex:(indexPath.row*5)+3]];
 //        distanceLabel.text = @"10 KM";
         distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:10.5];
@@ -243,7 +323,23 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+    
+    UIButton *btnSearch =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnSearch setImage:[UIImage imageNamed:@"icn_search"] forState:UIControlStateNormal];
+    [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
+    [btnSearch setFrame:CGRectMake(0, 0, 32, 32)];
+    
+    UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
+    [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [btnfilter setFrame:CGRectMake(44, 0, 32, 32)];
+    
+    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
+    [rightBarButtonItems addSubview:btnSearch];
+    [rightBarButtonItems addSubview:btnfilter];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
+//    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
 
     
     self.view.backgroundColor = RGB(247, 247, 247);
@@ -272,24 +368,41 @@
     filterTableView.backgroundColor = [UIColor clearColor];
     filterTableView.backgroundView = nil;
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    filterTableView.alpha = 0.8;
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Date",@"Distance",@"Name", nil];
     
-    
+    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
+    searchField.textColor = RGB(35, 35, 35);
+    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    searchField.leftViewMode = UITextFieldViewModeAlways;
+    searchField.borderStyle = UITextBorderStyleNone;
+    searchField.textAlignment=NSTextAlignmentLeft;
+    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    searchField.placeholder = @"Search by location name";
+    [self.view addSubview:searchField];
+    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    searchField.delegate = self;
+    searchField.returnKeyType = UIReturnKeyDone;
+    searchField.keyboardType = UIKeyboardTypeEmailAddress;
+    searchField.backgroundColor = [UIColor whiteColor];
+    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+
 }
 
 
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+    self.navigationController.navigationBar.alpha = 1.0;
     
-    if (!isNotEventController) {
-        
+//    if (!isNotEventController) {
+    
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-    }
-    else {
-        
+//    }
+//    else {
+    
         UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
         [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
@@ -300,9 +413,9 @@
         
         self.title = @"Events";
         
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-        
-    }
+//        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+//        
+//    }
 }
 
 

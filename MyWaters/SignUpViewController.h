@@ -17,6 +17,7 @@
     
     UIButton *facebookButton,*checkboxButton,*signUpButton,*termsButton,*skipButton,*backButton;
     UITextField *emailField,*nameField,*passField,*retypePassField;
+    UILabel *uploadAvatarLabel;
     
     UIImageView *profileImageView;
     

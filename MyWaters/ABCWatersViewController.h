@@ -10,16 +10,21 @@
 #import "AppDelegate.h"
 #import "ABCWaterDetailViewController.h"
 
-@interface ABCWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
+@interface ABCWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
     
     AppDelegate *appDelegate;
     
     
-    UITableView *listTabeView;
+    UITableView *listTabeView,*filterTableView;
+    NSArray *filtersArray;
     
     UISegmentedControl *gridListSegmentedControl;
     UIView *segmentedControlBackground;
     UIScrollView *abcWatersScrollView;
+    
+    UITextField *searchField;
+    BOOL isShowingFilter,isShowingSearchBar;
+    NSInteger selectedFilterIndex;
 }
 
 @end

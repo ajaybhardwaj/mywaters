@@ -34,6 +34,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -69,7 +70,7 @@
         [UIView beginAnimations:@"topMenu" context:NULL];
         [UIView setAnimationDuration:0.5];
         CGPoint topMenuPos = topMenu.center;
-        topMenuPos.y = 28;
+        topMenuPos.y = 22;
         topMenu.center = topMenuPos;
         [UIView commitAnimations];
     }
@@ -91,9 +92,19 @@
     }
     
 //    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 100)];
-    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 164)];
+    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
     [eventImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abc_water_temp22.jpg",appDelegate.RESOURCE_FOLDER_PATH]]];
     [bgScrollView addSubview:eventImageView];
+    
+    UIImageView *certifiedLogo = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 59, 25)];
+    [certifiedLogo setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwater_certified_logo.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [eventImageView addSubview:certifiedLogo];
+
+    
+    UIButton *temperatureButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    temperatureButton.frame = CGRectMake(eventImageView.bounds.size.width-50, eventImageView.bounds.size.height-40, 30, 30);
+    [temperatureButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_abcwater.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [eventImageView addSubview:temperatureButton];
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     directionButton.frame = CGRectMake(0, eventImageView.frame.origin.y+eventImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
@@ -253,54 +264,61 @@
     
     //Top Menu Item
     
-    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 55)];
-    topMenu.backgroundColor = RGB(254, 254, 254);
+    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 45)];
+    topMenu.backgroundColor = [UIColor blackColor];//RGB(254, 254, 254);
+    topMenu.alpha = 0.8;
     [self.view addSubview:topMenu];
     
     addPhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 10, 25, 25);
+    addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [addPhotoButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_camera.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [addPhotoButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addPhotoButton];
     
     galleryButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    galleryButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 10, 25, 25);
+    galleryButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [galleryButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_gallery.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [galleryButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:galleryButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 10, 25, 25);
+    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 25, 20);
     [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [shareButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:shareButton];
     
-    addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, topMenu.bounds.size.width/3, 10)];
+    addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/3, 10)];
     addPhotoLabel.backgroundColor = [UIColor clearColor];
     addPhotoLabel.textAlignment = NSTextAlignmentCenter;
     addPhotoLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     addPhotoLabel.text = @"Add Photo";
+    addPhotoLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:addPhotoLabel];
     
-    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 55)];
+    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
     [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
     [topMenu addSubview:seperatorOne];
 
     
-    galleryLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 40, topMenu.bounds.size.width/3, 10)];
+    galleryLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
     galleryLabel.backgroundColor = [UIColor clearColor];
     galleryLabel.textAlignment = NSTextAlignmentCenter;
     galleryLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     galleryLabel.text = @"Gallery";
+    galleryLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:galleryLabel];
     
-    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(galleryLabel.frame.origin.x+galleryLabel.bounds.size.width-1, 0, 0.5, 55)];
+    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(galleryLabel.frame.origin.x+galleryLabel.bounds.size.width-1, 0, 0.5, 45)];
     [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
     [topMenu addSubview:seperatorTwo];
 
     
-    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 40, topMenu.bounds.size.width/3, 10)];
+    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
     shareLabel.backgroundColor = [UIColor clearColor];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     shareLabel.text = @"Share";
+    shareLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:shareLabel];
     
 }

@@ -22,8 +22,10 @@
     
     UIScrollView *badgesScrollView,*photosScrollView,*bgContentScrollView;
     
+    
     //*************** Demo App Variables
     UIImageView *bgImageView;
+    UIButton *rewardsDetailButton;
 }
 
 @end

@@ -61,37 +61,38 @@
     [rewardImageView setImage:[UIImage imageNamed:@"reward_temp_image.png"]];
     [bgScrollView addSubview:rewardImageView];
     
-    directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    directionButton.frame = CGRectMake(0, rewardImageView.frame.origin.y+rewardImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
-    [directionButton setBackgroundColor:[UIColor whiteColor]];
-    [bgScrollView addSubview:directionButton];
+//    directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    directionButton.frame = CGRectMake(0, rewardImageView.frame.origin.y+rewardImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
+//    [directionButton setBackgroundColor:[UIColor whiteColor]];
+//    [bgScrollView addSubview:directionButton];
+//    
+//    directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
+//    [directionIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_directions_purple.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//    [directionButton addSubview:directionIcon];
+//    
+//    
+//    rewardTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-120, 40)];
+//    rewardTitle.backgroundColor = [UIColor whiteColor];
+//    rewardTitle.textAlignment = NSTextAlignmentLeft;
+//    rewardTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
+//    rewardTitle.text = @"25% off Tree Top Course";
+//    [directionButton addSubview:rewardTitle];
+//    
+//    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
+//    distanceLabel.backgroundColor = [UIColor clearColor];
+//    distanceLabel.textAlignment = NSTextAlignmentRight;
+//    distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
+//    distanceLabel.text = @"1.03 KM";
+//    [directionButton addSubview:distanceLabel];
+//    
+//    arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, 12.5, 15, 15)];
+//    [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//    [directionButton addSubview:arrowIcon];
     
-    directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
-    [directionIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_directions_purple.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    [directionButton addSubview:directionIcon];
     
     
-    rewardTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-120, 40)];
-    rewardTitle.backgroundColor = [UIColor whiteColor];
-    rewardTitle.textAlignment = NSTextAlignmentLeft;
-    rewardTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    rewardTitle.text = @"25% off Tree Top Course";
-    [directionButton addSubview:rewardTitle];
-    
-    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
-    distanceLabel.backgroundColor = [UIColor clearColor];
-    distanceLabel.textAlignment = NSTextAlignmentRight;
-    distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    distanceLabel.text = @"1.03 KM";
-    [directionButton addSubview:distanceLabel];
-    
-    arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, 12.5, 15, 15)];
-    [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    [directionButton addSubview:arrowIcon];
-    
-    
-    
-    rewardInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height+5, self.view.bounds.size.width, 40)];
+//    rewardInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height+5, self.view.bounds.size.width, 40)];
+    rewardInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, rewardImageView.frame.origin.y+rewardImageView.bounds.size.height, self.view.bounds.size.width, 40)];
     rewardInfoLabel.backgroundColor = [UIColor whiteColor];
     rewardInfoLabel.textAlignment = NSTextAlignmentLeft;
     rewardInfoLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
@@ -111,7 +112,7 @@
     descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, rewardInfoLabel.frame.origin.y+rewardInfoLabel.bounds.size.height, bgScrollView.bounds.size.width, 40)];
     descriptionLabel.backgroundColor = [UIColor whiteColor];
 //    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
-    descriptionLabel.text = [NSString stringWithFormat:@"Forest adventure, first and ony tree top adventure course in Singapore. 58 obstacles, 5 giants zip lines. Simply a great day out at Bedok Reservoir Park.\n\nValid From\n3May 15 -31 Dec 15\n\nLocation\nBedok Reservoir\n\nPoints\n50"];
+    descriptionLabel.text = [NSString stringWithFormat:@"Forest adventure, first and ony tree top adventure course in Singapore. 58 obstacles, 5 giants zip lines. Simply a great day out at Bedok Reservoir Park.\n\nValid From\n3May 15 -31 Dec 15\n\nLocation\nBedok Reservoir\n\nPoints: 50\n50"];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
     descriptionLabel.numberOfLines = 0;

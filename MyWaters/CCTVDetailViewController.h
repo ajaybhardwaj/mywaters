@@ -9,15 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface CCTVDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
+@interface CCTVDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
     
     AppDelegate *appDelegate;
     
     UIView *topMenu;
     
     BOOL isShowingTopMenu;
-    UIButton *exploreMapButton,*addToFavButton,*refreshButton,*shareButton;
-    UILabel *exploreMapLabel,*addToFavLabel,*refreshLabel,*shareLabel;
+    UIButton *exploreMapButton,*addToFavButton,*refreshButton,*shareButton,*favouritesButton;
+    UILabel *exploreMapLabel,*addToFavLabel,*refreshLabel,*shareLabel,*addToFavlabel;
     
     UIButton *directionButton;
     UIImageView *directionIcon,*arrowIcon,*topImageView;

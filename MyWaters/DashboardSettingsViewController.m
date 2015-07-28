@@ -16,6 +16,7 @@
 - (void) openDeckMenu:(id) sender {
     
     self.view.alpha = 0.5;
+    self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
@@ -47,7 +48,8 @@
     [goToDashboardButton setBackgroundColor:RGB(71, 178, 182)];
     [goToDashboardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [goToDashboardButton setTitle:@"GO TO DASHBOARD" forState:UIControlStateNormal];
-    goToDashboardButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+//    goToDashboardButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    goToDashboardButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:19];
     [goToDashboardButton addTarget:self action:@selector(moveToDashboardView) forControlEvents:UIControlEventTouchUpInside];
     [footerView addSubview:goToDashboardButton];
     
@@ -184,7 +186,8 @@
     [goToDashboardButton setBackgroundColor:RGB(71, 178, 182)];
     [goToDashboardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [goToDashboardButton setTitle:@"GO TO DASHBOARD" forState:UIControlStateNormal];
-    goToDashboardButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+//    goToDashboardButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    goToDashboardButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:19];
     [goToDashboardButton addTarget:self action:@selector(moveToDashboardView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:goToDashboardButton];
 }
@@ -198,6 +201,13 @@
     
     [self.view addGestureRecognizer:swipeGesture];
     
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
+
 }
 
 
