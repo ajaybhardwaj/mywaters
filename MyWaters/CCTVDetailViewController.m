@@ -90,7 +90,7 @@
         [UIView beginAnimations:@"topMenu" context:NULL];
         [UIView setAnimationDuration:0.5];
         CGPoint topMenuPos = topMenu.center;
-        topMenuPos.y = -30;
+        topMenuPos.y = -130;
         topMenu.center = topMenuPos;
         [UIView commitAnimations];
     }
@@ -239,7 +239,7 @@
     
     //Top Menu Item
     
-    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 45)];
+    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -160, self.view.bounds.size.width, 45)];
     topMenu.backgroundColor = [UIColor blackColor];
     topMenu.alpha = 0.8;
     [self.view addSubview:topMenu];

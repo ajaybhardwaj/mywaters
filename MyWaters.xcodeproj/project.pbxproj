@@ -43,7 +43,6 @@
 		FE3238F61B576C8400BB3DA8 /* textfield_bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3238F51B576C8400BB3DA8 /* textfield_bg@3x.png */; };
 		FE3238F81B57809B00BB3DA8 /* welcome_background@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3238F71B57809B00BB3DA8 /* welcome_background@3x.png */; };
 		FE3238FA1B57894300BB3DA8 /* icn_about_pub@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3238F91B57894300BB3DA8 /* icn_about_pub@3x.png */; };
-		FE3238FC1B578AB900BB3DA8 /* MyWaters.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = FE3238FB1B578AB800BB3DA8 /* MyWaters.sqlite */; };
 		FE3238FE1B57913600BB3DA8 /* icn_waterlevel_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3238FD1B57913600BB3DA8 /* icn_waterlevel_big@3x.png */; };
 		FE3239001B57950E00BB3DA8 /* icn_waterlevel_small_greyout@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3238FF1B57950E00BB3DA8 /* icn_waterlevel_small_greyout@3x.png */; };
 		FE3239021B57980F00BB3DA8 /* icn_location_top@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3239011B57980F00BB3DA8 /* icn_location_top@3x.png */; };
@@ -78,6 +77,10 @@
 		FE4F37731A888A3E0028903C /* icn_facebook@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37711A888A3E0028903C /* icn_facebook@3x.png */; };
 		FE4F37791A88A6DC0028903C /* checkbox@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37771A88A6DC0028903C /* checkbox@3x.png */; };
 		FE4F377A1A88A6DC0028903C /* icon_tick@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37781A88A6DC0028903C /* icon_tick@3x.png */; };
+		FE54B33C1B7067BE00314DA4 /* MyWaters.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = FE54B33B1B7067BE00314DA4 /* MyWaters.sqlite */; };
+		FE54B3411B70A0C300314DA4 /* icn_waterlevel_75-90_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE54B3401B70A0C300314DA4 /* icn_waterlevel_75-90_big@3x.png */; };
+		FE54B3431B70A0E400314DA4 /* icn_waterlevel_90_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE54B3421B70A0E400314DA4 /* icn_waterlevel_90_big@3x.png */; };
+		FE54B3451B70A0F300314DA4 /* icn_waterlevel_below75%_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE54B3441B70A0F300314DA4 /* icn_waterlevel_below75%_big@3x.png */; };
 		FE5A46A71A8C57AF00517FB5 /* icn_addtofavorites@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE5A46A31A8C57AF00517FB5 /* icn_addtofavorites@3x.png */; };
 		FE5A46A81A8C57AF00517FB5 /* icn_favorited@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE5A46A41A8C57AF00517FB5 /* icn_favorited@3x.png */; };
 		FE5A46A91A8C57AF00517FB5 /* icn_notifyme@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE5A46A51A8C57AF00517FB5 /* icn_notifyme@3x.png */; };
@@ -393,7 +396,6 @@
 		FE3238F51B576C8400BB3DA8 /* textfield_bg@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "textfield_bg@3x.png"; sourceTree = "<group>"; };
 		FE3238F71B57809B00BB3DA8 /* welcome_background@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "welcome_background@3x.png"; sourceTree = "<group>"; };
 		FE3238F91B57894300BB3DA8 /* icn_about_pub@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_about_pub@3x.png"; sourceTree = "<group>"; };
-		FE3238FB1B578AB800BB3DA8 /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
 		FE3238FD1B57913600BB3DA8 /* icn_waterlevel_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_big@3x.png"; sourceTree = "<group>"; };
 		FE3238FF1B57950E00BB3DA8 /* icn_waterlevel_small_greyout@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_small_greyout@3x.png"; sourceTree = "<group>"; };
 		FE3239011B57980F00BB3DA8 /* icn_location_top@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_location_top@3x.png"; sourceTree = "<group>"; };
@@ -431,6 +433,10 @@
 		FE4F37711A888A3E0028903C /* icn_facebook@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_facebook@3x.png"; sourceTree = "<group>"; };
 		FE4F37771A88A6DC0028903C /* checkbox@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox@3x.png"; sourceTree = "<group>"; };
 		FE4F37781A88A6DC0028903C /* icon_tick@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_tick@3x.png"; sourceTree = "<group>"; };
+		FE54B33B1B7067BE00314DA4 /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
+		FE54B3401B70A0C300314DA4 /* icn_waterlevel_75-90_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_75-90_big@3x.png"; sourceTree = "<group>"; };
+		FE54B3421B70A0E400314DA4 /* icn_waterlevel_90_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_90_big@3x.png"; sourceTree = "<group>"; };
+		FE54B3441B70A0F300314DA4 /* icn_waterlevel_below75%_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_below75%_big@3x.png"; sourceTree = "<group>"; };
 		FE5A46A31A8C57AF00517FB5 /* icn_addtofavorites@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_addtofavorites@3x.png"; sourceTree = "<group>"; };
 		FE5A46A41A8C57AF00517FB5 /* icn_favorited@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_favorited@3x.png"; sourceTree = "<group>"; };
 		FE5A46A51A8C57AF00517FB5 /* icn_notifyme@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_notifyme@3x.png"; sourceTree = "<group>"; };
@@ -1167,7 +1173,7 @@
 		FEA7301D1A772FDD00D274A6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				FE3238FB1B578AB800BB3DA8 /* MyWaters.sqlite */,
+				FE54B33B1B7067BE00314DA4 /* MyWaters.sqlite */,
 				FE99BE201A7B7D21000B83E8 /* Fonts */,
 				FEA730B81A773A8100D274A6 /* PrefixHeader.pch */,
 				FEA730B11A77394300D274A6 /* Images */,
@@ -1632,6 +1638,9 @@
 			isa = PBXGroup;
 			children = (
 				FE4CD10B1B54F4FD00A16D02 /* icn_waterlevel_undermaintenance@3x.png */,
+				FE54B3441B70A0F300314DA4 /* icn_waterlevel_below75%_big@3x.png */,
+				FE54B3421B70A0E400314DA4 /* icn_waterlevel_90_big@3x.png */,
+				FE54B3401B70A0C300314DA4 /* icn_waterlevel_75-90_big@3x.png */,
 				FE4CD1071B54F44A00A16D02 /* icn_waterlevel_90@3x.png */,
 				FE4CD1081B54F44A00A16D02 /* icn_waterlevel_below75@3x.png */,
 				FE4CD1051B54F44200A16D02 /* icn_waterlevel_75-90@3x.png */,
@@ -1759,6 +1768,7 @@
 				FE73E5781AC143C5007B2179 /* 2_grey@3x_old.png in Resources */,
 				FED72CD71ADB7FED00C4FDDB /* icn_exploremap_cctv@3x.png in Resources */,
 				FE98F0331ABBC33500D5FB5B /* icn_directions@3x.png in Resources */,
+				FE54B3411B70A0C300314DA4 /* icn_waterlevel_75-90_big@3x.png in Resources */,
 				FE99BE381A7B7E69000B83E8 /* Roboto-Light.ttf in Resources */,
 				FE25CB6A1B5CDD9500A5B2B3 /* icn_speaker@3x.png in Resources */,
 				FE25CB751B5CDF1E00A5B2B3 /* 5_color@3x.png in Resources */,
@@ -1858,6 +1868,7 @@
 				FE25CB821B5CE7CE00A5B2B3 /* abcwaters_grid5@3x.png in Resources */,
 				FE3239041B57A38F00BB3DA8 /* icn_3dots_horizontal@3x.png in Resources */,
 				FE7FD0891A7F50E5002A05CB /* notifications.png in Resources */,
+				FE54B33C1B7067BE00314DA4 /* MyWaters.sqlite in Resources */,
 				FE8C1C341AB292FA009D33E4 /* icn_location_blue@3x.png in Resources */,
 				FE8845E71AB6C24C005537C6 /* checkbox_untick@3x.png in Resources */,
 				FEB13FCA1A7766410061CE74 /* icn_settings@3x.png in Resources */,
@@ -1921,6 +1932,7 @@
 				FE7FD0961A7F6FBD002A05CB /* BebasNeue.otf in Resources */,
 				FE8845D41AB6B158005537C6 /* e1.png in Resources */,
 				FED72CDE1ADBBC3D00C4FDDB /* icn_directions_cctv@3x.png in Resources */,
+				FE54B3451B70A0F300314DA4 /* icn_waterlevel_below75%_big@3x.png in Resources */,
 				FE9625741B5600EB00A25BCA /* icn_cctv@3x.png in Resources */,
 				FEB13FC51A7766410061CE74 /* icn_feedback@3x.png in Resources */,
 				FE4CD1041B54F1C000A16D02 /* icn_floodinfo_userfeedback_submission_small@3x.png in Resources */,
@@ -1954,6 +1966,7 @@
 				FE25CB901B5CF98A00A5B2B3 /* profile_rewards@2x.png in Resources */,
 				FEA730B71A77396800D274A6 /* icn_menu@2x_old.png in Resources */,
 				FE8845D81AB6B158005537C6 /* e5.png in Resources */,
+				FE54B3431B70A0E400314DA4 /* icn_waterlevel_90_big@3x.png in Resources */,
 				FEF4C6CE1ACBC13A00C57304 /* icn_floodinfo_pub_big@3x.png in Resources */,
 				FE3238EE1B57616400BB3DA8 /* Icon_80.png in Resources */,
 				FE8845E81AB6C24C005537C6 /* icn_arrow_down_field@3x.png in Resources */,
@@ -1963,7 +1976,6 @@
 				FEF43C261A79EE9400237CAD /* events_filter.png in Resources */,
 				FE78C3011B0F132A00D909FD /* temp_event_image2.jpg in Resources */,
 				FE8845E91AB6C24C005537C6 /* tick@3x.png in Resources */,
-				FE3238FC1B578AB900BB3DA8 /* MyWaters.sqlite in Resources */,
 				FE98F04B1ABC18A000D5FB5B /* icn_camera@3x.png in Resources */,
 				FE99BDF61A7B2CD7000B83E8 /* abcwaters_list.png in Resources */,
 				FE9625711B55FF2900A25BCA /* splash_iphone@3x.png in Resources */,

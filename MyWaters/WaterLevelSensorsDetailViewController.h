@@ -24,6 +24,9 @@
     UIButton *clockButton,*levelButton,*currentLocationButton;
     UIImageView *measurementBar;
     
+    UIImageView *wlsIconView;
+    UILabel *riskLabel;
+    
     UISearchBar *topSearchBar;
     UIButton *alertButton,*addToFavButton,*refreshButton;
     UILabel *iAlertLabel,*addToFavLabel,*refreshLabel;
@@ -34,6 +37,8 @@
     
     UITableView *wlsListingTable;
     NSArray *nearbyWlsDatasource;
+    
+    UIButton *notifiyButton;
     
     QuickMapAnnotations *annotation1;
     

@@ -13,7 +13,7 @@
 //@synthesize title = _title;
 //@synthesize subtitle = _subtitle;
 
-@synthesize title,subtitle,coordinate;
+@synthesize title,subtitle,coordinate,annotationTag;
 
 - (id) initWithTitle:(NSString *)title AndCoordinates:(CLLocationCoordinate2D)coordinate {
     

@@ -53,7 +53,7 @@
     
     if (isShowingFilter) {
         isShowingFilter = NO;
-        pos.y = -70;
+        pos.y = -270;
         
         quickMap.alpha = 1.0;
         quickMap.userInteractionEnabled = YES;
@@ -61,7 +61,7 @@
     }
     else {
         isShowingFilter = YES;
-        pos.y = 64;
+        pos.y = 90;
         
         quickMap.alpha = 0.5;
         quickMap.userInteractionEnabled = NO;
@@ -150,6 +150,7 @@
             annotation1.coordinate = annotationRegion.center;
             annotation1.title = @"226H Ang Mo Kio Street 22";
             annotation1.subtitle = @"";
+//            annotation1.annotationTag = 1;
             [quickMap addAnnotation:annotation1];
             
             
@@ -163,6 +164,7 @@
             annotation11.coordinate = annotationRegion11.center;
             annotation11.title = @"225 Ang Mo Kio Avenue 1";
             annotation11.subtitle = @"";
+//            annotation1.annotationTag = 2;
             [quickMap addAnnotation:annotation11];
             
             
@@ -176,6 +178,7 @@
             annotation12.coordinate = annotationRegion12.center;
             annotation12.title = @"226H Ang Mo Kio Street 22";
             annotation12.subtitle = @"";
+//            annotation1.annotationTag = 3;
             [quickMap addAnnotation:annotation12];
             
             [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_pub_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -565,6 +568,7 @@
     if (tableView==filterTableView) {
         selectedFilterIndex = indexPath.row;
         [filterTableView reloadData];
+        [self animateFilterTable];
     }
 }
 
@@ -651,12 +655,61 @@
                 pinView.image = [UIImage imageNamed:@"icn_waterlevel_90.png"];
             }
         }
+        
+        pinView.tag = selectedAnnotationButton;
     }
     else {
         [quickMap.userLocation setTitle:@"You are here..!!"];
     }
     return pinView;
 }
+
+
+
+//- (void) mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+//    
+//    NSInteger indexOfTheObject = [quickMap.annotations indexOfObject:view.annotation];
+//    NSLog(@"Annotation Index %ld",indexOfTheObject);
+//    
+//    CGSize  calloutSize = CGSizeMake(150.0, 80.0);
+//    UIView *calloutView = [[UIView alloc] initWithFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y-calloutSize.height, calloutSize.width, calloutSize.height)];
+//    calloutView.backgroundColor = [UIColor whiteColor];
+//    
+//    
+//    if (selectedAnnotationButton==1) {
+//        
+//        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, calloutView.bounds.size.width-20, 36)];
+//        locationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
+//        locationLabel.backgroundColor = [UIColor clearColor];
+//        locationLabel.text = [floodTempArray objectAtIndex:(indexOfTheObject*3)];
+//        locationLabel.numberOfLines = 0;
+//        [calloutView addSubview:locationLabel];
+//        
+//        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, locationLabel.frame.origin.y+locationLabel.bounds.size.height+3, calloutView.bounds.size.width-20, 30)];
+//        messageLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
+//        messageLabel.backgroundColor = [UIColor clearColor];
+//        messageLabel.text = [floodTempArray objectAtIndex:(indexOfTheObject*3)+1];
+//        messageLabel.numberOfLines = 0;
+//        [calloutView addSubview:messageLabel];
+//        
+//        UILabel *timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, messageLabel.frame.origin.y+messageLabel.bounds.size.height+3, calloutView.bounds.size.width-20, 10)];
+//        timestampLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+//        timestampLabel.backgroundColor = [UIColor clearColor];
+//        timestampLabel.text = [NSString stringWithFormat:@"@ %@",[floodTempArray objectAtIndex:(indexOfTheObject*3)+2]];
+//        timestampLabel.numberOfLines = 0;
+//        [calloutView addSubview:timestampLabel];
+//    }
+//    
+////    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+////    button.frame = CGRectMake(5.0, 5.0, calloutSize.width - 10.0, calloutSize.height - 10.0);
+////    [button setTitle:@"OK" forState:UIControlStateNormal];
+////    [button addTarget:self action:@selector(checkin) forControlEvents:UIControlEventTouchUpInside];
+////    [calloutView addSubview:button];
+//    
+//    [view.superview addSubview:calloutView];
+//}
+
+
 
 
 # pragma mark - View Lifecycle Methods
@@ -676,6 +729,8 @@
     [quickMap setZoomEnabled:YES];
     [quickMap setScrollEnabled:YES];
     [self.view  addSubview:quickMap];
+//    [quickMap setBackgroundColor:[[UIColor clearColor] colorWithAlphaComponent:0.5]];
+//    quickMap.alpha = 0.5;
     
     
     isShowingFlood = NO;
@@ -807,7 +862,7 @@
     
     
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -128, self.view.bounds.size.width, 128) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -270, self.view.bounds.size.width, 180) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -816,12 +871,12 @@
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     filterTableView.alpha = 0.8;
     
-    filterDataSource = [[NSArray alloc] initWithObjects:@"<75%",@"75%-90%",@">90%", nil];
+    filterDataSource = [[NSArray alloc] initWithObjects:@"Drain 0-75% Full",@"Drain 75%-90% Full",@"Drain 90%-100 Full",@"Station under maintenance", nil];
     
     //[self createDemoAppControls];
     
     
-    
+    floodTempArray = [[NSArray alloc] initWithObjects:@"226H Ang Mo Kio Street 22",@"Low Flood",@"03:15 PM",@"225 Ang Mo Kio Avenue 1",@"Moderate Flood",@"8:25 PM",@"226H Ang Mo Kio Street 22",@"High Flood",@"9:15 AM", nil];
 }
 
 

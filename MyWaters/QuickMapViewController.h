@@ -37,6 +37,8 @@
     UIImageView *bgImageView;
     
     
+    NSArray *floodTempArray,*wlsTempArray,*cctvTempArray,*userFeedbackArray,*rainTempArray;
+    
 }
 
 @property (nonatomic, assign) BOOL isNotQuickMapController;

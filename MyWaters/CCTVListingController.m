@@ -66,7 +66,7 @@
     
     if (isShowingSearchBar) {
         isShowingSearchBar = NO;
-        pos.y = -70;
+        pos.y = -150;
         
         cctvListingTable.alpha = 1.0;
         cctvListingTable.userInteractionEnabled = YES;
@@ -264,7 +264,7 @@
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
     
-    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
+    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -150, self.view.bounds.size.width, 40)];
     searchField.textColor = RGB(35, 35, 35);
     searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
