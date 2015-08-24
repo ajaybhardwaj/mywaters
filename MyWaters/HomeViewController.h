@@ -46,7 +46,7 @@
     NSMutableArray *eventsDataSource,*whatsUpFeedDataSource;
     
     MKMapView *quickMap;
-    QuickMapAnnotations *annotation1;
+    QuickMapAnnotations *annotation1,*longPressLocationAnnotation;
 
     
     //*************** Demo App UI Variables

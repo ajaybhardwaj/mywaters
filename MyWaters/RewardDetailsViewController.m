@@ -27,7 +27,7 @@
 
 - (void) swipedScreen:(UISwipeGestureRecognizer*)swipeGesture {
     // do stuff
-    NSLog(@"Swipe Detected");
+    DebugLog(@"Swipe Detected");
     self.view.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
     

@@ -46,7 +46,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return wlsDataSource.count;
+    return wlsDataSource.count - 3;
 }
 
 
@@ -57,13 +57,21 @@
     
     cell.backgroundColor = RGB(247, 247, 247);
     
-    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 50, 50)];
+    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
     //    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
-    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_level2.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    if (indexPath.row==2 || indexPath.row==4) {
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    else if (indexPath.row==1) {
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    else {
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
     [cell.contentView addSubview:cellImage];
     
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, wlsListingtable.bounds.size.width-90, 60)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 5, wlsListingtable.bounds.size.width-90, 50)];
     //    titleLabel.text = [[cctvDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
     titleLabel.text = [wlsDataSource objectAtIndex:indexPath.row];
     titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];

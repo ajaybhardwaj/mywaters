@@ -8,6 +8,7 @@
 
 #import "HomeViewController.h"
 #import "ViewControllerHelper.h"
+#import "QuickMapAnnotations.h"
 
 @interface HomeViewController ()
 
@@ -24,6 +25,27 @@
     self.view.alpha = 0.5;
     self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+}
+
+
+
+//*************** Method To Handle Long Press Gesture For Default Location PIN
+
+- (void)handleLongPress:(UIGestureRecognizer *)gestureRecognizer
+{
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
+        return;
+    
+    CGPoint touchPoint = [gestureRecognizer locationInView:quickMap];
+    CLLocationCoordinate2D touchMapCoordinate = [quickMap convertPoint:touchPoint toCoordinateFromView:quickMap];
+    
+    longPressLocationAnnotation = [[QuickMapAnnotations alloc] init];
+    longPressLocationAnnotation.coordinate = touchMapCoordinate;
+    NSNumber *latitude = [NSNumber numberWithDouble:longPressLocationAnnotation.coordinate.latitude];
+    NSNumber *longitude = [NSNumber numberWithDouble:longPressLocationAnnotation.coordinate.longitude];
+    
+    DebugLog(@"Lat %@ --- Long %@",latitude,longitude);
+    [quickMap addAnnotation:longPressLocationAnnotation];
 }
 
 
@@ -132,9 +154,9 @@
     UIButton *touchedView = (id) sender;
     
     if (touchedView.tag==1) {
-//        QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
-//        viewObj.isNotQuickMapController = YES;
-//        [self.navigationController pushViewController:viewObj animated:YES];
+        //        QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
+        //        viewObj.isNotQuickMapController = YES;
+        //        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==2) {
         // Water Level Sensors
@@ -249,12 +271,12 @@
                 
                 if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==1) {
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     if (!quickMap) {
                         quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-3, columnView.bounds.size.height-23)];
@@ -262,7 +284,13 @@
                         [quickMap setMapType:MKMapTypeStandard];
                         [quickMap setZoomEnabled:YES];
                         [quickMap setScrollEnabled:YES];
+                        quickMap.showsUserLocation = YES;
+                        quickMap.userTrackingMode = MKUserTrackingModeFollow;
                         [columnView addSubview:quickMap];
+                        
+                        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+                        lpgr.minimumPressDuration = 2.0; //user needs to press for 2 seconds
+                        [quickMap addGestureRecognizer:lpgr];
                     }
                     
                     if (!locationManager) {
@@ -271,12 +299,14 @@
                     BOOL locationAllowed = [CLLocationManager locationServicesEnabled];
                     if (locationAllowed == NO){
                         //GPS DISABLED.
-                        NSLog(@"Location is not enabled");
+                        DebugLog(@"Location is not enabled");
                     }
                     else{
                         if(IS_IOS8()){
-                            [locationManager requestWhenInUseAuthorization];
-//                            [locationManager requestAlwaysAuthorization];
+                            if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied) {
+                                [locationManager requestWhenInUseAuthorization];
+                            }
+                            //[locationManager requestAlwaysAuthorization];
                         }
                         locationManager.delegate = self;
                         locationManager.desiredAccuracy = kCLLocationAccuracyBest;
@@ -345,12 +375,12 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==2) {
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     
                     drainDepthValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(columnView.bounds.size.width/2, 30, columnView.bounds.size.width/2 -10, 60)];
@@ -447,12 +477,12 @@
                     //                    smallTempSubtitle2.numberOfLines = 0;
                     //                    [columnView addSubview:smallTempSubtitle2];
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     bigWeatherIcon = [UIButton buttonWithType:UIButtonTypeCustom];
                     bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 40, 20, 80, 80);
@@ -519,12 +549,12 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     
                     cctvImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
@@ -562,13 +592,13 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5) {
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
-
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
+                    
                     
                     whatsUpListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     whatsUpListingTable.delegate = self;
@@ -582,12 +612,12 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     eventsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     eventsListingTable.delegate = self;
@@ -602,7 +632,7 @@
                 
                 
                 if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==1 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
-//                    NSLog(@"Dont do anything");
+                    //                    DebugLog(@"Dont do anything");
                 }
                 else {
                     
@@ -624,7 +654,7 @@
                 [columnView.layer setShadowRadius:1.0];
                 [backgroundScrollView addSubview:columnView];
                 columnView.userInteractionEnabled = YES;
-
+                
                 
                 UILabel *columnViewHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, columnView.bounds.size.width, 20)];
                 columnViewHeaderLabel.text = [NSString stringWithFormat:@"   %@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"component"]];
@@ -640,13 +670,13 @@
                 
                 if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==1) {
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
-
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
+                    
                     
                     if (!quickMap) {
                         quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-3, columnView.bounds.size.height-23)];
@@ -654,7 +684,13 @@
                         [quickMap setMapType:MKMapTypeStandard];
                         [quickMap setZoomEnabled:YES];
                         [quickMap setScrollEnabled:YES];
+                        quickMap.showsUserLocation = YES;
+                        quickMap.userTrackingMode = MKUserTrackingModeFollow;
                         [columnView addSubview:quickMap];
+                        
+                        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+                        lpgr.minimumPressDuration = 2.0; //user needs to press for 2 seconds
+                        [quickMap addGestureRecognizer:lpgr];
                     }
                     
                     if (!locationManager) {
@@ -663,76 +699,78 @@
                     BOOL locationAllowed = [CLLocationManager locationServicesEnabled];
                     if (locationAllowed == NO){
                         //GPS DISABLED.
-                        NSLog(@"Location is not enabled");
+                        DebugLog(@"Location is not enabled");
                     }
                     else{
                         if(IS_IOS8()){
-                            [locationManager requestWhenInUseAuthorization];
-//                            [locationManager requestAlwaysAuthorization];
+                            if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied) {
+                                [locationManager requestWhenInUseAuthorization];
+                            }
+                            //[locationManager requestAlwaysAuthorization];
                         }
                         locationManager.delegate = self;
                         locationManager.desiredAccuracy = kCLLocationAccuracyBest;
                         [locationManager startUpdatingLocation];
                     }
                     
-//                    quickMapLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    quickMapLocationImage.frame = CGRectMake(5, 130, 20, 20);
-//                    [quickMapLocationImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_pink.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    [columnView addSubview:quickMapLocationImage];
-//                    quickMapLocationImage.userInteractionEnabled = NO;
-//                    
-//                    quickMapDistanceImage = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    quickMapDistanceImage.frame = CGRectMake(5, 155, 20, 20);
-//                    [quickMapDistanceImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_distance_pink.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    [columnView addSubview:quickMapDistanceImage];
-//                    quickMapDistanceImage.userInteractionEnabled = NO;
-//                    
-//                    quickMapLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 130, columnView.bounds.size.width-40, 25)];
-//                    quickMapLocationLabel.text = @"TPE exit towards AYE";
-//                    quickMapLocationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
-//                    quickMapLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
-//                    quickMapLocationLabel.backgroundColor = [UIColor clearColor];
-//                    quickMapLocationLabel.numberOfLines = 0;
-//                    [quickMapLocationLabel sizeToFit];
-//                    [columnView addSubview:quickMapLocationLabel];
-//                    
-//                    quickMapDistanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 155, columnView.bounds.size.width-40, 25)];
-//                    quickMapDistanceLabel.text = @"2.1 KM";
-//                    quickMapDistanceLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
-//                    quickMapDistanceLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
-//                    quickMapDistanceLabel.backgroundColor = [UIColor clearColor];
-//                    [quickMapDistanceLabel sizeToFit];
-//                    [columnView addSubview:quickMapDistanceLabel];
-//                    
-//                    quickMapFloodIcon = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    quickMapFloodIcon.frame = CGRectMake(90, 50, 40, 40);
-//                    [quickMapFloodIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_quickmap_car.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    [columnView addSubview:quickMapFloodIcon];
-//                    quickMapFloodIcon.userInteractionEnabled = NO;
-//                    
-//                    nearbyQuickMapLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 25, columnView.bounds.size.width-20, 25)];
-//                    nearbyQuickMapLabel.text = @"Nearby";
-//                    nearbyQuickMapLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
-//                    nearbyQuickMapLabel.textColor = [UIColor blackColor];
-//                    nearbyQuickMapLabel.backgroundColor = [UIColor clearColor];
-//                    [nearbyQuickMapLabel sizeToFit];
-//                    [columnView addSubview:nearbyQuickMapLabel];
-//                    
-//                    floodTagLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 40, 50, 40)];
-//                    floodTagLabel.text = @"01";
-//                    floodTagLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:40];
-//                    floodTagLabel.textColor = [UIColor blackColor];
-//                    floodTagLabel.backgroundColor = [UIColor clearColor];
-//                    [floodTagLabel sizeToFit];
-//                    [columnView addSubview:floodTagLabel];
-//                    
-//                    floodReasonLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 95, columnView.bounds.size.width-20, 30)];
-//                    floodReasonLabel.text = @"Lane covered due to flood.";
-//                    floodReasonLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
-//                    floodReasonLabel.textColor = [UIColor blackColor];
-//                    floodReasonLabel.backgroundColor = [UIColor clearColor];
-//                    floodReasonLabel.numberOfLines = 0;
-//                    [columnView addSubview:floodReasonLabel];
+                    //                    quickMapLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    quickMapLocationImage.frame = CGRectMake(5, 130, 20, 20);
+                    //                    [quickMapLocationImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_pink.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    [columnView addSubview:quickMapLocationImage];
+                    //                    quickMapLocationImage.userInteractionEnabled = NO;
+                    //
+                    //                    quickMapDistanceImage = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    quickMapDistanceImage.frame = CGRectMake(5, 155, 20, 20);
+                    //                    [quickMapDistanceImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_distance_pink.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    [columnView addSubview:quickMapDistanceImage];
+                    //                    quickMapDistanceImage.userInteractionEnabled = NO;
+                    //
+                    //                    quickMapLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 130, columnView.bounds.size.width-40, 25)];
+                    //                    quickMapLocationLabel.text = @"TPE exit towards AYE";
+                    //                    quickMapLocationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
+                    //                    quickMapLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
+                    //                    quickMapLocationLabel.backgroundColor = [UIColor clearColor];
+                    //                    quickMapLocationLabel.numberOfLines = 0;
+                    //                    [quickMapLocationLabel sizeToFit];
+                    //                    [columnView addSubview:quickMapLocationLabel];
+                    //
+                    //                    quickMapDistanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 155, columnView.bounds.size.width-40, 25)];
+                    //                    quickMapDistanceLabel.text = @"2.1 KM";
+                    //                    quickMapDistanceLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
+                    //                    quickMapDistanceLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
+                    //                    quickMapDistanceLabel.backgroundColor = [UIColor clearColor];
+                    //                    [quickMapDistanceLabel sizeToFit];
+                    //                    [columnView addSubview:quickMapDistanceLabel];
+                    //
+                    //                    quickMapFloodIcon = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    quickMapFloodIcon.frame = CGRectMake(90, 50, 40, 40);
+                    //                    [quickMapFloodIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_quickmap_car.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    [columnView addSubview:quickMapFloodIcon];
+                    //                    quickMapFloodIcon.userInteractionEnabled = NO;
+                    //
+                    //                    nearbyQuickMapLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 25, columnView.bounds.size.width-20, 25)];
+                    //                    nearbyQuickMapLabel.text = @"Nearby";
+                    //                    nearbyQuickMapLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
+                    //                    nearbyQuickMapLabel.textColor = [UIColor blackColor];
+                    //                    nearbyQuickMapLabel.backgroundColor = [UIColor clearColor];
+                    //                    [nearbyQuickMapLabel sizeToFit];
+                    //                    [columnView addSubview:nearbyQuickMapLabel];
+                    //
+                    //                    floodTagLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 40, 50, 40)];
+                    //                    floodTagLabel.text = @"01";
+                    //                    floodTagLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:40];
+                    //                    floodTagLabel.textColor = [UIColor blackColor];
+                    //                    floodTagLabel.backgroundColor = [UIColor clearColor];
+                    //                    [floodTagLabel sizeToFit];
+                    //                    [columnView addSubview:floodTagLabel];
+                    //
+                    //                    floodReasonLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 95, columnView.bounds.size.width-20, 30)];
+                    //                    floodReasonLabel.text = @"Lane covered due to flood.";
+                    //                    floodReasonLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
+                    //                    floodReasonLabel.textColor = [UIColor blackColor];
+                    //                    floodReasonLabel.backgroundColor = [UIColor clearColor];
+                    //                    floodReasonLabel.numberOfLines = 0;
+                    //                    [columnView addSubview:floodReasonLabel];
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==2) {
                     
@@ -741,12 +779,12 @@
                     //                    [columnView addSubview:waterLevelImageView];
                     
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     
                     drainDepthValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(columnView.bounds.size.width/2, 30, columnView.bounds.size.width/2 -10, 60)];
@@ -827,12 +865,12 @@
                     //                    smallTempSubtitle2.numberOfLines = 0;
                     //                    [columnView addSubview:smallTempSubtitle2];
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     bigWeatherIcon = [UIButton buttonWithType:UIButtonTypeCustom];
                     bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 40, 20, 80, 80);
@@ -897,12 +935,12 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     
                     cctvImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
@@ -938,12 +976,12 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5) {
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     whatsUpListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     whatsUpListingTable.delegate = self;
@@ -957,12 +995,12 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
                     
-//                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-//                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-//                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-//                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-//                    [columnView addSubview:dotsbutton];
+                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
+                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
+                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                    //                    [columnView addSubview:dotsbutton];
                     
                     eventsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     eventsListingTable.delegate = self;
@@ -976,7 +1014,7 @@
                 }
                 
                 if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==1 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
-//                    NSLog(@"Dont do anything");
+                    //                    DebugLog(@"Dont do anything");
                 }
                 else {
                     
@@ -1008,7 +1046,7 @@
     
     MKAnnotationView *pinView = nil;
     
-    if(annotation != quickMap.userLocation) {
+    if (annotation == longPressLocationAnnotation) {
         
         static NSString *defaultPinID = @"com.invasivecode.pin";
         pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
@@ -1017,10 +1055,24 @@
                        initWithAnnotation:annotation reuseIdentifier:defaultPinID];
         
         pinView.canShowCallout = YES;
-        pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
+        pinView.image = [UIImage imageNamed:@"current_location_icon.png"];
         [quickMap.userLocation setTitle:@"You are here..!!"];
-
+        
     }
+    else  if(annotation != quickMap.userLocation) {
+        
+        static NSString *defaultPinID = @"com.invasivecode.pin";
+        pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
+        if ( pinView == nil )
+            pinView = [[MKAnnotationView alloc]
+                       initWithAnnotation:annotation reuseIdentifier:defaultPinID];
+        
+        pinView.canShowCallout = YES;
+                pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
+        [quickMap.userLocation setTitle:@"You are here..!!"];
+        
+    }
+    
     else {
         static NSString *defaultPinID = @"com.invasivecode.pin";
         pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
@@ -1041,10 +1093,10 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
     
-    NSLog(@"current Latitude is %f",newLocation.coordinate.latitude);
-    NSLog(@"current Longitude is %f",newLocation.coordinate.longitude);
-//    region.span.longitudeDelta  *= 0.05;
-//    region.span.latitudeDelta  *= 0.05;
+    DebugLog(@"current Latitude is %f",newLocation.coordinate.latitude);
+    DebugLog(@"current Longitude is %f",newLocation.coordinate.longitude);
+    //    region.span.longitudeDelta  *= 0.05;
+    //    region.span.latitudeDelta  *= 0.05;
     region.span.latitudeDelta = 0.02f;
     region.span.longitudeDelta = 0.02f;
     region.center.latitude = newLocation.coordinate.latitude;
@@ -1053,13 +1105,13 @@
     [locationManager stopUpdatingLocation];
     
     if (!annotation1) {
-    annotation1 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-    annotation1.coordinate = region.center;
-    annotation1.title = @"226H Ang Mo Kio Street 22";
-    annotation1.subtitle = @"";
-    [quickMap addAnnotation:annotation1];
+        annotation1 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+        annotation1.coordinate = region.center;
+        annotation1.title = @"226H Ang Mo Kio Street 22";
+        annotation1.subtitle = @"";
+        [quickMap addAnnotation:annotation1];
     }
-
+    
 }
 
 
@@ -1109,7 +1161,7 @@
     //    cell.detailTextLabel.numberOfLines = 0;
     //    cell.textLabel.textColor = RGB(245, 193, 12);
     
-//    NSLog(@"cell width %f",cell.bounds.size.width);
+    //    DebugLog(@"cell width %f",cell.bounds.size.width);
     
     UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 45, 45)];
     [cell.contentView addSubview:cellImageView];
@@ -1277,12 +1329,12 @@
     //----- Temp Data
     NSDictionary *dictEvents1 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"1"],[NSString stringWithFormat:@"World Waters Data"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
     NSDictionary *dictEvents2 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"2"],[NSString stringWithFormat:@"Seletar Reservoir"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
-//    NSDictionary *dictEvents3 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"3"],[NSString stringWithFormat:@"Water campaign at Bishan Park"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
+    //    NSDictionary *dictEvents3 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"3"],[NSString stringWithFormat:@"Water campaign at Bishan Park"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
     
     if (whatsUpFeedDataSource.count==0) {
         [whatsUpFeedDataSource addObject:dictEvents1];
         [whatsUpFeedDataSource addObject:dictEvents2];
-//        [whatsUpFeedDataSource addObject:dictEvents3];
+        //        [whatsUpFeedDataSource addObject:dictEvents3];
     }
     
     
@@ -1299,10 +1351,10 @@
     //----- Temp Data
     NSDictionary *dictEvents11 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"1"],[NSString stringWithFormat:@"Fireworks display for SEA games"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
     NSDictionary *dictEvents12 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"2"],[NSString stringWithFormat:@"Mass exercise"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
-//    NSDictionary *dictEvents13 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"3"],[NSString stringWithFormat:@"Cross country"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
+    //    NSDictionary *dictEvents13 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"3"],[NSString stringWithFormat:@"Cross country"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
     [eventsDataSource addObject:dictEvents11];
     [eventsDataSource addObject:dictEvents12];
-//    [eventsDataSource addObject:dictEvents13];
+    //    [eventsDataSource addObject:dictEvents13];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -1311,7 +1363,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-
+    
     if (appDelegate.IS_COMING_AFTER_LOGIN) {
         appDelegate.IS_COMING_AFTER_LOGIN = NO;
         self.view.alpha = 0.5;

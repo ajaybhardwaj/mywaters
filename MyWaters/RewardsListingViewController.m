@@ -47,7 +47,7 @@
 
 - (void) swipedScreen:(UISwipeGestureRecognizer*)swipeGesture {
     // do stuff
-    NSLog(@"Swipe Detected");
+    DebugLog(@"Swipe Detected");
     self.view.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
     
@@ -75,7 +75,7 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     RewardDetailsViewController *viewObj = [[RewardDetailsViewController alloc] init];
-    [self.navigationController pushViewController:viewObj animated:NO];
+    [self.navigationController pushViewController:viewObj animated:YES];
 }
 
 
@@ -152,7 +152,7 @@
     infoButton.tintColor = [UIColor whiteColor];
     self.navigationItem.rightBarButtonItem = infoButton;
     
-    rewardsListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    rewardsListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 25, self.view.bounds.size.width, self.view.bounds.size.height-250)];
     rewardsListingTableView.delegate = self;
     rewardsListingTableView.dataSource = self;
     [self.view addSubview:rewardsListingTableView];

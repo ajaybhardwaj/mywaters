@@ -38,7 +38,7 @@
     
     if (isShowingFilter) {
         isShowingFilter = NO;
-        pos.y = -120;
+        pos.y = -320;
         
         notificationsTable.alpha = 1.0;
         notificationsTable.userInteractionEnabled = YES;
@@ -82,7 +82,7 @@
         [self animateFilterTable];
     }
     else {
-        NSLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
+        DebugLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
         
         //    if (self.synthesizer.speaking == NO) {
         AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:[tableDataSource objectAtIndex:indexPath.row]];
@@ -228,7 +228,7 @@
     tableDataSource = [[NSArray alloc] initWithObjects:@"Sg Pandan Kechil (West Coast Highway): Water level falls below 75%. Moderate Flood Risk.",@"Sg Pandan Kechil (West Coast Highway): Water level rises above 75%. Moderate Flood Risk.",@"NEA: Moderate to heavy thundery showers & gusty winds expected over north, east & central SG btwn 14:30 to 15:30 hrs. Issued 13:48hrs.", nil];
     
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -256, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -456, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];

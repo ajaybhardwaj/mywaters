@@ -69,7 +69,7 @@
         canDetectGesture = NO;
         [bgScrollView setContentOffset:CGPointMake(0, 0) animated:YES];
     }
-    NSLog(@"Detected Right Gesture");
+    DebugLog(@"Detected Right Gesture");
 }
 
 
@@ -932,7 +932,7 @@
 //    selectedStartTime = [formatter dateFromString:[NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]];
 //    selectedEndTime = [formatter dateFromString:[NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]];
 //    
-//    NSLog(@"%@---%@----%@",selectedEndTime,selectedStartTime,selectedDate);
+//    DebugLog(@"%@---%@----%@",selectedEndTime,selectedStartTime,selectedDate);
 }
 
 - (void)didReceiveMemoryWarning {

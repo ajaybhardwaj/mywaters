@@ -9,7 +9,6 @@
 #import "ABCWatersViewController.h"
 #import "ViewControllerHelper.h"
 
-
 @interface ABCWatersViewController ()
 
 @end
@@ -44,7 +43,7 @@
         else if (sender.selectedSegmentIndex==1) {
             listTabeView.hidden = NO;
             abcWatersScrollView.hidden = YES;
-            [appDelegate retrieveABCWatersListing];
+            //            [appDelegate retrieveABCWatersListing];
             [listTabeView reloadData];
             
             UIButton *btnSearch =  [UIButton buttonWithType:UIButtonTypeCustom];
@@ -62,7 +61,7 @@
             [rightBarButtonItems addSubview:btnfilter];
             
             self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
-
+            
         }
     }
 }
@@ -137,7 +136,9 @@
 
 //*************** Method To Move To ABC Water Detail View
 
-- (void) moveToDetailsView {
+- (void) moveToDetailsView:(id) sender {
+    
+    UIButton *button = (id) sender;
     
     ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
     [self.navigationController pushViewController:viewObj animated:NO];
@@ -151,36 +152,40 @@
     
     int gridCount = 0;
     float xAxis = 0;
-    float yAxis = 00;
+    float yAxis = 0;
     
-    for (UIView * view in abcWatersScrollView.subviews) {
-        [view removeFromSuperview];
-    }
+    //    for (UIView * view in abcWatersScrollView.subviews) {
+    //        [view removeFromSuperview];
+    //    }
     
-    [appDelegate retrieveABCWatersListing];
+    //    [appDelegate retrieveABCWatersListing];
     
     if (appDelegate.ABC_WATERS_LISTING_ARRAY.count !=0) {
         
         for (int i=0; i<appDelegate.ABC_WATERS_LISTING_ARRAY.count; i++) {
             
+            AsyncImageView *gridImage = [[AsyncImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, (segmentedControlBackground.bounds.size.width-2)/3, (segmentedControlBackground.bounds.size.width-2)/3)];
+            NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]];
+            [gridImage setImageURL:[NSURL URLWithString:imageURLString]];
+            gridImage.showActivityIndicator = YES;
+            [abcWatersScrollView addSubview:gridImage];
+            gridImage.userInteractionEnabled = YES;
+            
             UIButton *gridButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            gridButton.frame = CGRectMake(xAxis, yAxis, (segmentedControlBackground.bounds.size.width-2)/3, (segmentedControlBackground.bounds.size.width-2)/3);
-//            [gridButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]] forState:UIControlStateNormal];
-            [gridButton setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"abcwaters_grid%d.png",i+1]] forState:UIControlStateNormal];
+            gridButton.frame = CGRectMake(0, 0, gridImage.bounds.size.width, gridImage.bounds.size.height);
+            gridButton.tag = i;
             [gridButton addTarget:self action:@selector(moveToDetailsView) forControlEvents:UIControlEventTouchUpInside];
-            [abcWatersScrollView addSubview:gridButton];
+            [gridImage addSubview:gridButton];
             
-
-            // Commented For The Temp
             
-//            UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, gridButton.bounds.size.height-40, gridButton.bounds.size.width, 40)];
-//            nameLabel.backgroundColor = [UIColor clearColor];
-//            nameLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"]];
-//            nameLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:12];
-//            nameLabel.textColor = [UIColor whiteColor];
-//            nameLabel.textAlignment = NSTextAlignmentCenter;
-//            nameLabel.numberOfLines = 0;
-//            [gridButton addSubview:nameLabel];
+            UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, gridButton.bounds.size.height-40, gridButton.bounds.size.width-10, 40)];
+            nameLabel.backgroundColor = [UIColor clearColor];
+            nameLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"siteName"]];
+            nameLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
+            nameLabel.textColor = [UIColor whiteColor];
+            nameLabel.textAlignment = NSTextAlignmentCenter;
+            nameLabel.numberOfLines = 0;
+            [gridButton addSubview:nameLabel];
             
             gridCount = gridCount + 1;
             if (gridCount!=3) {
@@ -194,7 +199,52 @@
         }
     }
     
-    [abcWatersScrollView setContentSize:CGSizeMake(self.view.bounds.size.width, yAxis+20)];
+    [abcWatersScrollView setContentSize:CGSizeMake(self.view.bounds.size.width, yAxis+(segmentedControlBackground.bounds.size.width-2)/3+(segmentedControlBackground.bounds.size.width-2)/3)];
+}
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    
+    if ([request.name localizedCaseInsensitiveCompare:ABC_WATERS_LISTING] == NSOrderedSame) {
+        if ([[[responseString JSONValue] objectForKey:SERVER_ERRORCODE] intValue] == REQUEST_SUCCESS) {
+            
+            NSArray *tempArray = [[[responseString JSONValue] objectForKey:@"data"] objectForKey:@"sites"];
+            abcWatersTotalCount = [[[[responseString JSONValue] objectForKey:@"data"] objectForKey:@"total"] intValue];
+            
+            if (tempArray.count==0) {
+                abcWatersPageCount = 0;
+            }
+            else {
+                if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
+                    [appDelegate.ABC_WATERS_LISTING_ARRAY setArray:tempArray];
+                }
+                else {
+                    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=abcWatersTotalCount) {
+                        for (int i=0; i<tempArray.count; i++) {
+                            [appDelegate.ABC_WATERS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
+                        }
+                    }
+                }
+            }
+        }
+        
+        [self createGridView];
+        //[listTabeView reloadData];
+    }
+    
+    // Use when fetching binary data
+    //    NSData *responseData = [request responseData];
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    abcWatersPageCount = 0;
 }
 
 
@@ -268,7 +318,6 @@
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.textColor = [UIColor whiteColor];
         [cell.contentView addSubview:titleLabel];
-        //        }
         
         if (indexPath.row==selectedFilterIndex) {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -281,33 +330,28 @@
     }
     
     else {
-    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
         
-//        cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"abcwaters_grid%d.png",indexPath.row+1]];//[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]]];
-//        cell.textLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"]];
-//        
-//        cell.textLabel.numberOfLines = 0;
-//        cell.textLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
+            
+            AsyncImageView *cellImage = [[AsyncImageView alloc] initWithFrame:CGRectMake(5, 10, 60, 60)];
+            NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+            [cellImage setImageURL:[NSURL URLWithString:imageURLString]];
+            cellImage.showActivityIndicator = YES;
+            [cell.contentView addSubview:cellImage];
+            
+            UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 40)];
+            titleLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"]];
+            titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+            titleLabel.backgroundColor = [UIColor clearColor];
+            titleLabel.numberOfLines = 0;
+            [cell.contentView addSubview:titleLabel];
+            
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
         
-        
-        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 60, 60)];
-        //        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/default_no_image.png",appDelegate.RESOURCE_FOLDER_PATH]];
-        cellImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"abcwaters_grid%ld.png",indexPath.row+1]];
-        [cell.contentView addSubview:cellImage];
-        
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 40)];
-        //        titleLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
-        titleLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"]];
-        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-        titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.numberOfLines = 0;
-        [cell.contentView addSubview:titleLabel];
-    }
-    
-    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, listTabeView.bounds.size.width, 0.5)];
-    [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
-    [cell.contentView addSubview:seperatorImage];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, listTabeView.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
     }
     
     return cell;
@@ -330,7 +374,7 @@
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-
+    
     
     segmentedControlBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50)];
     segmentedControlBackground.backgroundColor = RGB(52, 156, 249);
@@ -392,9 +436,7 @@
     filterTableView.alpha = 0.8;
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
-    
-    [self createGridView];
-    //[self createDemoAppControls];
+    abcWatersPageCount = 0;
     
     searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
     searchField.textColor = RGB(35, 35, 35);
@@ -412,9 +454,11 @@
     searchField.returnKeyType = UIReturnKeyDone;
     searchField.backgroundColor = [UIColor whiteColor];
     [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    
+    [CommonFunctions grabGetRequest:ABC_WATERS_LISTING delegate:self isNSData:NO];
 }
 
- 
+
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;

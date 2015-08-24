@@ -62,7 +62,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     //        NSArray *param = [[NSArray alloc] initWithObjects:@"shopping_cart_id", nil];
     //        NSArray *value = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"shopping_cart_id"], nil];
     //
-    //        NSLog(@"%@",[prefs stringForKey:@"shopping_cart_id"]);
+    //        DebugLog(@"%@",[prefs stringForKey:@"shopping_cart_id"]);
     //
     //        RDBaseNetworkController *controller = [[RDBaseNetworkController alloc] init];
     //        [controller postDataToServer:SHOPPING_CART_CLEAR parameters:param values:value avatar:nil];

@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) NSString *title,*subtitle;
 @property (nonatomic, assign) NSInteger annotationTag;
+@property (nonatomic, assign) double latitude, longitude;
 @property (nonatomic, assign) CLLocationCoordinate2D coordinate;
 
 - (id) initWithTitle:(NSString*)title AndCoordinates:(CLLocationCoordinate2D) coordinate;

@@ -118,7 +118,7 @@ static AuxilaryService *sharedInstance_ = nil;  // -- shared instacne class obje
 //          for(int i=0;i<ABMultiValueGetCount(phoneNumbers);i++)
 //          {
 //            CFStringRef ph = ABMultiValueCopyValueAtIndex(phoneNumbers, i);
-//            NSLog(@"phone numbers - %i = %@‚",i+1,[NSString stringWithFormat:@"%@",ph]);
+//            DebugLog(@"phone numbers - %i = %@‚",i+1,[NSString stringWithFormat:@"%@",ph]);
 //            
 //            if (ph) {
 //              [addressDict setObject:[NSString stringWithFormat:@"%@",ph] forKey:CONTACTS_PHONE];
@@ -144,7 +144,7 @@ static AuxilaryService *sharedInstance_ = nil;  // -- shared instacne class obje
 //          for(int i=0;i<ABMultiValueGetCount(emails);i++)
 //          {
 //            CFStringRef em = ABMultiValueCopyValueAtIndex(emails, i);
-//            NSLog(@"Email-%i = %@‚",i+1,[NSString stringWithFormat:@"%@",em]);
+//            DebugLog(@"Email-%i = %@‚",i+1,[NSString stringWithFormat:@"%@",em]);
 //            if (em) {
 //              [addressDict setObject:[NSString stringWithFormat:@"%@",em] forKey:CONTACTS_EMAIL];
 //              CFRelease(em);
@@ -279,7 +279,7 @@ static AuxilaryService *sharedInstance_ = nil;  // -- shared instacne class obje
 //          for(int i=0;i<ABMultiValueGetCount(phoneNumbers);i++)
 //          {
 //            CFStringRef ph = ABMultiValueCopyValueAtIndex(phoneNumbers, i);
-//            NSLog(@"phone numbers - %i = %@‚",i+1,[NSString stringWithFormat:@"%@",ph]);
+//            DebugLog(@"phone numbers - %i = %@‚",i+1,[NSString stringWithFormat:@"%@",ph]);
 //            
 //            if (ph) {
 //              [addressDict setObject:[NSString stringWithFormat:@"%@",ph] forKey:CONTACTS_PHONE];
@@ -305,7 +305,7 @@ static AuxilaryService *sharedInstance_ = nil;  // -- shared instacne class obje
 //          for(int i=0;i<ABMultiValueGetCount(emails);i++)
 //          {
 //            CFStringRef em = ABMultiValueCopyValueAtIndex(emails, i);
-//            NSLog(@"Email-%i = %@‚",i+1,[NSString stringWithFormat:@"%@",em]);
+//            DebugLog(@"Email-%i = %@‚",i+1,[NSString stringWithFormat:@"%@",em]);
 //            if (em) {
 //              [addressDict setObject:[NSString stringWithFormat:@"%@",em] forKey:CONTACTS_EMAIL];
 //              CFRelease(em);
@@ -477,7 +477,7 @@ static AuxilaryService *sharedInstance_ = nil;  // -- shared instacne class obje
 //          for(int i=0;i<ABMultiValueGetCount(phoneNumbers);i++)
 //          {
 //            CFStringRef ph = ABMultiValueCopyValueAtIndex(phoneNumbers, i);
-//            //NSLog(@"phone numbers - %i = %@‚",i+1,[NSString stringWithFormat:@"%@",ph]);
+//            //DebugLog(@"phone numbers - %i = %@‚",i+1,[NSString stringWithFormat:@"%@",ph]);
 //            
 //            if (ph) {
 //              [addressDict setObject:[NSString stringWithFormat:@"%@",ph] forKey:CONTACTS_PHONE];
@@ -503,7 +503,7 @@ static AuxilaryService *sharedInstance_ = nil;  // -- shared instacne class obje
 //          for(int i=0;i<ABMultiValueGetCount(emails);i++)
 //          {
 //            CFStringRef em = ABMultiValueCopyValueAtIndex(emails, i);
-//            //NSLog(@"Email-%i = %@‚",i+1,[NSString stringWithFormat:@"%@",em]);
+//            //DebugLog(@"Email-%i = %@‚",i+1,[NSString stringWithFormat:@"%@",em]);
 //            if (em) {
 //              [addressDict setObject:[NSString stringWithFormat:@"%@",em] forKey:CONTACTS_EMAIL];
 //              CFRelease(em);

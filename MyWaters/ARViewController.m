@@ -59,7 +59,7 @@
     
     [appDelegate retrievePointOfInterests:1];
     
-    NSLog(@"%@",appDelegate.POI_ARRAY);
+    DebugLog(@"%@",appDelegate.POI_ARRAY);
     
     if (appDelegate.POI_ARRAY.count!=0) {
         
@@ -72,7 +72,7 @@
             ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"name"]];
             [coordinate calibrateUsingOrigin:[_userLocation location]];
             MarkerView *markerView = [[MarkerView alloc] initWithCoordinate:coordinate delegate:self];
-            NSLog(@"Marker view %@", markerView);
+            DebugLog(@"Marker view %@", markerView);
             markerView.tag = i;
             
             [coordinate setDisplayView:markerView];
@@ -83,16 +83,16 @@
     
 //        [self setGeoLocations:[NSMutableArray arrayWithCapacity:[_locations count]]];
 //        
-//        NSLog(@"%lu",(unsigned long)[_locations count]);
+//        DebugLog(@"%lu",(unsigned long)[_locations count]);
 //        
 //        for(Place *place in _locations) {
 //            ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:[place location] locationTitle:[place placeName]];
 //            
-//            NSLog(@"%@---%@",[place location],[place placeName]);
+//            DebugLog(@"%@---%@",[place location],[place placeName]);
 //            
 //            [coordinate calibrateUsingOrigin:[_userLocation location]];
 //            MarkerView *markerView = [[MarkerView alloc] initWithCoordinate:coordinate delegate:self];
-//            NSLog(@"Marker view %@", markerView);
+//            DebugLog(@"Marker view %@", markerView);
 //            
 //            [coordinate setDisplayView:markerView];
 //            [_arController addCoordinate:coordinate];
@@ -113,7 +113,7 @@
 }
 
 - (void)locationClicked:(ARGeoCoordinate *)coordinate {
-    NSLog(@"Tapped location %@", coordinate);
+    DebugLog(@"Tapped location %@", coordinate);
 }
 
 #pragma mark - ARDelegate
@@ -246,7 +246,7 @@
     
     //2
     CLLocationAccuracy accuracy = [lastLocation horizontalAccuracy];
-    NSLog(@"Received location %@ with accuracy %f", lastLocation, accuracy);
+    DebugLog(@"Received location %@ with accuracy %f", lastLocation, accuracy);
     
     //3
     if(accuracy < 100.0) {
@@ -266,7 +266,7 @@
         }
         
         _locations = [temp copy];
-        NSLog(@"Locations: %@", _locations);
+        DebugLog(@"Locations: %@", _locations);
 
     }
     

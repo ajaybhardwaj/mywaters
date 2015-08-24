@@ -646,13 +646,13 @@
         }
         else if (selectedAnnotationButton==5) {
             if (annotation==annotation5) {
-                pinView.image = [UIImage imageNamed:@"icn_waterlevel_below75.png"];
+                pinView.image = [UIImage imageNamed:@"icn_waterlevel_below75_big.png"];
             }
             else if (annotation==annotation51) {
-                pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
+                pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90_big.png"];
             }
             else if (annotation==annotation52) {
-                pinView.image = [UIImage imageNamed:@"icn_waterlevel_90.png"];
+                pinView.image = [UIImage imageNamed:@"icn_waterlevel_90_big.png"];
             }
         }
         
@@ -669,7 +669,7 @@
 //- (void) mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
 //    
 //    NSInteger indexOfTheObject = [quickMap.annotations indexOfObject:view.annotation];
-//    NSLog(@"Annotation Index %ld",indexOfTheObject);
+//    DebugLog(@"Annotation Index %ld",indexOfTheObject);
 //    
 //    CGSize  calloutSize = CGSizeMake(150.0, 80.0);
 //    UIView *calloutView = [[UIView alloc] initWithFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y-calloutSize.height, calloutSize.width, calloutSize.height)];

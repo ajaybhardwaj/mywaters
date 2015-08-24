@@ -15,6 +15,12 @@
 #endif
 
 
+//#ifdef __OBJC__
+//    #import <UIKit/UIKit.h>
+//    #import <Foundation/Foundation.h>
+//#endif
+
+
 #pragma mark - Device Version
 #define CURRENT_VERSION [[[UIDevice currentDevice] systemVersion] integerValue]
 #define IOS3 3
@@ -34,13 +40,6 @@
 #define IS_MORE_IOS6() (CURRENT_VERSION>=IOS6) ? YES : NO
 #define OSVersionIsAtLeastiOS7() (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
 
-#ifndef RGB
-#define RGB(R,G,B) [UIColor colorWithRed:R/255.0f green:G/255.0f blue:B/255.0f alpha:1.0f]
-#endif
-
-#ifndef RGBALPHA
-#define RGBALPHA(R,G,B,A) [UIColor colorWithRed:R/255.0f green:G/255.0f blue:B/255.0f alpha:A]
-#endif
 
 #define HEADER_BACKGROUND [UIImage imageNamed:@"headerbar_1px"]
 #define MAIN_SCREEN_BOUNDS [UIScreen mainScreen].bounds

@@ -11,6 +11,203 @@
 @implementation CommonFunctions
 
 
+# pragma mark - ASIHTTP Delegate Methods
+
+//-(void)sendCommonError_MessageForRequest:(id)sender {
+//    
+////    if ([self respondsToSelector:@selector(didNotGetDataFromServer:messageToUser:title:urlCalled:)]) {
+////        [self didNotGetDataFromServer:nil messageToUser:SERVER_COMMON_ERROR title:@"" urlCalled:sender];
+////    }
+//    
+//}
+//
+//-(NSArray*) didLoadGetResponse:(ASIHTTPRequest*)getReq{
+//    
+//    // -- header got the over-all success failure status code..
+//    DebugLog(@"\n\n - didLoadGetResponse Response header s- %d",getReq.responseStatusCode);
+//    
+//    @try {
+//        [getReq setDelegate:nil];
+//        
+//        if ([getReq responseString]==nil) {
+//            [self sendCommonError_MessageForRequest:getReq];
+//            return nil;
+//        }
+//        // --- If no response string it will return here itself
+//        NSDictionary *responseDictionary = [(NSString*)[getReq responseString] JSONValue];
+//        if ([[responseDictionary allKeys] count]!=0) {
+//            NSMutableArray *tempArray = [NSMutableArray arrayWithCapacity:responseDictionary.count];
+//            [responseDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+//                [tempArray addObject:obj];
+//            }];
+//            
+//            DebugLog(@"%@",tempArray);
+//            
+//            return tempArray;
+//        }
+//        // -- 400
+//        else{
+//            [self sendCommonError_MessageForRequest:getReq];
+//        }
+//    }
+//    @catch (NSException *exception) {
+//        DebugLog(@"\n\n - %s %@ ",__FUNCTION__,exception);
+//    }
+//}
+//
+//-(NSArray*) didNotLoadGetResponse:(ASIHTTPRequest*)getReq{
+//    
+//    DebugLog(@"DID NOT GET REPSONSE");
+//    
+//    @try {
+//        
+//        [getReq setDelegate:nil];
+//        // --- If no response string it will return here itself
+//        NSDictionary *responseDictionary = [(NSString*)[getReq responseString] JSONValue];
+//        if (responseDictionary && [responseDictionary objectForKey:SERVER_MESSAGE]) {
+//            
+//            // -- if its invalid OAuth Creadintials please re-direct them to the sign in page..
+//            //    message = "Invalid oauth token credentials.";
+//            //    "status_code" = 403;
+//            if ([[responseDictionary objectForKey:SERVER_STATUSCODE] integerValue] == INVALID_OAUTH_CREDENTIAL || [[responseDictionary objectForKey:SERVER_MESSAGE] isEqualToString:@"Invalid oauth token credentials."]) {
+//                
+//                return nil;
+//            }
+//        }
+//        else{
+//            [self sendCommonError_MessageForRequest:getReq];
+//        }
+//    }
+//    @catch (NSException *exception) {
+//        DebugLog(@"\n\n - %s %@ ",__FUNCTION__,exception);
+//    }
+//}
+//
+//- (NSArray*) didLoadPostResponse:(ASIFormDataRequest*)postReq{
+//    
+//    @try {
+//        DebugLog(@"\n\n -- Post Request URL info - %@ ",postReq.username);
+//        [postReq setDelegate:nil];
+//        if ([postReq responseString]==nil) {
+//            [self sendCommonError_MessageForRequest:postReq];
+//            return nil;
+//        }
+//        
+//        
+//        // -- header got the over-all success failure status code..
+//        DebugLog(@"\n\n - didLoadPostResponse Response header s- %d ",postReq.responseStatusCode);
+//        
+//        NSDictionary *responseDictionary = [(NSString*)[postReq responseString] JSONValue];
+//        if ([[responseDictionary allKeys] count]!=0) {
+//            
+//            NSMutableArray *tempArray = [NSMutableArray arrayWithCapacity:responseDictionary.count];
+//            [responseDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+//                [tempArray addObject:obj];
+//            }];
+//            
+//            return tempArray;
+//        }
+//        else{
+//            NSLog(@"responseString = %@",[postReq responseString]);
+//            [self sendCommonError_MessageForRequest:postReq];
+//        }
+//    }
+//    @catch (NSException *exception) {
+//        DebugLog(@"\n\n - %s %@ ",__FUNCTION__,exception);
+//    }
+//}
+//
+//-(void) didNotLoadPostResponse:(ASIFormDataRequest*)postReq{
+//    
+//    
+//    @try {
+//        
+//        // --- If no response string it will return here itself
+//        NSDictionary *responseDictionary = [(NSString*)[postReq responseString] JSONValue];
+//        if (responseDictionary && [responseDictionary objectForKey:SERVER_MESSAGE]) {
+//            
+//            // -- if its invalid OAuth Creadintials please re-direct them to the sign in page..
+//            //    message = "Invalid oauth token credentials.";
+//            //    "status_code" = 403;
+//            if ([[responseDictionary objectForKey:SERVER_STATUSCODE] integerValue] == INVALID_OAUTH_CREDENTIAL || [[responseDictionary objectForKey:SERVER_MESSAGE] isEqualToString:@"Invalid oauth token credentials."]) {
+//                
+//                return;
+//            }
+//        }
+//        else{
+//            [self sendCommonError_MessageForRequest:postReq];
+//        }
+//    }
+//    @catch (NSException *exception) {
+//        DebugLog(@"\n\n - %s %@ ",__FUNCTION__,exception);
+//    }
+//    
+//}
+
+
+
+////*************** Method For Server POST Request
+//
+//+ (NSString*) postDataToServer:(NSString*)method parameters:(NSArray*)keys values:(NSArray*)values withClienrSecret:(NSString*)clienSec avatar:(NSData*)imageData {
+//    
+//    ASIHTTPRequest *getRequest = nil;
+//    
+//    NSMutableString *stringUrl = [NSMutableString string];
+//    [stringUrl appendFormat:BASE_URL];
+//    [stringUrl appendFormat:@"%@",method];
+//    
+//    if (keys!=nil && values!=nil && [keys count]!=0 && [values count]!=0) {
+//        
+//        [stringUrl appendFormat:@"%@=%@",[keys objectAtIndex:0],[values objectAtIndex:0]];
+//        
+//        for (int i = 1; i<[keys count]; i++) {
+//            [stringUrl appendFormat:@"&%@=%@",[keys objectAtIndex:i],[values objectAtIndex:i]];
+//        }
+//    }
+//    else{
+//        
+//        
+//    }
+//    
+//    // -- common values for all apis
+//    NSDictionary *infoDictionary = [[NSBundle mainBundle]infoDictionary];
+//    NSString *build = infoDictionary[(NSString*)kCFBundleVersionKey];
+//    
+//    [stringUrl appendFormat:@"&%@=%@",DEVICE_TYPE_KEY,DEVICE_TYPE_];
+//    [stringUrl appendFormat:@"&%@=%@",APP_NAME_KEY,APP_NAME_];
+//    [stringUrl appendFormat:@"&%@=%@",APP_VERSION_KEY,[NSString stringWithFormat:@"%ld",[build integerValue]]];
+//    
+//    
+//    DebugLog(@"Get Request Values -- ==%s --  %@",__FUNCTION__, stringUrl);
+//    getRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[stringUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+////    [getRequest setDelegate:self];
+////    [getRequest setDidFinishSelector:@selector(didLoadGetResponse:)];
+////    [getRequest setDidFailSelector:@selector(didNotLoadGetResponse:)];
+//    
+//    //add access token to header
+//    [self addAccessTokenToHeaderIfNeed:getRequest];
+//    
+//    /*SAVE URL METHOD Identifier*/
+//    [getRequest setUsername:method];
+//    [getRequest setValidatesSecureCertificate:NO];
+//    
+//    __block NSString *responseString = nil;
+//    [getRequest setCompletionBlock:^{
+//        
+//        responseString = [getRequest responseString];
+//        NSLog(@"%@",responseString);
+//        
+//    }];
+//    
+//    [getRequest setFailedBlock:^{
+//        
+//    }];
+//    
+//    [getRequest startAsynchronous];
+//    
+//    return responseString;
+//}
+
 //*************** For Checking Internet Connectivity
 
 + (BOOL) hasConnectivity {
@@ -56,6 +253,95 @@
     }
     return NO;
 }
+
+
+////*************** Method For Adding Access Token To Header
+//
+//+ (void) addAccessTokenToHeaderIfNeed:(ASIHTTPRequest *) request {
+//    
+//    NSString *access_token = [[SharedObject sharedClass] getPhysicalABuseAccessToken];
+//    if (access_token && [access_token isKindOfClass:[NSString class]])
+//        [request addRequestHeader:AUTHORIZATION_TOKEN value:access_token];
+//}
+//
+//
+////*************** Method For Getting Data From Server
+//
+//+ (void) getDataFromServer:(NSString*)method parameters:(NSArray*)keys values:(NSArray*)values withClienrSecret:(NSString*)clienSec {
+//    
+//    ASIHTTPRequest *getRequest = nil;
+//    
+//    @try {
+//        
+//        NSMutableString *stringUrl = [NSMutableString string];
+//        [stringUrl appendFormat:BASE_URL];
+//        [stringUrl appendFormat:@"%@",method];
+//        
+//        if (keys!=nil && values!=nil && [keys count]!=0 && [values count]!=0) {
+//            
+//            [stringUrl appendFormat:@"%@=%@",[keys objectAtIndex:0],[values objectAtIndex:0]];
+//            
+//            for (int i = 1; i<[keys count]; i++) {
+//                [stringUrl appendFormat:@"&%@=%@",[keys objectAtIndex:i],[values objectAtIndex:i]];
+//            }
+//        }
+//        else{
+//            
+//            
+//        }
+//        
+//        // -- common values for all apis
+//        NSDictionary *infoDictionary = [[NSBundle mainBundle]infoDictionary];
+//        NSString *build = infoDictionary[(NSString*)kCFBundleVersionKey];
+//        
+////        [stringUrl appendFormat:@"&%@=%@",DEVICE_TYPE_KEY,DEVICE_TYPE_];
+////        [stringUrl appendFormat:@"&%@=%@",APP_NAME_KEY,APP_NAME_];
+////        [stringUrl appendFormat:@"&%@=%@",APP_VERSION_KEY,[NSString stringWithFormat:@"%ld",[build integerValue]]];
+//        
+//        
+//        DebugLog(@"Get Request Values -- ==%s --  %@",__FUNCTION__, stringUrl);
+//        getRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[stringUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+//        [getRequest setDelegate:self];
+//        [getRequest setDidFinishSelector:@selector(didLoadGetResponse:)];
+//        [getRequest setDidFailSelector:@selector(didNotLoadGetResponse:)];
+//        
+//        //add access token to header
+//        [self addAccessTokenToHeaderIfNeed:getRequest];
+//        
+//        /*SAVE URL METHOD Identifier*/
+//        [getRequest setUsername:method];
+//        [getRequest setValidatesSecureCertificate:NO];
+//        
+//        [getRequest startAsynchronous];
+//        
+//    }
+//    @catch (NSException *exception) {
+//        
+//        DebugLog(@" %s Exception  3 -- %@",__FUNCTION__, exception);
+//    }
+//    @finally {
+//    }
+//    
+//}
+//
+//
+//+ (void) postDataToServer:(NSString*)method parameters:(NSArray*)keys values:(NSArray*)values withClienrSecret:(NSString*)clienSec avatar:(NSData*)imageData {
+//    
+//    
+//}
+
+
+
++ (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data {
+    
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BASE_URL,apiName]];
+    
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request setName:apiName];
+    [request setDelegate:viewObj];
+    [request startAsynchronous];
+}
+
 
 
 //*************** Method For Checking Valid Email

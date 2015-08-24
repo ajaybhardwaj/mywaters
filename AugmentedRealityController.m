@@ -204,7 +204,7 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     [self setCenterLocation:newLocation];
-    NSLog(@"Location of phone changed!");
+    DebugLog(@"Location of phone changed!");
     [[self delegate] didUpdateLocation:newLocation];
     
 }
@@ -329,7 +329,7 @@
 	double deltaAzimuth	  = [self findDeltaOfRadianCenter: &currentAzimuth coordinateAzimuth:pointAzimuth betweenNorth:&isBetweenNorth];
 	BOOL result			  = NO;
 	
-  //  NSLog(@"Current %f, Item %f, delta %f, range %f",currentAzimuth,pointAzimuth,deltaAzimith,degreesToRadian([self degreeRange]));
+  //  DebugLog(@"Current %f, Item %f, delta %f, range %f",currentAzimuth,pointAzimuth,deltaAzimith,degreesToRadian([self degreeRange]));
     
 	if (deltaAzimuth <= degreesToRadian(degreeRange))
 		result = YES;

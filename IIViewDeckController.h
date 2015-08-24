@@ -24,6 +24,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Constants.h"
 
 @protocol IIViewDeckControllerDelegate;
 

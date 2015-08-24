@@ -233,11 +233,11 @@
         sqlite3_prepare_v2(database, update_stmt, -1, &statement, NULL);
         if (sqlite3_step(statement) == SQLITE_DONE)
         {
-            NSLog(@"Row updated");
+            DebugLog(@"Row updated");
         }
         
         else {
-            NSLog(@"Failed to update row");
+            DebugLog(@"Failed to update row");
         }
         sqlite3_finalize(statement);
         sqlite3_close(database);
@@ -258,7 +258,7 @@
     NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
     NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:@"MyWaters/MyWaters.sqlite"];
     
-    NSLog(@"Destination Path %@",destinationPath);
+    DebugLog(@"Destination Path %@",destinationPath);
     
     return destinationPath;
 }
@@ -283,7 +283,7 @@
             ;// success
         else
         {
-            NSLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+            DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
             NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
         }
     }
@@ -291,7 +291,7 @@
     
     NSString *destinationPath=[self getdestinationPath];
     if ([fileManger fileExistsAtPath:destinationPath]){
-        //NSLog(@"database localtion %@",destinationPath);
+        //DebugLog(@"database localtion %@",destinationPath);
         return;
     }
     NSString *sourcePath=[[[NSBundle mainBundle] resourcePath]stringByAppendingPathComponent:@"MyWaters.sqlite"];
@@ -306,11 +306,11 @@
     
     NSString *path=[self getdestinationPath];
     if (sqlite3_open([path UTF8String], &database)==SQLITE_OK) {
-        NSLog(@"dataBaseOpen");
+        DebugLog(@"dataBaseOpen");
     }
     else {
         sqlite3_close(database);
-        NSLog(@"dataBaseNotOpen");
+        DebugLog(@"dataBaseNotOpen");
     }
 }
 

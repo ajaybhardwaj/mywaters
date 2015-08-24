@@ -456,13 +456,13 @@
     [cell.contentView addSubview:cellImage];
     
     if (indexPath.row==0) {
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
     else if (indexPath.row==1) {
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
     else if (indexPath.row==2) {
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
     
     
@@ -506,16 +506,16 @@
             [topSearchBar resignFirstResponder];
             
             CLGeocoder *fwdGeocoding = [[CLGeocoder alloc] init];
-            NSLog(@"Geocoding for Address: %@\n", searchBar.text);
+            DebugLog(@"Geocoding for Address: %@\n", searchBar.text);
             [fwdGeocoding geocodeAddressString:searchBar.text completionHandler:^(NSArray *placemarks, NSError *error) {
                 if (!error) {
                     // do stuff with the placemarks
                     
                     for (CLPlacemark *placemark in placemarks) {
-                        NSLog(@"%@\n %.2f,%.2f",[placemark description], placemark.location.horizontalAccuracy, placemark.location.verticalAccuracy);
+                        DebugLog(@"%@\n %.2f,%.2f",[placemark description], placemark.location.horizontalAccuracy, placemark.location.verticalAccuracy);
                     }
                 } else {
-                    NSLog(@"Geocoding error: %@", [error localizedDescription]);
+                    DebugLog(@"Geocoding error: %@", [error localizedDescription]);
                 }
             }];
         }

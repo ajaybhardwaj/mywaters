@@ -11,21 +11,50 @@
 #import "RewardsListingViewController.h"
 #import "Constants.h"
 #import "EditProfileViewController.h"
+#import "BadgesViewController.h"
+#import "PointsViewController.h"
+#import "PhotosViewController.h"
 
-@interface ProfileViewController : UIViewController {
+@interface ProfileViewController : UIViewController <UITabBarControllerDelegate,UITableViewDataSource,UITableViewDelegate> {
     
     AppDelegate *appDelegate;
     
     UIImageView *profileImageView;
     UILabel *userNameLabel,*myBadgesLabel,*myPointsLabel,*myPointsValueLabel,*myPhotosLabel;
-    UIButton *rewardsButton,*joinFriendOfWatersButton,*infoIconButton;
+    UIButton *joinFriendOfWatersButton,*infoIconButton;
     
     UIScrollView *badgesScrollView,*photosScrollView,*bgContentScrollView;
     
+    
+    
+    //===== Tabs Control
+    UIView *tabsBackground;
+    UIButton *badgesButton,*pointsButton,*rewardsButton,*photosButton;
+    UIButton *badgesIcon,*pointsIcon,*rewardsIcon,*photosIcon;
+    UILabel *badgesLabel,*pointsLabel,*rewardsLabel,*photosLabel;
+    
+    
+    //===== Badges Controls
+    UIView *badgesBackgroundView;
+    
+    
+    //===== Rewards Controls
+    UITableView *rewardsListingTableView;
+    NSArray *rewardsDataSource;
+    
+    //===== Points Controls
+    UITableView *pointsTableView;
+    NSArray *pointsDataSource;
+    
+    //===== Photos Controls
+    UIView *photosBackgroundView;
+
     
     //*************** Demo App Variables
     UIImageView *bgImageView;
     UIButton *rewardsDetailButton;
 }
+//@property (nonatomic, strong) UITabBarController *tabBarController;
+
 
 @end

@@ -12,6 +12,11 @@
 #import <netinet/in.h>
 #import <UIKit/UIKit.h>
 #import "ViewControllerHelper.h"
+#import "ApiClass.h"
+#import "ASIHTTPRequest.h"
+#import "ASIFormDataRequest.h"
+#import "ASINetworkQueue.h"
+#import "JSON.h"
 
 @interface CommonFunctions : NSObject
 
@@ -22,5 +27,12 @@
 + (BOOL) characterSet2Found:(NSString *) text;
 + (void) showAlertView:(id)dele title:(NSString*)alertTitle msg:(NSString*)alertMessage cancel:(NSString *)cancelTitle otherButton:(NSString *)otherButtonTitles, ...;
 + (void) showActionSheet:(id)dele containerView:(UIView *) view title:(NSString*)sheetTitle msg:(NSString*)alertMessage cancel:(NSString *)cancelTitle tag:(NSInteger)tagValue destructive:(NSString *)destructiveButtonTitle otherButton:(NSString *)otherButtonTitles, ...;
+
+
+# pragma mark - Server GET & POST Methods
++ (void) getDataFromServer:(NSString*)method parameters:(NSArray*)keys values:(NSArray*)values withClienrSecret:(NSString*)clienSec;
++ (void) postDataToServer:(NSString*)method parameters:(NSArray*)keys values:(NSArray*)values withClienrSecret:(NSString*)clienSec avatar:(NSData*)imageData;
+
++ (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data;
 
 @end

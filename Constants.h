@@ -46,6 +46,15 @@
 
 
 
+
+#if DEBUG == 0
+#define DebugLog(...)
+#elif DEBUG == 1
+#define DebugLog(...) NSLog(__VA_ARGS__)
+#endif
+
+
+
 #define SIDE_MENU_CELL_FONT @"Opensans"
 #define BEBAS_NEUE_FONT @"BebasNeue"
 #define OPEN_SANS_REGULAR @"Opensans"
@@ -56,6 +65,15 @@
 #define ROBOTO_REGULAR @"Roboto-Regular"
 #define ROBOTO_MEDIUM @"Roboto-Medium"
 #define PLACE_NAME @"name"
+
+
+#ifndef RGB
+#define RGB(R,G,B) [UIColor colorWithRed:R/255.0f green:G/255.0f blue:B/255.0f alpha:1.0f]
+#endif
+
+#ifndef RGBALPHA
+#define RGBALPHA(R,G,B,A) [UIColor colorWithRed:R/255.0f green:G/255.0f blue:B/255.0f alpha:A]
+#endif
 
 
 

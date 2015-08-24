@@ -700,7 +700,7 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
     int count = (self.leftController ? 1 : 0) + (self.rightController ? 1 : 0) + (self.topController ? 1 : 0) + (self.bottomController ? 1 : 0);
     
     if (count > 1) {
-        NSLog(@"IIViewDeckController: warning: setting maxLedge with more than one side controllers. Value will be ignored.");
+        DebugLog(@"IIViewDeckController: warning: setting maxLedge with more than one side controllers. Value will be ignored.");
         return;
     }
     
@@ -843,7 +843,7 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
     }
     else if (_willAppearShouldArrangeViewsAfterRotation != UIDeviceOrientationUnknown) {
         for (NSString* key in [self.view.layer animationKeys]) {
-            NSLog(@"%@ %f", [self.view.layer animationForKey:key], [self.view.layer animationForKey:key].duration);
+            DebugLog(@"%@ %f", [self.view.layer animationForKey:key], [self.view.layer animationForKey:key].duration);
         }
         
         [self willRotateToInterfaceOrientation:self.interfaceOrientation duration:0];
