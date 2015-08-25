@@ -15,7 +15,7 @@
 @end
 
 @implementation ABCWaterDetailViewController
-
+@synthesize imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString;
 
 
 //*************** Demo App UI
@@ -91,10 +91,13 @@
         h2 = (h1*self.view.bounds.size.width)/w1;
     }
     
-//    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 100)];
-    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
-    [eventImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abc_water_temp22.jpg",appDelegate.RESOURCE_FOLDER_PATH]]];
+
+    
+    eventImageView = [[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
+    [eventImageView setImageURL:[NSURL URLWithString:imageUrl]];
+    eventImageView.showActivityIndicator = YES;
     [bgScrollView addSubview:eventImageView];
+
     
     UIImageView *certifiedLogo = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 59, 25)];
     [certifiedLogo setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwater_certified_logo.png",appDelegate.RESOURCE_FOLDER_PATH]]];
@@ -120,14 +123,26 @@
     abcWaterTitle.backgroundColor = [UIColor whiteColor];
     abcWaterTitle.textAlignment = NSTextAlignmentLeft;
     abcWaterTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    abcWaterTitle.text = @"Lorong halus Wetland";
+    abcWaterTitle.text = titleString;
     [directionButton addSubview:abcWaterTitle];
+    
+    
+    //----- Change Current Location With Either Current Location Value or Default Location Value
+    
+    CLLocationCoordinate2D currentLocation;
+    CLLocationCoordinate2D desinationLocation;
+    
+    currentLocation.latitude = 1.2912500;
+    currentLocation.longitude = 103.7870230;
+    
+    desinationLocation.latitude = latValue;
+    desinationLocation.longitude = longValue;
     
     distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
     distanceLabel.backgroundColor = [UIColor clearColor];
     distanceLabel.textAlignment = NSTextAlignmentRight;
     distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    distanceLabel.text = @"1.03 KM";
+    distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
     [directionButton addSubview:distanceLabel];
     
     arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, 12.5, 15, 15)];
@@ -154,32 +169,20 @@
     
     
     
-//    NSString *descTempString = [NSString stringWithFormat:@"Located in the central part of Singapore, Sembawang park features an attractive open waterway with softened banks using plantings which allow for seamless integration with adjacent developments.\n\n A short stretch of the open waterqay is decked over to create an interesting water cascade and a shallow stream.\n\n There are also urban wetlands which help cleanse the water and provide an excellent oppurtunity for outdoor learning for the nearby schools."];
-    
     descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, eventInfoLabel.frame.origin.y+eventInfoLabel.bounds.size.height, bgScrollView.bounds.size.width, 40)];
     descriptionLabel.backgroundColor = [UIColor whiteColor];
-//    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
-    descriptionLabel.text = [NSString stringWithFormat:@"Located in the central part of Singapore, Sembawang park features an attractive open waterway with softened banks using plantings which allow for seamless integration with adjacent developments.\n\n A short stretch of the open waterqay is decked over to create an interesting water cascade and a shallow stream.\n\n There are also urban wetlands which help cleanse the water and provide an excellent oppurtunity for outdoor learning for the nearby schools."];
+    descriptionLabel.text = [NSString stringWithFormat:@"%@",descriptionString];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
     descriptionLabel.numberOfLines = 0;
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    //    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"%@",[dataDict objectForKey:@"description"]] sizeWithFont:descriptionLabel.font
-    //                                                                                                              constrainedToSize:descriptionLabel.frame.size
-    //                                                                                                                  lineBreakMode:NSLineBreakByWordWrapping];
-    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"Located in the central part of Singapore, Sembawang park features an attractive open waterway with softened banks using plantings which allow for seamless integration with adjacent developments.\n\n A short stretch of the open waterqay is decked over to create an interesting water cascade and a shallow stream.\n\n There are also urban wetlands which help cleanse the water and provide an excellent oppurtunity for outdoor learning for the nearby schools."]
-                                           sizeWithFont:descriptionLabel.font
-                                           constrainedToSize:descriptionLabel.frame.size
-                                           lineBreakMode:NSLineBreakByWordWrapping];
-    
     
     CGRect newDescriptionLabelFrame = descriptionLabel.frame;
-    newDescriptionLabelFrame.size.height = expectedDescriptionLabelSize.height;
+    newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width];//expectedDescriptionLabelSize.height;
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
-    [descriptionLabel sizeToFit];
     
-    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+100);
+    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+50);
 }
 
 
@@ -253,6 +256,9 @@
     contactUsButton.frame = CGRectMake(((self.view.bounds.size.width/3)*2+(self.view.bounds.size.width/3-30)/2), bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+12, 25, 25);
     [contactUsButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_call_blue.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [self.view addSubview:contactUsButton];
+    if ([phoneNoString length]==0) {
+        contactUsButton.userInteractionEnabled = NO;
+    }
     
     contactUsLabel = [[UILabel alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/3)*2, contactUsButton.frame.origin.y+contactUsButton.bounds.size.height+6, self.view.bounds.size.width/3, 15)];
     contactUsLabel.backgroundColor = [UIColor clearColor];

@@ -15,7 +15,7 @@
 #import "JSON.h"
 
 
-@interface ABCWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,ASIHTTPRequestDelegate> {
+@interface ABCWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,ASIHTTPRequestDelegate,UISearchBarDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -28,9 +28,11 @@
     UIView *segmentedControlBackground;
     UIScrollView *abcWatersScrollView;
     
-    UITextField *searchField;
-    BOOL isShowingFilter,isShowingSearchBar;
+    UISearchBar *listinSearchBar;
+    BOOL isShowingFilter,isShowingSearchBar,isFiltered;
     NSInteger selectedFilterIndex;
+    
+    NSMutableArray *filteredDataSource;
 }
 
 @end

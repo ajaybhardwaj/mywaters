@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "CustomButtons.h"
 #import "UILabel + Extension.h"
+#import "AsyncImageView.h"
 
 @interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate> {
     
@@ -35,10 +36,14 @@
     UILabel *bookingFormLabel,*arViewLabel,*contactUsLabel;
     
     UIView *descLabelBg;
-    UIImageView *eventImageView,*directionIcon,*infoIcon,*arrowIcon;
+    AsyncImageView *eventImageView;
+    UIImageView *directionIcon,*infoIcon,*arrowIcon;
     UILabel *eventInfoLabel,*abcWaterTitle,*distanceLabel;
     
     UILabel___Extension *descriptionLabel;
 }
+
+@property (nonatomic, strong) NSString *imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString;
+@property (nonatomic, assign) double latValue,longValue;
 
 @end

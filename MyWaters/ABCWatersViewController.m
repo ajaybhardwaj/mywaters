@@ -23,7 +23,7 @@
     self.view.alpha = 0.5;
     self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
-    [searchField resignFirstResponder];
+    [listinSearchBar resignFirstResponder];
 }
 
 
@@ -74,7 +74,7 @@
     
     [UIView beginAnimations:@"searchbar" context:NULL];
     [UIView setAnimationDuration:0.5];
-    CGPoint pos = searchField.center;
+    CGPoint pos = listinSearchBar.center;
     
     if (isShowingSearchBar) {
         isShowingSearchBar = NO;
@@ -83,7 +83,7 @@
         listTabeView.alpha = 1.0;
         listTabeView.userInteractionEnabled = YES;
         
-        [searchField resignFirstResponder];
+        [listinSearchBar resignFirstResponder];
     }
     else {
         isShowingSearchBar = YES;
@@ -93,18 +93,22 @@
             [self animateFilterTable];
         }
         
-        listTabeView.alpha = 0.5;
-        listTabeView.userInteractionEnabled = NO;
+        //        listTabeView.alpha = 0.5;
+        //        listTabeView.userInteractionEnabled = NO;
         
-        [searchField becomeFirstResponder];
+        [listinSearchBar becomeFirstResponder];
     }
-    searchField.center = pos;
+    listinSearchBar.center = pos;
     [UIView commitAnimations];
 }
 
 //*************** Method To Animate Filter Table
 
 - (void) animateFilterTable {
+    
+    listinSearchBar.text = @"";
+    isFiltered = NO;
+    [listTabeView reloadData];
     
     [UIView beginAnimations:@"filterTable" context:NULL];
     [UIView setAnimationDuration:0.5];
@@ -141,7 +145,16 @@
     UIButton *button = (id) sender;
     
     ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
-    [self.navigationController pushViewController:viewObj animated:NO];
+    
+    viewObj.titleString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"siteName"];
+    viewObj.descriptionString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"description"];
+    viewObj.latValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLatitude"] doubleValue];
+    viewObj.longValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLongitude"] doubleValue];
+    viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"phoneNo"];
+    viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"address"];
+    viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"]];
+    
+    [self.navigationController pushViewController:viewObj animated:YES];
 }
 
 
@@ -174,7 +187,7 @@
             UIButton *gridButton = [UIButton buttonWithType:UIButtonTypeCustom];
             gridButton.frame = CGRectMake(0, 0, gridImage.bounds.size.width, gridImage.bounds.size.height);
             gridButton.tag = i;
-            [gridButton addTarget:self action:@selector(moveToDetailsView) forControlEvents:UIControlEventTouchUpInside];
+            [gridButton addTarget:self action:@selector(moveToDetailsView:) forControlEvents:UIControlEventTouchUpInside];
             [gridImage addSubview:gridButton];
             
             
@@ -189,17 +202,17 @@
             
             gridCount = gridCount + 1;
             if (gridCount!=3) {
-                xAxis = xAxis + (segmentedControlBackground.bounds.size.width)/3;
+                xAxis = xAxis + (segmentedControlBackground.bounds.size.width-2)/3;
             }
             else {
                 xAxis = 0;
                 gridCount = 0;
-                yAxis = yAxis +(segmentedControlBackground.bounds.size.width-2)/3;
+                yAxis = yAxis +(segmentedControlBackground.bounds.size.width+2)/3;
             }
         }
     }
     
-    [abcWatersScrollView setContentSize:CGSizeMake(self.view.bounds.size.width, yAxis+(segmentedControlBackground.bounds.size.width-2)/3+(segmentedControlBackground.bounds.size.width-2)/3)];
+    [abcWatersScrollView setContentSize:CGSizeMake(self.view.bounds.size.width, yAxis+segmentedControlBackground.bounds.size.width/3+65)];
 }
 
 
@@ -220,11 +233,12 @@
                 abcWatersPageCount = 0;
             }
             else {
+                abcWatersPageCount = abcWatersPageCount + 1;
                 if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
                     [appDelegate.ABC_WATERS_LISTING_ARRAY setArray:tempArray];
                 }
                 else {
-                    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=abcWatersTotalCount) {
+                    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
                         for (int i=0; i<tempArray.count; i++) {
                             [appDelegate.ABC_WATERS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
                         }
@@ -236,7 +250,7 @@
         [self createGridView];
         //[listTabeView reloadData];
     }
-    
+    //    DebugLog(@"%@",responseString);
     // Use when fetching binary data
     //    NSData *responseData = [request responseData];
 }
@@ -244,7 +258,36 @@
 - (void) requestFailed:(ASIHTTPRequest *)request {
     
     NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
     abcWatersPageCount = 0;
+}
+
+
+# pragma mark - UISearchBarDelegate Methods
+
+-(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)text
+{
+    if(text.length == 0)
+    {
+        isFiltered = FALSE;
+    }
+    else
+    {
+        isFiltered = true;
+        filteredDataSource = [[NSMutableArray alloc] init];
+        
+        for (int i=0; i<appDelegate.ABC_WATERS_LISTING_ARRAY.count; i++) {
+            
+            NSRange nameRange = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"siteName"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            NSRange descriptionRange = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"description"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            if(nameRange.location != NSNotFound || descriptionRange.location != NSNotFound)
+            {
+                [filteredDataSource addObject:[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i]];
+            }
+        }
+    }
+    
+    [listTabeView reloadData];
 }
 
 
@@ -281,8 +324,57 @@
         [self animateFilterTable];
     }
     else {
+        
         ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:NO];
+        
+        if (isFiltered) {
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"] != (id)[NSNull null])
+            viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
+            viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+            viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+            viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
+            viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
+            viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null])
+            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
+        }
+        else {
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"] != (id)[NSNull null])
+            viewObj.titleString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
+            viewObj.descriptionString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+            viewObj.latValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+            viewObj.longValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
+            viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
+            viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null])
+            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+        }
+        
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
 
@@ -293,7 +385,10 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (tableView==listTabeView) {
-        if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
+        if (isFiltered) {
+            return filteredDataSource.count;
+        }
+        else {
             return appDelegate.ABC_WATERS_LISTING_ARRAY.count;
         }
     }
@@ -331,23 +426,33 @@
     
     else {
         
-        if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
-            
-            AsyncImageView *cellImage = [[AsyncImageView alloc] initWithFrame:CGRectMake(5, 10, 60, 60)];
-            NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
-            [cellImage setImageURL:[NSURL URLWithString:imageURLString]];
-            cellImage.showActivityIndicator = YES;
-            [cell.contentView addSubview:cellImage];
-            
-            UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 40)];
-            titleLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"]];
-            titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-            titleLabel.backgroundColor = [UIColor clearColor];
-            titleLabel.numberOfLines = 0;
-            [cell.contentView addSubview:titleLabel];
-            
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        AsyncImageView *cellImage = [[AsyncImageView alloc] initWithFrame:CGRectMake(5, 10, 60, 60)];
+        NSString *imageURLString;
+        if (isFiltered) {
+            imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
         }
+        else {
+            imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+        }
+        [cellImage setImageURL:[NSURL URLWithString:imageURLString]];
+        cellImage.showActivityIndicator = YES;
+        [cell.contentView addSubview:cellImage];
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 40)];
+        if (isFiltered) {
+            titleLabel.text = [NSString stringWithFormat:@"%@",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"]];
+        }
+        else {
+            titleLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"]];
+        }
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.numberOfLines = 0;
+        [cell.contentView addSubview:titleLabel];
+        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
         
         UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, listTabeView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
@@ -368,6 +473,7 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
+    self.view.backgroundColor = RGB(247, 247, 247);
     
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
@@ -437,9 +543,31 @@
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
     abcWatersPageCount = 0;
+    //
+    //    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
+    //    searchField.textColor = RGB(35, 35, 35);
+    //    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+    //    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    //    searchField.leftViewMode = UITextFieldViewModeAlways;
+    //    searchField.borderStyle = UITextBorderStyleNone;
+    //    searchField.textAlignment=NSTextAlignmentLeft;
+    //    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    //    searchField.placeholder = @"Search...";
+    //    [self.view addSubview:searchField];
+    //    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    //    searchField.delegate = self;
+    //    searchField.keyboardType = UIKeyboardTypeEmailAddress;
+    //    searchField.returnKeyType = UIReturnKeyDone;
+    //    searchField.backgroundColor = [UIColor whiteColor];
+    //    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     
-    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
-    searchField.textColor = RGB(35, 35, 35);
+    
+    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
+    listinSearchBar.delegate = self;
+    listinSearchBar.placeholder = @"Search...";
+    [self.view addSubview:listinSearchBar];
+    
+    UITextField *searchField=[((UIView *)[listinSearchBar.subviews objectAtIndex:0]).subviews lastObject];;//Changed this line in ios 7
     searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
     searchField.leftViewMode = UITextFieldViewModeAlways;
@@ -447,15 +575,14 @@
     searchField.textAlignment=NSTextAlignmentLeft;
     [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
     searchField.placeholder = @"Search...";
-    [self.view addSubview:searchField];
     searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    searchField.delegate = self;
-    searchField.keyboardType = UIKeyboardTypeEmailAddress;
     searchField.returnKeyType = UIReturnKeyDone;
     searchField.backgroundColor = [UIColor whiteColor];
     [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     
-    [CommonFunctions grabGetRequest:ABC_WATERS_LISTING delegate:self isNSData:NO];
+    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
+        [CommonFunctions grabGetRequest:ABC_WATERS_LISTING delegate:self isNSData:NO];
+    }
 }
 
 

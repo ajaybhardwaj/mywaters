@@ -27,12 +27,13 @@
 + (BOOL) characterSet2Found:(NSString *) text;
 + (void) showAlertView:(id)dele title:(NSString*)alertTitle msg:(NSString*)alertMessage cancel:(NSString *)cancelTitle otherButton:(NSString *)otherButtonTitles, ...;
 + (void) showActionSheet:(id)dele containerView:(UIView *) view title:(NSString*)sheetTitle msg:(NSString*)alertMessage cancel:(NSString *)cancelTitle tag:(NSInteger)tagValue destructive:(NSString *)destructiveButtonTitle otherButton:(NSString *)otherButtonTitles, ...;
++ (CGFloat)heightForText:(NSString*)text font:(UIFont*)font withinWidth:(CGFloat)width;
++ (NSString*) kilometersfromPlace:(CLLocationCoordinate2D)from andToPlace:(CLLocationCoordinate2D)to;
++ (NSString *)dateForRFC3339DateTimeString:(NSString *)rfc3339DateTimeString;
+
 
 
 # pragma mark - Server GET & POST Methods
-+ (void) getDataFromServer:(NSString*)method parameters:(NSArray*)keys values:(NSArray*)values withClienrSecret:(NSString*)clienSec;
-+ (void) postDataToServer:(NSString*)method parameters:(NSArray*)keys values:(NSArray*)values withClienrSecret:(NSString*)clienSec avatar:(NSData*)imageData;
-
 + (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data;
 
 @end

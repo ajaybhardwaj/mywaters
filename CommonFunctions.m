@@ -332,6 +332,27 @@
 
 
 
+//*************** Method For Converting RFC Date String To NSDate
+
++ (NSString *)dateForRFC3339DateTimeString:(NSString *)rfc3339DateTimeString {
+    
+    NSDateFormatter *rfc3339DateFormatter = [[NSDateFormatter alloc] init];
+    
+    [rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'"];
+    [rfc3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    
+    // Convert the RFC 3339 date time string to an NSDate.
+    NSDate *result = [rfc3339DateFormatter dateFromString:rfc3339DateTimeString];
+    [rfc3339DateFormatter setDateFormat:@"dd MMM yyyy"];
+    
+    NSString *resultStrig = [rfc3339DateFormatter stringFromDate:result];
+    return resultStrig;
+}
+
+
+
+//*************** Method For ASIHTTPRequest
+
 + (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data {
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BASE_URL,apiName]];
@@ -342,6 +363,41 @@
     [request startAsynchronous];
 }
 
+
+
+//*************** Method For Calculating Distance Between Two Points
+
++ (NSString*) kilometersfromPlace:(CLLocationCoordinate2D)from andToPlace:(CLLocationCoordinate2D)to  {
+    
+    CLLocation *userloc = [[CLLocation alloc]initWithLatitude:from.latitude longitude:from.longitude];
+    CLLocation *dest = [[CLLocation alloc]initWithLatitude:to.latitude longitude:to.longitude];
+    
+    CLLocationDistance dist = [userloc distanceFromLocation:dest]/1000;
+    
+    //NSLog(@"%f",dist);
+    NSString *distance = [NSString stringWithFormat:@"%.2f",dist];
+    
+    return distance;
+    
+}
+
+
+//*************** Method For Dynamic UILabel Height
+
++ (CGFloat)heightForText:(NSString*)text font:(UIFont*)font withinWidth:(CGFloat)width {
+    
+    CGSize constraint = CGSizeMake(width, 20000.0f);
+    CGSize size;
+    
+    CGSize boundingBox = [text boundingRectWithSize:constraint
+                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                         attributes:@{NSFontAttributeName:font}
+                                            context:nil].size;
+    
+    size = CGSizeMake(ceil(boundingBox.width), ceil(boundingBox.height));
+    
+    return size.height+60;
+}
 
 
 //*************** Method For Checking Valid Email

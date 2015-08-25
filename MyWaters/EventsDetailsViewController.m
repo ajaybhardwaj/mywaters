@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 
 @implementation EventsDetailsViewController
-@synthesize descriptionTempString;
+@synthesize imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,websiteString;
 
 
 
@@ -87,9 +87,15 @@
         h2 = (h1*self.view.bounds.size.width)/w1;
     }
     
-    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 179)];
-    eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/pub_temp_event22.jpg",appDelegate.RESOURCE_FOLDER_PATH]];
+//    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 179)];
+//    eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/pub_temp_event22.jpg",appDelegate.RESOURCE_FOLDER_PATH]];
+//    [bgScrollView addSubview:eventImageView];
+    
+    eventImageView = [[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
+    [eventImageView setImageURL:[NSURL URLWithString:imageUrl]];
+    eventImageView.showActivityIndicator = YES;
     [bgScrollView addSubview:eventImageView];
+
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     directionButton.frame = CGRectMake(0, eventImageView.frame.origin.y+eventImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
@@ -105,14 +111,14 @@
     eventTitle.backgroundColor = [UIColor whiteColor];
     eventTitle.textAlignment = NSTextAlignmentLeft;
     eventTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    eventTitle.text = @"Geographical Investigation";
+    eventTitle.text = titleString;
     [directionButton addSubview:eventTitle];
     
     distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
     distanceLabel.backgroundColor = [UIColor clearColor];
     distanceLabel.textAlignment = NSTextAlignmentRight;
     distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    distanceLabel.text = @"1.03 KM";
+    distanceLabel.text = @"";//@"1.03 KM";
     [directionButton addSubview:distanceLabel];
     
     arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, 12.5, 15, 15)];
@@ -136,32 +142,22 @@
     infoIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 19, 19)];
     [infoIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [eventInfoLabel addSubview:infoIcon];
-    
+
     
     descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, eventInfoLabel.frame.origin.y+eventInfoLabel.bounds.size.height, bgScrollView.bounds.size.width, 40)];
     descriptionLabel.backgroundColor = [UIColor whiteColor];
-//    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
-    descriptionLabel.text = [NSString stringWithFormat:@"\n%@",descriptionTempString];
+    descriptionLabel.text = [NSString stringWithFormat:@"%@",descriptionString];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
     descriptionLabel.numberOfLines = 0;
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
-//    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"%@",[dataDict objectForKey:@"description"]] sizeWithFont:descriptionLabel.font
-//                                                                                                              constrainedToSize:descriptionLabel.frame.size
-//                                                                                                                  lineBreakMode:NSLineBreakByWordWrapping];
-    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"\n%@",descriptionTempString]
-                                                                                                               sizeWithFont:descriptionLabel.font
-                                                                                                               constrainedToSize:descriptionLabel.frame.size
-                                                                                                                   lineBreakMode:NSLineBreakByWordWrapping];
-    
     
     CGRect newDescriptionLabelFrame = descriptionLabel.frame;
-    newDescriptionLabelFrame.size.height = expectedDescriptionLabelSize.height;
+    newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width];//expectedDescriptionLabelSize.height;
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
-//    [descriptionLabel sizeToFit];
     
-    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+100);
+    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+50);
 }
 
 

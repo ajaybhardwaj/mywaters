@@ -18,14 +18,13 @@
 @synthesize isNotEventController;
 
 
-
 //*************** Method To Animate Search Bar
 
 - (void) animateSearchBar {
-
+    
     [UIView beginAnimations:@"searchbar" context:NULL];
     [UIView setAnimationDuration:0.5];
-    CGPoint pos = searchField.center;
+    CGPoint pos = listinSearchBar.center;
     
     if (isShowingSearchBar) {
         isShowingSearchBar = NO;
@@ -34,7 +33,7 @@
         eventsListingTableView.alpha = 1.0;
         eventsListingTableView.userInteractionEnabled = YES;
         
-        [searchField resignFirstResponder];
+        [listinSearchBar resignFirstResponder];
     }
     else {
         isShowingSearchBar = YES;
@@ -44,18 +43,22 @@
             [self animateFilterTable];
         }
         
-        eventsListingTableView.alpha = 0.5;
-//        eventsListingTableView.userInteractionEnabled = NO;
+        //        eventsListingTableView.alpha = 0.5;
+        //        eventsListingTableView.userInteractionEnabled = NO;
         
-        [searchField becomeFirstResponder];
+        [listinSearchBar becomeFirstResponder];
     }
-    searchField.center = pos;
+    listinSearchBar.center = pos;
     [UIView commitAnimations];
 }
 
 //*************** Method To Animate Filter Table
 
 - (void) animateFilterTable {
+    
+    listinSearchBar.text = @"";
+    isFiltered = NO;
+    [eventsListingTableView reloadData];
     
     [UIView beginAnimations:@"filterTable" context:NULL];
     [UIView setAnimationDuration:0.5];
@@ -93,7 +96,7 @@
     self.view.alpha = 0.5;
     self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
-    [searchField resignFirstResponder];
+    [listinSearchBar resignFirstResponder];
 }
 
 
@@ -160,6 +163,35 @@
 
 
 
+# pragma mark - UISearchBarDelegate Methods
+
+-(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)text {
+    
+    if(text.length == 0)
+    {
+        isFiltered = FALSE;
+    }
+    else
+    {
+        isFiltered = true;
+        filteredDataSource = [[NSMutableArray alloc] init];
+        
+        for (int i=0; i<appDelegate.EVENTS_LISTING_ARRAY.count; i++) {
+            
+            NSRange nameRange = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"title"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            NSRange descriptionRange = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"description"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            if(nameRange.location != NSNotFound || descriptionRange.location != NSNotFound)
+            {
+                [filteredDataSource addObject:[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:i]];
+            }
+        }
+    }
+    
+    [eventsListingTableView reloadData];
+}
+
+
+
 # pragma mark - UITextFieldDelegate Methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -168,6 +200,54 @@
     return YES;
 }
 
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    
+    if ([request.name localizedCaseInsensitiveCompare:EVENTS_LISTING] == NSOrderedSame) {
+        if ([[[responseString JSONValue] objectForKey:SERVER_ERRORCODE] intValue] == REQUEST_SUCCESS) {
+            
+            NSArray *tempArray = [[[responseString JSONValue] objectForKey:@"data"] objectForKey:@"events"];
+            eventsPageCount = [[[[responseString JSONValue] objectForKey:@"data"] objectForKey:@"total"] intValue];
+            
+            if (tempArray.count==0) {
+                eventsPageCount = 0;
+            }
+            else {
+                eventsPageCount = eventsPageCount + 1;
+                if (appDelegate.EVENTS_LISTING_ARRAY.count==0) {
+                    [appDelegate.EVENTS_LISTING_ARRAY setArray:tempArray];
+                }
+                else {
+                    if (appDelegate.EVENTS_LISTING_ARRAY.count!=0) {
+                        for (int i=0; i<tempArray.count; i++) {
+                            [appDelegate.EVENTS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
+                        }
+                    }
+                }
+            }
+        }
+        
+        [eventsListingTableView reloadData];
+    }
+//    DebugLog(@"%@",responseString);
+    DebugLog(@"%ld",appDelegate.EVENTS_LISTING_ARRAY.count);
+    DebugLog(@"%@",appDelegate.EVENTS_LISTING_ARRAY);
+    // Use when fetching binary data
+    //    NSData *responseData = [request responseData];
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    eventsPageCount = 0;
+}
 
 
 # pragma mark - UITableViewDelegate Methods
@@ -200,9 +280,57 @@
         [self animateFilterTable];
     }
     else if (tableView==eventsListingTableView) {
+        
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
         EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
-        viewObj.descriptionTempString = [eventsTableDataSource objectAtIndex:(indexPath.row*5)+4];
+        
+        if (isFiltered) {
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
+            viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
+            viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+                viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+                viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
+            viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
+            viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null])
+            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
+        }
+        else {
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
+            viewObj.titleString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
+            viewObj.descriptionString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+            viewObj.latValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+            viewObj.longValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
+            viewObj.phoneNoString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
+            viewObj.addressString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null])
+            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+        }
+        
         [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
@@ -213,8 +341,12 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (tableView==eventsListingTableView) {
-        //        return eventsTableDataSource.count;
-        return 5;
+        if (isFiltered) {
+            return filteredDataSource.count;
+        }
+        else {
+            return appDelegate.EVENTS_LISTING_ARRAY.count;
+        }
     }
     else if (tableView==filterTableView) {
         return filtersArray.count;
@@ -232,77 +364,80 @@
         
         cell.backgroundColor = [UIColor blackColor];//RGB(247, 247, 247);
         
-//        if (indexPath.row==3) {
-//            searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, filterTableView.bounds.size.width, 40)];
-//            searchField.textColor = RGB(35, 35, 35);
-//            searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-//            searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-//            searchField.leftViewMode = UITextFieldViewModeAlways;
-//            searchField.borderStyle = UITextBorderStyleNone;
-//            searchField.textAlignment=NSTextAlignmentLeft;
-//            [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-//            searchField.placeholder=@"Search...";
-//            [cell.contentView addSubview:searchField];
-//            searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-//            searchField.delegate = self;
-//            searchField.keyboardType = UIKeyboardTypeEmailAddress;
-//            searchField.backgroundColor = [UIColor whiteColor];
-//            searchField.returnKeyType = UIReturnKeyNext;
-//            [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-//        }
-//        else {
-            UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, filterTableView.bounds.size.width-10, cell.bounds.size.height)];
-            titleLabel.text = [filtersArray objectAtIndex:indexPath.row];
-            titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-            titleLabel.backgroundColor = [UIColor clearColor];
-            titleLabel.textColor = [UIColor whiteColor];
-            [cell.contentView addSubview:titleLabel];
-//        }
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, filterTableView.bounds.size.width-10, cell.bounds.size.height)];
+        titleLabel.text = [filtersArray objectAtIndex:indexPath.row];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.textColor = [UIColor whiteColor];
+        [cell.contentView addSubview:titleLabel];
         
         if (indexPath.row==selectedFilterIndex) {
-                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
         
         UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
-
+        
     }
     else if (tableView==eventsListingTableView) {
         
-        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 15, 70, 70)];
-//        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/default_no_image.png",appDelegate.RESOURCE_FOLDER_PATH]];
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
+        AsyncImageView *cellImage = [[AsyncImageView alloc] initWithFrame:CGRectMake(5, 15, 70, 70)];
+        NSString *imageURLString;
+        if (isFiltered) {
+            imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
+        }
+        else {
+            imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+        }
+        [cellImage setImageURL:[NSURL URLWithString:imageURLString]];
+        cellImage.showActivityIndicator = YES;
         [cell.contentView addSubview:cellImage];
         
+        
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, eventsListingTableView.bounds.size.width-100, 40)];
-        //        titleLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
-        titleLabel.text = [NSString stringWithFormat:@"%@",[eventsTableDataSource objectAtIndex:(indexPath.row*5)]];
+        if (isFiltered) {
+            titleLabel.text = [NSString stringWithFormat:@"%@",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"]];
+        }
+        else {
+            titleLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"]];
+        }
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.numberOfLines = 0;
         [cell.contentView addSubview:titleLabel];
         
         
+        NSString *startDateString,*endDateString;
+        if (isFiltered) {
+            startDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"];
+            endDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"];
+        }
+        else {
+            startDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"];
+            endDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"];
+        }
+        
+        startDateString = [CommonFunctions dateForRFC3339DateTimeString:startDateString];
+        endDateString = [CommonFunctions dateForRFC3339DateTimeString:endDateString];
+        
+        
         UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, 150, 15)];
-        //        dateLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventDate"];
-        dateLabel.text = [NSString stringWithFormat:@"%@",[eventsTableDataSource objectAtIndex:(indexPath.row*5)+2]];
+        dateLabel.text = [NSString stringWithFormat:@"%@ - %@",startDateString,endDateString];
         dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
         dateLabel.backgroundColor = [UIColor clearColor];
         dateLabel.textColor = [UIColor darkGrayColor];
         dateLabel.numberOfLines = 0;
         [cell.contentView addSubview:dateLabel];
         
-//        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(eventsListingTableView.bounds.size.width-100, 80, 90, 20)];
-        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 65, 150, 15)];
-        distanceLabel.text = [NSString stringWithFormat:@"@ %@",[eventsTableDataSource objectAtIndex:(indexPath.row*5)+3]];
-//        distanceLabel.text = @"10 KM";
-        distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:10.5];
-        distanceLabel.backgroundColor = [UIColor clearColor];
-        distanceLabel.textColor = [UIColor darkGrayColor];
-        distanceLabel.numberOfLines = 0;
-        distanceLabel.textAlignment = NSTextAlignmentLeft;
-        [cell.contentView addSubview:distanceLabel];
+        UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 65, 150, 15)];
+        timeLabel.text = [NSString stringWithFormat:@"@ %@",@"NA"];
+        timeLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:10.5];
+        timeLabel.backgroundColor = [UIColor clearColor];
+        timeLabel.textColor = [UIColor darkGrayColor];
+        timeLabel.numberOfLines = 0;
+        timeLabel.textAlignment = NSTextAlignmentLeft;
+        [cell.contentView addSubview:timeLabel];
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
@@ -323,6 +458,7 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    eventsPageCount = 0;
     
     UIButton *btnSearch =  [UIButton buttonWithType:UIButtonTypeCustom];
     [btnSearch setImage:[UIImage imageNamed:@"icn_search"] forState:UIControlStateNormal];
@@ -339,18 +475,12 @@
     [rightBarButtonItems addSubview:btnfilter];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
-//    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
-
+    //    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+    
     
     self.view.backgroundColor = RGB(247, 247, 247);
     selectedFilterIndex = 0;
     
-    eventsTableDataSource = [[NSMutableArray alloc] initWithObjects:@"Fireworks Display for SEA Games 2015 - CR4",@"Kallang Basin",@"16 May2015 - 16 May 2015",@"9:00pm - 10:00pm",@"Organised by SEA Games 2015 OCC Committee.",
-                                                                    @"Mass Exercise",@"Mac Ritchie",@"21 May 2015 - 21 May 2015",@"4:30pm - 6:00pm",@"Organised by Mount Alvernia Hospital",
-                                                                    @"Cross Country",@"MacRitchie Reservoir",@"22 May 2015 - 22 May 2015",@"7:30am - 12:00pm",@"Organised by St Gabriel's Secondry School",
-                                                                    @"5 Km Reservoir Discovery Series",@"Jurong Lake",@"24 May 2015 - 24 May 2015",@"10:00am - 4:00pm",@"Organised by People's Association",
-                                                                    @"Learning Trail",@"Sengkang Floating Wetland",@"26 May 2015 - 26 May 2015",@"9:00am - 11:00am",@"Organised by Pat's Schoolhouse - Prinsep",
-                             nil];
     
     eventsListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     eventsListingTableView.delegate = self;
@@ -372,23 +502,28 @@
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Date",@"Distance",@"Name", nil];
     
-    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
-    searchField.textColor = RGB(35, 35, 35);
+    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
+    listinSearchBar.delegate = self;
+    listinSearchBar.placeholder = @"Search...";
+    [self.view addSubview:listinSearchBar];
+    
+    UITextField *searchField=[((UIView *)[listinSearchBar.subviews objectAtIndex:0]).subviews lastObject];;//Changed this line in ios 7
     searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
     searchField.leftViewMode = UITextFieldViewModeAlways;
     searchField.borderStyle = UITextBorderStyleNone;
     searchField.textAlignment=NSTextAlignmentLeft;
     [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    searchField.placeholder = @"Search by location name";
-    [self.view addSubview:searchField];
+    searchField.placeholder = @"Search...";
     searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    searchField.delegate = self;
     searchField.returnKeyType = UIReturnKeyDone;
-    searchField.keyboardType = UIKeyboardTypeEmailAddress;
     searchField.backgroundColor = [UIColor whiteColor];
     [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-
+    
+    
+    if (appDelegate.EVENTS_LISTING_ARRAY.count==0) {
+        [CommonFunctions grabGetRequest:EVENTS_LISTING delegate:self isNSData:NO];
+    }
 }
 
 
@@ -397,25 +532,25 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     
-//    if (!isNotEventController) {
+    //    if (!isNotEventController) {
     
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-//    }
-//    else {
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
+    //    }
+    //    else {
     
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
-        [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
-        
-        NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
-        [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
-        [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
-        [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-        
-        self.title = @"Events";
-        
-//        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-//        
-//    }
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+    [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+    
+    self.title = @"Events";
+    
+    //        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    //
+    //    }
 }
 
 

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "UILabel + Extension.h"
+#import "AsyncImageView.h"
 
 @interface EventsDetailsViewController : UIViewController {
     
@@ -27,12 +28,15 @@
     UILabel *callUsLabel;
     
     UIView *descLabelBg;
-    UIImageView *eventImageView,*directionIcon,*infoIcon,*arrowIcon;
+    AsyncImageView *eventImageView;
+    UIImageView *directionIcon,*infoIcon,*arrowIcon;
     UILabel *eventInfoLabel,*eventTitle,*distanceLabel;
     
     UILabel___Extension *descriptionLabel;
 }
 
-@property (nonatomic, strong) NSString *descriptionTempString;
+@property (nonatomic, strong) NSString *imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*startDateString,*endDateString,*websiteString;
+@property (nonatomic, assign) double latValue,longValue;
+
 
 @end
