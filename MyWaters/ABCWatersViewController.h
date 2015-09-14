@@ -15,7 +15,7 @@
 #import "JSON.h"
 
 
-@interface ABCWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,ASIHTTPRequestDelegate,UISearchBarDelegate> {
+@interface ABCWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,ASIHTTPRequestDelegate,UISearchBarDelegate,NSURLConnectionDelegate> {
     
     AppDelegate *appDelegate;
     

@@ -77,8 +77,7 @@
     //Top Menu Item
     
     topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -140, self.view.bounds.size.width, 45)];
-    topMenu.backgroundColor = [UIColor blackColor];//RGB(254, 254, 254);
-    //    topMenu.alpha = 0.7;
+    topMenu.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
     [self.view addSubview:topMenu];
     
     

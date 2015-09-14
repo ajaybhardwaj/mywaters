@@ -390,7 +390,7 @@
         else {
             imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
         }
-        [cellImage setImageURL:[NSURL URLWithString:imageURLString]];
+        [cellImage setImageURL:[NSURL URLWithString:imageURLString] placeholderImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_120.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         cellImage.showActivityIndicator = YES;
         [cell.contentView addSubview:cellImage];
         
@@ -505,11 +505,13 @@
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;
     listinSearchBar.placeholder = @"Search...";
+    [listinSearchBar setBackgroundImage:[[UIImage alloc] init]];
+    listinSearchBar.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:listinSearchBar];
     
     UITextField *searchField=[((UIView *)[listinSearchBar.subviews objectAtIndex:0]).subviews lastObject];;//Changed this line in ios 7
     searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)];
     searchField.leftViewMode = UITextFieldViewModeAlways;
     searchField.borderStyle = UITextBorderStyleNone;
     searchField.textAlignment=NSTextAlignmentLeft;

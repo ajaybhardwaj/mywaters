@@ -16,6 +16,248 @@
 -(void)showImageView_Show:(UIImage*)imageV;
 @end
 
+
+@implementation NSDate (category)
+- (NSDate *)shortDateFromFullDate
+{
+    // Use the user's current calendar and time zone
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSTimeZone *timeZone = [NSTimeZone systemTimeZone];
+    [calendar setTimeZone:timeZone];
+    
+    // Selectively convert the date components (year, month, day) of the input date
+    NSDateComponents *dateComps = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:self];
+    
+    // Set the time components manually
+    [dateComps setHour:0];
+    [dateComps setMinute:0];
+    [dateComps setSecond:0];
+    
+    // Convert back
+    NSDate *beginningOfDay = [calendar dateFromComponents:dateComps];
+    return beginningOfDay;
+}
+
+-(NSString *)getTimeDifference
+{
+    // -- convert seconds to hours
+    //2012-04-21 17:41:55
+    NSTimeInterval seconds = [[NSDate date] timeIntervalSinceDate:self];
+    seconds = (double)seconds;
+    double hours = seconds/(60.0 * 60.0);
+    
+    //RDLog(@"\n\n hours %f \n\n",hours);
+    if (hours>=24.0) {
+        hours = hours/24.0;
+        //return [NSString stringWithFormat:@"%d days ago",(int)hours];
+        if (((int)hours)>1)
+            return [NSString stringWithFormat:@"%d days ago",(int)hours];
+        else
+            return [NSString stringWithFormat:@"%d day ago",(int)hours];
+        
+    }
+    else {
+        // -- hours
+        if (hours>1.0) {
+            //return [NSString stringWithFormat:@"%d hours ago",(int)hours];
+            if (((int)hours)>1)
+                return [NSString stringWithFormat:@"%d hours ago",(int)hours];
+            else
+                return [NSString stringWithFormat:@"%d hour ago",(int)hours];
+            
+        }
+        else {
+            // -- minutes
+            hours = seconds/60.0;
+            //RDLog(@"\n\n seconds 1 %f \n\n",hours);
+            if (hours>=1.0) {
+                //return [NSString stringWithFormat:@"%.2f minutes ago",(float)hours];
+                if (((int)hours)>1)
+                    return [NSString stringWithFormat:@"%d minutes ago",(int)hours];
+                else
+                    return [NSString stringWithFormat:@"%d minute ago",(int)hours];
+                
+                
+            }
+            // -- seconds
+            else {
+                //RDLog(@"\n\n seconds 2 %f \n\n",seconds);
+                //return [NSString stringWithFormat:@"%.2f seconds ago",(float)seconds];
+                return [NSString stringWithFormat:@"%d seconds ago",(int)seconds];
+            }
+            
+        }
+        
+    }
+}
+
+-(NSString *)getShortStyleDate{
+    // -- convert seconds to hours
+    // -- 2012-04-21 17:41:55
+    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    //RDLog(@" Date Formatter Values %@" ,[dateFormatter stringFromDate:self]);
+    return [dateFormatter stringFromDate:self];
+}
+
+-(NSString *)userFriendlyDate{
+    
+    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateFormat:@"EEEE, MMM dd, yyyy"];
+    return [dateFormatter stringFromDate:self];
+    
+}
+
+-(NSString *)getDaysLeftStyleDate{
+    // -- convert seconds to hours
+    //2012-04-21 17:41:55
+    NSTimeInterval seconds = [self timeIntervalSinceDate:[NSDate date]];
+    seconds = (double)seconds;
+    double hours = seconds/(60.0 * 60.0);
+    
+    //RDLog(@"\n\n hours %f \n\n",hours);
+    
+    if (hours>=24.0) {
+        hours = hours/24.0;
+        if (((int)hours)>1)
+            return [NSString stringWithFormat:@"%d days left",(int)hours];
+        else
+            return [NSString stringWithFormat:@"%d day left",(int)hours];
+        
+    }
+    else{
+        return @"";
+    }
+}
+
+-(NSString *)getDayOfDate{
+    
+    NSCalendar *gregorian = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+    NSDateComponents *dateComp = [gregorian components:NSWeekdayCalendarUnit fromDate:self];
+    
+    //RDLog(@"\n\n --- [dateComp weekday] %d ",[dateComp weekday]);
+    
+    switch ([dateComp weekday]) {
+        case 1:
+            return [NSString stringWithFormat:@"Sun"];
+            break;
+        case 2:
+            return [NSString stringWithFormat:@"Mon"];
+            break;
+        case 3:
+            return [NSString stringWithFormat:@"Tue"];
+            break;
+        case 4:
+            return [NSString stringWithFormat:@"Wed"];
+            break;
+        case 5:
+            return [NSString stringWithFormat:@"Thu"];
+            break;
+        case 6:
+            return [NSString stringWithFormat:@"Fri"];
+            break;
+        case 7:
+            return [NSString stringWithFormat:@"Sat"];
+            break;
+            
+        default:
+            return @"";
+            break;
+    }
+    
+    return @"";
+    
+}
+
+-(NSString*)getCouponDate{
+    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy hh:mm a"];
+    return [dateFormatter stringFromDate:self];
+}
+
+
+-(NSString*)getTimeFromDate{
+    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateFormat:@"hh:mm a"];
+    return [dateFormatter stringFromDate:self];
+}
+
+@end
+
+#pragma mark - String Categories
+
+@interface NSString (category)
+-(NSDate *)getDateFromString;
+-(BOOL)isNull;
+-(BOOL)isNullString;
+-(NSString *)md5String;
+@end
+
+@implementation NSString (category)
+
+-(NSDate *)getDateFromString
+{
+    
+    //RDLog(@"\n\n self String %@ \n\n",self);
+    // -- 2012-04-21 17:41:55
+    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    /*Change here for other format*/
+    /*2012-04-21 -- got 10 characters so */
+    if ([self length] == 10) {
+        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+        NSDate *dateStr = [dateFormatter dateFromString:self];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        //        self = [dateFormatter stringFromDate:dateStr];
+        dateStr = [dateFormatter dateFromString:[dateFormatter stringFromDate:dateStr]];
+        //RDLog(@"\n\n self Date 000000000 %@ \n\n",dateStr);
+        return dateStr;
+        
+    }
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *dateStr = [dateFormatter dateFromString:self];
+    //RDLog(@"\n\n self Date 11111111 %@ \n\n",dateStr);
+    return dateStr;
+}
+
+-(BOOL)isNull{
+    BOOL isNull_ = FALSE;
+    if ([self isKindOfClass:[NSNull class]]) {
+        return (isNull_ = TRUE);
+    }
+    if ([self length]==0) {
+        return (isNull_ = TRUE);
+    }
+    if ([self isEqualToString:@""]) {
+        return (isNull_ = TRUE);
+    }
+    return isNull_;
+}
+
+
+-(BOOL)isNullString{
+    BOOL isNull_ = TRUE;
+    if ([self rangeOfString:@"null" options:NSCaseInsensitiveSearch].location==NSNotFound) {
+        isNull_ = FALSE;
+    }
+    return isNull_;
+}
+
+-(NSString *)md5String{
+    const char *cStr = [self UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5( cStr, strlen(cStr), result ); // This is the md5 call
+    return [NSString stringWithFormat:
+            @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+            result[0], result[1], result[2], result[3],
+            result[4], result[5], result[6], result[7],
+            result[8], result[9], result[10], result[11],
+            result[12], result[13], result[14], result[15]
+            ];
+}
+
+@end
+
+
 @implementation AuxilaryService
 
 //@synthesize sTable;

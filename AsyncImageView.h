@@ -1,15 +1,14 @@
 //
 //  AsyncImageView.h
 //
-//  Version 1.4
+//  Version 1.5.1
 //
 //  Created by Nick Lockwood on 03/04/2011.
 //  Copyright (c) 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
-//  Get the latest version from either of these locations:
+//  Get the latest version from here:
 //
-//  http://charcoaldesign.co.uk/source/cocoa#asyncimageview
 //  https://github.com/nicklockwood/AsyncImageView
 //
 //  This software is provided 'as-is', without any express or implied
@@ -31,37 +30,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-//
-//  ARC Helper
-//
-//  Version 2.1
-//
-//  Created by Nick Lockwood on 05/01/2012.
-//  Copyright 2012 Charcoal Design
-//
-//  Distributed under the permissive zlib license
-//  Get the latest version from here:
-//
-//  https://gist.github.com/1563325
-//
-
-#ifndef ah_retain
-#if __has_feature(objc_arc)
-#define ah_retain self
-#define ah_dealloc self
-#define release self
-#define autorelease self
-#else
-#define ah_retain retain
-#define ah_dealloc dealloc
-#define __bridge
-#endif
-#endif
-
-//  ARC Helper ends
-
 
 #import <UIKit/UIKit.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
 
 
 extern NSString *const AsyncImageLoadDidFinish;
@@ -86,13 +58,13 @@ extern NSString *const AsyncImageErrorKey;
 - (void)loadImageWithURL:(NSURL *)URL target:(id)target action:(SEL)action;
 - (void)loadImageWithURL:(NSURL *)URL;
 - (void)cancelLoadingURL:(NSURL *)URL target:(id)target action:(SEL)action;
-- (void)loadImageWithURL:(NSURL *)URL target:(id)target action:(SEL)action failure:(SEL) failure; //Modify by Jack
 - (void)cancelLoadingURL:(NSURL *)URL target:(id)target;
 - (void)cancelLoadingURL:(NSURL *)URL;
 - (void)cancelLoadingImagesForTarget:(id)target action:(SEL)action;
 - (void)cancelLoadingImagesForTarget:(id)target;
 - (NSURL *)URLForTarget:(id)target action:(SEL)action;
 - (NSURL *)URLForTarget:(id)target;
+
 
 @end
 
@@ -106,14 +78,20 @@ extern NSString *const AsyncImageErrorKey;
 
 @interface AsyncImageView : UIImageView
 
-@property (nonatomic, assign) BOOL showActivityIndicator;
-@property (nonatomic, assign) UIActivityIndicatorViewStyle activityIndicatorStyle;
 @property (nonatomic, assign) BOOL crossfadeImages;
-@property (nonatomic, assign) NSTimeInterval crossfadeDuration;
 
 // -- Jack's code for placeholder..
 @property (nonatomic, retain) UIImage *placeholderImage;
 - (void)setImageURL:(NSURL *)imageURL placeholderImage:(UIImage *) aPlaceholderImage;
 @property (nonatomic, retain) NSURL *retainedImageURL;
 
+
+@property (nonatomic, assign) BOOL showActivityIndicator;
+@property (nonatomic, assign) UIActivityIndicatorViewStyle activityIndicatorStyle;
+@property (nonatomic, assign) NSTimeInterval crossfadeDuration;
+
 @end
+
+
+#pragma GCC diagnostic pop
+

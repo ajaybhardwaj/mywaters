@@ -231,8 +231,26 @@
     else {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     }
+    
+    
+    UIButton *btnrefresh =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnrefresh setImage:[UIImage imageNamed:@"icn_refresh_white"] forState:UIControlStateNormal];
+    [btnrefresh addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [btnrefresh setFrame:CGRectMake(0, 0, 32, 32)];
+    
+    UIButton *btnDots =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnDots setImage:[UIImage imageNamed:@"icn_3dots"] forState:UIControlStateNormal];
+    [btnDots addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [btnDots setFrame:CGRectMake(44, 0, 32, 32)];
+    
+    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
+    [rightBarButtonItems addSubview:btnrefresh];
+    [rightBarButtonItems addSubview:btnDots];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
+    
 
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];
+//    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];
     
     
     [self createUI];
@@ -240,8 +258,7 @@
     //Top Menu Item
     
     topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -160, self.view.bounds.size.width, 45)];
-    topMenu.backgroundColor = [UIColor blackColor];
-    topMenu.alpha = 0.8;
+    topMenu.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
     [self.view addSubview:topMenu];
     
     UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2), 35)];

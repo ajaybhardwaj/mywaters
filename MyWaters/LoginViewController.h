@@ -14,8 +14,10 @@
     
     AppDelegate *appDelegate;
     
-    UIButton *facebookButton,*loginButton,*forgotPassButton,*backButton,*skipButton,*signupButton;
+    UIButton *facebookButton,*loginButton,*forgotPassButton,*skipButton,*signupButton;
     UITextField *emailField,*passField;
+    
+    UIScrollView *backgroundScrollView;
 }
 
 @end

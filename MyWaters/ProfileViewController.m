@@ -415,13 +415,13 @@
         cell.backgroundColor = RGB(247, 247, 247);
         
         UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 70, 70)];
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%d.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
         [cell.contentView addSubview:cellImage];
         
         
         UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 5, rewardsListingTableView.bounds.size.width-100, 40)];
         //        titleLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"rewardTitle"];
-        cellTitleLabel.text = [NSString stringWithFormat:@"Reward %ld",indexPath.row+1];
+        cellTitleLabel.text = [NSString stringWithFormat:@"Reward %d",indexPath.row+1];
         cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         cellTitleLabel.backgroundColor = [UIColor clearColor];
         cellTitleLabel.numberOfLines = 0;
@@ -439,7 +439,7 @@
         
         UILabel *cellPlaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 65, rewardsListingTableView.bounds.size.width-100, 35)];
         //        placeLabel = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"rewardPlace"];
-        cellPlaceLabel.text = [NSString stringWithFormat:@"Place %ld",indexPath.row+1];
+        cellPlaceLabel.text = [NSString stringWithFormat:@"Place %d",indexPath.row+1];
         cellPlaceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         cellPlaceLabel.backgroundColor = [UIColor clearColor];
         cellPlaceLabel.textColor = [UIColor lightGrayColor];
@@ -887,7 +887,7 @@
     pointsTableView.hidden = YES;
     
     // Temp Data
-    pointsDataSource = [[NSArray alloc] initWithObjects:@"You were awarded 5 points for sharing an event on facebook!",@"08 Aug 2015 at 02:10 PM",@"You redeemed an ice cream cone worth 30 points.",@"10 Aug 2015 at 11:00 AM",@"You unlocked a badge!",@"11 Aug 2015 at 04:00 PM",@"You were awarded 2 points for booking a facility!",@"12 Aug 2015 at 09:00 AM", nil];
+    pointsDataSource = [[NSArray alloc] initWithObjects:@"You were awarded 5 points for sharing an event on facebook!",@"Monday, 08 Aug 2015 @ 02:10 PM",@"You redeemed an ice cream cone worth 30 points.",@"Saturday, 10 Aug 2015 @ 11:00 AM",@"You unlocked a badge!",@"Monday, 11 Aug 2015 @ 04:00 PM",@"You were awarded 2 points for booking a facility!",@"Wednesday, 12 Aug 2015 @ 09:00 AM", nil];
     
     
     //===== For Badges SubViews

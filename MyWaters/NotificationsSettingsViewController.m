@@ -127,8 +127,12 @@
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
     
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications",@"Read Out Message", nil];
-    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance",@"Notifications will be read out when received.", nil];
+//    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications",@"Read Out Message", nil];
+//    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance",@"Notifications will be read out when received.", nil];
+    
+    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications", nil];
+    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance", nil];
+
 
     notificationSettingsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
     notificationSettingsTable.delegate = self;

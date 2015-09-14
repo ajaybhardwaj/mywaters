@@ -113,7 +113,7 @@
     UIButton *picUploadbutton = [UIButton buttonWithType:UIButtonTypeCustom];
     picUploadbutton.frame = CGRectMake((headerView.bounds.size.width/2)-40, 20, 80, 80);
 //    [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_image.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/temp_feedback.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [headerView addSubview:picUploadbutton];
     
     [feedbackTableView setTableHeaderView:headerView];

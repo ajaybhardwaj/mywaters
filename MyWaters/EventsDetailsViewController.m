@@ -176,6 +176,15 @@
     
     //    [self createDemoAppControls];
     
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+    [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+
+    
     
     bgScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
     bgScrollView.showsHorizontalScrollIndicator = NO;
@@ -203,8 +212,7 @@
     //Top Menu Item
     
     topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 45)];
-    topMenu.backgroundColor = [UIColor blackColor];
-    topMenu.alpha = 0.8;
+    topMenu.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
     [self.view addSubview:topMenu];
     
     notifyButton = [UIButton buttonWithType:UIButtonTypeCustom];

@@ -160,7 +160,7 @@
         
         UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 60, notificationsTable.bounds.size.width-80, 20)];
         //        dateLabel = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"];
-        dateLabel.text = @"Monday 27, March 2015 @ 8:13 AM";
+        dateLabel.text = @"Monday, 27 March 2015 @ 8:13 AM";
         dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         dateLabel.backgroundColor = [UIColor clearColor];
         dateLabel.textColor = [UIColor lightGrayColor];
@@ -225,7 +225,7 @@
     notificationsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
-    tableDataSource = [[NSArray alloc] initWithObjects:@"Sg Pandan Kechil (West Coast Highway): Water level falls below 75%. Moderate Flood Risk.",@"Sg Pandan Kechil (West Coast Highway): Water level rises above 75%. Moderate Flood Risk.",@"NEA: Moderate to heavy thundery showers & gusty winds expected over north, east & central SG btwn 14:30 to 15:30 hrs. Issued 13:48hrs.", nil];
+    tableDataSource = [[NSArray alloc] initWithObjects:@"Sg Pandan Kechil (West Coast Highway): Water level falls below 75%. Moderate Flood Risk.",@"Sg Pandan Kechil (West Coast Highway): Water level rises above 75%. Moderate Flood Risk.",@"N E A: Moderate to heavy thundery showers & gusty winds expected over north, east & central SG btwn 14:30 to 15:30 hrs. Issued 13:48hrs.", nil];
     
     
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -456, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
@@ -237,7 +237,9 @@
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     filterTableView.alpha = 0.8;
     
-    filtersArray = [[NSArray alloc] initWithObjects:@"Announcements",@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
+//    filtersArray = [[NSArray alloc] initWithObjects:@"Announcements",@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
+    filtersArray = [[NSArray alloc] initWithObjects:@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
+
 }
 
 - (void) viewWillAppear:(BOOL)animated {

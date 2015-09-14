@@ -271,8 +271,7 @@
     //Top Menu Item
     
     topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 45)];
-    topMenu.backgroundColor = [UIColor blackColor];//RGB(254, 254, 254);
-    topMenu.alpha = 0.8;
+    topMenu.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
     [self.view addSubview:topMenu];
     
     addPhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];

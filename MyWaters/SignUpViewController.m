@@ -517,23 +517,22 @@
     [signUpButton addTarget:self action:@selector(validateSignUpParameters) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:signUpButton];
     
-//    backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [backButton setTitle:@"BACK" forState:UIControlStateNormal];
-//    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
-//    backButton.tag = 5;
-//    backButton.frame = CGRectMake(0, signUpButton.frame.origin.y+signUpButton.bounds.size.height+15, self.view.bounds.size.width, 45);
-//    [backButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
-//    [backButton setBackgroundColor:RGB(83, 83, 83)];
-//    [self.view addSubview:backButton];
-    
+    backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backButton setTitle:@"BACK" forState:UIControlStateNormal];
+    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    backButton.tag = 5;
+    backButton.frame = CGRectMake(10, signUpButton.frame.origin.y+signUpButton.bounds.size.height+15, self.view.bounds.size.width-20, 40);
+    [backButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
+    [backButton setBackgroundColor:RGB(83, 83, 83)];
+    [backgroundScrollView addSubview:backButton];
     
     skipButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [skipButton setTitle:@"or skip for now" forState:UIControlStateNormal];
     [skipButton setTitleColor:RGB(22, 25, 62) forState:UIControlStateNormal];
     skipButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:15];
-    skipButton.tag = 5;
-    skipButton.frame = CGRectMake(0, signUpButton.frame.origin.y+signUpButton.bounds.size.height+10, self.view.bounds.size.width, 30);
+    skipButton.tag = 6;
+    skipButton.frame = CGRectMake(0, backButton.frame.origin.y+backButton.bounds.size.height+5, self.view.bounds.size.width, 30);
     [skipButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
     [skipButton addTarget:self action:@selector(skipSignUpProcess) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:skipButton];

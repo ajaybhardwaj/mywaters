@@ -30,7 +30,7 @@
 + (CGFloat)heightForText:(NSString*)text font:(UIFont*)font withinWidth:(CGFloat)width;
 + (NSString*) kilometersfromPlace:(CLLocationCoordinate2D)from andToPlace:(CLLocationCoordinate2D)to;
 + (NSString *)dateForRFC3339DateTimeString:(NSString *)rfc3339DateTimeString;
-
++ (NSMutableDictionary *)extractXML:(NSMutableDictionary *)XMLDictionary;
 
 
 # pragma mark - Server GET & POST Methods

@@ -332,6 +332,42 @@
 
 
 
+//*************** Method For Converting XML Dict To JSON Dict
+
++ (NSMutableDictionary *)extractXML:(NSMutableDictionary *)XMLDictionary {
+    
+    for (NSString *key in [XMLDictionary allKeys]) {
+        // get the current object for this key
+        id object = [XMLDictionary objectForKey:key];
+        
+        if ([object isKindOfClass:[NSDictionary class]]) {
+            if ([[object allKeys] count] == 1 &&
+                [[[object allKeys] objectAtIndex:0] isEqualToString:@"text"] &&
+                ![[object objectForKey:@"text"] isKindOfClass:[NSDictionary class]]) {
+                // this means the object has the key "text" and has no node
+                // or array (for multiple values) attached to it.
+                [XMLDictionary setObject:[object objectForKey:@"text"] forKey:key];
+            }
+            else {
+                // go deeper
+                [self extractXML:object];
+            }
+        }
+        else if ([object isKindOfClass:[NSArray class]]) {
+            // this is an array of dictionaries, iterate
+            for (id inArrayObject in (NSArray *)object) {
+                if ([inArrayObject isKindOfClass:[NSDictionary class]]) {
+                    // if this is a dictionary, go deeper
+                    [self extractXML:inArrayObject];
+                }
+            }
+        }
+    }
+    
+    return XMLDictionary;
+}
+
+
 //*************** Method For Converting RFC Date String To NSDate
 
 + (NSString *)dateForRFC3339DateTimeString:(NSString *)rfc3339DateTimeString {

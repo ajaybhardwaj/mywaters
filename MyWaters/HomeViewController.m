@@ -250,10 +250,10 @@
                 UIView *columnView = [[UIView alloc] initWithFrame:CGRectMake(10, left_yAxis, (self.view.bounds.size.width-30)/2, [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"height"] floatValue])];
                 columnView.backgroundColor = [UIColor whiteColor];
                 columnView.layer.cornerRadius = 10;
-                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
-                [columnView.layer setShadowOpacity:1];
-                [columnView.layer setShadowRadius:1.0];
+//                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+//                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
+//                [columnView.layer setShadowOpacity:1];
+//                [columnView.layer setShadowRadius:1.0];
                 [backgroundScrollView addSubview:columnView];
                 columnView.userInteractionEnabled = YES;
                 
@@ -285,6 +285,7 @@
                         [quickMap setZoomEnabled:YES];
                         [quickMap setScrollEnabled:YES];
                         quickMap.showsUserLocation = YES;
+                        quickMap.layer.cornerRadius = 10;
                         quickMap.userTrackingMode = MKUserTrackingModeFollow;
                         [columnView addSubview:quickMap];
                         
@@ -648,10 +649,10 @@
                 UIView *columnView = [[UIView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/2)+5, right_yAxis, (self.view.bounds.size.width-30)/2, [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"height"] floatValue])];
                 columnView.backgroundColor = [UIColor whiteColor];
                 columnView.layer.cornerRadius = 10;
-                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
-                [columnView.layer setShadowOpacity:1];
-                [columnView.layer setShadowRadius:1.0];
+//                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+//                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
+//                [columnView.layer setShadowOpacity:1];
+//                [columnView.layer setShadowRadius:1.0];
                 [backgroundScrollView addSubview:columnView];
                 columnView.userInteractionEnabled = YES;
                 
@@ -685,6 +686,7 @@
                         [quickMap setZoomEnabled:YES];
                         [quickMap setScrollEnabled:YES];
                         quickMap.showsUserLocation = YES;
+                        quickMap.layer.cornerRadius = 10;
                         quickMap.userTrackingMode = MKUserTrackingModeFollow;
                         [columnView addSubview:quickMap];
                         
@@ -1130,8 +1132,8 @@
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (tableView==eventsListingTable) {
-        EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:YES];
+//        EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
+//        [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
 
@@ -1238,10 +1240,10 @@
     welcomeView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.view.bounds.size.width-20, 110)];
     welcomeView.backgroundColor = [UIColor whiteColor];
     welcomeView.layer.cornerRadius = 10;
-    [welcomeView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-    [welcomeView.layer setShadowOffset:CGSizeMake(2, 2)];
-    [welcomeView.layer setShadowOpacity:1];
-    [welcomeView.layer setShadowRadius:1.0];
+//    [welcomeView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+//    [welcomeView.layer setShadowOffset:CGSizeMake(2, 2)];
+//    [welcomeView.layer setShadowOpacity:1];
+//    [welcomeView.layer setShadowRadius:1.0];
     [backgroundScrollView addSubview:welcomeView];
     
     UILabel *welcomeHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, welcomeView.bounds.size.width, 20)];
@@ -1277,10 +1279,10 @@
     reportIncidentButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     [reportIncidentButton setTintColor:[UIColor whiteColor]];
     reportIncidentButton.layer.cornerRadius = 10;
-    [reportIncidentButton.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-    [reportIncidentButton.layer setShadowOffset:CGSizeMake(2, 2)];
-    [reportIncidentButton.layer setShadowOpacity:1];
-    [reportIncidentButton.layer setShadowRadius:1.0];
+//    [reportIncidentButton.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+//    [reportIncidentButton.layer setShadowOffset:CGSizeMake(2, 2)];
+//    [reportIncidentButton.layer setShadowOpacity:1];
+//    [reportIncidentButton.layer setShadowRadius:1.0];
     [reportIncidentButton addTarget:self action:@selector(moveToFeedbackView) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:reportIncidentButton];
     

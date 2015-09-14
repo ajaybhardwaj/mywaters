@@ -13,7 +13,7 @@
 @end
 
 @implementation WLSListingViewController
-
+@synthesize responseData;
 
 //*************** Method To Open Side Menu
 
@@ -23,6 +23,111 @@
     self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
+
+
+
+//*************** Method To Get WLS Listing
+
+- (void) loadWLSListing {
+    
+    NSString *soapMsg = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+                         "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
+                         "<soap:Body>\n"
+                         "<GetWaterLevelDetails xmlns=\"http://www.pub.gov.sg/\">\n"
+                         "<strAuthToken>skmNyEq1fPWGPkNnhlTzzw==</strAuthToken>\n"
+                         "</GetWaterLevelDetails>\n"
+                         "</soap:Body>\n"
+                         "</soap:Envelope>"];
+    
+    NSLog(@"SoapMsg=%@",soapMsg);
+    
+    NSString *club_url = [NSString stringWithFormat:@"https://app.pub.gov.sg/ShareWaterLevelDetails/WaterLevelDetails.asmx?op=GetWaterLevelDetails"];
+    
+    NSMutableURLRequest *theRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:club_url]];
+    
+    
+    NSString *msgLength = [NSString stringWithFormat:@"%ld", [soapMsg length]];
+    NSLog(@"Message Length..%@",msgLength);
+    [theRequest addValue: @"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    [theRequest setTimeoutInterval:20];
+    [theRequest addValue: msgLength forHTTPHeaderField:@"Content-Length"];
+    [theRequest setHTTPMethod:@"POST"];
+    [theRequest setHTTPBody: [soapMsg dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    if (theConnection)
+    {
+        [theConnection cancel];
+        theConnection = nil;
+    }
+    theConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
+    
+    
+//    if( theConnection )
+//    {
+//        if(responseData)
+//        {
+//            responseData = nil;
+//        }
+//    }
+//    else
+//    {
+//        NSLog(@"theConnection is NULL");
+//    }
+}
+
+
+# pragma mark - NSURLConnectionDelegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    
+    [responseData setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    
+    [responseData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    
+    
+}
+
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    
+//    NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+//    
+//    responseString = [responseString stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+//    responseString = [responseString stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
+//    
+//    DebugLog(@"%@",responseString);
+//    
+//    NSDictionary *responseDict = [NSDictionary dictionaryWithObject:[responseString dataUsingEncoding:NSUTF8StringEncoding] forKey:@"CCTVS"];
+    
+    NSError *error = nil;
+//    DebugLog(@"%@",responseData);
+    NSDictionary *responseDict = [XMLReader dictionaryForXMLData:responseData
+                                                 options:XMLReaderOptionsProcessNamespaces
+                                                   error:&error];
+    
+    //method to remove extra node
+    NSMutableDictionary *dic_removeKeyNode = [[XMLReader recursionRemoveTextNode:responseDict] mutableCopy];
+    
+//    NSDictionary *clearXMLDict = [CommonFunctions extractXML:[[responseDict mutableCopy] copy]];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic_removeKeyNode
+                                                       options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
+                                                         error:&error];
+    
+    if (! jsonData) {
+        DebugLog(@"Got an error: %@", error);
+    } else {
+        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        
+        DebugLog(@"%@",jsonString);
+    }
+}
+
 
 
 # pragma mark - UITableViewDelegate Methods
@@ -128,6 +233,12 @@
     wlsListingtable.backgroundColor = [UIColor clearColor];
     wlsListingtable.backgroundView = nil;
     wlsListingtable.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    responseData = [[NSMutableData alloc] init];
+    
+    if (appDelegate.WLS_LISTING_ARRAY.count==0) {
+        [self loadWLSListing];
+    }
 }
 
 
