@@ -19,12 +19,12 @@
     NSArray *filtersArray;
     
     BOOL isShowingFilter,isShowingSearchBar;
-    NSInteger selectedFilterIndex;
+    NSInteger selectedFilterIndex,eventsSortOrder;
     
     UISearchBar *listinSearchBar;
     BOOL isFiltered;
     NSMutableArray *filteredDataSource;
-    NSInteger eventsPageCount;
+    NSInteger eventsPageCount,eventsTotalCount;
     
     //*************** Demo App Variables
     UIButton *eventDetailButton;

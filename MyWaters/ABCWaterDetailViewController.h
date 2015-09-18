@@ -36,14 +36,15 @@
     UILabel *bookingFormLabel,*arViewLabel,*contactUsLabel;
     
     UIView *descLabelBg;
-    AsyncImageView *eventImageView;
+    UIImageView *eventImageView;
     UIImageView *directionIcon,*infoIcon,*arrowIcon;
     UILabel *eventInfoLabel,*abcWaterTitle,*distanceLabel;
     
     UILabel___Extension *descriptionLabel;
 }
 
-@property (nonatomic, strong) NSString *imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString;
+@property (nonatomic, strong) NSString *imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*imageName;
 @property (nonatomic, assign) double latValue,longValue;
+@property (nonatomic, assign) BOOL isCertified;
 
 @end

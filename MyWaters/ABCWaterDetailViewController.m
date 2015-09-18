@@ -15,7 +15,7 @@
 @end
 
 @implementation ABCWaterDetailViewController
-@synthesize imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString;
+@synthesize imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,imageName,isCertified;
 
 
 //*************** Demo App UI
@@ -93,16 +93,66 @@
     
 
     
-    eventImageView = [[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
-    [eventImageView setImageURL:[NSURL URLWithString:imageUrl]];
-    eventImageView.showActivityIndicator = YES;
+    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
     [bgScrollView addSubview:eventImageView];
+    
+    NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+    NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ABCWaters"]];
+    
+    NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+        if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+        eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+    }
+    else {
+        
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,imageName];
+        
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicator.center = CGPointMake(eventImageView.bounds.size.width/2, eventImageView.bounds.size.height/2);
+        [eventImageView addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+        
+        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+            if (succeeded) {
+                
+                eventImageView.image = image;
+                                
+                NSFileManager *fileManger=[NSFileManager defaultManager];
+                NSError* error;
+                
+                if (![fileManger fileExistsAtPath:destinationPath]){
+                    
+                    if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                        ;// success
+                    else
+                    {
+                        DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                        NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                    }
+                }
+                
+                NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+            }
+            else {
+                DebugLog(@"Image Loading Failed..!!");
+                eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+            }
+            [activityIndicator stopAnimating];
+        }];
+    }
+
 
     
     UIImageView *certifiedLogo = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 59, 25)];
     [certifiedLogo setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwater_certified_logo.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [eventImageView addSubview:certifiedLogo];
-
+    if (!isCertified) {
+        certifiedLogo.hidden = YES;
+    }
     
     UIButton *temperatureButton = [UIButton buttonWithType:UIButtonTypeCustom];
     temperatureButton.frame = CGRectMake(eventImageView.bounds.size.width-50, eventImageView.bounds.size.height-40, 30, 30);
@@ -119,11 +169,12 @@
     [directionButton addSubview:directionIcon];
     
     
-    abcWaterTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-120, 40)];
+    abcWaterTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-140, 40)];
     abcWaterTitle.backgroundColor = [UIColor whiteColor];
     abcWaterTitle.textAlignment = NSTextAlignmentLeft;
     abcWaterTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
     abcWaterTitle.text = titleString;
+    abcWaterTitle.numberOfLines = 0;
     [directionButton addSubview:abcWaterTitle];
     
     

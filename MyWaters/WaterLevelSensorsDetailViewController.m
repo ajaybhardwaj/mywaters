@@ -13,7 +13,7 @@
 @end
 
 @implementation WaterLevelSensorsDetailViewController
-
+@synthesize drainDepthType,latValue,longValue,wlsName,observedTime;
 
 //*************** Method To Open Side Menu
 
@@ -155,153 +155,6 @@
 }
 
 
-//*************** Method To Create User Interface
-
-//- (void) createUI {
-//
-//    wateLevelMapView = [[MKMapView alloc] init];
-//    if (IS_IPHONE_4_OR_LESS || IS_IPHONE_5) {
-//        wateLevelMapView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-154);
-//    }
-//    else if (IS_IPHONE_6) {
-//        wateLevelMapView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-160);
-//    }
-//    else if (IS_IPHONE_6P){
-//        wateLevelMapView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-150);
-//    }
-//    wateLevelMapView.delegate = self;
-//    [self.view  addSubview:wateLevelMapView];
-//
-//
-//    currentLocationButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    [currentLocationButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
-//    [currentLocationButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_quick_map.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//    currentLocationButton.frame = CGRectMake(15, wateLevelMapView.bounds.size.height-65, 40, 40);
-//    [wateLevelMapView addSubview:currentLocationButton];
-//
-//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideSearchBarKeypad)];
-//    [wateLevelMapView addGestureRecognizer:tap];
-//
-//
-//    //    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(quickMap.userLocation.coordinate, 50, 50);
-//    //    viewRegion.span.longitudeDelta  = 0.005;
-//    //    viewRegion.span.latitudeDelta  = 0.005;
-//    //    [quickMap setRegion:viewRegion animated:YES];
-//
-//    //Set Default location to zoom
-//    CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.287862, 103.845661); //Create the CLLocation from user cordinates
-//    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
-//    MKCoordinateRegion adjustedRegion = [wateLevelMapView regionThatFits:viewRegion]; //add location to map
-//    [wateLevelMapView setRegion:adjustedRegion animated:YES]; // create animation zooming
-//
-//    MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-//    annotationRegion.center.latitude = 1.287862; // Make lat dynamic later
-//    annotationRegion.center.longitude = 103.845661; // Make long dynamic later
-//    annotationRegion.span.latitudeDelta = 0.02f;
-//    annotationRegion.span.longitudeDelta = 0.02f;
-//
-//
-//    //    MKUserLocation *userLocation = wateLevelMapView.userLocation;
-//    //    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance (userLocation.location.coordinate, 50, 50);
-//    //    [wateLevelMapView setRegion:region animated:YES];
-//
-//
-//    topSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, wateLevelMapView.bounds.size.width, 50)];
-//    topSearchBar.barStyle = UISearchBarStyleMinimal;
-//    topSearchBar.delegate = self;
-//    topSearchBar.placeholder = @"Search...";
-//    //    [topSearchBar setTintColor:RGB(247, 247, 247)];
-//    [topSearchBar setBackgroundImage:[AuxilaryUIService imageWithColor:[UIColor whiteColor] frame:CGRectMake(0, 0, 1, 44)]];
-//    topSearchBar.backgroundColor = [UIColor clearColor];//RGB(247, 247, 247);
-//    [wateLevelMapView addSubview:topSearchBar];
-//
-//    //    cctvView = [[UIView alloc] initWithFrame:CGRectMake(10, wateLevelMapView.frame.origin.y+wateLevelMapView.bounds.size.height+10, self.view.bounds.size.width/2 - 10, self.view.bounds.size.width/2 -10)];
-//    //    cctvView.layer.borderColor = [[UIColor blackColor] CGColor];
-//    //    cctvView.layer.borderWidth = 1.0;
-//    //    [self.view addSubview:cctvView];
-//
-//    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, wateLevelMapView.frame.origin.y+wateLevelMapView.bounds.size.height+10, self.view.bounds.size.width - 40, 40)];
-//    titleLabel.backgroundColor = [UIColor clearColor];
-//    titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
-//    titleLabel.numberOfLines = 0;
-//    titleLabel.text = @"Bukit Timah Rd";
-//    [self.view addSubview:titleLabel];
-//    [titleLabel sizeToFit];
-//
-//
-//
-//
-//    //    measurementBar = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2 +40, clockButton.frame.origin.y+clockButton.bounds.size.height+10, 20, 100)];
-//    //    [measurementBar setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/meter_bar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-//    //    [self.view addSubview:measurementBar];
-//
-//    //    drainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x+measurementBar.bounds.size.width+5, titleLabel.frame.origin.y+titleLabel.bounds.size.height+40, 80, 80)];
-//    drainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, self.view.bounds.size.width-40, 20)];
-//    drainDepthLabel.text = @"Drain Depth: 2.8 m";
-//    drainDepthLabel.textColor = RGB(26, 158, 241);
-//    drainDepthLabel.backgroundColor = [UIColor clearColor];
-//    drainDepthLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.5];
-//    drainDepthLabel.numberOfLines = 0;
-//    [self.view addSubview:drainDepthLabel];
-//
-//
-//    clockButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    clockButton.frame = CGRectMake(20, drainDepthLabel.frame.origin.y+drainDepthLabel.bounds.size.height+5, 15, 15);
-//    [clockButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_time.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//    [self.view addSubview:clockButton];
-//    clockButton.userInteractionEnabled = NO;
-//
-//    timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockButton.frame.origin.x+clockButton.bounds.size.width+10, drainDepthLabel.frame.origin.y+drainDepthLabel.bounds.size.height+5, self.view.bounds.size.width-clockButton.frame.origin.x+clockButton.bounds.size.width+10, 15)];
-//    timeLabel.text = @"23 May 2015 @ 4:16 PM";
-//    timeLabel.backgroundColor = [UIColor clearColor];
-//    timeLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
-//    [self.view addSubview:timeLabel];
-//
-//    measurementBar = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-75, titleLabel.frame.origin.y, 56, 50)];
-//    [measurementBar setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_level2.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-//    [self.view addSubview:measurementBar];
-//
-//
-//    depthValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-70, measurementBar.frame.origin.y+measurementBar.bounds.size.height+2, 50, 15)];
-//    depthValueLabel.text = @"2.8 m";
-//    depthValueLabel.backgroundColor = [UIColor clearColor];
-//    depthValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
-//    depthValueLabel.textColor = RGB(26, 158, 241);
-//    depthValueLabel.textAlignment = NSTextAlignmentCenter;
-//    [self.view addSubview:depthValueLabel];
-//
-//
-//    //    UILabel *maxValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x-15, measurementBar.frame.origin.y, 10, 10)];
-//    //    maxValueLabel.text = @"4";
-//    //    maxValueLabel.backgroundColor = [UIColor clearColor];
-//    //    maxValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-//    //    [self.view addSubview:maxValueLabel];
-//    //
-//    //    UILabel *midValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x-15, measurementBar.frame.origin.y+measurementBar.bounds.size.height/2-5, 10, 10)];
-//    //    midValueLabel.text = @"2";
-//    //    midValueLabel.backgroundColor = [UIColor clearColor];
-//    //    midValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-//    //    [self.view addSubview:midValueLabel];
-//    //
-//    //    UILabel *minValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(measurementBar.frame.origin.x-15, measurementBar.frame.origin.y+measurementBar.bounds.size.height-10, 10, 10)];
-//    //    minValueLabel.text = @"0";
-//    //    minValueLabel.backgroundColor = [UIColor clearColor];
-//    //    minValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-//    //    [self.view addSubview:minValueLabel];
-//
-//
-//
-//    // Temp Code For Annotations
-//
-//    annotation1 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-//    annotation1.coordinate = annotationRegion.center;
-//    annotation1.title = @"Bukit Timah Rd";
-//    annotation1.subtitle = @"Drain Depth 2.8 m";
-//    [wateLevelMapView addAnnotation:annotation1];
-//}
-
-
-
 //*************** Method For Creating UI
 
 - (void) createUI {
@@ -316,32 +169,59 @@
     [self.view addSubview:notifiyButton];
     
     topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-100, notifiyButton.frame.origin.y+notifiyButton.bounds.size.height+30, 80, 80)];
-    [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [self.view addSubview:topImageView];
     
     riskLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2, notifiyButton.frame.origin.y+notifiyButton.bounds.size.height+30, self.view.bounds.size.width/2 -30, 60)];
-    riskLabel.text = @"Moderate Flood Risk";
     riskLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:17];
     riskLabel.textColor = [UIColor blackColor];//RGB(26, 158, 241);
     riskLabel.backgroundColor = [UIColor clearColor];
     riskLabel.numberOfLines = 0;
-    [riskLabel sizeToFit];
     [self.view addSubview:riskLabel];
+    if (drainDepthType==1) {
+        riskLabel.text = @"Low Flood Risk";
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    else if (drainDepthType==2) {
+        riskLabel.text = @"Moderate Flood Risk";
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    else if (drainDepthType==3) {
+        riskLabel.text = @"High Flood Risk";
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    else {
+        riskLabel.text = @"Under Maintenance";
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    [riskLabel sizeToFit];
     
-    timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2, riskLabel.frame.origin.y+riskLabel.bounds.size.height+5, self.view.bounds.size.width/2 -10, 15)];
-    timeLabel.text = @"04:16 PM";
+    timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2, riskLabel.frame.origin.y+riskLabel.bounds.size.height+5, self.view.bounds.size.width/2 -50, 35)];
+    timeLabel.text = observedTime;
     timeLabel.backgroundColor = [UIColor clearColor];
+    timeLabel.numberOfLines = 0;
     timeLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
     [self.view addSubview:timeLabel];
-    
+
     
     depthValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2, timeLabel.frame.origin.y+timeLabel.bounds.size.height+5, self.view.bounds.size.width/2 -10, 15)];
-    depthValueLabel.text = @"Drain 75%-90% Full";
     depthValueLabel.backgroundColor = [UIColor clearColor];
     depthValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
     depthValueLabel.textColor = [UIColor darkGrayColor];//RGB(26, 158, 241);
     [self.view addSubview:depthValueLabel];
     
+
+    if (drainDepthType==1) {
+        depthValueLabel.text = @"Drain Below 75% Full";
+    }
+    else if (drainDepthType==2) {
+        depthValueLabel.text = @"Drain 75%-90% Full";
+    }
+    else if (drainDepthType==3) {
+        depthValueLabel.text = @"Drain Above 90% Full";
+    }
+    else {
+        depthValueLabel.text = @"";
+    }
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     //    directionButton.frame = CGRectMake(0, topImageView.frame.origin.y+topImageView.bounds.size.height, self.view.bounds.size.width, 40);
@@ -350,22 +230,35 @@
     [self.view addSubview:directionButton];
     
     directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
-    [directionIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_directions_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [directionIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_directions_blue.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:directionIcon];
     
     
-    cctvTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-120, 40)];
+    cctvTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-140, 40)];
     cctvTitleLabel.backgroundColor = [UIColor whiteColor];
     cctvTitleLabel.textAlignment = NSTextAlignmentLeft;
     cctvTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    cctvTitleLabel.text = @"Balestier Road";
+    cctvTitleLabel.text = wlsName;
+    cctvTitleLabel.numberOfLines = 0;
     [directionButton addSubview:cctvTitleLabel];
+    
+    
+    //----- Change Current Location With Either Current Location Value or Default Location Value
+    
+    CLLocationCoordinate2D currentLocation;
+    CLLocationCoordinate2D desinationLocation;
+    
+    currentLocation.latitude = 1.2912500;
+    currentLocation.longitude = 103.7870230;
+    
+    desinationLocation.latitude = latValue;
+    desinationLocation.longitude = longValue;
     
     distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
     distanceLabel.backgroundColor = [UIColor clearColor];
     distanceLabel.textAlignment = NSTextAlignmentRight;
     distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    distanceLabel.text = @"1.03 KM";
+    distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
     [directionButton addSubview:distanceLabel];
     
     arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, 12.5, 15, 15)];
@@ -410,7 +303,7 @@
         
         UILabel *sectionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 30)];
         sectionLabel.text = @"    Nearby";
-        sectionLabel.textColor = RGB(71, 178, 182);
+        sectionLabel.textColor = RGB(51, 149, 255);
         sectionLabel.backgroundColor = RGB(234, 234, 234);
         sectionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
         
@@ -438,7 +331,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     //    return eventsTableDataSource.count;
-    return 3;
+    return 0;
 }
 
 

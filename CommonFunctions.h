@@ -30,10 +30,16 @@
 + (CGFloat)heightForText:(NSString*)text font:(UIFont*)font withinWidth:(CGFloat)width;
 + (NSString*) kilometersfromPlace:(CLLocationCoordinate2D)from andToPlace:(CLLocationCoordinate2D)to;
 + (NSString *)dateForRFC3339DateTimeString:(NSString *)rfc3339DateTimeString;
++ (NSString *)dateTimeFromString:(NSString *)dateTimeString;
 + (NSMutableDictionary *)extractXML:(NSMutableDictionary *)XMLDictionary;
-
++ (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj;
 
 # pragma mark - Server GET & POST Methods
 + (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data;
++ (void) grabPostRequest:(NSArray *)paramters paramtersValue:(NSArray *)values delegate:(UIViewController *)viewObj isNSData:(BOOL)data baseUrl:(NSString*) baseUrl;
+
+
+
++ (void)downloadImageWithURL:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))completionBlock;
 
 @end

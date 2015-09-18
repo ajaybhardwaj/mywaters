@@ -21,7 +21,7 @@
 @synthesize SELECTED_MENU_ID;
 @synthesize IS_ARVIEW_CUSTOM_LABEL;
 @synthesize IS_MOVING_TO_WLS_FROM_DASHBOARD,IS_MOVING_TO_CCTV_FROM_DASHBOARD;
-
+@synthesize hud;
 
 //*************** Create Deck View Controller For App ***************//
 
@@ -329,7 +329,6 @@
     POI_ARRAY = [[NSMutableArray alloc] init];
     SELECTED_MENU_ID = 0;
     
-
     
     // temp Username
     LOGGED_IN_USER_NAME = @"Mr. William";

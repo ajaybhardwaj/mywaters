@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface FeedbackViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate,UITextViewDelegate> {
+@interface FeedbackViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate,UITextViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -24,6 +24,9 @@
     UIView *pickerbackground;
     UIPickerView *feedbackPickerView;
     NSInteger selectedPickerIndex;
+    
+    UIButton *picUploadbutton;
+    BOOL isFeedbackImageAvailable;
 }
 
 @property (nonatomic, assign) BOOL isNotFeedbackController;

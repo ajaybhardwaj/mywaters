@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 
 @implementation EventsDetailsViewController
-@synthesize imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,websiteString;
+@synthesize imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,websiteString,imageName;
 
 
 
@@ -77,24 +77,68 @@
 
 - (void) createUI {
     
-    float h2 = 0;
+//    float h2 = 0;
+//    
+//    if ([dataDict objectForKey:@"image_size"] !=(id)[NSNull null]) {
+//        NSArray *tempArray = [[dataDict objectForKey:@"image_size"] componentsSeparatedByString: @","];
+//        
+//        float w1 = [[tempArray objectAtIndex:0] floatValue];
+//        float h1 = [[tempArray objectAtIndex:1] floatValue];
+//        h2 = (h1*self.view.bounds.size.width)/w1;
+//    }
     
-    if ([dataDict objectForKey:@"image_size"] !=(id)[NSNull null]) {
-        NSArray *tempArray = [[dataDict objectForKey:@"image_size"] componentsSeparatedByString: @","];
-        
-        float w1 = [[tempArray objectAtIndex:0] floatValue];
-        float h1 = [[tempArray objectAtIndex:1] floatValue];
-        h2 = (h1*self.view.bounds.size.width)/w1;
-    }
     
-//    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 179)];
-//    eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/pub_temp_event22.jpg",appDelegate.RESOURCE_FOLDER_PATH]];
-//    [bgScrollView addSubview:eventImageView];
-    
-    eventImageView = [[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
-    [eventImageView setImageURL:[NSURL URLWithString:imageUrl]];
-    eventImageView.showActivityIndicator = YES;
+    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
     [bgScrollView addSubview:eventImageView];
+    
+    NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+    NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"Events"]];
+    
+    NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+        if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+        eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+    }
+    else {
+        
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,imageName];
+        
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicator.center = CGPointMake(eventImageView.bounds.size.width/2, eventImageView.bounds.size.height/2);
+        [eventImageView addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+        
+        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+            if (succeeded) {
+                
+                eventImageView.image = image;
+                
+                NSFileManager *fileManger=[NSFileManager defaultManager];
+                NSError* error;
+                
+                if (![fileManger fileExistsAtPath:destinationPath]){
+                    
+                    if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                        ;// success
+                    else
+                    {
+                        DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                        NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                    }
+                }
+                
+                NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+            }
+            else {
+                DebugLog(@"Image Loading Failed..!!");
+                eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+            }
+            [activityIndicator stopAnimating];
+        }];
+    }
 
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -107,11 +151,12 @@
     [directionButton addSubview:directionIcon];
     
     
-    eventTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-120, 40)];
+    eventTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-140, 40)];
     eventTitle.backgroundColor = [UIColor whiteColor];
     eventTitle.textAlignment = NSTextAlignmentLeft;
     eventTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
     eventTitle.text = titleString;
+    eventTitle.numberOfLines = 0;
     [directionButton addSubview:eventTitle];
     
     distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
@@ -145,7 +190,7 @@
 
     
     descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, eventInfoLabel.frame.origin.y+eventInfoLabel.bounds.size.height, bgScrollView.bounds.size.width, 40)];
-    descriptionLabel.backgroundColor = [UIColor whiteColor];
+    descriptionLabel.backgroundColor = [UIColor clearColor];
     descriptionLabel.text = [NSString stringWithFormat:@"%@",descriptionString];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
@@ -157,7 +202,58 @@
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
     
-    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+50);
+    UILabel *startDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, descriptionLabel.frame.origin.y+descriptionLabel.bounds.size.height+20, bgScrollView.bounds.size.width-80, 15)];
+    startDateLabel.textColor = [UIColor darkGrayColor];
+    startDateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    startDateLabel.backgroundColor = [UIColor clearColor];
+    startDateLabel.text = @"Start Date:";
+    [bgScrollView addSubview:startDateLabel];
+    
+    UILabel *startDateValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, startDateLabel.frame.origin.y+startDateLabel.bounds.size.height+5, bgScrollView.bounds.size.width-80, 15)];
+    startDateValueLabel.textColor = [UIColor darkGrayColor];
+    startDateValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    startDateValueLabel.backgroundColor = [UIColor clearColor];
+    startDateValueLabel.text = startDateString;
+    [bgScrollView addSubview:startDateValueLabel];
+    
+    
+    UILabel *endDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, startDateValueLabel.frame.origin.y+startDateValueLabel.bounds.size.height+20, bgScrollView.bounds.size.width-80, 15)];
+    endDateLabel.textColor = [UIColor darkGrayColor];
+    endDateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    endDateLabel.backgroundColor = [UIColor clearColor];
+    endDateLabel.text = @"End Date:";
+    [bgScrollView addSubview:endDateLabel];
+    
+    UILabel *endDateValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, endDateLabel.frame.origin.y+endDateLabel.bounds.size.height+5, bgScrollView.bounds.size.width-80, 15)];
+    endDateValueLabel.textColor = [UIColor darkGrayColor];
+    endDateValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    endDateValueLabel.backgroundColor = [UIColor clearColor];
+    endDateValueLabel.text = endDateString;
+    [bgScrollView addSubview:endDateValueLabel];
+    
+    
+    UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, endDateValueLabel.frame.origin.y+endDateValueLabel.bounds.size.height+20, bgScrollView.bounds.size.width-80, 15)];
+    locationLabel.textColor = [UIColor darkGrayColor];
+    locationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    locationLabel.backgroundColor = [UIColor clearColor];
+    locationLabel.text = @"Location:";
+    [bgScrollView addSubview:locationLabel];
+    
+    UILabel *locationValueLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, locationLabel.frame.origin.y+locationLabel.bounds.size.height+5, bgScrollView.bounds.size.width, 40)];
+    locationValueLabel.backgroundColor = [UIColor whiteColor];
+    locationValueLabel.text = [NSString stringWithFormat:@"%@",addressString];
+    locationValueLabel.textColor = [UIColor darkGrayColor];
+    locationValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    locationValueLabel.numberOfLines = 0;
+    locationValueLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    CGRect newLocationLabelFrame = locationValueLabel.frame;
+    newLocationLabelFrame.size.height = [CommonFunctions heightForText:addressString font:locationValueLabel.font withinWidth:bgScrollView.bounds.size.width];//expectedDescriptionLabelSize.height;
+    locationValueLabel.frame = newLocationLabelFrame;
+    [bgScrollView addSubview:locationValueLabel];
+    [locationValueLabel sizeToFit];
+    
+    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+startDateLabel.bounds.size.height+startDateValueLabel.bounds.size.height+endDateLabel.bounds.size.height+endDateValueLabel.bounds.size.height+locationLabel.bounds.size.height+locationValueLabel.bounds.size.height+100);
 }
 
 

@@ -34,7 +34,7 @@
 #import <UIKit/UIKit.h>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
-
+#import "Constants.h"
 
 extern NSString *const AsyncImageLoadDidFinish;
 extern NSString *const AsyncImageLoadDidFail;

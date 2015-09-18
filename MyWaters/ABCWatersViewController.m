@@ -27,6 +27,20 @@
 }
 
 
+//*************** Method To Call ABCWaterSites API
+
+- (void) fetchABCWaterSites {
+    
+    if (abcWatersPageCount!=-1) {
+        
+        abcWatersPageCount = abcWatersPageCount + 1;
+        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"version", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"2",[NSString stringWithFormat:@"%ld",abcWatersPageCount],@"2",@"1.0", nil];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_MODULES_API_URL];
+    }
+}
+
+
 //*************** Method To Handle Segmented Control Action
 
 - (void) handleSegmentedControl:(UISegmentedControl*) sender {
@@ -153,6 +167,8 @@
     viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"phoneNo"];
     viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"address"];
     viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"]];
+    viewObj.imageName = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"];
+    viewObj.isCertified = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"isCertified"] intValue];
     
     [self.navigationController pushViewController:viewObj animated:YES];
 }
@@ -167,20 +183,65 @@
     float xAxis = 0;
     float yAxis = 0;
     
-    //    for (UIView * view in abcWatersScrollView.subviews) {
-    //        [view removeFromSuperview];
-    //    }
-    
-    //    [appDelegate retrieveABCWatersListing];
-    
     if (appDelegate.ABC_WATERS_LISTING_ARRAY.count !=0) {
         
         for (int i=0; i<appDelegate.ABC_WATERS_LISTING_ARRAY.count; i++) {
             
-            AsyncImageView *gridImage = [[AsyncImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, (segmentedControlBackground.bounds.size.width-2)/3, (segmentedControlBackground.bounds.size.width-2)/3)];
-            NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]];
-            [gridImage setImageURL:[NSURL URLWithString:imageURLString] placeholderImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-            gridImage.showActivityIndicator = YES;
+            UIImageView *gridImage = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, (segmentedControlBackground.bounds.size.width-2)/3, (segmentedControlBackground.bounds.size.width-2)/3)];
+            
+            NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+            NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+            NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ABCWaters"]];
+            
+            NSString *localFile = [destinationPath stringByAppendingPathComponent:[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+                if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]] != nil)
+                gridImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]];
+            }
+            else {
+                
+                NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]];
+
+                UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                activityIndicator.center = CGPointMake(gridImage.bounds.size.width/2, gridImage.bounds.size.height/2);
+                [gridImage addSubview:activityIndicator];
+                [activityIndicator startAnimating];
+                
+                [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                    if (succeeded) {
+                        
+                        gridImage.image = image;
+                        
+                        
+                        
+                        DebugLog(@"Path %@",destinationPath);
+                        
+                        NSFileManager *fileManger=[NSFileManager defaultManager];
+                        NSError* error;
+                        
+                        if (![fileManger fileExistsAtPath:destinationPath]){
+                            
+                            if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                                ;// success
+                            else
+                            {
+                                DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                            }
+                        }
+                        
+                        NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                        [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]] atomically:YES];
+                    }
+                    else {
+                        DebugLog(@"Image Loading Failed..!!");
+                        gridImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+                    }
+                    [activityIndicator stopAnimating];
+                }];
+            }
+            
             [abcWatersScrollView addSubview:gridImage];
             gridImage.userInteractionEnabled = YES;
             
@@ -224,43 +285,44 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     
-    if ([request.name localizedCaseInsensitiveCompare:ABC_WATERS_LISTING] == NSOrderedSame) {
-        if ([[[responseString JSONValue] objectForKey:SERVER_ERRORCODE] intValue] == REQUEST_SUCCESS) {
-            
-            NSArray *tempArray = [[[responseString JSONValue] objectForKey:@"data"] objectForKey:@"sites"];
-            abcWatersTotalCount = [[[[responseString JSONValue] objectForKey:@"data"] objectForKey:@"total"] intValue];
-            
-            if (tempArray.count==0) {
-                abcWatersPageCount = 0;
+    DebugLog(@"%@",responseString);
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        NSArray *tempArray = [[responseString JSONValue] objectForKey:ABC_WATER_SITES_RESPONSE_NAME];
+        abcWatersTotalCount = [[[responseString JSONValue] objectForKey:ABC_WATER_SITES_TOTAL_COUNT] intValue];
+        
+        
+        if (tempArray.count==0) {
+            abcWatersPageCount = 0;
+        }
+        else {
+            abcWatersPageCount = abcWatersPageCount + 1;
+            if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
+                [appDelegate.ABC_WATERS_LISTING_ARRAY setArray:tempArray];
             }
             else {
-                abcWatersPageCount = abcWatersPageCount + 1;
-                if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
-                    [appDelegate.ABC_WATERS_LISTING_ARRAY setArray:tempArray];
-                }
-                else {
-                    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
-                        for (int i=0; i<tempArray.count; i++) {
-                            [appDelegate.ABC_WATERS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
-                        }
+                if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
+                    for (int i=0; i<tempArray.count; i++) {
+                        [appDelegate.ABC_WATERS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
                     }
                 }
             }
         }
         
+        [appDelegate.hud hide:YES];
         [self createGridView];
-        //[listTabeView reloadData];
+        
     }
-    //    DebugLog(@"%@",responseString);
-    // Use when fetching binary data
-    //    NSData *responseData = [request responseData];
+    
 }
 
 - (void) requestFailed:(ASIHTTPRequest *)request {
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    abcWatersPageCount = 0;
+    abcWatersPageCount = -1;
+    [appDelegate.hud hide:YES];
 }
 
 
@@ -331,48 +393,59 @@
         if (isFiltered) {
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"] != (id)[NSNull null])
-            viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"];
+                viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
-            viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
+                viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-            viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+                viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-            viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+                viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
-            viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+                viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
-            viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"];
+                viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"];
             
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null])
-            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
+                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
+                viewObj.imageName = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"];
+            }
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
+                viewObj.isCertified = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
+
         }
         else {
             
             if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"] != (id)[NSNull null])
-            viewObj.titleString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"];
+                viewObj.titleString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"];
             
             if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
-            viewObj.descriptionString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
+                viewObj.descriptionString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
             
             if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-            viewObj.latValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+                viewObj.latValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
             
             if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-            viewObj.longValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+                viewObj.longValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
             
             if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
-            viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+                viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
             
             if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
-            viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"];
+                viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"];
             
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null])
-            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
+                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+                viewObj.imageName = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
+            }
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
+                viewObj.isCertified = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
         }
         
         [self.navigationController pushViewController:viewObj animated:YES];
@@ -428,17 +501,72 @@
     else {
         
         
-        AsyncImageView *cellImage = [[AsyncImageView alloc] initWithFrame:CGRectMake(5, 10, 60, 60)];
-        NSString *imageURLString;
+        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 60, 60)];
+        
+        NSString *imageURLString,*imageName;
         if (isFiltered) {
+            imageName = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"];
             imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
         }
         else {
+            imageName = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
             imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
         }
-        [cellImage setImageURL:[NSURL URLWithString:imageURLString] placeholderImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_120.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        cellImage.showActivityIndicator = YES;
+        
         [cell.contentView addSubview:cellImage];
+        
+        
+        NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+        NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+        NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ABCWaters"]];
+        
+        NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+            if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+        }
+
+        else {
+            
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            activityIndicator.center = CGPointMake(cellImage.bounds.size.width/2, cellImage.bounds.size.height/2);
+            [cellImage addSubview:activityIndicator];
+            [activityIndicator startAnimating];
+            
+            [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                if (succeeded) {
+                    
+                    cellImage.image = image;
+                    
+                    DebugLog(@"Path %@",destinationPath);
+                    
+                    NSFileManager *fileManger=[NSFileManager defaultManager];
+                    NSError* error;
+                    
+                    if (![fileManger fileExistsAtPath:destinationPath]){
+                        
+                        if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                            ;// success
+                        else
+                        {
+                            DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                        }
+                    }
+                    
+                    NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                    [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+                }
+                else {
+                    DebugLog(@"Image Loading Failed..!!");
+                    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+                }
+                [activityIndicator stopAnimating];
+            }];
+        }
+        
+
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 40)];
         if (isFiltered) {
@@ -583,9 +711,19 @@
     searchField.backgroundColor = [UIColor whiteColor];
     [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     
-    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
-        [CommonFunctions grabGetRequest:ABC_WATERS_LISTING delegate:self isNSData:NO];
-    }
+    
+    //    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
+    ////        [CommonFunctions grabGetRequest:ABC_WATERS_LISTING delegate:self isNSData:NO];
+    //        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"Limit",@"SortBy",@"version", nil];
+    //        [CommonFunctions grabPostRequest:<#(NSArray *)#> paramtersValue:<#(NSArray *)#> delegate:<#(UIViewController *)#> isNSData:<#(BOOL)#>];
+    //    }
+    
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading..!!";
+    
+    [self fetchABCWaterSites];
 }
 
 

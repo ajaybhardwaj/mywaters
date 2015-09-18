@@ -26,6 +26,7 @@ typedef enum {
 @property (nonatomic, readwrite)         UPStackMenuItemLabelPosition_e  labelPosition;
 
 @property (nonatomic, unsafe_unretained) id<UPStackMenuItemDelegate>     delegate;
+@property (nonatomic, strong) UIButton *_imageButton;
 
 
 - (id)initWithImage:(UIImage*)image;

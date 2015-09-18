@@ -37,7 +37,7 @@
     //***** Variables For UPStackMenu
     UIView *menuContentView;
     UPStackMenu *stack;
-    UPStackMenuItem *floodStackItem,*wlsStackItem,*cctcStackItem,*userFeedbackStackItem,*rainMapStackItem;
+    UPStackMenuItem *floodStackItem,*wlsStackItem,*cctvStackItem,*userFeedbackStackItem,*rainMapStackItem;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

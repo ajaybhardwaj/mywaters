@@ -26,10 +26,27 @@
 #define REQUEST_FAILURE_401 401
 #define SERVER_MESSAGE @"message"
 #define INVALID_OAUTH_CREDENTIAL 403
+#define ACCOUNT_ACCESS_TOKEN @"AccessToken"
+
+// API Parameters
+#define API_ACKNOWLEDGE @"Acknowledge"
+#define API_MESSAGE @"Message"
+#define API_STATUS_CODE @"StatusCode"
+#define ABC_WATER_SITES_RESPONSE_NAME @"ListABCWaterSites"
+#define ABC_WATER_SITES_TOTAL_COUNT @"TotalABCWaterSites"
+#define EVENTS_RESPONSE_NAME @"ListEvents"
+#define EVENTS_TOTAL_COUNT @"TotalEvents"
+#define WLS_LISTING_RESPONSE_NAME @"ListWaterLevelSensorStation"
+#define WLS_LISTING_TOTAL_COUNT @"TotalWaterLevelSensorStation"
+
 
 # pragma mark - BASE URLS
 #define BASE_URL @"https://pubapps.com.sg:8080/api/v1/"
-#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"
+#define BASE_MODULES_API_URL @"http://52.74.251.44/PUB.MyWater.Api.New/api/Modules"
+#define BASE_FEEDBACK_API_URL @"http://52.74.251.44/PUB.MyWater.Api.New/api/Feedback"
+
+//#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"
+#define IMAGE_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/uploads/"
 
 
 # pragma mark - ABC WATERS

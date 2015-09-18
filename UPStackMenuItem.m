@@ -15,7 +15,7 @@ const static UPStackMenuItemLabelPosition_e kStackMenuItemDefaultLabelPosition  
 
 
 @interface UPStackMenuItem() {
-    UIButton *_imageButton;
+//    UIButton *_imageButton;
     UILabel *_label;
     UIView *_labelContainer;
     UIButton *_button;
@@ -27,6 +27,7 @@ const static UPStackMenuItemLabelPosition_e kStackMenuItemDefaultLabelPosition  
 
 
 @implementation UPStackMenuItem
+@synthesize _imageButton;
 
 - (id)initWithImage:(UIImage*)image
 {

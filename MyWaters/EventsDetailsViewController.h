@@ -28,14 +28,14 @@
     UILabel *callUsLabel;
     
     UIView *descLabelBg;
-    AsyncImageView *eventImageView;
+    UIImageView *eventImageView;
     UIImageView *directionIcon,*infoIcon,*arrowIcon;
     UILabel *eventInfoLabel,*eventTitle,*distanceLabel;
     
     UILabel___Extension *descriptionLabel;
 }
 
-@property (nonatomic, strong) NSString *imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*startDateString,*endDateString,*websiteString;
+@property (nonatomic, strong) NSString *imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*startDateString,*endDateString,*websiteString,*imageName;
 @property (nonatomic, assign) double latValue,longValue;
 
 

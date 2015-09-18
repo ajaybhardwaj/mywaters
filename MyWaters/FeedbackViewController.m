@@ -17,6 +17,85 @@
 @implementation FeedbackViewController
 @synthesize isNotFeedbackController;
 
+
+
+//*************** Method To Show UIActionSheet
+
+- (void) showActionSheet {
+    
+    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
+}
+
+
+
+//*************** Method For Submitting Feedback
+
+- (void) submitUserFeedback {
+    
+    
+    if ([locationField.text length] == 0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
+        return;
+    }
+    else if ([commentField.text length] == 0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
+        return;
+    }
+    else if ([nameField.text length] == 0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+        return;
+    }
+    else if ([CommonFunctions characterSet1Found:nameField.text]) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+        return;
+    }
+    else if ([phoneField.text length] !=0) {
+        if ([CommonFunctions characterSet2Found:phoneField.text]) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid phone number." cancel:@"OK" otherButton:nil];
+        }
+        return;
+    }
+    else if ([emailField.text length] !=0) {
+        if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+        }
+        return;
+    }
+    else {
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading..!!";
+        
+        NSMutableDictionary *feedbackDictionary = [[NSMutableDictionary alloc] init];
+        if ([nameField.text length] != 0) {
+            [feedbackDictionary setObject:nameField.text forKey:@"name"];
+        }
+        if ([emailField.text length] !=0) {
+            [feedbackDictionary setObject:emailField.text forKey:@"email"];
+        }
+        if ([phoneField.text length] !=0) {
+            [feedbackDictionary setObject:emailField.text forKey:@"contactNo"];
+        }
+        
+        [feedbackDictionary setObject:commentField.text forKey:@"comment"];
+        
+        if (isFeedbackImageAvailable) {
+            NSData *imageData = [UIImageJPEGRepresentation(picUploadbutton.imageView.image, 1.0) base64EncodedDataWithOptions:NSDataBase64Encoding64CharacterLineLength];
+            NSString *base64ImageString = [NSString stringWithUTF8String:[imageData bytes]];
+            NSArray *tempImageArray = [NSArray arrayWithObjects:base64ImageString, nil];
+            [feedbackDictionary setObject:tempImageArray forKey:@"images"];
+        }
+        
+        
+        NSArray *parameters = [[NSArray alloc] initWithObjects:@"Feedback", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:feedbackDictionary, nil];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_FEEDBACK_API_URL];
+
+    }
+}
+
+
 //*************** Method To Animate To Show Picker View
 
 - (void) showPickerView {
@@ -24,14 +103,14 @@
     if (isShowingPicker) {
         [feedbackPickerView reloadAllComponents];
         [feedbackPickerView selectRow:0 inComponent:0 animated:YES];
-
+        
     }
     else {
         isShowingPicker = YES;
         
         [feedbackPickerView reloadAllComponents];
         [feedbackPickerView selectRow:0 inComponent:0 animated:YES];
-
+        
         
         [UIView beginAnimations:@"feedbackPicker" context:NULL];
         [UIView setAnimationDuration:0.5];
@@ -110,10 +189,10 @@
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 120)];
     [headerView setBackgroundColor:RGB(247, 247, 247)];
     
-    UIButton *picUploadbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+    picUploadbutton = [UIButton buttonWithType:UIButtonTypeCustom];
     picUploadbutton.frame = CGRectMake((headerView.bounds.size.width/2)-40, 20, 80, 80);
-//    [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_image.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [picUploadbutton addTarget:self action:@selector(showActionSheet) forControlEvents:UIControlEventTouchUpInside];
     [headerView addSubview:picUploadbutton];
     
     [feedbackTableView setTableHeaderView:headerView];
@@ -121,7 +200,95 @@
 
 
 
+# pragma mark - ASIHTTPRequestDelegate Methods
 
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [CommonFunctions showAlertView:self title:[[responseString JSONValue] objectForKey:@"Message"] msg:nil cancel:@"OK" otherButton:nil];
+        
+        isFeedbackImageAvailable = NO;
+        [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        commentField.text = @"";
+        emailField.text = @"";
+        phoneField.text = @"";
+        
+        [appDelegate.hud hide:YES];
+    }
+    
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
+    [appDelegate.hud hide:YES];
+}
+
+
+# pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag==1) {
+        
+        if (buttonIndex==0) {
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }
+        else if (buttonIndex==1) {
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }
+    }
+}
+
+# pragma mark - UIImagePickerControllerDelegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+    [picUploadbutton setBackgroundImage:chosenImage forState:UIControlStateNormal];
+    isFeedbackImageAvailable = YES;
+    
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    isFeedbackImageAvailable = NO;
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    
+}
 
 # pragma mark - UIPickerViewDataSource Method
 
@@ -201,28 +368,28 @@
     cell.detailTextLabel.numberOfLines = 0;
     
     
-//    if (indexPath.row==0) {
-//        
-//        feedbackTypeField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-//        feedbackTypeField.textColor = RGB(35, 35, 35);
-//        feedbackTypeField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-//        feedbackTypeField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-//        feedbackTypeField.leftViewMode = UITextFieldViewModeAlways;
-//        feedbackTypeField.borderStyle = UITextBorderStyleNone;
-//        feedbackTypeField.textAlignment=NSTextAlignmentLeft;
-//        [feedbackTypeField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-//        feedbackTypeField.placeholder=@"Select Feedback Type *";
-//        feedbackTypeField.text = [feedbackTypeArray objectAtIndex:selectedPickerIndex];
-//        [cell.contentView addSubview:feedbackTypeField];
-//        feedbackTypeField.backgroundColor = [UIColor clearColor];
-//        feedbackTypeField.delegate = self;
-//        [feedbackTypeField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-//        feedbackTypeField.tag = 1;
-//        
-//        UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-//        [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-//        cell.accessoryView = dropDownButton;
-//    }
+    //    if (indexPath.row==0) {
+    //
+    //        feedbackTypeField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+    //        feedbackTypeField.textColor = RGB(35, 35, 35);
+    //        feedbackTypeField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+    //        feedbackTypeField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    //        feedbackTypeField.leftViewMode = UITextFieldViewModeAlways;
+    //        feedbackTypeField.borderStyle = UITextBorderStyleNone;
+    //        feedbackTypeField.textAlignment=NSTextAlignmentLeft;
+    //        [feedbackTypeField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    //        feedbackTypeField.placeholder=@"Select Feedback Type *";
+    //        feedbackTypeField.text = [feedbackTypeArray objectAtIndex:selectedPickerIndex];
+    //        [cell.contentView addSubview:feedbackTypeField];
+    //        feedbackTypeField.backgroundColor = [UIColor clearColor];
+    //        feedbackTypeField.delegate = self;
+    //        [feedbackTypeField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    //        feedbackTypeField.tag = 1;
+    //
+    //        UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    //        [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    //        cell.accessoryView = dropDownButton;
+    //    }
     if (indexPath.row==0) {
         
         locationField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
@@ -247,37 +414,37 @@
         UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, locationField.bounds.size.height-0.5, locationField.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:cellSeperator];
-
-
+        
+        
     }
     else if (indexPath.row==1) {
         
-//        commentField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-//        commentField.textColor = RGB(35, 35, 35);
-//        commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-//        commentField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-//        commentField.leftViewMode = UITextFieldViewModeAlways;
-//        commentField.borderStyle = UITextBorderStyleNone;
-//        commentField.textAlignment=NSTextAlignmentLeft;
-//        [commentField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-//        if (isFloodSubmission) {
-//            commentField.placeholder=@"Severity Type *";
-//        }
-//        else {
-//            commentField.placeholder=@"Comments *";
-//        }
-//        [cell.contentView addSubview:commentField];
-//        commentField.clearButtonMode = UITextFieldViewModeWhileEditing;
-//        commentField.backgroundColor = [UIColor clearColor];
-//        commentField.delegate = self;
-//        [commentField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-//        commentField.tag = 3;
-//
-//        if (isFloodSubmission) {
-//            UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-//            [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-//            cell.accessoryView = dropDownButton;
-//        }
+        //        commentField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+        //        commentField.textColor = RGB(35, 35, 35);
+        //        commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        //        commentField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+        //        commentField.leftViewMode = UITextFieldViewModeAlways;
+        //        commentField.borderStyle = UITextBorderStyleNone;
+        //        commentField.textAlignment=NSTextAlignmentLeft;
+        //        [commentField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        //        if (isFloodSubmission) {
+        //            commentField.placeholder=@"Severity Type *";
+        //        }
+        //        else {
+        //            commentField.placeholder=@"Comments *";
+        //        }
+        //        [cell.contentView addSubview:commentField];
+        //        commentField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        //        commentField.backgroundColor = [UIColor clearColor];
+        //        commentField.delegate = self;
+        //        [commentField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+        //        commentField.tag = 3;
+        //
+        //        if (isFloodSubmission) {
+        //            UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+        //            [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        //            cell.accessoryView = dropDownButton;
+        //        }
         
         commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, 120)];
         commentField.returnKeyType = UIReturnKeyDone;
@@ -291,7 +458,7 @@
         UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, commentField.bounds.size.height-0.5, commentField.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:cellSeperator];
-
+        
         
     }
     else if (indexPath.row==2) {
@@ -315,8 +482,8 @@
         UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, nameField.bounds.size.height-0.5, nameField.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:cellSeperator];
-
-
+        
+        
     }
     else if (indexPath.row==3) {
         
@@ -328,18 +495,18 @@
         phoneField.borderStyle = UITextBorderStyleNone;
         phoneField.textAlignment=NSTextAlignmentLeft;
         [phoneField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        phoneField.placeholder=@"Contact No. *";
+        phoneField.placeholder=@"Contact No.";
         [cell.contentView addSubview:phoneField];
         phoneField.clearButtonMode = UITextFieldViewModeWhileEditing;
         phoneField.backgroundColor = [UIColor clearColor];
         phoneField.delegate = self;
         [phoneField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         phoneField.tag = 5;
-
+        
         UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, phoneField.bounds.size.height-0.5, phoneField.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:cellSeperator];
-
+        
     }
     else if (indexPath.row==4) {
         
@@ -351,7 +518,7 @@
         emailField.borderStyle = UITextBorderStyleNone;
         emailField.textAlignment=NSTextAlignmentLeft;
         [emailField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        emailField.placeholder=@"Email *";
+        emailField.placeholder=@"Email";
         [cell.contentView addSubview:emailField];
         emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
         emailField.backgroundColor = [UIColor clearColor];
@@ -439,7 +606,7 @@
     [feedbackTableView setContentOffset:offset animated:YES];
     
     if (isFloodSubmission) {
-//        if (textField == feedbackTypeField || textField == commentField) {
+        //        if (textField == feedbackTypeField || textField == commentField) {
         if (textField == feedbackTypeField) {
             selectedPickerIndex = 0;
             [feedbackPickerView reloadComponent:0];
@@ -455,7 +622,7 @@
             selectedPickerIndex = 0;
             [feedbackPickerView reloadComponent:0];
             [self showPickerView];
-
+            
             return NO;
         }
         else {
@@ -508,7 +675,7 @@
     feedbackTableView.backgroundColor = RGB(247, 247, 247);
     feedbackTableView.backgroundView = nil;
     feedbackTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-//    feedbackTableView.scrollEnabled = NO;
+    //    feedbackTableView.scrollEnabled = NO;
     
     
     UIButton *submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -516,7 +683,7 @@
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
-//    submitButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
+    //    submitButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:18];
     [self.view addSubview:submitButton];
     
@@ -570,6 +737,9 @@
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
         
     }
+    
+    
+    [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
 }
 
 

@@ -14,7 +14,7 @@
 #import <sqlite3.h>
 #import "CommonFunctions.h"
 #import "WelcomeViewController.h"
-
+#import "MBProgressHUD.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,IIViewDeckControllerDelegate> {
     
@@ -30,6 +30,7 @@
 @property (nonatomic, assign) NSInteger NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,SELECTED_MENU_ID;
 @property (nonatomic, retain) NSString *LOGGED_IN_USER_NAME;
 @property (nonatomic, assign) BOOL IS_COMING_AFTER_LOGIN,IS_ARVIEW_CUSTOM_LABEL,IS_MOVING_TO_WLS_FROM_DASHBOARD,IS_MOVING_TO_CCTV_FROM_DASHBOARD;
+@property (nonatomic, strong) MBProgressHUD *hud;
 
 - (void) createViewDeckController;
 - (void) retrieveDashboardPreferences;

@@ -28,104 +28,63 @@
 
 //*************** Method To Get WLS Listing
 
-- (void) loadWLSListing {
+- (void) fetchWLSListing {
     
-    NSString *soapMsg = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-                         "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
-                         "<soap:Body>\n"
-                         "<GetWaterLevelDetails xmlns=\"http://www.pub.gov.sg/\">\n"
-                         "<strAuthToken>skmNyEq1fPWGPkNnhlTzzw==</strAuthToken>\n"
-                         "</GetWaterLevelDetails>\n"
-                         "</soap:Body>\n"
-                         "</soap:Envelope>"];
-    
-    NSLog(@"SoapMsg=%@",soapMsg);
-    
-    NSString *club_url = [NSString stringWithFormat:@"https://app.pub.gov.sg/ShareWaterLevelDetails/WaterLevelDetails.asmx?op=GetWaterLevelDetails"];
-    
-    NSMutableURLRequest *theRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:club_url]];
-    
-    
-    NSString *msgLength = [NSString stringWithFormat:@"%ld", [soapMsg length]];
-    NSLog(@"Message Length..%@",msgLength);
-    [theRequest addValue: @"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-    [theRequest setTimeoutInterval:20];
-    [theRequest addValue: msgLength forHTTPHeaderField:@"Content-Length"];
-    [theRequest setHTTPMethod:@"POST"];
-    [theRequest setHTTPBody: [soapMsg dataUsingEncoding:NSUTF8StringEncoding]];
-    
-    if (theConnection)
-    {
-        [theConnection cancel];
-        theConnection = nil;
-    }
-    theConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
-    
-    
-//    if( theConnection )
-//    {
-//        if(responseData)
-//        {
-//            responseData = nil;
-//        }
-//    }
-//    else
-//    {
-//        NSLog(@"theConnection is NULL");
-//    }
-}
-
-
-# pragma mark - NSURLConnectionDelegate Methods
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    
-    [responseData setLength:0];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    
-    [responseData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    
-    
-}
-
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    
-//    NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-//    
-//    responseString = [responseString stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
-//    responseString = [responseString stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
-//    
-//    DebugLog(@"%@",responseString);
-//    
-//    NSDictionary *responseDict = [NSDictionary dictionaryWithObject:[responseString dataUsingEncoding:NSUTF8StringEncoding] forKey:@"CCTVS"];
-    
-    NSError *error = nil;
-//    DebugLog(@"%@",responseData);
-    NSDictionary *responseDict = [XMLReader dictionaryForXMLData:responseData
-                                                 options:XMLReaderOptionsProcessNamespaces
-                                                   error:&error];
-    
-    //method to remove extra node
-    NSMutableDictionary *dic_removeKeyNode = [[XMLReader recursionRemoveTextNode:responseDict] mutableCopy];
-    
-//    NSDictionary *clearXMLDict = [CommonFunctions extractXML:[[responseDict mutableCopy] copy]];
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic_removeKeyNode
-                                                       options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
-                                                         error:&error];
-    
-    if (! jsonData) {
-        DebugLog(@"Got an error: %@", error);
-    } else {
-        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    if (wlsPageCount!=-1) {
         
-        DebugLog(@"%@",jsonString);
+        wlsPageCount = wlsPageCount + 1;
+        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"Limit",@"version", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"%ld",wlsPageCount],[NSString stringWithFormat:@"1"],@"10",@"1.0", nil];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_MODULES_API_URL];
     }
+}
+
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+//    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
+    
+        NSArray *tempArray = [[responseString JSONValue] objectForKey:WLS_LISTING_RESPONSE_NAME];
+        wlsTotalCount = [[[responseString JSONValue] objectForKey:WLS_LISTING_TOTAL_COUNT] intValue];
+        
+        if (tempArray.count==0) {
+            wlsPageCount = 0;
+        }
+        else {
+            wlsPageCount = wlsPageCount + 1;
+            if (appDelegate.WLS_LISTING_ARRAY.count==0) {
+                [appDelegate.WLS_LISTING_ARRAY setArray:tempArray];
+            }
+            else {
+                if (appDelegate.WLS_LISTING_ARRAY.count!=0) {
+                    for (int i=0; i<tempArray.count; i++) {
+                        [appDelegate.WLS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
+                    }
+                }
+            }
+        }
+        
+        [appDelegate.hud hide:YES];
+        [wlsListingtable reloadData];
+        
+    }
+    
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    wlsPageCount = -1;
+    
+    [appDelegate.hud hide:YES];
 }
 
 
@@ -142,6 +101,11 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     WaterLevelSensorsDetailViewController *viewObj = [[WaterLevelSensorsDetailViewController alloc] init];
+    viewObj.wlsName = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"];
+    viewObj.drainDepthType = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue];
+    viewObj.latValue = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] doubleValue];
+    viewObj.longValue = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] doubleValue];
+    viewObj.observedTime = [CommonFunctions dateTimeFromString:[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"observationTime"]];
     [self.navigationController pushViewController:viewObj animated:YES];
 }
 
@@ -151,7 +115,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return wlsDataSource.count - 3;
+    return appDelegate.WLS_LISTING_ARRAY.count;
 }
 
 
@@ -163,36 +127,27 @@
     cell.backgroundColor = RGB(247, 247, 247);
     
     UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
-    //    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
-    if (indexPath.row==2 || indexPath.row==4) {
+    if ([[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 1) {
         cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
-    else if (indexPath.row==1) {
+    else if ([[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 2) {
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    else if ([[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 3) {
         cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
-    else {
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    else if ([[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 4){
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_maintenance.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
     [cell.contentView addSubview:cellImage];
     
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 5, wlsListingtable.bounds.size.width-90, 50)];
-    //    titleLabel.text = [[cctvDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
-    titleLabel.text = [wlsDataSource objectAtIndex:indexPath.row];
+    titleLabel.text = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"];
     titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.numberOfLines = 0;
     [cell.contentView addSubview:titleLabel];
-    
-    
-    //    UILabel *cellDistanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, cctvListingTable.bounds.size.width-100, 20)];
-    //    cellDistanceLabel.text = @"10 KM";
-    //    cellDistanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-    //    cellDistanceLabel.backgroundColor = [UIColor clearColor];
-    //    cellDistanceLabel.textColor = [UIColor lightGrayColor];
-    //    cellDistanceLabel.numberOfLines = 0;
-    //    cellDistanceLabel.textAlignment = NSTextAlignmentLeft;
-    //    [cell.contentView addSubview:cellDistanceLabel];
     
     
     UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 59.5, wlsListingtable.bounds.size.width, 0.5)];
@@ -223,9 +178,7 @@
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
-    
-    wlsDataSource = [[NSArray alloc] initWithObjects:@"Adam Rd OD (Camden Pk)",@"Alex Canal (Zion Rd)",@"Balmoral Rd",@"Bedok Canal (Jln Greja)",@"Bishan Rd / Bishan St 21",@"Cambridge Rd OD (CTE)",@"Derbyshire Road",@"Eng Neo OD (End Neo Ave)",@"Fort Rd/Katong Pk",@"Grover Dr", nil];
-    
+        
     wlsListingtable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
     wlsListingtable.delegate = self;
     wlsListingtable.dataSource = self;
@@ -236,9 +189,13 @@
     
     responseData = [[NSMutableData alloc] init];
     
-    if (appDelegate.WLS_LISTING_ARRAY.count==0) {
-        [self loadWLSListing];
-    }
+    wlsPageCount = 0;
+
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading..!!";
+    [self fetchWLSListing];
+    
 }
 
 

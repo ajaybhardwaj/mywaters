@@ -17,9 +17,10 @@
     AppDelegate *appDelegate;
     
     UITableView *wlsListingtable;
-    NSArray *wlsDataSource;
     
     NSURLConnection *theConnection;
+    NSInteger wlsPageCount,wlsTotalCount;
+    
 }
 @property (strong, nonatomic) NSMutableData *responseData;
 

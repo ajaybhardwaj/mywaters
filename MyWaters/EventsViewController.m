@@ -100,6 +100,21 @@
 }
 
 
+
+//*************** Method To Call ABCWaterSites API
+
+- (void) fetchEventsListing {
+    
+    if (eventsPageCount!=-1) {
+        
+        eventsPageCount = eventsPageCount + 1;
+        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"Limit",@"version", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"3",[NSString stringWithFormat:@"%ld",eventsPageCount],[NSString stringWithFormat:@"%ld",eventsSortOrder],@"10",@"1.0", nil];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_MODULES_API_URL];
+    }
+}
+
+
 // Temp Method
 
 - (void) moveToEventDetails {
@@ -209,12 +224,12 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     
-    if ([request.name localizedCaseInsensitiveCompare:EVENTS_LISTING] == NSOrderedSame) {
-        if ([[[responseString JSONValue] objectForKey:SERVER_ERRORCODE] intValue] == REQUEST_SUCCESS) {
-            
-            NSArray *tempArray = [[[responseString JSONValue] objectForKey:@"data"] objectForKey:@"events"];
-            eventsPageCount = [[[[responseString JSONValue] objectForKey:@"data"] objectForKey:@"total"] intValue];
-            
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        NSArray *tempArray = [[responseString JSONValue] objectForKey:EVENTS_RESPONSE_NAME];
+        eventsTotalCount = [[[responseString JSONValue] objectForKey:EVENTS_TOTAL_COUNT] intValue];
+        
             if (tempArray.count==0) {
                 eventsPageCount = 0;
             }
@@ -231,10 +246,12 @@
                     }
                 }
             }
-        }
         
+        [appDelegate.hud hide:YES];
         [eventsListingTableView reloadData];
-    }
+
+        }
+    
 //    DebugLog(@"%@",responseString);
     DebugLog(@"%ld",appDelegate.EVENTS_LISTING_ARRAY.count);
     DebugLog(@"%@",appDelegate.EVENTS_LISTING_ARRAY);
@@ -246,7 +263,8 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    eventsPageCount = 0;
+    eventsPageCount = -1;
+    [appDelegate.hud hide:YES];
 }
 
 
@@ -265,6 +283,18 @@
 }
 
 
+-(void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([indexPath row] == appDelegate.EVENTS_LISTING_ARRAY.count - 1) {
+        if (appDelegate.EVENTS_LISTING_ARRAY.count!=eventsTotalCount) {
+
+            [self fetchEventsListing];
+        }
+    }
+}
+
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     
@@ -274,10 +304,18 @@
     }
     
     if (tableView==filterTableView) {
+        
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         selectedFilterIndex = indexPath.row;
+        
         [filterTableView reloadData];
         [self animateFilterTable];
+        
+        [appDelegate.EVENTS_LISTING_ARRAY removeAllObjects];
+        eventsSortOrder = indexPath.row+1;
+        eventsPageCount = 0;
+        
+        [self fetchEventsListing];
     }
     else if (tableView==eventsListingTableView) {
         
@@ -305,8 +343,20 @@
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
             viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"];
             
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null])
-            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
+                viewObj.startDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"];
+                viewObj.startDateString = [CommonFunctions dateTimeFromString:viewObj.startDateString];
+            }
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
+                viewObj.endDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"];
+                viewObj.endDateString = [CommonFunctions dateTimeFromString:viewObj.endDateString];
+            }
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
+                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
+                viewObj.imageName = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"];
+            }
         }
         else {
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
@@ -326,9 +376,21 @@
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
             viewObj.addressString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"];
+
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
+                viewObj.startDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"];
+                viewObj.startDateString = [CommonFunctions dateTimeFromString:viewObj.startDateString];
+            }
             
-            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null])
-            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
+                viewObj.endDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"];
+                viewObj.endDateString = [CommonFunctions dateTimeFromString:viewObj.endDateString];
+            }
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
+                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+                viewObj.imageName = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
+            }
         }
         
         [self.navigationController pushViewController:viewObj animated:YES];
@@ -359,8 +421,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+//    UITableViewCell *cell;
     
     if (tableView==filterTableView) {
+    
+//        cell = [tableView dequeueReusableCellWithIdentifier:@"filterCells"];
+//        
+//        if (cell==nil) {
+//            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"filterCells"];
+//        }
         
         cell.backgroundColor = [UIColor blackColor];//RGB(247, 247, 247);
         
@@ -382,20 +451,79 @@
     }
     else if (tableView==eventsListingTableView) {
         
-        AsyncImageView *cellImage = [[AsyncImageView alloc] initWithFrame:CGRectMake(5, 15, 70, 70)];
-        NSString *imageURLString;
+//        cell = [tableView dequeueReusableCellWithIdentifier:@"eventCells"];
+//        
+//        if (cell==nil) {
+//            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"eventCells"];
+//        }
+        
+        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 80, 80)];
+        
+        NSString *imageURLString,*imageName;
         if (isFiltered) {
+            imageName = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"];
             imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
         }
         else {
+            imageName = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
             imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
         }
-        [cellImage setImageURL:[NSURL URLWithString:imageURLString] placeholderImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_120.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        cellImage.showActivityIndicator = YES;
         [cell.contentView addSubview:cellImage];
         
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, eventsListingTableView.bounds.size.width-100, 40)];
+        NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+        NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+        NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"Events"]];
+        
+        NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+            if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+        }
+        
+        else {
+            
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            activityIndicator.center = CGPointMake(cellImage.bounds.size.width/2, cellImage.bounds.size.height/2);
+            [cellImage addSubview:activityIndicator];
+            [activityIndicator startAnimating];
+            
+            [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                if (succeeded) {
+                    
+                    cellImage.image = image;
+                    
+                    DebugLog(@"Path %@",destinationPath);
+                    
+                    NSFileManager *fileManger=[NSFileManager defaultManager];
+                    NSError* error;
+                    
+                    if (![fileManger fileExistsAtPath:destinationPath]){
+                        
+                        if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                            ;// success
+                        else
+                        {
+                            DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                        }
+                    }
+                    
+                    NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                    [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+                }
+                else {
+                    DebugLog(@"Image Loading Failed..!!");
+                    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+                }
+                [activityIndicator stopAnimating];
+            }];
+        }
+
+        
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, eventsListingTableView.bounds.size.width-100, 40)];
         if (isFiltered) {
             titleLabel.text = [NSString stringWithFormat:@"%@",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"]];
         }
@@ -406,7 +534,7 @@
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.numberOfLines = 0;
         [cell.contentView addSubview:titleLabel];
-        
+        [titleLabel sizeToFit];
         
         NSString *startDateString,*endDateString;
         if (isFiltered) {
@@ -418,26 +546,27 @@
             endDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"];
         }
         
-        startDateString = [CommonFunctions dateForRFC3339DateTimeString:startDateString];
-        endDateString = [CommonFunctions dateForRFC3339DateTimeString:endDateString];
+        startDateString = [CommonFunctions dateTimeFromString:startDateString];
+        endDateString = [CommonFunctions dateTimeFromString:endDateString];
         
+        UILabel *startDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 50, eventsListingTableView.bounds.size.width-100, 20)];
+        startDateLabel.text = [NSString stringWithFormat:@"Start: %@",startDateString];
+        startDateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        startDateLabel.backgroundColor = [UIColor clearColor];
+        startDateLabel.textColor = [UIColor darkGrayColor];
+        [cell.contentView addSubview:startDateLabel];
+        [startDateLabel sizeToFit];
+
         
-        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, 150, 15)];
-        dateLabel.text = [NSString stringWithFormat:@"%@ - %@",startDateString,endDateString];
-        dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
-        dateLabel.backgroundColor = [UIColor clearColor];
-        dateLabel.textColor = [UIColor darkGrayColor];
-        dateLabel.numberOfLines = 0;
-        [cell.contentView addSubview:dateLabel];
-        
-        UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 65, 150, 15)];
-        timeLabel.text = [NSString stringWithFormat:@"@ %@",@"NA"];
-        timeLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:10.5];
-        timeLabel.backgroundColor = [UIColor clearColor];
-        timeLabel.textColor = [UIColor darkGrayColor];
-        timeLabel.numberOfLines = 0;
-        timeLabel.textAlignment = NSTextAlignmentLeft;
-        [cell.contentView addSubview:timeLabel];
+        UILabel *endDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 70, eventsListingTableView.bounds.size.width-100, 20)];
+        endDateLabel.text = [NSString stringWithFormat:@"End: %@",endDateString];
+        endDateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        endDateLabel.backgroundColor = [UIColor clearColor];
+        endDateLabel.textColor = [UIColor darkGrayColor];
+        endDateLabel.textAlignment = NSTextAlignmentLeft;
+        [cell.contentView addSubview:endDateLabel];
+        [endDateLabel sizeToFit];
+
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
@@ -480,7 +609,7 @@
     
     self.view.backgroundColor = RGB(247, 247, 247);
     selectedFilterIndex = 0;
-    
+    eventsSortOrder = 1;
     
     eventsListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     eventsListingTableView.delegate = self;
@@ -500,7 +629,7 @@
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     filterTableView.alpha = 0.8;
     
-    filtersArray = [[NSArray alloc] initWithObjects:@"Date",@"Distance",@"Name", nil];
+    filtersArray = [[NSArray alloc] initWithObjects:@"Date",@"Name",@"Distance", nil];
     
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;
@@ -523,9 +652,11 @@
     [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     
     
-    if (appDelegate.EVENTS_LISTING_ARRAY.count==0) {
-        [CommonFunctions grabGetRequest:EVENTS_LISTING delegate:self isNSData:NO];
-    }
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading..!!";
+
+    [self fetchEventsListing];
 }
 
 

@@ -44,4 +44,9 @@
     
 }
 
+@property (nonatomic, assign) NSInteger drainDepthType;
+@property (nonatomic, strong) NSString *wlsName,*observedTime;
+@property (nonatomic, assign) double latValue,longValue;
+
+
 @end
