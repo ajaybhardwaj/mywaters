@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import <CoreLocation/CoreLocation.h>
+#import "Base64.h"
 
 @interface FeedbackViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate,UITextViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate> {
     
@@ -25,10 +27,15 @@
     UIPickerView *feedbackPickerView;
     NSInteger selectedPickerIndex;
     
-    UIButton *picUploadbutton;
+    UIImageView *picUploadImageView;
     BOOL isFeedbackImageAvailable;
+    
+    CLLocationCoordinate2D currentLocation;
 }
 
 @property (nonatomic, assign) BOOL isNotFeedbackController;
+
+// Temp String Variables For Table Scroll
+@property (nonatomic, strong) NSString *tempLocationString,*tempCommentString,*tempNameString,*tempPhoneString,*tempEmailString;
 
 @end

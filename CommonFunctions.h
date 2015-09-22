@@ -34,6 +34,7 @@
 + (NSMutableDictionary *)extractXML:(NSMutableDictionary *)XMLDictionary;
 + (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj;
 
+
 # pragma mark - Server GET & POST Methods
 + (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data;
 + (void) grabPostRequest:(NSArray *)paramters paramtersValue:(NSArray *)values delegate:(UIViewController *)viewObj isNSData:(BOOL)data baseUrl:(NSString*) baseUrl;

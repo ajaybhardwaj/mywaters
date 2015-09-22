@@ -56,6 +56,8 @@
 		FE3239111B57AA5A00BB3DA8 /* abcwaters_grid5@2x_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FE32390B1B57AA5A00BB3DA8 /* abcwaters_grid5@2x_old.png */; };
 		FE3239121B57AA5A00BB3DA8 /* abcwaters_grid6@2x_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FE32390C1B57AA5A00BB3DA8 /* abcwaters_grid6@2x_old.png */; };
 		FE3239131B57AA5A00BB3DA8 /* abcwaters_grid7@2x_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FE32390D1B57AA5A00BB3DA8 /* abcwaters_grid7@2x_old.png */; };
+		FE3D06811BB1382800F776E2 /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3D06801BB1382800F776E2 /* Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		FE3D06851BB14C8900F776E2 /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3D06841BB14C8900F776E2 /* XMLDictionary.m */; };
 		FE4CD0FB1B54C11300A16D02 /* wls_level1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4CD0F81B54C11300A16D02 /* wls_level1@3x.png */; };
 		FE4CD0FC1B54C11300A16D02 /* wls_level2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4CD0F91B54C11300A16D02 /* wls_level2@3x.png */; };
 		FE4CD0FD1B54C11300A16D02 /* wls_level3@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4CD0FA1B54C11300A16D02 /* wls_level3@3x.png */; };
@@ -471,6 +473,10 @@
 		FE32390B1B57AA5A00BB3DA8 /* abcwaters_grid5@2x_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "abcwaters_grid5@2x_old.png"; sourceTree = "<group>"; };
 		FE32390C1B57AA5A00BB3DA8 /* abcwaters_grid6@2x_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "abcwaters_grid6@2x_old.png"; sourceTree = "<group>"; };
 		FE32390D1B57AA5A00BB3DA8 /* abcwaters_grid7@2x_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "abcwaters_grid7@2x_old.png"; sourceTree = "<group>"; };
+		FE3D067F1BB1382800F776E2 /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
+		FE3D06801BB1382800F776E2 /* Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Base64.m; sourceTree = "<group>"; };
+		FE3D06831BB14C8900F776E2 /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
+		FE3D06841BB14C8900F776E2 /* XMLDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLDictionary.m; sourceTree = "<group>"; };
 		FE4CD0F81B54C11300A16D02 /* wls_level1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wls_level1@3x.png"; sourceTree = "<group>"; };
 		FE4CD0F91B54C11300A16D02 /* wls_level2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wls_level2@3x.png"; sourceTree = "<group>"; };
 		FE4CD0FA1B54C11300A16D02 /* wls_level3@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wls_level3@3x.png"; sourceTree = "<group>"; };
@@ -1016,6 +1022,24 @@
 			name = Temp;
 			sourceTree = "<group>";
 		};
+		FE3D067E1BB137FD00F776E2 /* Base64 */ = {
+			isa = PBXGroup;
+			children = (
+				FE3D067F1BB1382800F776E2 /* Base64.h */,
+				FE3D06801BB1382800F776E2 /* Base64.m */,
+			);
+			name = Base64;
+			sourceTree = "<group>";
+		};
+		FE3D06821BB14C7800F776E2 /* XML Dictionary */ = {
+			isa = PBXGroup;
+			children = (
+				FE3D06831BB14C8900F776E2 /* XMLDictionary.h */,
+				FE3D06841BB14C8900F776E2 /* XMLDictionary.m */,
+			);
+			name = "XML Dictionary";
+			sourceTree = "<group>";
+		};
 		FE4F37571A885AFC0028903C /* Login & Sign Up */ = {
 			isa = PBXGroup;
 			children = (
@@ -1404,6 +1428,8 @@
 		FEA730431A7733BD00D274A6 /* ThirdPartyLibs */ = {
 			isa = PBXGroup;
 			children = (
+				FE3D06821BB14C7800F776E2 /* XML Dictionary */,
+				FE3D067E1BB137FD00F776E2 /* Base64 */,
 				FED999461BAAAA79007BEE55 /* SDWebImage */,
 				FE0274C11B8EF661006E947E /* XLMReader */,
 				FEE65A751B8AC38D002C5C6D /* JSON */,
@@ -2398,6 +2424,7 @@
 				FE4F375A1A8862B50028903C /* WelcomeViewController.m in Sources */,
 				FE82AC661A93312700CCC94D /* Place.m in Sources */,
 				FE82AC5A1A92DE0800CCC94D /* AugmentedRealityController.m in Sources */,
+				FE3D06811BB1382800F776E2 /* Base64.m in Sources */,
 				FEA730921A77351F00D274A6 /* HomeViewController.m in Sources */,
 				FEA730471A7733D500D274A6 /* NSDataBase64.m in Sources */,
 				FE99BE061A7B63B4000B83E8 /* RewardsListingViewController.m in Sources */,
@@ -2453,6 +2480,7 @@
 				FED999B11BAAAC65007BEE55 /* SDWebImageManager.m in Sources */,
 				FEA730981A77352F00D274A6 /* WhatsUpViewController.m in Sources */,
 				FE86914E1AE0B15E00EC2A77 /* QuickMapAnnotations.m in Sources */,
+				FE3D06851BB14C8900F776E2 /* XMLDictionary.m in Sources */,
 				FEA7307B1A77342100D274A6 /* AutoResizeImageView.m in Sources */,
 				FE647CF01BA6AF3D00C436A6 /* UPStackMenuItem.m in Sources */,
 				FEA730781A77342100D274A6 /* UnderlinedLabel.m in Sources */,

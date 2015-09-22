@@ -10,6 +10,7 @@
 #import "Constants.h"
 #import "AppDelegate.h"
 #import "CustomButtons.h"
+#import "XMLDictionary.h"
 
 @interface WeatherForecastViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     

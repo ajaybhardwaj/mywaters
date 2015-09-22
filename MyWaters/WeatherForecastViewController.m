@@ -33,6 +33,27 @@
 }
 
 
+- (void) getThreeDaysWeatherData {
+    
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://www.nea.gov.sg/api/WebAPI/?dataset=nowcast&keyref=781CF461BB6606ADE5BD65643F17817407DD6DBD4D056893"] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10
+     ];
+    
+    [request setHTTPMethod: @"GET"];
+    
+    NSError *requestError = nil;
+    NSURLResponse *urlResponse = nil;
+    
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
+    NSString *responseString  = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    
+    NSDictionary *xmlDictionary = [NSDictionary dictionaryWithXMLString:responseString];
+    
+    DebugLog(@"%@",xmlDictionary);
+}
+
+
+
 # pragma mark - UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -133,6 +154,7 @@
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
 
+    [self getThreeDaysWeatherData];
 }
 
 

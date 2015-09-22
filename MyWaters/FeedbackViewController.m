@@ -16,7 +16,7 @@
 
 @implementation FeedbackViewController
 @synthesize isNotFeedbackController;
-
+@synthesize tempLocationString,tempCommentString,tempNameString,tempPhoneString,tempEmailString;
 
 
 //*************** Method To Show UIActionSheet
@@ -26,6 +26,34 @@
     [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
 }
 
+
+//*************** Method For Converting Lat & Long To Location Name
+
+- (void) getAddressFromLatLon:(CLLocation *)bestLocation {
+    
+    NSLog(@"%f %f", bestLocation.coordinate.latitude, bestLocation.coordinate.longitude);
+    
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
+    [geocoder reverseGeocodeLocation:bestLocation
+                   completionHandler:^(NSArray *placemarks, NSError *error)
+     {
+         if (error){
+             NSLog(@"Geocode failed with error: %@", error);
+             return;
+         }
+         
+         CLPlacemark *placemark = [placemarks objectAtIndex:0];
+         NSLog(@"placemark.ISOcountryCode %@",placemark.ISOcountryCode);
+         NSLog(@"locality %@",placemark.locality);
+         NSLog(@"postalCode %@",placemark.postalCode);
+         
+         if (!tempLocationString)
+             tempLocationString = [[NSString alloc] initWithFormat:@"%@",placemark.locality];
+         else
+             tempLocationString = placemark.locality;
+         locationField.text = placemark.locality;
+     }];
+}
 
 
 //*************** Method For Submitting Feedback
@@ -37,62 +65,72 @@
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
-    else if ([commentField.text length] == 0) {
+    
+    if ([commentField.text length] == 0) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
-    else if ([nameField.text length] == 0) {
+    
+    if ([nameField.text length] == 0) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
-    else if ([CommonFunctions characterSet1Found:nameField.text]) {
+    
+    if ([CommonFunctions characterSet1Found:nameField.text]) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
         return;
     }
-    else if ([phoneField.text length] !=0) {
+    
+    if ([phoneField.text length] !=0) {
         if ([CommonFunctions characterSet2Found:phoneField.text]) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid phone number." cancel:@"OK" otherButton:nil];
+            return;
         }
-        return;
     }
-    else if ([emailField.text length] !=0) {
+    
+    if ([emailField.text length] !=0) {
         if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+            return;
         }
-        return;
     }
-    else {
-        
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading..!!";
-        
-        NSMutableDictionary *feedbackDictionary = [[NSMutableDictionary alloc] init];
-        if ([nameField.text length] != 0) {
-            [feedbackDictionary setObject:nameField.text forKey:@"name"];
-        }
-        if ([emailField.text length] !=0) {
-            [feedbackDictionary setObject:emailField.text forKey:@"email"];
-        }
-        if ([phoneField.text length] !=0) {
-            [feedbackDictionary setObject:emailField.text forKey:@"contactNo"];
-        }
-        
-        [feedbackDictionary setObject:commentField.text forKey:@"comment"];
-        
-        if (isFeedbackImageAvailable) {
-            NSData *imageData = [UIImageJPEGRepresentation(picUploadbutton.imageView.image, 1.0) base64EncodedDataWithOptions:NSDataBase64Encoding64CharacterLineLength];
-            NSString *base64ImageString = [NSString stringWithUTF8String:[imageData bytes]];
-            NSArray *tempImageArray = [NSArray arrayWithObjects:base64ImageString, nil];
-            [feedbackDictionary setObject:tempImageArray forKey:@"images"];
-        }
-        
-        
-        NSArray *parameters = [[NSArray alloc] initWithObjects:@"Feedback", nil];
-        NSArray *values = [[NSArray alloc] initWithObjects:feedbackDictionary, nil];
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_FEEDBACK_API_URL];
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading..!!";
+    
+    NSMutableDictionary *feedbackDictionary = [[NSMutableDictionary alloc] init];
+    if ([nameField.text length] != 0) {
+        [feedbackDictionary setObject:nameField.text forKey:@"name"];
+    }
+    if ([emailField.text length] !=0) {
+        [feedbackDictionary setObject:emailField.text forKey:@"email"];
+    }
+    if ([phoneField.text length] !=0) {
+        [feedbackDictionary setObject:phoneField.text forKey:@"contactNo"];
+    }
+    
+    [feedbackDictionary setObject:commentField.text forKey:@"comment"];
+    [feedbackDictionary setObject:locationField.text forKey:@"locationName"];
+    [feedbackDictionary setObject:[NSString stringWithFormat:@"%f",currentLocation.latitude] forKey:@"locationLatitude"];
+    [feedbackDictionary setObject:[NSString stringWithFormat:@"%f",currentLocation.longitude] forKey:@"locationLongitude"];
+    
+    if (isFeedbackImageAvailable) {
 
+        NSData* data = UIImageJPEGRepresentation(picUploadImageView.image, 1.0f);
+        NSString *base64ImageString = [Base64 encode:data];
+        
+        NSArray *tempImageArray = [NSArray arrayWithObjects:base64ImageString, nil];
+        [feedbackDictionary setObject:tempImageArray forKey:@"images"];
     }
+    
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"Feedback", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:feedbackDictionary, nil];
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_FEEDBACK_API_URL];
+    
+    
 }
 
 
@@ -189,11 +227,14 @@
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 120)];
     [headerView setBackgroundColor:RGB(247, 247, 247)];
     
-    picUploadbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-    picUploadbutton.frame = CGRectMake((headerView.bounds.size.width/2)-40, 20, 80, 80);
-    [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [picUploadbutton addTarget:self action:@selector(showActionSheet) forControlEvents:UIControlEventTouchUpInside];
-    [headerView addSubview:picUploadbutton];
+    
+    picUploadImageView =[[UIImageView alloc] initWithFrame:CGRectMake((headerView.bounds.size.width/2)-40, 20, 80, 80)];
+    [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [headerView addSubview:picUploadImageView];
+    picUploadImageView.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showActionSheet)];
+    [picUploadImageView addGestureRecognizer:tap];
     
     [feedbackTableView setTableHeaderView:headerView];
 }
@@ -206,20 +247,23 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    
+    DebugLog(@"%@",responseString);
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [CommonFunctions showAlertView:self title:[[responseString JSONValue] objectForKey:@"Message"] msg:nil cancel:@"OK" otherButton:nil];
         
         isFeedbackImageAvailable = NO;
-        [picUploadbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         commentField.text = @"";
         emailField.text = @"";
         phoneField.text = @"";
         
         [appDelegate.hud hide:YES];
     }
-    
+    else {
+        [appDelegate.hud hide:YES];
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
 }
 
 - (void) requestFailed:(ASIHTTPRequest *)request {
@@ -275,7 +319,7 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
-    [picUploadbutton setBackgroundImage:chosenImage forState:UIControlStateNormal];
+    [picUploadImageView setImage:chosenImage];
     isFeedbackImageAvailable = YES;
     
     [picker dismissViewControllerAnimated:YES completion:NULL];
@@ -335,6 +379,60 @@
     
     selectedPickerIndex = row;
 }
+
+
+
+
+# pragma mark - UIScrollViewDelegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    nameField.text = tempNameString;
+    phoneField.text = tempPhoneString;
+    emailField.text = tempEmailString;
+    locationField.text = tempLocationString;
+    commentField.text = tempCommentString;
+}
+
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
+    if ([nameField.text length]!=0) {
+        if (!tempNameString)
+            tempNameString = [[NSString alloc] initWithFormat:@"%@",nameField.text];
+        else
+            tempNameString = nameField.text;
+    }
+    
+    if ([phoneField.text length]!=0) {
+        if (!tempPhoneString)
+            tempPhoneString = [[NSString alloc] initWithFormat:@"%@",phoneField.text];
+        else
+            tempPhoneString = phoneField.text;
+    }
+    
+    if ([emailField.text length]!=0) {
+        if (!tempEmailString)
+            tempEmailString = [[NSString alloc] initWithFormat:@"%@",emailField.text];
+        else
+            tempEmailString = emailField.text;
+    }
+    
+    if ([commentField.text length]!=0) {
+        if (!tempCommentString)
+            tempCommentString = [[NSString alloc] initWithFormat:@"%@",commentField.text];
+        else
+            tempCommentString = commentField.text;
+    }
+    
+    if ([locationField.text length]!=0) {
+        if (!tempLocationString)
+            tempLocationString = [[NSString alloc] initWithFormat:@"%@",locationField.text];
+        else
+            tempLocationString = locationField.text;
+    }
+}
+
 
 
 # pragma mark - UITableViewDelegate Methods
@@ -589,8 +687,58 @@
 }
 
 
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    
+    if ([commentField.text length]!=0) {
+        if (!tempCommentString)
+            tempCommentString = [[NSString alloc] initWithFormat:@"%@",phoneField.text];
+        else
+            tempCommentString = commentField.text;
+    }
+}
+
 
 # pragma mark - UITextFieldDelegate Methods
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField  {
+    
+    if (textField==nameField) {
+        if ([nameField.text length]!=0) {
+            if (!tempNameString)
+                tempNameString = [[NSString alloc] initWithFormat:@"%@",nameField.text];
+            else
+                tempNameString = nameField.text;
+        }
+    }
+    
+    if (textField==phoneField) {
+        if ([phoneField.text length]!=0) {
+            if (!tempPhoneString)
+                tempPhoneString = [[NSString alloc] initWithFormat:@"%@",phoneField.text];
+            else
+                tempPhoneString = phoneField.text;
+        }
+    }
+    
+    if (textField==emailField) {
+        if ([emailField.text length]!=0) {
+            if (!tempEmailString)
+                tempEmailString = [[NSString alloc] initWithFormat:@"%@",emailField.text];
+            else
+                tempEmailString = emailField.text;
+        }
+    }
+    
+    if (locationField==nameField) {
+        if ([locationField.text length]!=0) {
+            if (!tempLocationString)
+                tempLocationString = [[NSString alloc] initWithFormat:@"%@",locationField.text];
+            else
+                tempLocationString = locationField.text;
+        }
+    }
+}
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
@@ -662,6 +810,7 @@
     
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_call"]];
     
+    
     fieldIndex = 1;
     
     isFloodSubmission = NO;
@@ -683,8 +832,8 @@
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
-    //    submitButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:18];
+    [submitButton addTarget:self action:@selector(submitUserFeedback) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:submitButton];
     
     [self createFeedbackTableHeader];
@@ -711,6 +860,11 @@
     
     [pickerbackground addSubview:feedbackPickerView];
     [appDelegate.window addSubview:pickerbackground];
+    
+    
+    
+    
+    
 }
 
 
@@ -757,6 +911,11 @@
     
     [self.view addGestureRecognizer:swipeGesture];
     
+    currentLocation.latitude = 1.2912500;
+    currentLocation.longitude = 103.7870230;
+    
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:currentLocation.latitude longitude:currentLocation.longitude];
+    [self getAddressFromLatLon:location];
 }
 
 
