@@ -29,6 +29,59 @@
 
 
 
+//*************** Method To Get Nowcast Weather XML Data
+
+- (void) getTwelveHourWeatherData {
+    
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:TWELVE_HOUR_FORECAST] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10];
+    
+    [request setHTTPMethod: @"GET"];
+    
+    NSError *requestError = nil;
+    NSURLResponse *urlResponse = nil;
+    
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
+    NSString *responseString  = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    
+    NSDictionary *xmlDictionary = [NSDictionary dictionaryWithXMLString:responseString];
+    twelveHourForecastDictionary = [[xmlDictionary objectForKey:@"channel"] valueForKey:@"item"];
+    
+    if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"FD"] || [[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"FN"]) {
+        bigTempSubtitle.text = @"FAIR";
+    }
+    else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"PC"]) {
+        bigTempSubtitle.text = @"PARTLY CLOUDY";
+    }
+    else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"CD"]) {
+        bigTempSubtitle.text = @"CLOUDY";
+    }
+    else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"HZ"]) {
+        bigTempSubtitle.text = @"HAZY";
+    }
+    else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"WD"]) {
+        bigTempSubtitle.text = @"WINDY";
+    }
+    else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"RA"]) {
+        bigTempSubtitle.text = @"RAINY";
+    }
+    else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"PS"]) {
+        bigTempSubtitle.text = @"PASSING SHOWERS";
+    }
+    else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"SH"]) {
+        bigTempSubtitle.text = @"SHOWERS";
+    }
+    else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"TS"]) {
+        bigTempSubtitle.text = @"THUNDERY SHOWERS";
+    }
+    
+    
+    bigWeatherTempTitle.text = [NSString stringWithFormat:@"Max %@°C - Min %@°C",[[twelveHourForecastDictionary objectForKey:@"temperature"] objectForKey:@"_high"],[[twelveHourForecastDictionary objectForKey:@"temperature"] objectForKey:@"_low"]];
+    bigTimeLabel.text = [NSString stringWithFormat:@"%@ - %@",[[twelveHourForecastDictionary objectForKey:@"forecastValidityFrom"] objectForKey:@"_time"],[[twelveHourForecastDictionary objectForKey:@"forecastValidityTill"] objectForKey:@"_time"]];
+}
+
+
+
 //*************** Method To Handle Long Press Gesture For Default Location PIN
 
 - (void)handleLongPress:(UIGestureRecognizer *)gestureRecognizer
@@ -485,6 +538,8 @@
                     //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
                     //                    [columnView addSubview:dotsbutton];
                     
+                    isShowingWeatherModule = YES;
+                    
                     bigWeatherIcon = [UIButton buttonWithType:UIButtonTypeCustom];
                     bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 40, 20, 80, 80);
                     [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -492,7 +547,7 @@
                     bigWeatherIcon.userInteractionEnabled = NO;
                     
                     bigTempSubtitle = [[UILabel alloc] initWithFrame:CGRectMake(0, bigWeatherIcon.frame.origin.y+bigWeatherIcon.bounds.size.height-5, columnView.bounds.size.width, 15)];
-                    bigTempSubtitle.text = @"CLOUDY";
+                    bigTempSubtitle.text = @"";
                     bigTempSubtitle.font = [UIFont fontWithName:ROBOTO_BOLD size:14];
                     bigTempSubtitle.textColor = [UIColor blackColor];
                     bigTempSubtitle.backgroundColor = [UIColor clearColor];
@@ -501,7 +556,7 @@
                     [columnView addSubview:bigTempSubtitle];
                     
                     bigWeatherTempTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, bigTempSubtitle.frame.origin.y+bigTempSubtitle.bounds.size.height+3, columnView.bounds.size.width, 15)];
-                    bigWeatherTempTitle.text = [NSString stringWithFormat:@"29%@",@"°"];
+                    bigWeatherTempTitle.text = [NSString stringWithFormat:@""];
                     bigWeatherTempTitle.font = [UIFont fontWithName:ROBOTO_BOLD size:13];
                     bigWeatherTempTitle.textColor = [UIColor blackColor];
                     bigWeatherTempTitle.backgroundColor = [UIColor clearColor];
@@ -509,7 +564,7 @@
                     [columnView addSubview:bigWeatherTempTitle];
                     
                     bigTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, bigWeatherTempTitle.frame.origin.y+bigWeatherTempTitle.bounds.size.height+3, columnView.bounds.size.width, 15)];
-                    bigTimeLabel.text = @"4:00 PM - 6:00 PM";
+                    bigTimeLabel.text = @"";
                     bigTimeLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:12];
                     bigTimeLabel.textColor = [UIColor lightGrayColor];
                     bigTimeLabel.backgroundColor = [UIColor clearColor];
@@ -874,6 +929,8 @@
                     //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
                     //                    [columnView addSubview:dotsbutton];
                     
+                    isShowingWeatherModule = YES;
+                    
                     bigWeatherIcon = [UIButton buttonWithType:UIButtonTypeCustom];
                     bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 40, 20, 80, 80);
                     [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -881,7 +938,7 @@
                     bigWeatherIcon.userInteractionEnabled = NO;
                     
                     bigTempSubtitle = [[UILabel alloc] initWithFrame:CGRectMake(0, bigWeatherIcon.frame.origin.y+bigWeatherIcon.bounds.size.height-5, columnView.bounds.size.width, 15)];
-                    bigTempSubtitle.text = @"CLOUDY";
+                    bigTempSubtitle.text = @"";
                     bigTempSubtitle.font = [UIFont fontWithName:ROBOTO_BOLD size:14];
                     bigTempSubtitle.textColor = [UIColor blackColor];
                     bigTempSubtitle.backgroundColor = [UIColor clearColor];
@@ -890,7 +947,7 @@
                     [columnView addSubview:bigTempSubtitle];
                     
                     bigWeatherTempTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, bigTempSubtitle.frame.origin.y+bigTempSubtitle.bounds.size.height+3, columnView.bounds.size.width, 15)];
-                    bigWeatherTempTitle.text = [NSString stringWithFormat:@"29%@",@"°"];
+                    bigWeatherTempTitle.text = [NSString stringWithFormat:@""];
                     bigWeatherTempTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13];
                     bigWeatherTempTitle.textColor = [UIColor blackColor];
                     bigWeatherTempTitle.backgroundColor = [UIColor clearColor];
@@ -898,7 +955,7 @@
                     [columnView addSubview:bigWeatherTempTitle];
                     
                     bigTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, bigWeatherTempTitle.frame.origin.y+bigWeatherTempTitle.bounds.size.height+3, columnView.bounds.size.width, 15)];
-                    bigTimeLabel.text = @"4:00 PM - 6:00 PM";
+                    bigTimeLabel.text = @"";
                     bigTimeLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
                     bigTimeLabel.textColor = [UIColor lightGrayColor];
                     bigTimeLabel.backgroundColor = [UIColor clearColor];
@@ -1396,6 +1453,9 @@
     
     [self.view addGestureRecognizer:swipeGesture];
     
+    if (isShowingWeatherModule) {
+        [self getTwelveHourWeatherData];
+    }
 }
 
 

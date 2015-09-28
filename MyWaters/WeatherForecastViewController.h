@@ -18,6 +18,17 @@
     
     UITableView *weatherTableView;
     NSArray *weatherDataSource;
+    NSDictionary *nowCastWeatherData,*twelveHourWeatherData,*threeDayWeatherData;
+    
+    UILabel *threeHourDateTimeLabel;
+    UIImageView *threeHourBigIcon;
+    
+    UILabel *twelveHourTempLabel;
+    
+    UILabel *threeDayFirstDateLabel,*threeDaySecondDateLabel,*threeDayThirdDateLabel;
+    UIImageView *threeDayFirstIcon,*threeDaySecondIcon,*threeDayThirdIcon;
+    UILabel *threeDayFirstTempLabel,*threeDaySecondTempLabel,*threeDayThirdTempLabel;
+    
 }
 
 @end

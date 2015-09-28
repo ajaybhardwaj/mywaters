@@ -188,8 +188,76 @@
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
     }
     else {
+        
         [self submitSignupDetails];
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading..!!";
+        
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        NSMutableArray *values = [[NSMutableArray alloc] init];
+        
+        [parameters addObject:@"Profile.Name"];
+        [values addObject:nameField.text];
+        
+        
+        [parameters addObject:@"Profile.Email"];
+        [values addObject:emailField.text];
+        
+        
+        [parameters addObject:@"Profile.Password"];
+        [values addObject:passField.text];
+        
+        
+        if (isProfilePictureSelected) {
+            
+            NSData* data = UIImageJPEGRepresentation(profileImageView.image, 1.0f);
+            NSString *base64ImageString = [Base64 encode:data];
+            
+            [parameters addObject:@"Profile.ImageBase64"];
+            [values addObject:base64ImageString];
+            
+        }
+        
+        [parameters addObject:@"Profile.IsFriendOfWater"];
+        if (isTermsAgree) {
+            [values addObject:@"true"];
+        }
+        else {
+            [values addObject:@"false"];
+        }
+                
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,SIGNUP_API_URL]];
     }
+}
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    DebugLog(@"%@",responseString);
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [appDelegate.hud hide:YES];
+        OTPViewController *viewObj = [[OTPViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:YES];
+    }
+    else {
+        [appDelegate.hud hide:YES];
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
+    [appDelegate.hud hide:YES];
 }
 
 
@@ -395,7 +463,8 @@
     
     profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/2)-50, facebookButton.frame.origin.y+facebookButton.bounds.size.height+15, 100, 100)];
     [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    profileImageView.layer.cornerRadius = 10;
+    profileImageView.layer.cornerRadius = profileImageView.bounds.size.width/2;
+    profileImageView.layer.masksToBounds = YES;
     [backgroundScrollView addSubview:profileImageView];
     profileImageView.userInteractionEnabled = YES;
     
@@ -533,13 +602,12 @@
     skipButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:15];
     skipButton.tag = 6;
     skipButton.frame = CGRectMake(0, backButton.frame.origin.y+backButton.bounds.size.height+5, self.view.bounds.size.width, 30);
-    [skipButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
     [skipButton addTarget:self action:@selector(skipSignUpProcess) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:skipButton];
     
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
-    swipeGesture.direction = UISwipeGestureRecognizerDirectionRight;
-    [backgroundScrollView addGestureRecognizer:swipeGesture];
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
+//    swipeGesture.direction = UISwipeGestureRecognizerDirectionRight;
+//    [backgroundScrollView addGestureRecognizer:swipeGesture];
     
     if (IS_IPHONE_4_OR_LESS) {
         backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 580);

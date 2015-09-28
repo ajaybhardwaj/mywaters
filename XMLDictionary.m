@@ -73,9 +73,9 @@
         _collapseTextNodes = YES;
         _stripEmptyNodes = YES;
         _trimWhiteSpace = YES;
-        _alwaysUseArrays = YES;
+        _alwaysUseArrays = NO;
         _preserveComments = NO;
-        _wrapRootNode = NO;
+        _wrapRootNode = YES;
     }
     return self;
 }

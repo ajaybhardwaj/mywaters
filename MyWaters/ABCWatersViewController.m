@@ -35,8 +35,8 @@
         
         abcWatersPageCount = abcWatersPageCount + 1;
         NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"version", nil];
-        NSArray *values = [[NSArray alloc] initWithObjects:@"2",[NSString stringWithFormat:@"%ld",abcWatersPageCount],@"2",@"1.0", nil];
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_MODULES_API_URL];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"2",[NSString stringWithFormat:@"%d",abcWatersPageCount],@"2",@"1.0", nil];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
     }
 }
 
@@ -337,8 +337,7 @@
     else
     {
         isFiltered = true;
-        filteredDataSource = [[NSMutableArray alloc] init];
-        
+        [filteredDataSource removeAllObjects];
         for (int i=0; i<appDelegate.ABC_WATERS_LISTING_ARRAY.count; i++) {
             
             NSRange nameRange = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"siteName"] rangeOfString:text options:NSCaseInsensitiveSearch];
@@ -671,6 +670,8 @@
     filterTableView.alpha = 0.8;
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
+    filteredDataSource = [[NSMutableArray alloc] init];
+
     abcWatersPageCount = 0;
     //
     //    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];

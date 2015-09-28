@@ -47,7 +47,9 @@
     
     MKMapView *quickMap;
     QuickMapAnnotations *annotation1,*longPressLocationAnnotation;
-
+    
+    NSDictionary *twelveHourForecastDictionary;
+    BOOL isShowingWeatherModule;
     
     //*************** Demo App UI Variables
     UIButton *quickMapButton,*whatsUpButton,*cctvButton,*reportButton;

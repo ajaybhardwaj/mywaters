@@ -10,17 +10,20 @@
 #import "AppDelegate.h"
 #import "CCTVDetailViewController.h"
 
-@interface CCTVListingController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
+@interface CCTVListingController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UISearchBarDelegate> {
     
     AppDelegate *appDelegate;
     
     UITableView *cctvListingTable,*filterTableView;
-    NSArray *cctvDataSource,*filtersArray;
+    NSArray *filtersArray;
     
-    BOOL isShowingFilter,isShowingSearchBar;
+    NSMutableArray *filteredDataSource;
+    
+    BOOL isShowingFilter,isShowingSearchBar,isFiltered;
     NSInteger selectedFilterIndex;
+    UISearchBar *listinSearchBar;
 
-    UITextField *searchField;
+    NSInteger cctvPageCount;
 }
 
 @end

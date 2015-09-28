@@ -89,6 +89,10 @@
 		FE4F377A1A88A6DC0028903C /* icon_tick@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37781A88A6DC0028903C /* icon_tick@3x.png */; };
 		FE54B33C1B7067BE00314DA4 /* MyWaters.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = FE54B33B1B7067BE00314DA4 /* MyWaters.sqlite */; };
 		FE54B3411B70A0C300314DA4 /* icn_waterlevel_75-90_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE54B3401B70A0C300314DA4 /* icn_waterlevel_75-90_big@3x.png */; };
+		FE553A181BB4E9AD0009CD6C /* cloudy@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE553A141BB4E9AD0009CD6C /* cloudy@3x.png */; };
+		FE553A191BB4E9AD0009CD6C /* rainy@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE553A151BB4E9AD0009CD6C /* rainy@3x.png */; };
+		FE553A1A1BB4E9AD0009CD6C /* sunny@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE553A161BB4E9AD0009CD6C /* sunny@3x.png */; };
+		FE553A1B1BB4E9AD0009CD6C /* thunder@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE553A171BB4E9AD0009CD6C /* thunder@3x.png */; };
 		FE5A46A71A8C57AF00517FB5 /* icn_addtofavorites@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE5A46A31A8C57AF00517FB5 /* icn_addtofavorites@3x.png */; };
 		FE5A46A81A8C57AF00517FB5 /* icn_favorited@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE5A46A41A8C57AF00517FB5 /* icn_favorited@3x.png */; };
 		FE5A46A91A8C57AF00517FB5 /* icn_notifyme@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE5A46A51A8C57AF00517FB5 /* icn_notifyme@3x.png */; };
@@ -396,6 +400,9 @@
 		FEF4C6D21ACBC15A00C57304 /* icn_rainarea_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF4C6D11ACBC15A00C57304 /* icn_rainarea_big@3x.png */; };
 		FEF4C6D41ACBC16B00C57304 /* icn_cctv_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF4C6D31ACBC16B00C57304 /* icn_cctv_big@3x.png */; };
 		FEF4C6D61ACBC18100C57304 /* icn_waterlevel_big@3x_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF4C6D51ACBC18100C57304 /* icn_waterlevel_big@3x_old.png */; };
+		FEFB4CCB1BB931330040F105 /* OTPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEFB4CCA1BB931330040F105 /* OTPViewController.m */; settings = {ASSET_TAGS = (); }; };
+		FEFB4CCD1BB93D210040F105 /* otpline@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFB4CCC1BB93D210040F105 /* otpline@3x.png */; settings = {ASSET_TAGS = (); }; };
+		FEFB4CCF1BB93D840040F105 /* otpline_bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFB4CCE1BB93D840040F105 /* otpline_bg@3x.png */; settings = {ASSET_TAGS = (); }; };
 		FEFBFF211A80AB9400E485E9 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */; };
 		FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */; };
 		FEFBFF2C1A80D24E00E485E9 /* icn_call@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */; };
@@ -510,6 +517,10 @@
 		FE4F37781A88A6DC0028903C /* icon_tick@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_tick@3x.png"; sourceTree = "<group>"; };
 		FE54B33B1B7067BE00314DA4 /* MyWaters.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyWaters.sqlite; sourceTree = "<group>"; };
 		FE54B3401B70A0C300314DA4 /* icn_waterlevel_75-90_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_75-90_big@3x.png"; sourceTree = "<group>"; };
+		FE553A141BB4E9AD0009CD6C /* cloudy@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cloudy@3x.png"; sourceTree = "<group>"; };
+		FE553A151BB4E9AD0009CD6C /* rainy@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainy@3x.png"; sourceTree = "<group>"; };
+		FE553A161BB4E9AD0009CD6C /* sunny@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sunny@3x.png"; sourceTree = "<group>"; };
+		FE553A171BB4E9AD0009CD6C /* thunder@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "thunder@3x.png"; sourceTree = "<group>"; };
 		FE5A46A31A8C57AF00517FB5 /* icn_addtofavorites@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_addtofavorites@3x.png"; sourceTree = "<group>"; };
 		FE5A46A41A8C57AF00517FB5 /* icn_favorited@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_favorited@3x.png"; sourceTree = "<group>"; };
 		FE5A46A51A8C57AF00517FB5 /* icn_notifyme@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_notifyme@3x.png"; sourceTree = "<group>"; };
@@ -927,6 +938,10 @@
 		FEF4C6D11ACBC15A00C57304 /* icn_rainarea_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_rainarea_big@3x.png"; sourceTree = "<group>"; };
 		FEF4C6D31ACBC16B00C57304 /* icn_cctv_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_cctv_big@3x.png"; sourceTree = "<group>"; };
 		FEF4C6D51ACBC18100C57304 /* icn_waterlevel_big@3x_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_waterlevel_big@3x_old.png"; sourceTree = "<group>"; };
+		FEFB4CC91BB931330040F105 /* OTPViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTPViewController.h; sourceTree = "<group>"; };
+		FEFB4CCA1BB931330040F105 /* OTPViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTPViewController.m; sourceTree = "<group>"; };
+		FEFB4CCC1BB93D210040F105 /* otpline@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "otpline@3x.png"; sourceTree = "<group>"; };
+		FEFB4CCE1BB93D840040F105 /* otpline_bg@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "otpline_bg@3x.png"; sourceTree = "<group>"; };
 		FEFBFF201A80AB9400E485E9 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		FEFBFF271A80D24E00E485E9 /* icn_arrow_down@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_arrow_down@3x.png"; sourceTree = "<group>"; };
 		FEFBFF281A80D24E00E485E9 /* icn_call@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_call@3x.png"; sourceTree = "<group>"; };
@@ -1058,6 +1073,8 @@
 		FE4F37611A8862E70028903C /* Login & SignUp */ = {
 			isa = PBXGroup;
 			children = (
+				FEFB4CCE1BB93D840040F105 /* otpline_bg@3x.png */,
+				FEFB4CCC1BB93D210040F105 /* otpline@3x.png */,
 				FE3238F51B576C8400BB3DA8 /* textfield_bg@3x.png */,
 				FE3238F31B576B4F00BB3DA8 /* login_top_volley@3x.png */,
 				FE4F37771A88A6DC0028903C /* checkbox@3x.png */,
@@ -1119,6 +1136,10 @@
 				FE6679B21ACD176D0036198D /* icn_cloudy_weather@3x.png */,
 				FE6679B31ACD176D0036198D /* icn_rainy_weather@3x.png */,
 				FE6679B41ACD176D0036198D /* icn_sunny_weather@3x.png */,
+				FE553A141BB4E9AD0009CD6C /* cloudy@3x.png */,
+				FE553A151BB4E9AD0009CD6C /* rainy@3x.png */,
+				FE553A161BB4E9AD0009CD6C /* sunny@3x.png */,
+				FE553A171BB4E9AD0009CD6C /* thunder@3x.png */,
 			);
 			name = "Weather Forecast";
 			sourceTree = "<group>";
@@ -1368,6 +1389,7 @@
 		FEA7301C1A772FDD00D274A6 /* MyWaters */ = {
 			isa = PBXGroup;
 			children = (
+				FEFB4CC81BB931220040F105 /* OTP Verification */,
 				FEBA996D1ADCB3FE00ED3555 /* Water Level Sensors */,
 				FE6679AD1ACCE2140036198D /* Weather Forecast */,
 				FE4F37571A885AFC0028903C /* Login & Sign Up */,
@@ -1971,6 +1993,15 @@
 			name = "Quick Map";
 			sourceTree = "<group>";
 		};
+		FEFB4CC81BB931220040F105 /* OTP Verification */ = {
+			isa = PBXGroup;
+			children = (
+				FEFB4CC91BB931330040F105 /* OTPViewController.h */,
+				FEFB4CCA1BB931330040F105 /* OTPViewController.m */,
+			);
+			name = "OTP Verification";
+			sourceTree = "<group>";
+		};
 		FEFCD26C1B05A0D600B7A0DD /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -2137,6 +2168,7 @@
 				FED779721B2549C1003C1003 /* icn_waterlevel_75-90@3x_old.png in Resources */,
 				FEF4C6D41ACBC16B00C57304 /* icn_cctv_big@3x.png in Resources */,
 				FE25CB8F1B5CF98A00A5B2B3 /* profile_points@2x.png in Resources */,
+				FE553A1B1BB4E9AD0009CD6C /* thunder@3x.png in Resources */,
 				FE7FD08F1A7F53CE002A05CB /* icn_filter@3x.png in Resources */,
 				FE3239101B57AA5A00BB3DA8 /* abcwaters_grid4@2x_old.png in Resources */,
 				FE8845E01AB6B3EE005537C6 /* w3.png in Resources */,
@@ -2209,6 +2241,7 @@
 				FE3238F81B57809B00BB3DA8 /* welcome_background@3x.png in Resources */,
 				FE6679B91ACD33270036198D /* icn_cctv_small_greyout@3x.png in Resources */,
 				FEC313521B79A35800AC2E08 /* icn_poloroid_white@3x.png in Resources */,
+				FE553A191BB4E9AD0009CD6C /* rainy@3x.png in Resources */,
 				FE4F376D1A8863390028903C /* image_waterwally@3x.png in Resources */,
 				FEFCD2671B059AE700B7A0DD /* icn_distance_pink@3x.png in Resources */,
 				FE4F37681A8863390028903C /* btn_blue@3x.png in Resources */,
@@ -2243,6 +2276,7 @@
 				FEE04EB81AD783B000BEA6C6 /* icn_instagram_whatsup@3x.png in Resources */,
 				FEC3134E1B79A35800AC2E08 /* icn_gift_white@3x.png in Resources */,
 				FEC631F21B2A6F000006A885 /* CCTV-1@3x.png in Resources */,
+				FE553A1A1BB4E9AD0009CD6C /* sunny@3x.png in Resources */,
 				FE4CD1061B54F44200A16D02 /* icn_waterlevel_75-90@3x.png in Resources */,
 				FEFCD2681B059AE700B7A0DD /* icn_distance_turqoise@3x.png in Resources */,
 				FEB02A071AD62D62004B7DDF /* icn_add@3x.png in Resources */,
@@ -2298,6 +2332,7 @@
 				FE5A46A71A8C57AF00517FB5 /* icn_addtofavorites@3x.png in Resources */,
 				FE25CB721B5CDF1E00A5B2B3 /* 2_color@3x.png in Resources */,
 				FE96257B1B565F3600A25BCA /* 7b_waterlevelsensor_detail_options.png in Resources */,
+				FEFB4CCF1BB93D840040F105 /* otpline_bg@3x.png in Resources */,
 				FE3238F11B5761BB00BB3DA8 /* Icon_29.png in Resources */,
 				FE98F04C1ABC18A000D5FB5B /* icn_gallery@3x.png in Resources */,
 				FE4CD1031B54F1C000A16D02 /* icn_floodinfo_userfeedback_submission_small_greyout@3x.png in Resources */,
@@ -2344,6 +2379,8 @@
 				FE4F376F1A8870DC0028903C /* welcome_background@3x_old.png in Resources */,
 				FEE04EB71AD783B000BEA6C6 /* icn_facebook_whatsup@3x.png in Resources */,
 				FE25CB7E1B5CE7CE00A5B2B3 /* abcwaters_grid1@3x.png in Resources */,
+				FE553A181BB4E9AD0009CD6C /* cloudy@3x.png in Resources */,
+				FEFB4CCD1BB93D210040F105 /* otpline@3x.png in Resources */,
 				FE99BE031A7B6316000B83E8 /* profile.png in Resources */,
 				FE8C1C3A1AB292FA009D33E4 /* icn_waterlevel@3x.png in Resources */,
 				FED72CD81ADB7FED00C4FDDB /* icn_favorited_cctv@3x.png in Resources */,
@@ -2448,6 +2485,7 @@
 				FEA730951A77352700D274A6 /* NotificationsViewController.m in Sources */,
 				FEE65A6C1B8ABB55002C5C6D /* ASIAuthenticationDialog.m in Sources */,
 				FED999AE1BAAAC65007BEE55 /* SDWebImageDecoder.m in Sources */,
+				FEFB4CCB1BB931330040F105 /* OTPViewController.m in Sources */,
 				FED999B81BAAAC65007BEE55 /* UIImageView+WebCache.m in Sources */,
 				FED999B71BAAAC65007BEE55 /* UIImageView+HighlightedWebCache.m in Sources */,
 				FEA730841A77343D00D274A6 /* ViewControllerHelper.m in Sources */,
@@ -2546,8 +2584,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2567,7 +2605,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2589,8 +2627,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2603,7 +2641,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2614,14 +2652,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -2631,14 +2669,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
@@ -2647,8 +2685,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -2660,7 +2698,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Debug;
@@ -2669,8 +2707,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -2678,7 +2716,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Release;

@@ -110,7 +110,7 @@
         eventsPageCount = eventsPageCount + 1;
         NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"Limit",@"version", nil];
         NSArray *values = [[NSArray alloc] initWithObjects:@"3",[NSString stringWithFormat:@"%ld",eventsPageCount],[NSString stringWithFormat:@"%ld",eventsSortOrder],@"10",@"1.0", nil];
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_MODULES_API_URL];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
     }
 }
 
@@ -189,7 +189,7 @@
     else
     {
         isFiltered = true;
-        filteredDataSource = [[NSMutableArray alloc] init];
+        [filteredDataSource removeAllObjects];
         
         for (int i=0; i<appDelegate.EVENTS_LISTING_ARRAY.count; i++) {
             
@@ -297,11 +297,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    
-    if (isShowingSearchBar) {
-        [self animateSearchBar];
-        return;
-    }
+//    if (isShowingSearchBar) {
+//        [self animateSearchBar];
+//        return;
+//    }
     
     if (tableView==filterTableView) {
         
@@ -630,6 +629,7 @@
     filterTableView.alpha = 0.8;
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Date",@"Name",@"Distance", nil];
+    filteredDataSource = [[NSMutableArray alloc] init];
     
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;

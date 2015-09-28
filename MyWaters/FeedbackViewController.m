@@ -99,36 +99,52 @@
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     appDelegate.hud.labelText = @"Loading..!!";
     
-    NSMutableDictionary *feedbackDictionary = [[NSMutableDictionary alloc] init];
+    NSMutableArray *parameters = [[NSMutableArray alloc] init];
+    NSMutableArray *values = [[NSMutableArray alloc] init];
+    
     if ([nameField.text length] != 0) {
-        [feedbackDictionary setObject:nameField.text forKey:@"name"];
+        [parameters addObject:@"Feedback.name"];
+        [values addObject:nameField.text];
     }
     if ([emailField.text length] !=0) {
-        [feedbackDictionary setObject:emailField.text forKey:@"email"];
+        [parameters addObject:@"Feedback.email"];
+        [values addObject:emailField.text];
     }
     if ([phoneField.text length] !=0) {
-        [feedbackDictionary setObject:phoneField.text forKey:@"contactNo"];
+        [parameters addObject:@"Feedback.contactNo"];
+        [values addObject:phoneField.text];
     }
     
-    [feedbackDictionary setObject:commentField.text forKey:@"comment"];
-    [feedbackDictionary setObject:locationField.text forKey:@"locationName"];
-    [feedbackDictionary setObject:[NSString stringWithFormat:@"%f",currentLocation.latitude] forKey:@"locationLatitude"];
-    [feedbackDictionary setObject:[NSString stringWithFormat:@"%f",currentLocation.longitude] forKey:@"locationLongitude"];
+    [parameters addObject:@"Feedback.comment"];
+    [values addObject:commentField.text];
     
+    [parameters addObject:@"Feedback.locationName"];
+    [values addObject:locationField.text];
+
+    [parameters addObject:@"Feedback.locationLatitude"];
+    [values addObject:[NSString stringWithFormat:@"%f",currentLocation.latitude]];
+
+    [parameters addObject:@"Feedback.locationLongitude"];
+    [values addObject:[NSString stringWithFormat:@"%f",currentLocation.longitude]];
+
+
     if (isFeedbackImageAvailable) {
 
         NSData* data = UIImageJPEGRepresentation(picUploadImageView.image, 1.0f);
         NSString *base64ImageString = [Base64 encode:data];
         
-        NSArray *tempImageArray = [NSArray arrayWithObjects:base64ImageString, nil];
-        [feedbackDictionary setObject:tempImageArray forKey:@"images"];
+        [parameters addObject:@"Feedback.images[0]"];
+        [values addObject:base64ImageString];
+        
     }
     
     
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"Feedback", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:feedbackDictionary, nil];
+//    NSArray *parameters = [[NSArray alloc] initWithObjects:@"Feedback", nil];
+//    NSArray *values = [[NSArray alloc] initWithObjects:feedbackDictionary, nil];
     
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_FEEDBACK_API_URL];
+    DebugLog(@"%@---%@",parameters,values);
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,FEEDBACK_API_URL]];
     
     
 }
@@ -647,6 +663,12 @@
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView{
     
     [commentField resignFirstResponder];
+    if ([commentField.text length]!=0) {
+        if (!tempCommentString)
+            tempCommentString = [[NSString alloc] initWithFormat:@"%@",phoneField.text];
+        else
+            tempCommentString = commentField.text;
+    }
     return YES;
 }
 

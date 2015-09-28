@@ -27,4 +27,8 @@
     NSArray *tableDataSource;
 }
 
+@property (nonatomic, strong) NSString *imageUrl,*titleString,*cctvID;
+@property (nonatomic, assign) double latValue,longValue;
+
+
 @end

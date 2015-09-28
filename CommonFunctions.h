@@ -31,6 +31,7 @@
 + (NSString*) kilometersfromPlace:(CLLocationCoordinate2D)from andToPlace:(CLLocationCoordinate2D)to;
 + (NSString *)dateForRFC3339DateTimeString:(NSString *)rfc3339DateTimeString;
 + (NSString *)dateTimeFromString:(NSString *)dateTimeString;
++ (NSString *)dateFromString:(NSString *)dateString;
 + (NSMutableDictionary *)extractXML:(NSMutableDictionary *)XMLDictionary;
 + (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj;
 

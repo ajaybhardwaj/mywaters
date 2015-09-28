@@ -172,6 +172,21 @@
 }
 
 
+//*************** Method For Converting Date String To NSDate
+
++ (NSString *)dateFromString:(NSString *)dateString {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"dd-MM-yyyy"];
+    
+    NSDate *result = [dateFormatter dateFromString:dateString];
+    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy"];
+    
+    NSString *resultStrig = [dateFormatter stringFromDate:result];
+    return resultStrig;
+}
+
+
 //*************** Method For ASIHTTPRequest
 
 + (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data {
@@ -201,6 +216,7 @@
     if (access_token)
         [request setPostValue:access_token forKey:ACCOUNT_ACCESS_TOKEN];
     
+    [request setPostValue:API_CLIENT_TAG_VALUE forKey:API_CLIENT_TAG];
 //    [request setCompletionBlock:^{
 //        
 //        NSString *responseString = [request responseString];

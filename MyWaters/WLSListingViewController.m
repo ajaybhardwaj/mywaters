@@ -35,7 +35,7 @@
         wlsPageCount = wlsPageCount + 1;
         NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"Limit",@"version", nil];
         NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"%ld",wlsPageCount],[NSString stringWithFormat:@"1"],@"10",@"1.0", nil];
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:BASE_MODULES_API_URL];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
     }
 }
 

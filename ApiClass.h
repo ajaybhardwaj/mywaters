@@ -32,22 +32,36 @@
 #define API_ACKNOWLEDGE @"Acknowledge"
 #define API_MESSAGE @"Message"
 #define API_STATUS_CODE @"StatusCode"
+
+#define API_CLIENT_TAG_VALUE @"f4fn5qkg1id"
+#define API_CLIENT_TAG @"ClientTag"
+
 #define ABC_WATER_SITES_RESPONSE_NAME @"ListABCWaterSites"
 #define ABC_WATER_SITES_TOTAL_COUNT @"TotalABCWaterSites"
 #define EVENTS_RESPONSE_NAME @"ListEvents"
 #define EVENTS_TOTAL_COUNT @"TotalEvents"
 #define WLS_LISTING_RESPONSE_NAME @"ListWaterLevelSensorStation"
 #define WLS_LISTING_TOTAL_COUNT @"TotalWaterLevelSensorStation"
+#define CCTV_LISTING_RESPONSE_NAME @"ListCCTV"
+#define CCTV_LISTING_TOTAL_COUNT @"TotalCCTV"
 
 
 # pragma mark - BASE URLS
 #define BASE_URL @"https://pubapps.com.sg:8080/api/v1/"
-#define BASE_MODULES_API_URL @"http://52.74.251.44/PUB.MyWater.Api.New/api/Modules"
-#define BASE_FEEDBACK_API_URL @"http://52.74.251.44/PUB.MyWater.Api.New/api/Feedback"
 
-//#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"
-#define IMAGE_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/uploads/"
+#define API_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/api/"
+#define MODULES_API_URL @"Modules/"
+#define FEEDBACK_API_URL @"Feedback/"
+#define SIGNUP_API_URL @"SignUp/"
 
+
+#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"
+//#define UPLOAD_IMAGE_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/uploads/"
+
+
+#define TWELVE_HOUR_FORECAST @"http://www.nea.gov.sg/api/WebAPI/?dataset=12hrs_forecast&keyref=781CF461BB6606ADE5BD65643F17817407DD6DBD4D056893"
+#define NOWCAST_WEATHER_URL @"http://www.nea.gov.sg/api/WebAPI/?dataset=nowcast&keyref=781CF461BB6606ADE5BD65643F17817407DD6DBD4D056893"
+#define THREE_DAYS_FORECAST @"http://www.nea.gov.sg/api/WebAPI/?dataset=3days_outlook&keyref=781CF461BB6606ADE5BD65643F17817407DD6DBD4D056893"
 
 # pragma mark - ABC WATERS
 #define ABC_WATERS_LISTING @"ABCWaterSites"

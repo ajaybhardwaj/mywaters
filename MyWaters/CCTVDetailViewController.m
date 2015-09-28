@@ -9,7 +9,7 @@
 #import "CCTVDetailViewController.h"
 
 @implementation CCTVDetailViewController
-
+@synthesize imageUrl,titleString,latValue,longValue,cctvID;
 
 //*************** Method To Open Side Menu
 
@@ -21,14 +21,62 @@
 }
 
 
+//*************** Method For Refreshing CCTV Image
+
+- (void) refreshTopImageViewCCTVImage {
+    
+    topImageView.image = nil;
+    
+    NSString *imageURLString = [NSString stringWithFormat:@"%@",imageUrl];
+    
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityIndicator.center = CGPointMake(topImageView.bounds.size.width/2, topImageView.bounds.size.height/2);
+    [topImageView addSubview:activityIndicator];
+    [activityIndicator startAnimating];
+    
+    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+        if (succeeded) {
+            
+            topImageView.image = image;
+            
+        }
+        else {
+            DebugLog(@"Image Loading Failed..!!");
+            topImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        [activityIndicator stopAnimating];
+    }];
+}
+
+
+
 //*************** Method For Creating UI
 
 - (void) createUI {
     
     
     topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 249)];
-    [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-1.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [self.view addSubview:topImageView];
+    
+    NSString *imageURLString = [NSString stringWithFormat:@"%@",imageUrl];
+    
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityIndicator.center = CGPointMake(topImageView.bounds.size.width/2, topImageView.bounds.size.height/2);
+    [topImageView addSubview:activityIndicator];
+    [activityIndicator startAnimating];
+    
+    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+        if (succeeded) {
+            
+            topImageView.image = image;
+            
+        }
+        else {
+            DebugLog(@"Image Loading Failed..!!");
+            topImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        [activityIndicator stopAnimating];
+    }];
 
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -41,18 +89,31 @@
     [directionButton addSubview:directionIcon];
     
     
-    cctvTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-120, 40)];
+    cctvTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-140, 40)];
     cctvTitleLabel.backgroundColor = [UIColor whiteColor];
     cctvTitleLabel.textAlignment = NSTextAlignmentLeft;
     cctvTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    cctvTitleLabel.text = @"Balestier Road";
+    cctvTitleLabel.text = titleString;
+    cctvTitleLabel.numberOfLines = 0;
     [directionButton addSubview:cctvTitleLabel];
+    
+    
+    //----- Change Current Location With Either Current Location Value or Default Location Value
+    
+    CLLocationCoordinate2D currentLocation;
+    CLLocationCoordinate2D desinationLocation;
+    
+    currentLocation.latitude = 1.2912500;
+    currentLocation.longitude = 103.7870230;
+    
+    desinationLocation.latitude = latValue;
+    desinationLocation.longitude = longValue;
     
     distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
     distanceLabel.backgroundColor = [UIColor clearColor];
     distanceLabel.textAlignment = NSTextAlignmentRight;
     distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    distanceLabel.text = @"1.03 KM";
+    distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
     [directionButton addSubview:distanceLabel];
     
     arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, 12.5, 15, 15)];
@@ -151,7 +212,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     //    return eventsTableDataSource.count;
-    return 5;
+    return 0;
 }
 
 
@@ -235,7 +296,7 @@
     
     UIButton *btnrefresh =  [UIButton buttonWithType:UIButtonTypeCustom];
     [btnrefresh setImage:[UIImage imageNamed:@"icn_refresh_white"] forState:UIControlStateNormal];
-    [btnrefresh addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [btnrefresh addTarget:self action:@selector(refreshTopImageViewCCTVImage) forControlEvents:UIControlEventTouchUpInside];
     [btnrefresh setFrame:CGRectMake(0, 0, 32, 32)];
     
     UIButton *btnDots =  [UIButton buttonWithType:UIButtonTypeCustom];
