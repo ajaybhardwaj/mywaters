@@ -16,6 +16,9 @@
     
     UIButton *submitButton,*resendOTPButton;
     UILabel *instructionLabel;
+    
+    BOOL isVerifyingEmail,isResendingOTP;
 }
+@property (nonatomic, strong) NSString *emailStringForVerification;
 
 @end

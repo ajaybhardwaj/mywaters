@@ -50,16 +50,16 @@
     [emailField resignFirstResponder];
     [passField resignFirstResponder];
     
-//    if (IS_IPHONE_4_OR_LESS) {
+    //    if (IS_IPHONE_4_OR_LESS) {
     
-        [UIView beginAnimations:@"emailField" context:NULL];
-        [UIView setAnimationDuration:0.5];
-        CGPoint viewPOS = self.view.center;
-        viewPOS.y = self.view.bounds.size.height-250;
-        backgroundScrollView.center = viewPOS;
-        [UIView commitAnimations];
-        
-//    }
+    [UIView beginAnimations:@"emailField" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint viewPOS = self.view.center;
+    viewPOS.y = self.view.bounds.size.height-250;
+    backgroundScrollView.center = viewPOS;
+    [UIView commitAnimations];
+    
+    //    }
 }
 
 
@@ -67,24 +67,143 @@
 
 - (void) validateLoginParameters {
     
-//    if ([emailField.text length]==0) {
-//        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
-//    }
-//    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-//        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
-//    }
-//    else if ([passField.text length]==0) {
-//        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
-//    }
-//    else {
-//        [self submitLoginCredentials];
-    
-        // After Validation call it.
-        [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
-        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+    if ([emailField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+    }
+    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+    }
+    else if ([passField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+    }
+    else {
+        
+        [emailField resignFirstResponder];
+        [passField resignFirstResponder];
+        
+//        if (IS_IPHONE_4_OR_LESS) {
+            [UIView beginAnimations:@"emailField" context:NULL];
+            [UIView setAnimationDuration:0.5];
+            CGPoint viewPOS = self.view.center;
+            viewPOS.y = self.view.bounds.size.height-294;
+            backgroundScrollView.center = viewPOS;
+            [UIView commitAnimations];
+//        }
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading..!!";
+        
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        NSMutableArray *values = [[NSMutableArray alloc] init];
+        
+        
+        [parameters addObject:@"Email"];
+        [values addObject:emailField.text];
+        
+        
+        [parameters addObject:@"Password"];
+        [values addObject:passField.text];
+        
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,LOGIN_API_URL]];
+    }
+}
 
-        appDelegate.IS_COMING_AFTER_LOGIN = YES;
-//    }
+
+
+
+
+//*************** Method To Go To Facebook App For Signup
+
+- (void) getFacebookDetailsForLogin {
+    
+    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+    
+    [login logInWithReadPermissions:[NSArray arrayWithObjects:@"public_profile",@"email", nil] fromViewController:self handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        if (error) {
+            DebugLog(@"Process error");
+        } else if (result.isCancelled) {
+            DebugLog(@"Facebook Cancelled");
+        } else {
+            DebugLog(@"Logged in");
+            
+            if ([FBSDKAccessToken currentAccessToken]) {
+                [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"email, name"}]
+                 
+                 startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+                     
+                     if (!error) {
+                         
+                         appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                         appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+                         appDelegate.hud.labelText = @"Loading..!!";
+                         
+                         NSMutableArray *parameters = [[NSMutableArray alloc] init];
+                         NSMutableArray *values = [[NSMutableArray alloc] init];
+                         
+                         
+                         [parameters addObject:@"Email"];
+                         [values addObject:[result objectForKey:@"email"]];
+                         
+                         
+                         [parameters addObject:@"FacebookID"];
+                         [values addObject:[result objectForKey:@"id"]];
+                         
+                         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,LOGIN_API_URL]];
+                         
+                     }
+                 }];
+            }
+        }
+    }];
+    
+}
+
+
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    DebugLog(@"%@",responseString);
+    
+    [appDelegate.hud hide:YES];
+
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
+        
+        if ([[[[responseString JSONValue] objectForKey:@"UserProfile"] objectForKey:@"IsEmailVerified"] intValue] ==  true) {
+            
+            appDelegate.IS_COMING_AFTER_LOGIN = YES;
+            
+            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+            [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+
+        }
+        else {
+            
+            OTPViewController *viewObj = [[OTPViewController alloc] init];
+            viewObj.emailStringForVerification = emailField.text;
+            [self.navigationController pushViewController:viewObj animated:YES];
+        }
+        
+        
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
+    [appDelegate.hud hide:YES];
 }
 
 
@@ -92,18 +211,18 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     
-//    if (IS_IPHONE_4_OR_LESS) {
+    //    if (IS_IPHONE_4_OR_LESS) {
     
-        if (textField==emailField || textField==passField) {
-            
-            [UIView beginAnimations:@"emailField" context:NULL];
-            [UIView setAnimationDuration:0.5];
-            CGPoint viewPOS = self.view.center;
-            viewPOS.y = self.view.bounds.size.height-400;
-            backgroundScrollView.center = viewPOS;
-            [UIView commitAnimations];
-        }
-//    }
+    if (textField==emailField || textField==passField) {
+        
+        [UIView beginAnimations:@"emailField" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = self.view.center;
+        viewPOS.y = self.view.bounds.size.height-400;
+        backgroundScrollView.center = viewPOS;
+        [UIView commitAnimations];
+    }
+    //    }
 }
 
 
@@ -120,7 +239,7 @@
             [UIView beginAnimations:@"emailField" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = self.view.center;
-            viewPOS.y = self.view.bounds.size.height-250;
+            viewPOS.y = self.view.bounds.size.height-294;
             backgroundScrollView.center = viewPOS;
             [UIView commitAnimations];
             
@@ -139,7 +258,7 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     self.navigationController.navigationBar.hidden = YES;
-
+    
     backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, -20, self.view.bounds.size.width, self.view.bounds.size.height+20)];
     backgroundScrollView.showsHorizontalScrollIndicator = NO;
     backgroundScrollView.showsVerticalScrollIndicator = NO;
@@ -160,7 +279,7 @@
     UIImageView *topVolleyView = [[UIImageView alloc] initWithFrame:CGRectMake(backgroundScrollView.bounds.size.width/2 - 75, 30, 150, 213)];
     [topVolleyView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/login_top_volley.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [backgroundScrollView addSubview:topVolleyView];
-
+    
     
     
     facebookButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -170,6 +289,7 @@
     facebookButton.tag = 1;
     facebookButton.frame = CGRectMake(10, topVolleyView.frame.origin.y+topVolleyView.bounds.size.height+20, backgroundScrollView.bounds.size.width-20, 40);
     [facebookButton setBackgroundColor:RGB(45, 72, 166)];
+    [facebookButton addTarget:self action:@selector(getFacebookDetailsForLogin) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:facebookButton];
     
     
@@ -268,7 +388,7 @@
     if (IS_IPHONE_4_OR_LESS) {
         backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 580);
     }
-
+    
 }
 
 - (void) viewWillAppear:(BOOL)animated {

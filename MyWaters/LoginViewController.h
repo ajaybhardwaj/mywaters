@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "SignUpViewController.h"
+#import "OTPViewController.h"
 
 @interface LoginViewController : UIViewController <UITextFieldDelegate> {
     
@@ -18,6 +19,8 @@
     UITextField *emailField,*passField;
     
     UIScrollView *backgroundScrollView;
+    
+    NSString *facebookIDString;
 }
 
 @end

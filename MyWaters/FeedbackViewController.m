@@ -130,7 +130,7 @@
 
     if (isFeedbackImageAvailable) {
 
-        NSData* data = UIImageJPEGRepresentation(picUploadImageView.image, 1.0f);
+        NSData* data = UIImageJPEGRepresentation(picUploadImageView.image, 0.5f);
         NSString *base64ImageString = [Base64 encode:data];
         
         [parameters addObject:@"Feedback.images[0]"];

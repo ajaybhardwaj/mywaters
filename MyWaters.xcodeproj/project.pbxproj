@@ -13,6 +13,12 @@
 		FE050C541B5DE1C9004A8198 /* icn_distance_blue_wls@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE050C531B5DE1C9004A8198 /* icn_distance_blue_wls@3x.png */; };
 		FE0BD2511AC16C9D005A4CC3 /* icn_directions_purple@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE0BD2501AC16C9D005A4CC3 /* icn_directions_purple@3x.png */; };
 		FE0F6D241BA00CAD00A381D4 /* AsyncImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE0F6D231BA00CAD00A381D4 /* AsyncImageView.m */; };
+		FE17457C1BBA780F001B231B /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE1745791BBA780F001B231B /* FBSDKCoreKit.framework */; settings = {ASSET_TAGS = (); }; };
+		FE17457D1BBA780F001B231B /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE1745791BBA780F001B231B /* FBSDKCoreKit.framework */; settings = {ASSET_TAGS = (); }; };
+		FE17457E1BBA780F001B231B /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE17457A1BBA780F001B231B /* FBSDKLoginKit.framework */; settings = {ASSET_TAGS = (); }; };
+		FE17457F1BBA780F001B231B /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE17457A1BBA780F001B231B /* FBSDKLoginKit.framework */; settings = {ASSET_TAGS = (); }; };
+		FE1745801BBA780F001B231B /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE17457B1BBA780F001B231B /* FBSDKShareKit.framework */; settings = {ASSET_TAGS = (); }; };
+		FE1745811BBA780F001B231B /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE17457B1BBA780F001B231B /* FBSDKShareKit.framework */; settings = {ASSET_TAGS = (); }; };
 		FE25CB651B5C8A0200A5B2B3 /* icn_youtube_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = FE25CB641B5C8A0200A5B2B3 /* icn_youtube_settings.png */; };
 		FE25CB6A1B5CDD9500A5B2B3 /* icn_speaker@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE25CB691B5CDD9500A5B2B3 /* icn_speaker@3x.png */; };
 		FE25CB711B5CDF1E00A5B2B3 /* 1_color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE25CB6B1B5CDF1E00A5B2B3 /* 1_color@3x.png */; };
@@ -437,6 +443,9 @@
 		FE0BD2501AC16C9D005A4CC3 /* icn_directions_purple@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_directions_purple@3x.png"; sourceTree = "<group>"; };
 		FE0F6D221BA00CAD00A381D4 /* AsyncImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncImageView.h; sourceTree = "<group>"; };
 		FE0F6D231BA00CAD00A381D4 /* AsyncImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncImageView.m; sourceTree = "<group>"; };
+		FE1745791BBA780F001B231B /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../../../Documents/FacebookSDK-MyWaters/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
+		FE17457A1BBA780F001B231B /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../../../Documents/FacebookSDK-MyWaters/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
+		FE17457B1BBA780F001B231B /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "../../../../Documents/FacebookSDK-MyWaters/FBSDKShareKit.framework"; sourceTree = "<group>"; };
 		FE25CB641B5C8A0200A5B2B3 /* icn_youtube_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icn_youtube_settings.png; sourceTree = "<group>"; };
 		FE25CB691B5CDD9500A5B2B3 /* icn_speaker@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_speaker@3x.png"; sourceTree = "<group>"; };
 		FE25CB6B1B5CDF1E00A5B2B3 /* 1_color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1_color@3x.png"; sourceTree = "<group>"; };
@@ -966,7 +975,10 @@
 				FEE65A8C1B8ACBE4002C5C6D /* SystemConfiguration.framework in Frameworks */,
 				FEE65A8A1B8ACBCA002C5C6D /* CFNetwork.framework in Frameworks */,
 				FE2BED321AD3DBB60039C317 /* AVFoundation.framework in Frameworks */,
+				FE17457C1BBA780F001B231B /* FBSDKCoreKit.framework in Frameworks */,
+				FE1745801BBA780F001B231B /* FBSDKShareKit.framework in Frameworks */,
 				FEF4C6C91ACB9A2600C57304 /* MapKit.framework in Frameworks */,
+				FE17457E1BBA780F001B231B /* FBSDKLoginKit.framework in Frameworks */,
 				FEFBFF211A80AB9400E485E9 /* libsqlite3.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -975,6 +987,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE17457F1BBA780F001B231B /* FBSDKLoginKit.framework in Frameworks */,
+				FE17457D1BBA780F001B231B /* FBSDKCoreKit.framework in Frameworks */,
+				FE1745811BBA780F001B231B /* FBSDKShareKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1358,6 +1373,9 @@
 		FEA730111A772FDD00D274A6 = {
 			isa = PBXGroup;
 			children = (
+				FE1745791BBA780F001B231B /* FBSDKCoreKit.framework */,
+				FE17457A1BBA780F001B231B /* FBSDKLoginKit.framework */,
+				FE17457B1BBA780F001B231B /* FBSDKShareKit.framework */,
 				FED999881BAAAC65007BEE55 /* SDWebImage */,
 				FEE65A8D1B8ACC75002C5C6D /* libz.dylib */,
 				FEE65A8B1B8ACBE4002C5C6D /* SystemConfiguration.framework */,
@@ -2570,7 +2588,7 @@
 		FEA7303B1A772FDD00D274A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -2588,6 +2606,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2613,7 +2632,7 @@
 		FEA7303C1A772FDD00D274A6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -2632,6 +2651,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -2650,11 +2670,13 @@
 		FEA7303E1A772FDD00D274A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
+				FRAMEWORK_SEARCH_PATHS = "/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters";
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2667,11 +2689,13 @@
 		FEA7303F1A772FDD00D274A6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
+				FRAMEWORK_SEARCH_PATHS = "/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters";
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2684,6 +2708,7 @@
 		FEA730411A772FDD00D274A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
@@ -2706,6 +2731,7 @@
 		FEA730421A772FDD00D274A6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";

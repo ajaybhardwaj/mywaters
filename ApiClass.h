@@ -53,6 +53,8 @@
 #define MODULES_API_URL @"Modules/"
 #define FEEDBACK_API_URL @"Feedback/"
 #define SIGNUP_API_URL @"SignUp/"
+#define VERIFICATION_API_URL @"Verification/"
+#define LOGIN_API_URL @"Login/"
 
 
 #define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"

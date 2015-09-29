@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "OTPViewController.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface SignUpViewController : UIViewController <UITextFieldDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate> {
     
@@ -22,8 +24,10 @@
     
     UIImageView *profileImageView;
     
-    BOOL isTermsAgree,isProfilePictureSelected;
+    BOOL isTermsAgree,isProfilePictureSelected,isSigningUpViaFacebook;
     UITapGestureRecognizer *profileImageTap;
+    
+    NSString *facebookIDString;
 }
 
 @end

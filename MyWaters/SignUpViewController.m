@@ -48,35 +48,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
-//*************** Method For Handling Photo Library Action
-
-- (void) handlePhotoLibraryAction {
-    
-    UIImagePickerController * picker = [[UIImagePickerController alloc] init];
-    picker.delegate = self;
-    picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-    [self presentViewController:picker animated:YES completion:NULL];
-}
-
-
-//*************** Method For Handling Camera Action
-
-- (void) handleCameraAction {
-    
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        
-        UIImagePickerController * picker = [[UIImagePickerController alloc] init];
-        picker.delegate = self;
-        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        [self presentViewController:picker animated:YES completion:NULL];
-    }
-    else {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Camera is not supported by device." cancel:@"OK" otherButton:nil];
-    }
-}
-
-
 //*************** Method To Handle Tap Gesture For Profile Pic
 
 - (void) handleSingleTapGesture: (UITapGestureRecognizer*) sender {
@@ -110,6 +81,63 @@
     
 }
 
+
+//*************** Method To Go To Facebook App For Signup
+
+- (void) getFacebookDetailsForSignup {
+    
+    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+    
+    [login logInWithReadPermissions:[NSArray arrayWithObjects:@"public_profile",@"email", nil] fromViewController:self handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        if (error) {
+            DebugLog(@"Process error");
+        } else if (result.isCancelled) {
+            DebugLog(@"Facebook Cancelled");
+        } else {
+            DebugLog(@"Logged in");
+            
+            if ([FBSDKAccessToken currentAccessToken]) {
+                [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"picture.width(800).height(800), email, name"}]
+                 
+                 startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+                     
+                     if (!error) {
+                         
+                         isSigningUpViaFacebook = YES;
+                         
+                         if ([result objectForKey:@"email"] != (id)[NSNull null])
+                             emailField.text = [result objectForKey:@"email"];
+                         
+                         if ([result objectForKey:@"name"] != (id)[NSNull null])
+                             nameField.text = [result objectForKey:@"name"];
+                         
+                         if ([result objectForKey:@"id"] != (id)[NSNull null])
+                             facebookIDString = [result objectForKey:@"id"];
+                         
+                         passField.hidden = YES;
+                         retypePassField.hidden = YES;
+                         
+                         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                         activityIndicator.center = CGPointMake(profileImageView.bounds.size.width/2, profileImageView.bounds.size.height/2);
+                         [profileImageView addSubview:activityIndicator];
+                         [activityIndicator startAnimating];
+                         
+                         
+                         [CommonFunctions downloadImageWithURL:[NSURL URLWithString:[[[result objectForKey:@"picture"] objectForKey:@"data"] objectForKey:@"url"]] completionBlock:^(BOOL succeeded, UIImage *image) {
+                             if (succeeded) {
+                                 
+                                 profileImageView.image = image;
+                                 isProfilePictureSelected = YES;
+                             }
+                             [activityIndicator stopAnimating];
+                         }];
+                     }
+                 }];
+            }
+        }
+    }];
+    
+}
 
 
 //*************** Method To Submit Signup Inputs
@@ -169,67 +197,82 @@
     if ([emailField.text length]==0) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
     }
-    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+    
+    if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
     }
-    else if ([nameField.text length]==0) {
+    
+    if ([nameField.text length]==0) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
     }
-    else if ([CommonFunctions characterSet1Found:nameField.text]) {
+    
+    if ([CommonFunctions characterSet1Found:nameField.text]) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
     }
-    else if ([passField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+    
+    if ([passField.text length]==0) {
+        if (!isSigningUpViaFacebook)
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
     }
-    else if ([retypePassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Retype password is mandatory." cancel:@"OK" otherButton:nil];
+    
+    if ([retypePassField.text length]==0) {
+        if (!isSigningUpViaFacebook)
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Retype password is mandatory." cancel:@"OK" otherButton:nil];
     }
-    else if (![passField.text isEqualToString:retypePassField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
+    
+    if (![passField.text isEqualToString:retypePassField.text]) {
+        if (!isSigningUpViaFacebook)
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
     }
-    else {
-        
-        [self submitSignupDetails];
-        
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading..!!";
-        
-        NSMutableArray *parameters = [[NSMutableArray alloc] init];
-        NSMutableArray *values = [[NSMutableArray alloc] init];
-        
-        [parameters addObject:@"Profile.Name"];
-        [values addObject:nameField.text];
-        
-        
-        [parameters addObject:@"Profile.Email"];
-        [values addObject:emailField.text];
-        
-        
+    
+    [self submitSignupDetails];
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading..!!";
+    
+    NSMutableArray *parameters = [[NSMutableArray alloc] init];
+    NSMutableArray *values = [[NSMutableArray alloc] init];
+    
+    [parameters addObject:@"Profile.Name"];
+    [values addObject:nameField.text];
+    
+    
+    [parameters addObject:@"Profile.Email"];
+    [values addObject:emailField.text];
+    
+    
+    if (!isSigningUpViaFacebook) {
         [parameters addObject:@"Profile.Password"];
         [values addObject:passField.text];
-        
-        
-        if (isProfilePictureSelected) {
-            
-            NSData* data = UIImageJPEGRepresentation(profileImageView.image, 1.0f);
-            NSString *base64ImageString = [Base64 encode:data];
-            
-            [parameters addObject:@"Profile.ImageBase64"];
-            [values addObject:base64ImageString];
-            
-        }
-        
-        [parameters addObject:@"Profile.IsFriendOfWater"];
-        if (isTermsAgree) {
-            [values addObject:@"true"];
-        }
-        else {
-            [values addObject:@"false"];
-        }
-                
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,SIGNUP_API_URL]];
     }
+    
+    if (isSigningUpViaFacebook) {
+        [parameters addObject:@"Profile.FacebookID"];
+        [values addObject:facebookIDString];
+    }
+    
+    
+    if (isProfilePictureSelected) {
+        
+        NSData* data = UIImageJPEGRepresentation(profileImageView.image, 0.5f);
+        NSString *base64ImageString = [Base64 encode:data];
+        
+        [parameters addObject:@"Profile.ImageBase64"];
+        [values addObject:base64ImageString];
+        
+    }
+    
+    [parameters addObject:@"Profile.IsFriendOfWater"];
+    if (isTermsAgree) {
+        [values addObject:@"true"];
+    }
+    else {
+        [values addObject:@"false"];
+    }
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,SIGNUP_API_URL]];
+    
 }
 
 
@@ -239,11 +282,12 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    DebugLog(@"%@",responseString);
+    //    DebugLog(@"%@",responseString);
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [appDelegate.hud hide:YES];
         OTPViewController *viewObj = [[OTPViewController alloc] init];
+        viewObj.emailStringForVerification = emailField.text;
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else {
@@ -393,11 +437,36 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (actionSheet.tag==1) {
+        
         if (buttonIndex==0) {
-            [self handleCameraAction];
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
         }
         else if (buttonIndex==1) {
-            [self handlePhotoLibraryAction];
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
         }
     }
 }
@@ -407,7 +476,7 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     isProfilePictureSelected = YES;
-    UIImage *image=[info objectForKey:UIImagePickerControllerOriginalImage];
+    UIImage *image=[info objectForKey:UIImagePickerControllerEditedImage];
     profileImageView.image=image;
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }
@@ -428,6 +497,7 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    isSigningUpViaFacebook = NO;
     
     backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, -20, self.view.bounds.size.width, self.view.bounds.size.height+20)];
     backgroundScrollView.showsHorizontalScrollIndicator = NO;
@@ -453,6 +523,7 @@
     facebookButton.tag = 1;
     facebookButton.frame = CGRectMake(10, 40, backgroundScrollView.bounds.size.width-20, 40);
     [facebookButton setBackgroundColor:RGB(45, 72, 166)];
+    [facebookButton addTarget:self action:@selector(getFacebookDetailsForSignup) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:facebookButton];
     
     
@@ -605,9 +676,9 @@
     [skipButton addTarget:self action:@selector(skipSignUpProcess) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:skipButton];
     
-//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
-//    swipeGesture.direction = UISwipeGestureRecognizerDirectionRight;
-//    [backgroundScrollView addGestureRecognizer:swipeGesture];
+    //    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
+    //    swipeGesture.direction = UISwipeGestureRecognizerDirectionRight;
+    //    [backgroundScrollView addGestureRecognizer:swipeGesture];
     
     if (IS_IPHONE_4_OR_LESS) {
         backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 580);

@@ -39,7 +39,7 @@
 #define LOCATION_RADIUS @"com.supersportsclub.LOCATION_RADIUS"
 #define LOCATION_ACCURACY @"com.supersportsclub.LOCATION_ACCURACY"
 
-#define SUPER_SPORTS_CLUB_ACCESSTOKEN_KEY_GET @"access_token"
+#define SUPER_SPORTS_CLUB_ACCESSTOKEN_KEY_GET @"AccessToken"
 #define SUPER_SPORTS_CLUB_ACCOUNT_ID_KEY_GET @"account_id"
 
 #define _API_FOLDER               @"folder"
