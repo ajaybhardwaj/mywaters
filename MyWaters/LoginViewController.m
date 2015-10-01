@@ -15,6 +15,15 @@
 @implementation LoginViewController
 
 
+- (void) tempSkipFunction {
+    
+    appDelegate.IS_COMING_AFTER_LOGIN = YES;
+    
+    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+    [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+}
+
+
 //*************** Method To Move To Login View After Spalsh Screen
 
 - (void) moveToSignUpView {
@@ -32,7 +41,6 @@
     [self.navigationController popViewControllerAnimated:YES];
     
 }
-
 
 //*************** Method To Move Back To Parent View
 
@@ -179,6 +187,7 @@
         if ([[[[responseString JSONValue] objectForKey:@"UserProfile"] objectForKey:@"IsEmailVerified"] intValue] ==  true) {
             
             appDelegate.IS_COMING_AFTER_LOGIN = YES;
+            appDelegate.USER_PROFILE_DICTIONARY = [[responseString JSONValue] objectForKey:@"UserProfile"];
             
             [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
             [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
@@ -331,6 +340,12 @@
     [passField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
     passField.tag = 2;
     
+    
+    
+    //Temp Field Data
+//    emailField.text = @"ajay@iappsasia.com";
+//    passField.text = @"Myself8@8";
+    
     loginButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [loginButton setTitle:@"LOG IN" forState:UIControlStateNormal];
     [loginButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -373,7 +388,7 @@
     [skipButton setBackgroundColor:RGB(205, 208, 215)];
     skipButton.frame = CGRectMake(10, forgotPassButton.frame.origin.y+forgotPassButton.bounds.size.height+30, backgroundScrollView.bounds.size.width-20, 40);
     // Temp Action For Skip Button
-    [skipButton addTarget:self action:@selector(validateLoginParameters) forControlEvents:UIControlEventTouchUpInside];
+    [skipButton addTarget:self action:@selector(tempSkipFunction) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:skipButton];
     
     

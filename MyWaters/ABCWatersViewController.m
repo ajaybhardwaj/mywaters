@@ -31,13 +31,24 @@
 
 - (void) fetchABCWaterSites {
     
-    if (abcWatersPageCount!=-1) {
-        
-        abcWatersPageCount = abcWatersPageCount + 1;
-        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"version", nil];
-        NSArray *values = [[NSArray alloc] initWithObjects:@"2",[NSString stringWithFormat:@"%d",abcWatersPageCount],@"2",@"1.0", nil];
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+    NSArray *parameters,*values;
+    
+    if (selectedFilterIndex==0) {
+        parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
+        values = [[NSArray alloc] initWithObjects:@"2",@"2",@"1.0", nil];
     }
+    
+    else if (selectedFilterIndex==1) {
+        
+        CLLocationCoordinate2D coordinate = [CommonFunctions getUserCurrentLocation];
+        NSString *latitude = [NSString stringWithFormat:@"%f", coordinate.latitude];
+        NSString *longitude = [NSString stringWithFormat:@"%f", coordinate.longitude];
+        
+        parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version",@"Lat",@"Lon", nil];
+        values = [[NSArray alloc] initWithObjects:@"2",@"3",@"1.0",latitude,longitude, nil];
+    }
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
 
@@ -197,12 +208,12 @@
             
             if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
                 if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]] != nil)
-                gridImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]];
+                    gridImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]]];
             }
             else {
                 
                 NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]];
-
+                
                 UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
                 activityIndicator.center = CGPointMake(gridImage.bounds.size.width/2, gridImage.bounds.size.height/2);
                 [gridImage addSubview:activityIndicator];
@@ -289,15 +300,17 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
+        [appDelegate.ABC_WATERS_LISTING_ARRAY removeAllObjects];
+        
         NSArray *tempArray = [[responseString JSONValue] objectForKey:ABC_WATER_SITES_RESPONSE_NAME];
         abcWatersTotalCount = [[[responseString JSONValue] objectForKey:ABC_WATER_SITES_TOTAL_COUNT] intValue];
         
         
         if (tempArray.count==0) {
-            abcWatersPageCount = 0;
+            //            abcWatersPageCount = 0;
         }
         else {
-            abcWatersPageCount = abcWatersPageCount + 1;
+            //            abcWatersPageCount = abcWatersPageCount + 1;
             if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
                 [appDelegate.ABC_WATERS_LISTING_ARRAY setArray:tempArray];
             }
@@ -332,11 +345,11 @@
 {
     if(text.length == 0)
     {
-        isFiltered = FALSE;
+        isFiltered = NO;
     }
     else
     {
-        isFiltered = true;
+        isFiltered = YES;
         [filteredDataSource removeAllObjects];
         for (int i=0; i<appDelegate.ABC_WATERS_LISTING_ARRAY.count; i++) {
             
@@ -381,9 +394,18 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (tableView==filterTableView) {
+        
         selectedFilterIndex = indexPath.row;
-        [filterTableView reloadData];
+        
+        if (indexPath.row==1) {
+            if (([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) || ![CLLocationManager locationServicesEnabled]) {
+                [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
+                return;
+            }
+        }
+        
         [self animateFilterTable];
+        [self fetchABCWaterSites];
     }
     else {
         
@@ -416,7 +438,7 @@
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
                 viewObj.isCertified = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
-
+            
         }
         else {
             
@@ -443,7 +465,7 @@
                 viewObj.imageName = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
             }
             
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
                 viewObj.isCertified = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
         }
         
@@ -512,6 +534,7 @@
             imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
         }
         
+        DebugLog(@"Image Url-%@",imageURLString);
         [cell.contentView addSubview:cellImage];
         
         
@@ -523,9 +546,9 @@
         
         if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
             if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
-            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
         }
-
+        
         else {
             
             UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -565,7 +588,7 @@
             }];
         }
         
-
+        
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 40)];
         if (isFiltered) {
@@ -671,7 +694,7 @@
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
     filteredDataSource = [[NSMutableArray alloc] init];
-
+    
     abcWatersPageCount = 0;
     //
     //    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];

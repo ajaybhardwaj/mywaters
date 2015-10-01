@@ -18,6 +18,38 @@
 @synthesize isNotQuickMapController;
 
 
+//*************** Method To Get WLS Listing
+
+- (void) fetchCCTVListing {
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"1",@"1.0", nil];
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+}
+
+
+
+
+//*************** Method To Dismiss Callout View If Touch In Map View
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    UITouch *aTouch = [touches anyObject];
+    if (aTouch.tapCount == 1 || aTouch.tapCount == 2 || aTouch.tapCount == 3)
+    {
+        CGPoint p = [aTouch locationInView:quickMap];
+        if (!CGRectContainsPoint(calloutView.frame, p))
+        {
+            if (isShowingCallout) {
+                isShowingCallout = NO;
+                [calloutView removeFromSuperview];
+            }
+        }
+    }
+}
+
+
+
 //*************** Method To Open Side Menu
 
 - (void) openDeckMenu:(id) sender {
@@ -43,7 +75,7 @@
 }
 
 
-//*************** Method To ANimate Filter Table
+//*************** Method To Animate Filter Table
 
 - (void) animateFilterTable {
     
@@ -72,24 +104,79 @@
 }
 
 
-//*************** Demo App UI
-
-- (void) createDemoAppControls {
-    
-    bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60)];
-    [self.view addSubview:bgImageView];
-    [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/quickmap.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    
-    
-    
-}
-
 
 //*************** Method To Pop View Controller To Parent Controller
 
 - (void) pop2Dismiss:(id) sender {
     
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+
+//*************** Method To Handle Tap For Callout View
+
+- (void) handleCCTVCalloutTap: (id) sender {
+    
+    UIButton *button = (id) sender;
+    
+    NSLog(@"Annotation tag %ld",button.tag);
+    
+    CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
+    
+    if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
+        viewObj.imageUrl = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"CCTVImageURL"];
+    if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"Name"] != (id)[NSNull null])
+        viewObj.titleString = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"Name"];
+    if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"ID"] != (id)[NSNull null])
+        viewObj.cctvID = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"ID"];
+    if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"Lat"] != (id)[NSNull null])
+        viewObj.latValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"Lat"] doubleValue];
+    if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"Lon"] != (id)[NSNull null])
+        viewObj.longValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"Lon"] doubleValue];
+
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
+
+//*************** Method To Generate CCTV Annotations
+
+- (void) generateCCTVAnnotations {
+    
+    
+    if (appDelegate.CCTV_LISTING_ARRAY.count != 0) {
+        
+        for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
+            
+            MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion.center.latitude = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Lat"] doubleValue]; // Make lat dynamic later
+            annotationRegion.center.longitude = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Lon"] doubleValue]; // Make long dynamic later
+            annotationRegion.span.latitudeDelta = 0.02f;
+            annotationRegion.span.longitudeDelta = 0.02f;
+            
+            //----- Change Current Location With Either Current Location Value or Default Location Value
+            
+            CLLocationCoordinate2D currentLocation;
+            CLLocationCoordinate2D desinationLocation;
+            
+            currentLocation.latitude = 1.2912500;
+            currentLocation.longitude = 103.7870230;
+            
+            desinationLocation.latitude = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Lat"] doubleValue];
+            desinationLocation.longitude = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Lon"] doubleValue];
+            
+            cctvAnnotation = [[QuickMapAnnotations alloc] initWithTitle:[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Name"] AndCoordinates:annotationRegion.center type:@"CCTV" tag:i+1 subtitleValue:[NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]]]; //Setting Sample location Annotation
+            //            cctvAnnotation = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            cctvAnnotation.annotationTitle = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Name"];
+            cctvAnnotation.annotationSubtitle = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+            cctvAnnotation.annotationType = @"CCTV";
+            cctvAnnotation.annotationTag = i+1;
+            cctvAnnotation.coordinate = annotationRegion.center;
+            [quickMap addAnnotation:cctvAnnotation];
+            
+        }
+    }
 }
 
 
@@ -382,62 +469,79 @@
             
             isShowingCamera = YES;
             
-            //Set Default location to zoom
-            //            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.383194, 103.862344); //Create the CLLocation from user cordinates
-            //            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
-            //            MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
-            //            [quickMap setRegion:adjustedRegion animated:NO]; // create animation zooming
-            
-            MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 1.383194; // Make lat dynamic later
-            annotationRegion.center.longitude = 103.862344; // Make long dynamic later
-            annotationRegion.span.latitudeDelta = 0.02f;
-            annotationRegion.span.longitudeDelta = 0.02f;
-            
-            annotation4 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation4.coordinate = annotationRegion.center;
-            annotation4.title = @"43 Mimosa Rd";
-            annotation4.subtitle = @"";
-            [quickMap addAnnotation:annotation4];
-            
-            
-            MKCoordinateRegion annotationRegion41 = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion41.center.latitude = 1.383451; // Make lat dynamic later
-            annotationRegion41.center.longitude = 103.859791; // Make long dynamic later
-            annotationRegion41.span.latitudeDelta = 0.02f;
-            annotationRegion41.span.longitudeDelta = 0.02f;
-            
-            annotation41 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation41.coordinate = annotationRegion41.center;
-            annotation41.title = @"40 Mimosa Dr";
-            annotation41.subtitle = @"";
-            [quickMap addAnnotation:annotation41];
-            
-            
-            MKCoordinateRegion annotationRegion42 = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion42.center.latitude = 1.386433; // Make lat dynamic later
-            annotationRegion42.center.longitude = 103.871571; // Make long dynamic later
-            annotationRegion42.span.latitudeDelta = 0.02f;
-            annotationRegion42.span.longitudeDelta = 0.02f;
-            
-            annotation42 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation42.coordinate = annotationRegion42.center;
-            annotation42.title = @"22 Seletar Crescent";
-            annotation42.subtitle = @"";
-            [quickMap addAnnotation:annotation42];
-            
-            
-            MKCoordinateRegion annotationRegion43 = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion43.center.latitude = 1.385596; // Make lat dynamic later
-            annotationRegion43.center.longitude = 103.871855; // Make long dynamic later
-            annotationRegion43.span.latitudeDelta = 0.02f;
-            annotationRegion43.span.longitudeDelta = 0.02f;
-            
-            annotation43 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation43.coordinate = annotationRegion43.center;
-            annotation43.title = @"2 Jalan Lakum";
-            annotation43.subtitle = @"";
-            [quickMap addAnnotation:annotation43];
+            if (appDelegate.CCTV_LISTING_ARRAY.count==0) {
+                
+                isLoadingFloods = NO;
+                isLoadingWLS = NO;
+                isLoadingCCTV = YES;
+                isLoadingFeedback = NO;
+                isLoadingRainMap = NO;
+                
+                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+                appDelegate.hud.labelText = @"Loading..!!";
+                [self fetchCCTVListing];
+            }
+            else {
+                
+                [self generateCCTVAnnotations];
+            }
+            //            //Set Default location to zoom
+            //            //            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.383194, 103.862344); //Create the CLLocation from user cordinates
+            //            //            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
+            //            //            MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
+            //            //            [quickMap setRegion:adjustedRegion animated:NO]; // create animation zooming
+            //
+            //            MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
+            //            annotationRegion.center.latitude = 1.383194; // Make lat dynamic later
+            //            annotationRegion.center.longitude = 103.862344; // Make long dynamic later
+            //            annotationRegion.span.latitudeDelta = 0.02f;
+            //            annotationRegion.span.longitudeDelta = 0.02f;
+            //
+            //            annotation4 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            //            annotation4.coordinate = annotationRegion.center;
+            //            annotation4.title = @"43 Mimosa Rd";
+            //            annotation4.subtitle = @"";
+            //            [quickMap addAnnotation:annotation4];
+            //
+            //
+            //            MKCoordinateRegion annotationRegion41 = { {0.0, 0.0} , {0.0, 0.0} };
+            //            annotationRegion41.center.latitude = 1.383451; // Make lat dynamic later
+            //            annotationRegion41.center.longitude = 103.859791; // Make long dynamic later
+            //            annotationRegion41.span.latitudeDelta = 0.02f;
+            //            annotationRegion41.span.longitudeDelta = 0.02f;
+            //
+            //            annotation41 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            //            annotation41.coordinate = annotationRegion41.center;
+            //            annotation41.title = @"40 Mimosa Dr";
+            //            annotation41.subtitle = @"";
+            //            [quickMap addAnnotation:annotation41];
+            //
+            //
+            //            MKCoordinateRegion annotationRegion42 = { {0.0, 0.0} , {0.0, 0.0} };
+            //            annotationRegion42.center.latitude = 1.386433; // Make lat dynamic later
+            //            annotationRegion42.center.longitude = 103.871571; // Make long dynamic later
+            //            annotationRegion42.span.latitudeDelta = 0.02f;
+            //            annotationRegion42.span.longitudeDelta = 0.02f;
+            //
+            //            annotation42 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            //            annotation42.coordinate = annotationRegion42.center;
+            //            annotation42.title = @"22 Seletar Crescent";
+            //            annotation42.subtitle = @"";
+            //            [quickMap addAnnotation:annotation42];
+            //
+            //
+            //            MKCoordinateRegion annotationRegion43 = { {0.0, 0.0} , {0.0, 0.0} };
+            //            annotationRegion43.center.latitude = 1.385596; // Make lat dynamic later
+            //            annotationRegion43.center.longitude = 103.871855; // Make long dynamic later
+            //            annotationRegion43.span.latitudeDelta = 0.02f;
+            //            annotationRegion43.span.longitudeDelta = 0.02f;
+            //
+            //            annotation43 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            //            annotation43.coordinate = annotationRegion43.center;
+            //            annotation43.title = @"2 Jalan Lakum";
+            //            annotation43.subtitle = @"";
+            //            [quickMap addAnnotation:annotation43];
             
             [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
@@ -549,6 +653,51 @@
 }
 
 
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
+        
+        if (isLoadingCCTV) {
+            
+            NSArray *tempArray = [[responseString JSONValue] objectForKey:CCTV_LISTING_RESPONSE_NAME];
+            if (tempArray.count==0) {
+                //            cctvPageCount = 0;
+            }
+            else {
+                
+                if (appDelegate.CCTV_LISTING_ARRAY.count==0) {
+                    [appDelegate.CCTV_LISTING_ARRAY setArray:tempArray];
+                }
+                else {
+                    if (appDelegate.CCTV_LISTING_ARRAY.count!=0) {
+                        for (int i=0; i<tempArray.count; i++) {
+                            [appDelegate.CCTV_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
+                        }
+                    }
+                }
+            }
+            
+            [self generateCCTVAnnotations];
+        }
+        
+        [appDelegate.hud hide:YES];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [appDelegate.hud hide:YES];
+}
+
+
 # pragma mark - UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -625,26 +774,62 @@
     
     if(annotation != quickMap.userLocation) {
         
-        static NSString *defaultPinID = @"com.invasivecode.pin";
-        pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
-        if ( pinView == nil )
-            pinView = [[MKAnnotationView alloc]
-                       initWithAnnotation:annotation reuseIdentifier:defaultPinID];
+//        static NSString *defaultPinID = @"com.invasivecode.pin";
         
-        pinView.canShowCallout = YES;
         if (selectedAnnotationButton==4) {
+            
+            pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:@"FLOOD"];
+            if ( pinView == nil )
+                pinView = [[MKAnnotationView alloc]
+                           initWithAnnotation:annotation reuseIdentifier:@"FLOOD"];
+            
+            
+            pinView.canShowCallout = YES;
+            
             pinView.image = [UIImage imageNamed:@"icn_floodinfo_small.png"];
         }
         else if (selectedAnnotationButton==1) {
+            
+            pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:@"FEEDBACK"];
+            if ( pinView == nil )
+                pinView = [[MKAnnotationView alloc]
+                           initWithAnnotation:annotation reuseIdentifier:@"FEEDBACK"];
+            
+            
+            pinView.canShowCallout = YES;
+            
             pinView.image = [UIImage imageNamed:@"icn_floodinfo_userfeedback_submission_small.png"];
         }
         else if (selectedAnnotationButton==0) {
+            
+            pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:@"RAINMAP"];
+            if ( pinView == nil )
+                pinView = [[MKAnnotationView alloc]
+                           initWithAnnotation:annotation reuseIdentifier:@"RAINMAP"];
+            
+            
+            pinView.canShowCallout = YES;
+            
             pinView.image = [UIImage imageNamed:@"icn_rainarea_small.png"];
         }
         else if (selectedAnnotationButton==2) {
+            
+            pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:@"CCTV"];
+            if ( pinView == nil )
+                
+                pinView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"CCTV"];
             pinView.image = [UIImage imageNamed:@"icn_cctv_small.png"];
+            
+            
+            
         }
         else if (selectedAnnotationButton==3) {
+            
+            pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:@"WLS"];
+            if ( pinView == nil )
+                pinView = [[MKAnnotationView alloc]
+                           initWithAnnotation:annotation reuseIdentifier:@"WLS"];
+            
             if (annotation==annotation5) {
                 pinView.image = [UIImage imageNamed:@"icn_waterlevel_below75_big.png"];
             }
@@ -664,6 +849,90 @@
     return pinView;
 }
 
+
+
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    
+    QuickMapAnnotations *temp = (QuickMapAnnotations*)view.annotation;
+    
+    [calloutView removeFromSuperview];
+    isShowingCallout = NO;
+    
+    if ([temp.annotationType isEqualToString:@"CCTV"]) {
+        
+        isShowingCallout = YES;
+        calloutView = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 150, 100)];
+        calloutView.backgroundColor = [UIColor whiteColor];
+        calloutView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+        calloutView.layer.borderWidth = 1.0;
+        calloutView.layer.cornerRadius = 10.0f;
+        calloutView.userInteractionEnabled = YES;
+        
+        UIImageView *locationNameImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 20, 20)];
+        [locationNameImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_location_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [calloutView addSubview:locationNameImageView];
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 10, 110, 50)];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.text = temp.annotationTitle;
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+        titleLabel.numberOfLines = 0;
+        [calloutView addSubview:titleLabel];
+        [titleLabel sizeToFit];
+        
+        UIImageView *distanceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(7, titleLabel.frame.origin.y+titleLabel.bounds.size.height + 5, 20, 20)];
+        [distanceImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_distance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [calloutView addSubview:distanceImageView];
+        
+        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 120, 20)];
+        subTitleLabel.backgroundColor = [UIColor clearColor];
+        subTitleLabel.text = temp.annotationSubtitle;
+        subTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+        subTitleLabel.numberOfLines = 0;
+        [calloutView addSubview:subTitleLabel];
+        
+        
+        CGRect newCalloutFrame = calloutView.frame;
+        newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+20;//expectedDescriptionLabelSize.height;
+        calloutView.frame = newCalloutFrame;
+        
+        CGPoint p = [quickMap convertCoordinate:temp.coordinate toPointToView:quickMap];
+        CGRect frame = CGRectMake(p.x - (calloutView.frame.size.width/2 - 30),
+                                  p.y- (calloutView.frame.size.height / 2 + 30),
+                                  calloutView.frame.size.width,
+                                  calloutView.frame.size.height);
+        
+        calloutView.frame = frame;
+        
+
+        UIButton *overlayButon = [UIButton buttonWithType:UIButtonTypeCustom];
+        overlayButon.frame = CGRectMake(0, 0, calloutView.bounds.size.width, calloutView.bounds.size.height);
+        overlayButon.tag = temp.annotationTag;
+        [overlayButon addTarget:self action:@selector(handleCCTVCalloutTap:) forControlEvents:UIControlEventTouchUpInside];
+        [calloutView addSubview:overlayButon];
+        
+        [quickMap addSubview:calloutView];
+    }
+    
+}
+
+
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
+    
+    if (isShowingCallout) {
+        isShowingCallout = NO;
+        [calloutView removeFromSuperview];
+    }
+    
+}
+
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+    
+    if (isShowingCallout) {
+        isShowingCallout = NO;
+        [calloutView removeFromSuperview];
+    }
+}
 
 
 //- (void) mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
@@ -739,7 +1008,7 @@
     //    [alert show];
     
     selectedAnnotationButton = index;
-
+    
     if (index==4) {
         
         
@@ -809,7 +1078,7 @@
             [quickMap removeAnnotations: annotationsToRemove];
             
             [floodStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-
+            
             //            [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         
@@ -879,8 +1148,8 @@
             [quickMap addAnnotation:annotation52];
             
             [wlsStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-
-//            [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            
+            //            [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             
@@ -893,7 +1162,7 @@
             [quickMap removeAnnotations: annotationsToRemove];
             
             [wlsStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//            [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            //            [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         
         //        isShowingFlood = NO;
@@ -916,65 +1185,26 @@
             
             isShowingCamera = YES;
             
-            //Set Default location to zoom
-            //            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.383194, 103.862344); //Create the CLLocation from user cordinates
-            //            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
-            //            MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
-            //            [quickMap setRegion:adjustedRegion animated:NO]; // create animation zooming
-            
-            MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 1.383194; // Make lat dynamic later
-            annotationRegion.center.longitude = 103.862344; // Make long dynamic later
-            annotationRegion.span.latitudeDelta = 0.02f;
-            annotationRegion.span.longitudeDelta = 0.02f;
-            
-            annotation4 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation4.coordinate = annotationRegion.center;
-            annotation4.title = @"43 Mimosa Rd";
-            annotation4.subtitle = @"";
-            [quickMap addAnnotation:annotation4];
-            
-            
-            MKCoordinateRegion annotationRegion41 = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion41.center.latitude = 1.383451; // Make lat dynamic later
-            annotationRegion41.center.longitude = 103.859791; // Make long dynamic later
-            annotationRegion41.span.latitudeDelta = 0.02f;
-            annotationRegion41.span.longitudeDelta = 0.02f;
-            
-            annotation41 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation41.coordinate = annotationRegion41.center;
-            annotation41.title = @"40 Mimosa Dr";
-            annotation41.subtitle = @"";
-            [quickMap addAnnotation:annotation41];
-            
-            
-            MKCoordinateRegion annotationRegion42 = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion42.center.latitude = 1.386433; // Make lat dynamic later
-            annotationRegion42.center.longitude = 103.871571; // Make long dynamic later
-            annotationRegion42.span.latitudeDelta = 0.02f;
-            annotationRegion42.span.longitudeDelta = 0.02f;
-            
-            annotation42 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation42.coordinate = annotationRegion42.center;
-            annotation42.title = @"22 Seletar Crescent";
-            annotation42.subtitle = @"";
-            [quickMap addAnnotation:annotation42];
-            
-            
-            MKCoordinateRegion annotationRegion43 = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion43.center.latitude = 1.385596; // Make lat dynamic later
-            annotationRegion43.center.longitude = 103.871855; // Make long dynamic later
-            annotationRegion43.span.latitudeDelta = 0.02f;
-            annotationRegion43.span.longitudeDelta = 0.02f;
-            
-            annotation43 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation43.coordinate = annotationRegion43.center;
-            annotation43.title = @"2 Jalan Lakum";
-            annotation43.subtitle = @"";
-            [quickMap addAnnotation:annotation43];
+            if (appDelegate.CCTV_LISTING_ARRAY.count==0) {
+                
+                isLoadingFloods = NO;
+                isLoadingWLS = NO;
+                isLoadingCCTV = YES;
+                isLoadingFeedback = NO;
+                isLoadingRainMap = NO;
+                
+                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+                appDelegate.hud.labelText = @"Loading..!!";
+                [self fetchCCTVListing];
+            }
+            else {
+                
+                [self generateCCTVAnnotations];
+            }
             
             [cctvStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//            [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            //            [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             isShowingCamera = NO;
@@ -984,7 +1214,7 @@
             [quickMap removeAnnotations: annotationsToRemove];
             
             [cctvStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//            [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            //            [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         
         //        isShowingFlood = NO;
@@ -1061,8 +1291,8 @@
             [quickMap addAnnotation:annotation23];
             
             [userFeedbackStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-
-//            [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            
+            //            [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             isShowingUserFeedback = NO;
@@ -1072,8 +1302,8 @@
             [quickMap removeAnnotations: annotationsToRemove];
             
             [userFeedbackStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-
-//            [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            
+            //            [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         
         //        isShowingFlood = NO;
@@ -1152,8 +1382,8 @@
             [quickMap addAnnotation:annotation33];
             
             [rainMapStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-
-//            [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            
+            //            [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             isShowingRain = NO;
@@ -1163,7 +1393,7 @@
             [quickMap removeAnnotations: annotationsToRemove];
             
             [rainMapStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//            [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            //            [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         
         //        isShowingFlood = NO;
@@ -1307,6 +1537,7 @@
         currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-85, 40, 40);
     }
     [quickMap addSubview:menuContentView];
+    [quickMap sendSubviewToBack:menuContentView];
     
     stack = [[UPStackMenu alloc] initWithContentView:menuContentView];
     [stack setDelegate:self];
@@ -1409,9 +1640,6 @@
     filterTableView.alpha = 0.8;
     
     filterDataSource = [[NSArray alloc] initWithObjects:@"Drain 0-75% Full",@"Drain 75%-90% Full",@"Drain 90%-100 Full",@"Station under maintenance", nil];
-    
-    //[self createDemoAppControls];
-    
     
     floodTempArray = [[NSArray alloc] initWithObjects:@"226H Ang Mo Kio Street 22",@"Low Flood",@"03:15 PM",@"225 Ang Mo Kio Avenue 1",@"Moderate Flood",@"8:25 PM",@"226H Ang Mo Kio Street 22",@"High Flood",@"9:15 AM", nil];
 }

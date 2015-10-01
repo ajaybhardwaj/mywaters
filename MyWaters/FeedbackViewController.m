@@ -31,21 +31,21 @@
 
 - (void) getAddressFromLatLon:(CLLocation *)bestLocation {
     
-    NSLog(@"%f %f", bestLocation.coordinate.latitude, bestLocation.coordinate.longitude);
+    DebugLog(@"%f %f", bestLocation.coordinate.latitude, bestLocation.coordinate.longitude);
     
     CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
     [geocoder reverseGeocodeLocation:bestLocation
                    completionHandler:^(NSArray *placemarks, NSError *error)
      {
          if (error){
-             NSLog(@"Geocode failed with error: %@", error);
+             DebugLog(@"Geocode failed with error: %@", error);
              return;
          }
          
          CLPlacemark *placemark = [placemarks objectAtIndex:0];
-         NSLog(@"placemark.ISOcountryCode %@",placemark.ISOcountryCode);
-         NSLog(@"locality %@",placemark.locality);
-         NSLog(@"postalCode %@",placemark.postalCode);
+         DebugLog(@"placemark.ISOcountryCode %@",placemark.ISOcountryCode);
+         DebugLog(@"locality %@",placemark.locality);
+         DebugLog(@"postalCode %@",placemark.postalCode);
          
          if (!tempLocationString)
              tempLocationString = [[NSString alloc] initWithFormat:@"%@",placemark.locality];
@@ -915,8 +915,10 @@
     }
     
     
-    [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
-}
+    if (([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) || ![CLLocationManager locationServicesEnabled]) {
+        [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
+        return;
+    }}
 
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -933,10 +935,8 @@
     
     [self.view addGestureRecognizer:swipeGesture];
     
-    currentLocation.latitude = 1.2912500;
-    currentLocation.longitude = 103.7870230;
-    
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:currentLocation.latitude longitude:currentLocation.longitude];
+    CLLocationCoordinate2D coordinate = [CommonFunctions getUserCurrentLocation];
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
     [self getAddressFromLatLon:location];
 }
 

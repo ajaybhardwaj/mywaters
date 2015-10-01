@@ -12,6 +12,8 @@
 #import <MapKit/MapKit.h>
 #import "QuickMapAnnotations.h"
 #import "UPStackMenu.h"
+#import "CustomAnnotationView.h"
+#import "CCTVDetailViewController.h"
 
 @interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UPStackMenuDelegate> {
     
@@ -30,6 +32,12 @@
     NSDictionary *locationsDict;
     
     // Place Annotation Point
+    QuickMapAnnotations *cctvAnnotation;
+    UIView *calloutView;
+    BOOL isShowingCallout;
+    UITapGestureRecognizer *cctvTapGesture;
+    
+    
     QuickMapAnnotations *annotation1,*annotation2,*annotation3,*annotation4,*annotation5,*annotation6;
     QuickMapAnnotations *annotation11,*annotation12,*annotation21,*annotation22,*annotation23,*annotation31,*annotation32,*annotation33;
     QuickMapAnnotations *annotation41,*annotation42,*annotation43,*annotation51,*annotation52;
@@ -44,6 +52,8 @@
     
     
     NSArray *floodTempArray,*wlsTempArray,*cctvTempArray,*userFeedbackArray,*rainTempArray;
+    BOOL isLoadingFloods,isLoadingWLS,isLoadingCCTV,isLoadingFeedback,isLoadingRainMap;
+    
     
 }
 

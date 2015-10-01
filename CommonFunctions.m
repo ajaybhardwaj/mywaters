@@ -64,9 +64,7 @@
 //*************** Method For Checking If Location Services Are Enabled Or Not
 
 + (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj {
-
-    if ([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
-        
+    
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString( titleString, @"" ) message:NSLocalizedString( messageString, @"" ) preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString( @"Cancel", @"" ) style:UIAlertActionStyleCancel handler:nil];
@@ -78,8 +76,23 @@
         [alertController addAction:settingsAction];
         
         [viewObj presentViewController:alertController animated:YES completion:nil];
-    }
 
+}
+
+
+//*************** Method For Getting User Current Location Latitude And Location Values
+
++ (CLLocationCoordinate2D) getUserCurrentLocation {
+    
+    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+    locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    locationManager.distanceFilter = kCLDistanceFilterNone;
+    [locationManager startUpdatingLocation];
+    
+    CLLocation *location = [locationManager location];
+    CLLocationCoordinate2D coordinate = [location coordinate];
+    
+    return coordinate;
 }
 
 
@@ -97,6 +110,7 @@
                                    UIImage *image = [[UIImage alloc] initWithData:data];
                                    completionBlock(YES,image);
                                } else{
+                                   DebugLog(@"%@",[error description]);
                                    completionBlock(NO,nil);
                                }
                            }];

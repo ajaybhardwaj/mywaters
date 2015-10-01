@@ -23,6 +23,95 @@
 }
 
 
+//*************** Method To Validate Change Password Inputs
+
+- (void) validateChangePasswordParameters {
+    
+    if ([currentPassField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Old Password is mandatory." cancel:@"OK" otherButton:nil];
+    }
+    else if ([newPassField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a new password." cancel:@"OK" otherButton:nil];
+    }
+    else if ([confirmPassField.text length]==0) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please confirm your new password." cancel:@"OK" otherButton:nil];
+    }
+    else if (![confirmPassField.text isEqualToString:newPassField.text]) {
+        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password and confirm password are not same." cancel:@"OK" otherButton:nil];
+    }
+    else {
+        
+        [currentPassField resignFirstResponder];
+        [newPassField resignFirstResponder];
+        [confirmPassField resignFirstResponder];
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading..!!";
+        
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        NSMutableArray *values = [[NSMutableArray alloc] init];
+        
+        [parameters addObject:@"OldPassword"];
+        [values addObject:currentPassField.text];
+        
+        [parameters addObject:@"NewPassword"];
+        [values addObject:newPassField.text];
+        
+        [parameters addObject:@"Email"];
+        [values addObject:[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"]];
+        
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,PROFILE_API_URL]];
+    }
+}
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    
+    [appDelegate.hud hide:YES];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
+        
+        appDelegate.USER_PROFILE_DICTIONARY = [[responseString JSONValue] objectForKey:@"UserProfile"];
+        
+//        OTPViewController *viewObj = [[OTPViewController alloc] init];
+//        viewObj.emailStringForVerification = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
+//        [self.navigationController pushViewController:viewObj animated:YES];
+        
+        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
+    [appDelegate.hud hide:YES];
+}
+
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex==0) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+
 # pragma mark - UITextFieldDelegate Methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -50,6 +139,8 @@
     self.title = @"Change Password";
     self.view.backgroundColor = RGB(247, 247, 247);
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    
+    appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     currentPassField = [[UITextField alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, 40)];
     currentPassField.textColor = RGB(35, 35, 35);
@@ -114,10 +205,10 @@
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     submitButton.tag = 1;
     submitButton.frame = CGRectMake(0, self.view.bounds.size.height-110, self.view.bounds.size.width, 45);
-    [submitButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [submitButton addTarget:self action:@selector(validateChangePasswordParameters) forControlEvents:UIControlEventTouchUpInside];
     [submitButton setBackgroundColor:RGB(86, 46, 120)];
     [self.view addSubview:submitButton];
-
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -126,13 +217,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

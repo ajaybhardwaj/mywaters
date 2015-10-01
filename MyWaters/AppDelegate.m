@@ -16,12 +16,12 @@
 @synthesize RESOURCE_FOLDER_PATH,database;
 @synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY,EVENTS_LISTING_ARRAY,WLS_LISTING_ARRAY,CCTV_LISTING_ARRAY;
 @synthesize screen_width,left_deck_width;
-@synthesize LOGGED_IN_USER_NAME;
 @synthesize IS_COMING_AFTER_LOGIN;
 @synthesize SELECTED_MENU_ID;
 @synthesize IS_ARVIEW_CUSTOM_LABEL;
 @synthesize IS_MOVING_TO_WLS_FROM_DASHBOARD,IS_MOVING_TO_CCTV_FROM_DASHBOARD;
 @synthesize hud;
+@synthesize USER_PROFILE_DICTIONARY;
 
 //*************** Create Deck View Controller For App ***************//
 
@@ -328,12 +328,10 @@
     WLS_LISTING_ARRAY = [[NSMutableArray alloc] init];
     CCTV_LISTING_ARRAY = [[NSMutableArray alloc] init];
     POI_ARRAY = [[NSMutableArray alloc] init];
+    USER_PROFILE_DICTIONARY = [[NSDictionary alloc] init];
     SELECTED_MENU_ID = 0;
     
-    
-    // temp Username
-    LOGGED_IN_USER_NAME = @"Mr. William";
-    
+        
     [self retrieveDashboardPreferences];
     
     screen_width = self.window.bounds.size.width;

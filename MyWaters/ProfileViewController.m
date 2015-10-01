@@ -721,7 +721,6 @@
     
     
     userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(150, 10, self.view.bounds.size.width-150, 70)];
-    userNameLabel.text = @"George Tan";
     userNameLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
     userNameLabel.textColor = RGB(85,49,118);
     userNameLabel.backgroundColor = [UIColor clearColor];
@@ -926,6 +925,9 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
+    
+    userNameLabel.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"];
+
     
 //    self.hidesBottomBarWhenPushed = NO;
 }

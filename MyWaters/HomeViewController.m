@@ -362,6 +362,7 @@
                             }
                             //[locationManager requestAlwaysAuthorization];
                         }
+                        [locationManager requestWhenInUseAuthorization];
                         locationManager.delegate = self;
                         locationManager.desiredAccuracy = kCLLocationAccuracyBest;
                         [locationManager startUpdatingLocation];
@@ -765,6 +766,7 @@
                             }
                             //[locationManager requestAlwaysAuthorization];
                         }
+                        [locationManager requestWhenInUseAuthorization];
                         locationManager.delegate = self;
                         locationManager.desiredAccuracy = kCLLocationAccuracyBest;
                         [locationManager startUpdatingLocation];
@@ -1363,13 +1365,13 @@
     NSInteger hour = [components hour];
     
     if (hour < 12) {
-        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Morning, %@",appDelegate.LOGGED_IN_USER_NAME];
+        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Morning, %@",[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"]];
     }
     else if (hour >= 12 && hour <= 16) {
-        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Afternoon, %@",appDelegate.LOGGED_IN_USER_NAME];
+        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Afternoon, %@",[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"]];
     }
     else if (hour > 16) {
-        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Evening, %@",appDelegate.LOGGED_IN_USER_NAME];
+        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Evening, %@",[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"]];
     }
     
     

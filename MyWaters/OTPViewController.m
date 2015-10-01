@@ -14,6 +14,7 @@
 
 @implementation OTPViewController
 @synthesize emailStringForVerification;
+@synthesize isChangingPassword,isValidatingEmail;
 
 
 //*************** Method To Submit OTP Code
@@ -38,8 +39,14 @@
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
         
-        [parameters addObject:@"VerificationMode"];
-        [values addObject:@"1"];
+        if (isValidatingEmail) {
+            [parameters addObject:@"VerificationMode"];
+            [values addObject:@"1"];
+        }
+        else if (isChangingPassword) {
+            [parameters addObject:@"VerificationMode"];
+            [values addObject:@"1"];
+        }
         
         
         [parameters addObject:@"Email"];
@@ -69,8 +76,14 @@
     NSMutableArray *parameters = [[NSMutableArray alloc] init];
     NSMutableArray *values = [[NSMutableArray alloc] init];
     
-    [parameters addObject:@"VerificationMode"];
-    [values addObject:@"3"];
+    if (isValidatingEmail) {
+        [parameters addObject:@"VerificationMode"];
+        [values addObject:@"3"];
+    }
+    else if (isChangingPassword) {
+        [parameters addObject:@"VerificationMode"];
+        [values addObject:@"4"];
+    }
     
     
     [parameters addObject:@"Email"];

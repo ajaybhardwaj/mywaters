@@ -196,33 +196,43 @@
     
     if ([emailField.text length]==0) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+        return;
     }
     
     if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+        return;
     }
     
     if ([nameField.text length]==0) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+        return;
     }
     
     if ([CommonFunctions characterSet1Found:nameField.text]) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+        return;
     }
     
     if ([passField.text length]==0) {
-        if (!isSigningUpViaFacebook)
+        if (!isSigningUpViaFacebook) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+            return;
+        }
     }
     
     if ([retypePassField.text length]==0) {
-        if (!isSigningUpViaFacebook)
+        if (!isSigningUpViaFacebook) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Retype password is mandatory." cancel:@"OK" otherButton:nil];
+            return;
+        }
     }
     
     if (![passField.text isEqualToString:retypePassField.text]) {
-        if (!isSigningUpViaFacebook)
+        if (!isSigningUpViaFacebook) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
+            return;
+        }
     }
     
     [self submitSignupDetails];
@@ -282,16 +292,20 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    //    DebugLog(@"%@",responseString);
+    DebugLog(@"%@",responseString);
+    
+    [appDelegate.hud hide:YES];
+
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
-        [appDelegate.hud hide:YES];
+        
+        appDelegate.USER_PROFILE_DICTIONARY = [[responseString JSONValue] objectForKey:@"UserProfile"];
+
         OTPViewController *viewObj = [[OTPViewController alloc] init];
         viewObj.emailStringForVerification = emailField.text;
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else {
-        [appDelegate.hud hide:YES];
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
 }

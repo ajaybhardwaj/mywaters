@@ -9,11 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "CustomButtons.h"
 #import "Constants.h"
+#import "AppDelegate.h"
 
 @interface ChangePasswordViewController : UIViewController <UITextFieldDelegate> {
     
     UITextField *currentPassField,*newPassField,*confirmPassField;
     UIButton *submitButton;
+    
+    AppDelegate *appDelegate;
 }
 
 @end

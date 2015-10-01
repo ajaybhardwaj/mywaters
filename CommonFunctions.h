@@ -17,6 +17,7 @@
 #import "ASIFormDataRequest.h"
 #import "ASINetworkQueue.h"
 #import "JSON.h"
+#import <CoreLocation/CoreLocation.h>
 
 @interface CommonFunctions : NSObject
 
@@ -34,7 +35,7 @@
 + (NSString *)dateFromString:(NSString *)dateString;
 + (NSMutableDictionary *)extractXML:(NSMutableDictionary *)XMLDictionary;
 + (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj;
-
++ (CLLocationCoordinate2D) getUserCurrentLocation;
 
 # pragma mark - Server GET & POST Methods
 + (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data;

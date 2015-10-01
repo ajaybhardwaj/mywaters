@@ -55,10 +55,11 @@
 #define SIGNUP_API_URL @"SignUp/"
 #define VERIFICATION_API_URL @"Verification/"
 #define LOGIN_API_URL @"Login/"
+#define PROFILE_API_URL @"Profile/"
 
 
-#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"
-//#define UPLOAD_IMAGE_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/uploads/"
+//#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"
+#define IMAGE_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/uploads/"
 
 
 #define TWELVE_HOUR_FORECAST @"http://www.nea.gov.sg/api/WebAPI/?dataset=12hrs_forecast&keyref=781CF461BB6606ADE5BD65643F17817407DD6DBD4D056893"

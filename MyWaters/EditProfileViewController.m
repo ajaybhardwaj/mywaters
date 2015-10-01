@@ -32,6 +32,35 @@
     UIButton *button = (id) sender;
     if (button.tag==1) {
         
+        if ([nameField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+        }
+        else if ([emailField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
+        }
+        else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+        }
+        else {
+            
+            [nameField resignFirstResponder];
+            [emailField resignFirstResponder];
+            
+            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+            appDelegate.hud.labelText = @"Loading..!!";
+            
+            NSMutableArray *parameters = [[NSMutableArray alloc] init];
+            NSMutableArray *values = [[NSMutableArray alloc] init];
+            
+            [parameters addObject:@"Name"];
+            [values addObject:nameField.text];
+            
+            [parameters addObject:@"Email"];
+            [values addObject:emailField.text];
+            
+            [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,PROFILE_API_URL]];
+        }
     }
     else if (button.tag==2) {
         
@@ -39,7 +68,6 @@
         [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
-
 
 
 # pragma mark - UITextFieldDelegate Methods
@@ -57,6 +85,53 @@
 
 
 
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    
+    [appDelegate.hud hide:YES];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
+        
+        appDelegate.USER_PROFILE_DICTIONARY = [[responseString JSONValue] objectForKey:@"UserProfile"];
+        
+        //        OTPViewController *viewObj = [[OTPViewController alloc] init];
+        //        viewObj.emailStringForVerification = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
+        //        [self.navigationController pushViewController:viewObj animated:YES];
+        
+        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
+    [appDelegate.hud hide:YES];
+}
+
+
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex==0) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+
 
 # pragma mark - View Lifecycle Methods
 
@@ -69,6 +144,7 @@
     self.view.backgroundColor = RGB(247, 247, 247);
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
 
+    appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, 40)];
     nameField.textColor = RGB(35, 35, 35);
@@ -87,6 +163,7 @@
     nameField.returnKeyType = UIReturnKeyNext;
     [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     nameField.tag = 1;
+    nameField.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"];
     
     emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, nameField.frame.origin.y+nameField.bounds.size.height+1, self.view.bounds.size.width, 40)];
     emailField.textColor = RGB(35, 35, 35);
@@ -105,7 +182,7 @@
     emailField.returnKeyType = UIReturnKeyDefault;
     [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     emailField.tag = 2;
-    
+    emailField.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
     
     updateButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [updateButton setTitle:@"UPDATE" forState:UIControlStateNormal];

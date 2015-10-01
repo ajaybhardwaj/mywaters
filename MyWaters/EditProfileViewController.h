@@ -10,8 +10,11 @@
 #import "Constants.h"
 #import "CustomButtons.h"
 #import "ChangePasswordViewController.h"
+#import "AppDelegate.h"
 
 @interface EditProfileViewController : UIViewController <UITextFieldDelegate> {
+    
+    AppDelegate *appDelegate;
     
     UITextField *nameField,*emailField;
     UIButton *changePasswordButton,*updateButton;

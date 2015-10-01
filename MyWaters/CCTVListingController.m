@@ -28,13 +28,9 @@
 
 - (void) fetchCCTVListing {
     
-    if (cctvPageCount!=-1) {
-        
-        cctvPageCount = cctvPageCount + 1;
-        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"Limit",@"version", nil];
-        NSArray *values = [[NSArray alloc] initWithObjects:@"4",[NSString stringWithFormat:@"%ld",cctvPageCount],[NSString stringWithFormat:@"1"],@"10",@"1.0", nil];
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
-    }
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"1",@"1.0", nil];
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
 
@@ -96,8 +92,8 @@
             [self animateFilterTable];
         }
         
-//        cctvListingTable.alpha = 0.5;
-//        cctvListingTable.userInteractionEnabled = NO;
+        //        cctvListingTable.alpha = 0.5;
+        //        cctvListingTable.userInteractionEnabled = NO;
         
         [listinSearchBar becomeFirstResponder];
     }
@@ -152,6 +148,7 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     
+    DebugLog(@"%@",responseString);
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
         
@@ -159,10 +156,10 @@
         cctvPageCount = [[[responseString JSONValue] objectForKey:CCTV_LISTING_TOTAL_COUNT] intValue];
         
         if (tempArray.count==0) {
-            cctvPageCount = 0;
+            //            cctvPageCount = 0;
         }
         else {
-            cctvPageCount = cctvPageCount + 1;
+            //            cctvPageCount = cctvPageCount + 1;
             if (appDelegate.CCTV_LISTING_ARRAY.count==0) {
                 [appDelegate.CCTV_LISTING_ARRAY setArray:tempArray];
             }
@@ -186,7 +183,7 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    cctvPageCount = -1;
+    //    cctvPageCount = -1;
     
     [appDelegate.hud hide:YES];
 }
@@ -235,16 +232,16 @@
                 viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
         }
         else {
-        if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
-            viewObj.imageUrl = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"];
-        if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null])
-            viewObj.titleString = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Name"];
-        if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"] != (id)[NSNull null])
-            viewObj.cctvID = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"];
-        if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lat"] != (id)[NSNull null])
-            viewObj.latValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lat"] doubleValue];
-        if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lon"] != (id)[NSNull null])
-            viewObj.longValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
+            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
+                viewObj.imageUrl = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"];
+            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null])
+                viewObj.titleString = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Name"];
+            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"] != (id)[NSNull null])
+                viewObj.cctvID = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"];
+            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lat"] != (id)[NSNull null])
+                viewObj.latValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lat"] doubleValue];
+            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lon"] != (id)[NSNull null])
+                viewObj.longValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
         }
         [self.navigationController pushViewController:viewObj animated:YES];
     }
@@ -389,7 +386,7 @@
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
     filteredDataSource = [[NSMutableArray alloc] init];
-
+    
     
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;
