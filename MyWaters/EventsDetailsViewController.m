@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 
 @implementation EventsDetailsViewController
-@synthesize imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,websiteString,imageName;
+@synthesize eventID,imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,websiteString,imageName;
 
 
 
@@ -71,6 +71,65 @@
         [UIView commitAnimations];
     }
 }
+
+
+
+//*************** Method To Add CCTV To Favourites
+
+- (void) addEventsToFavourites {
+    
+    [self animateTopMenu];
+    
+    NSMutableDictionary *parametersDict = [[NSMutableDictionary alloc] init];
+    
+    [parametersDict setValue:eventID forKey:@"fav_id"];
+    [parametersDict setValue:@"2" forKey:@"fav_type"];
+    [parametersDict setValue:titleString forKey:@"name"];
+    [parametersDict setValue:imageName forKey:@"image"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"lat"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"long"];
+    
+    if (addressString != (id)[NSNull null] && [addressString length] !=0)
+        [parametersDict setValue:addressString forKey:@"address"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"address"];
+    
+    if (phoneNoString != (id)[NSNull null] && [phoneNoString length] !=0)
+        [parametersDict setValue:phoneNoString forKey:@"phoneno"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"phoneno"];
+    
+    if (descriptionString != (id)[NSNull null] && [descriptionString length] !=0)
+        [parametersDict setValue:descriptionString forKey:@"description"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"description"];
+    
+    if (startDateString != (id)[NSNull null] && [startDateString length] !=0)
+        [parametersDict setValue:startDateString forKey:@"start_date_event"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"start_date_event"];
+    
+    if (endDateString != (id)[NSNull null] && [endDateString length] !=0)
+        [parametersDict setValue:endDateString forKey:@"end_date_event"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"end_date_event"];
+    
+    if (websiteString != (id)[NSNull null] && [websiteString length] !=0)
+        [parametersDict setValue:websiteString forKey:@"website_event"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"website_event"];
+    
+    [parametersDict setValue:@"NA" forKey:@"isCertified_ABC"];
+    [parametersDict setValue:@"NA" forKey:@"water_level_wls"];
+    [parametersDict setValue:@"NA" forKey:@"drain_depth_wls"];
+    [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
+    [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
+    [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
+    
+    
+    [appDelegate insertFavouriteItems:parametersDict];
+}
+
 
 
 //*************** Method To Create Detail Page UI
@@ -320,7 +379,7 @@
     favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [favouritesButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [favouritesButton addTarget:self action:@selector(addEventsToFavourites) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:favouritesButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];

@@ -13,7 +13,7 @@
 @end
 
 @implementation WaterLevelSensorsDetailViewController
-@synthesize drainDepthType,latValue,longValue,wlsName,observedTime;
+@synthesize wlsID,drainDepthType,latValue,longValue,wlsName,observedTime,waterLevelValue,waterLevelPercentageValue,waterLevelTypeValue,drainDepthValue;
 
 //*************** Method To Open Side Menu
 
@@ -67,6 +67,58 @@
         topMenu.center = topMenuPos;
         [UIView commitAnimations];
     }
+}
+
+
+//*************** Method To Add WLS To Favourites
+
+- (void) addWLSToFavourites {
+    
+    [self animateTopMenu];
+    
+    NSMutableDictionary *parametersDict = [[NSMutableDictionary alloc] init];
+    
+    [parametersDict setValue:wlsID forKey:@"fav_id"];
+    [parametersDict setValue:@"4" forKey:@"fav_type"];
+    [parametersDict setValue:wlsName forKey:@"name"];
+    [parametersDict setValue:@"NA" forKey:@"image"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"lat"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"long"];
+    [parametersDict setValue:@"NA" forKey:@"address"];
+    [parametersDict setValue:@"NA" forKey:@"phoneno"];
+    [parametersDict setValue:@"NA" forKey:@"description"];
+    [parametersDict setValue:@"NA" forKey:@"start_date_event"];
+    [parametersDict setValue:@"NA" forKey:@"end_date_event"];
+    [parametersDict setValue:@"NA" forKey:@"website_event"];
+    [parametersDict setValue:@"NA" forKey:@"isCertified_ABC"];
+    
+    
+    if (waterLevelValue != (id)[NSNull null] && [waterLevelValue length] !=0)
+        [parametersDict setValue:waterLevelValue forKey:@"water_level_wls"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"water_level_wls"];
+    
+    if (drainDepthValue != (id)[NSNull null] && [drainDepthValue length] !=0)
+        [parametersDict setValue:drainDepthValue forKey:@"drain_depth_wls"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"drain_depth_wls"];
+    
+    if (waterLevelPercentageValue != (id)[NSNull null] && [waterLevelPercentageValue length] !=0)
+        [parametersDict setValue:waterLevelPercentageValue forKey:@"water_level_percentage_wls"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
+    
+    if (waterLevelTypeValue != (id)[NSNull null] && [waterLevelTypeValue length] !=0)
+        [parametersDict setValue:waterLevelTypeValue forKey:@"water_level_type_wls"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
+    
+    if (observedTime != (id)[NSNull null] && [observedTime length] !=0)
+        [parametersDict setValue:observedTime forKey:@"observation_time_wls"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
+    
+    [appDelegate insertFavouriteItems:parametersDict];
 }
 
 
@@ -132,7 +184,7 @@
     //    addToFavButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)+15, 10, 25, 25);
     addToFavButton.frame = CGRectMake((topMenu.bounds.size.width/2)/3/2 - 10 + (topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/2)/3, 5, 20, 20);
     [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [addToFavButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [addToFavButton addTarget:self action:@selector(addWLSToFavourites) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addToFavButton];
     
     

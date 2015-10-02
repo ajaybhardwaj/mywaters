@@ -146,8 +146,8 @@
 
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, 40)];
-    nameField.textColor = RGB(35, 35, 35);
+    nameField = [[UITextField alloc] initWithFrame:CGRectMake(10, 20, self.view.bounds.size.width-20, 40)];
+    nameField.textColor = RGB(61, 71, 94);
     nameField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
     nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
     nameField.leftViewMode = UITextFieldViewModeAlways;
@@ -159,14 +159,14 @@
     nameField.clearButtonMode = UITextFieldViewModeWhileEditing;
     nameField.delegate = self;
     nameField.keyboardType = UIKeyboardTypeDefault;
-    nameField.backgroundColor = [UIColor whiteColor];
+    [nameField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     nameField.returnKeyType = UIReturnKeyNext;
     [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     nameField.tag = 1;
     nameField.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"];
     
-    emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, nameField.frame.origin.y+nameField.bounds.size.height+1, self.view.bounds.size.width, 40)];
-    emailField.textColor = RGB(35, 35, 35);
+    emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, nameField.frame.origin.y+nameField.bounds.size.height+10, self.view.bounds.size.width-20, 40)];
+    emailField.textColor = RGB(61, 71, 94);
     emailField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
     emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
     emailField.leftViewMode = UITextFieldViewModeAlways;
@@ -178,7 +178,7 @@
     emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
     emailField.delegate = self;
     emailField.keyboardType = UIKeyboardTypeEmailAddress;
-    emailField.backgroundColor = [UIColor whiteColor];
+    [emailField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     emailField.returnKeyType = UIReturnKeyDefault;
     [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     emailField.tag = 2;

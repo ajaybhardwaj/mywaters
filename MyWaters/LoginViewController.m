@@ -24,13 +24,23 @@
 }
 
 
-//*************** Method To Move To Login View After Spalsh Screen
+//*************** Method To Move To Signup View
 
 - (void) moveToSignUpView {
     
     SignUpViewController *viewObj = [[SignUpViewController alloc] init];
     [self.navigationController pushViewController:viewObj animated:YES];
     
+}
+
+
+//*************** Method To Move To Forgot Password View
+
+- (void) moveToForgotPasswordView {
+    
+    ForgotPasswordViewController *viewObj = [[ForgotPasswordViewController alloc] init];
+    [self.navigationController pushViewController:viewObj animated:YES];
+
 }
 
 
@@ -377,6 +387,7 @@
     forgotPassButton.titleLabel.textAlignment = NSTextAlignmentRight;
     forgotPassButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     forgotPassButton.frame = CGRectMake(backgroundScrollView.bounds.size.width/2-10, loginButton.frame.origin.y+loginButton.bounds.size.height+10, backgroundScrollView.bounds.size.width/2, 20);
+    [forgotPassButton addTarget:self action:@selector(moveToForgotPasswordView) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:forgotPassButton];
     
     

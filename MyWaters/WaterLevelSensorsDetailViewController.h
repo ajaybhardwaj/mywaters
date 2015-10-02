@@ -45,7 +45,7 @@
 }
 
 @property (nonatomic, assign) NSInteger drainDepthType;
-@property (nonatomic, strong) NSString *wlsName,*observedTime;
+@property (nonatomic, strong) NSString *wlsID,*wlsName,*observedTime,*waterLevelValue,*waterLevelPercentageValue,*waterLevelTypeValue,*drainDepthValue;
 @property (nonatomic, assign) double latValue,longValue;
 
 

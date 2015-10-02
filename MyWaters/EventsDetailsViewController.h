@@ -35,7 +35,7 @@
     UILabel___Extension *descriptionLabel;
 }
 
-@property (nonatomic, strong) NSString *imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*startDateString,*endDateString,*websiteString,*imageName;
+@property (nonatomic, strong) NSString *eventID,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*startDateString,*endDateString,*websiteString,*imageName;
 @property (nonatomic, assign) double latValue,longValue;
 
 

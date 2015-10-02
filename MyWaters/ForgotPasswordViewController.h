@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface ForgotPasswordViewController : UIViewController
+@interface ForgotPasswordViewController : UIViewController <UITextFieldDelegate> {
+    
+    AppDelegate *appDelegate;
+    UITextField *emailField;
+    UIButton *submitButton;
+}
 
 @end

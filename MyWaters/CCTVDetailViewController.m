@@ -140,6 +140,39 @@
 }
 
 
+
+//*************** Method To Add CCTV To Favourites
+
+- (void) addCCTVToFavourites {
+    
+    [self animateTopMenu];
+    
+    NSMutableDictionary *parametersDict = [[NSMutableDictionary alloc] init];
+    
+    [parametersDict setValue:cctvID forKey:@"fav_id"];
+    [parametersDict setValue:@"1" forKey:@"fav_type"];
+    [parametersDict setValue:titleString forKey:@"name"];
+    [parametersDict setValue:imageUrl forKey:@"image"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"lat"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"long"];
+
+    [parametersDict setValue:@"NA" forKey:@"address"];
+    [parametersDict setValue:@"NA" forKey:@"phoneno"];
+    [parametersDict setValue:@"NA" forKey:@"description"];
+    [parametersDict setValue:@"NA" forKey:@"start_date_event"];
+    [parametersDict setValue:@"NA" forKey:@"end_date_event"];
+    [parametersDict setValue:@"NA" forKey:@"website_event"];
+    [parametersDict setValue:@"NA" forKey:@"isCertified_ABC"];
+    [parametersDict setValue:@"NA" forKey:@"water_level_wls"];
+    [parametersDict setValue:@"NA" forKey:@"drain_depth_wls"];
+    [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
+    [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
+    [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
+
+    
+    [appDelegate insertFavouriteItems:parametersDict];
+}
+
 //*************** Method To Animate Top Menu
 
 - (void) animateTopMenu {
@@ -344,7 +377,7 @@
     favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (50), 5, 20, 20);
     [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [favouritesButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [favouritesButton addTarget:self action:@selector(addCCTVToFavourites) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:favouritesButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];

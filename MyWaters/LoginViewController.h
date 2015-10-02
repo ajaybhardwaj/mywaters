@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "SignUpViewController.h"
 #import "OTPViewController.h"
+#import "ForgotPasswordViewController.h"
 
 @interface LoginViewController : UIViewController <UITextFieldDelegate> {
     

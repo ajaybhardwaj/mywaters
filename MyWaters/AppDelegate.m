@@ -247,6 +247,68 @@
 
 
 
+//*************** Method To Update Dashboard Preferences
+
+- (void) insertFavouriteItems:(NSMutableDictionary*) parametersDict {
+    
+    
+    // Fav Types:
+    // 1- CCTV, 2- Events, 3-ABC, 4-WLS
+    
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        int recordCount =0;
+        NSString *searchQuery = [NSString stringWithFormat: @"SELECT COUNT(*) FROM favourites WHERE fav_type=\"%@\" AND fav_id=\"%@\"",[parametersDict objectForKey:@"fav_type"],[parametersDict objectForKey:@"fav_id"]];
+        
+        const char *query_stmt = [searchQuery UTF8String];
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                recordCount = sqlite3_column_int(statement, 0);
+            }
+        }
+        
+        
+        if (recordCount==0) {
+            
+            NSString *insertSQL = [NSString stringWithFormat: @"INSERT OR IGNORE INTO favourites (name, image, lat, long, address, phoneno, description, start_date_event, end_date_event, website_event, isCertified_ABC, water_level_wls, drain_depth_wls, water_level_percentage_wls, water_level_type_wls, observation_time_wls, fav_type, fav_id) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", [parametersDict objectForKey:@"name"],[parametersDict objectForKey:@"image"],[parametersDict objectForKey:@"lat"],[parametersDict objectForKey:@"long"],[parametersDict objectForKey:@"address"],[parametersDict objectForKey:@"phoneno"],[parametersDict objectForKey:@"description"],[parametersDict objectForKey:@"start_date_event"],[parametersDict objectForKey:@"end_date_event"],[parametersDict objectForKey:@"website_event"],[parametersDict objectForKey:@"isCertified_ABC"],[parametersDict objectForKey:@"water_level_wls"],[parametersDict objectForKey:@"drain_depth_wls"],[parametersDict objectForKey:@"water_level_percentage_wls"],[parametersDict objectForKey:@"water_level_type_wls"],[parametersDict objectForKey:@"observation_time_wls"],[parametersDict objectForKey:@"fav_type"],[parametersDict objectForKey:@"fav_id"]];
+            const char *insert_stmt = [insertSQL UTF8String];
+            
+            DebugLog(@"Insert query %@",insertSQL);
+            
+            sqlite3_prepare_v2(database, insert_stmt, -1, &statement, NULL);
+            if (sqlite3_step(statement) == SQLITE_DONE)
+            {
+                DebugLog(@"Row inserted");
+                [CommonFunctions showAlertView:nil title:nil msg:@"Added as favourite." cancel:@"OK" otherButton:nil];
+            }
+            
+            else {
+                DebugLog(@"Failed to insert row");
+                [CommonFunctions showAlertView:nil title:nil msg:@"Failed to add as favourite. Please try later." cancel:@"OK" otherButton:nil];
+            }
+            
+        }
+        else {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Favourite already exists" cancel:@"OK" otherButton:nil];
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+}
+
+
+
 # pragma mark - SQLite Create & Open Methods
 
 
@@ -331,7 +393,7 @@
     USER_PROFILE_DICTIONARY = [[NSDictionary alloc] init];
     SELECTED_MENU_ID = 0;
     
-        
+    
     [self retrieveDashboardPreferences];
     
     screen_width = self.window.bounds.size.width;

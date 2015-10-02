@@ -696,23 +696,7 @@
     filteredDataSource = [[NSMutableArray alloc] init];
     
     abcWatersPageCount = 0;
-    //
-    //    searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
-    //    searchField.textColor = RGB(35, 35, 35);
-    //    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    //    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-    //    searchField.leftViewMode = UITextFieldViewModeAlways;
-    //    searchField.borderStyle = UITextBorderStyleNone;
-    //    searchField.textAlignment=NSTextAlignmentLeft;
-    //    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    //    searchField.placeholder = @"Search...";
-    //    [self.view addSubview:searchField];
-    //    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    //    searchField.delegate = self;
-    //    searchField.keyboardType = UIKeyboardTypeEmailAddress;
-    //    searchField.returnKeyType = UIReturnKeyDone;
-    //    searchField.backgroundColor = [UIColor whiteColor];
-    //    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    
     
     
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
@@ -722,25 +706,21 @@
     listinSearchBar.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:listinSearchBar];
     
-    UITextField *searchField=[((UIView *)[listinSearchBar.subviews objectAtIndex:0]).subviews lastObject];;//Changed this line in ios 7
-    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)];
-    searchField.leftViewMode = UITextFieldViewModeAlways;
-    searchField.borderStyle = UITextBorderStyleNone;
-    searchField.textAlignment=NSTextAlignmentLeft;
-    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    searchField.placeholder = @"Search...";
-    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    searchField.returnKeyType = UIReturnKeyDone;
-    searchField.backgroundColor = [UIColor whiteColor];
-    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-    
-    
-    //    if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
-    ////        [CommonFunctions grabGetRequest:ABC_WATERS_LISTING delegate:self isNSData:NO];
-    //        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"Limit",@"SortBy",@"version", nil];
-    //        [CommonFunctions grabPostRequest:<#(NSArray *)#> paramtersValue:<#(NSArray *)#> delegate:<#(UIViewController *)#> isNSData:<#(BOOL)#>];
-    //    }
+    for (id object in [listinSearchBar subviews]) {
+        
+        if ([object isKindOfClass:[UITextField class]]) {
+            
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setFont:[UIFont fontWithName:ROBOTO_REGULAR size:14]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftViewMode:UITextFieldViewModeAlways];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBorderStyle:UITextBorderStyleNone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextAlignment:NSTextAlignmentLeft];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setPlaceholder:@"Search..."];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setClearButtonMode:UITextFieldViewModeWhileEditing];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setReturnKeyType:UIReturnKeyDone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];        }
+    }
     
     
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];

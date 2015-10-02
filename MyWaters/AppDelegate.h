@@ -39,5 +39,7 @@
 - (void) retrieveABCWatersListing;
 - (void) retrievePointOfInterests:(int) abcwater_id;
 
+- (void) insertFavouriteItems:(NSMutableDictionary*) parametersDict;
+
 @end
 

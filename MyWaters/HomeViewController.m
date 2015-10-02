@@ -47,32 +47,45 @@
     NSDictionary *xmlDictionary = [NSDictionary dictionaryWithXMLString:responseString];
     twelveHourForecastDictionary = [[xmlDictionary objectForKey:@"channel"] valueForKey:@"item"];
     
-    if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"FD"] || [[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"FN"]) {
+    if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"FD"]) {
         bigTempSubtitle.text = @"FAIR";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/FD.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+    else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"FN"]) {
+        bigTempSubtitle.text = @"FAIR";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/FN.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"PC"]) {
         bigTempSubtitle.text = @"PARTLY CLOUDY";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/PC.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"CD"]) {
         bigTempSubtitle.text = @"CLOUDY";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CD.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"HZ"]) {
         bigTempSubtitle.text = @"HAZY";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/HZ.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"WD"]) {
         bigTempSubtitle.text = @"WINDY";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/WD.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"RA"]) {
         bigTempSubtitle.text = @"RAINY";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/RA.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"PS"]) {
         bigTempSubtitle.text = @"PASSING SHOWERS";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/PS.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"SH"]) {
         bigTempSubtitle.text = @"SHOWERS";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/SH.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     else if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"TS"]) {
         bigTempSubtitle.text = @"THUNDERY SHOWERS";
+        [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/TS.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
     
     
@@ -543,7 +556,6 @@
                     
                     bigWeatherIcon = [UIButton buttonWithType:UIButtonTypeCustom];
                     bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 40, 20, 80, 80);
-                    [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:bigWeatherIcon];
                     bigWeatherIcon.userInteractionEnabled = NO;
                     
@@ -935,7 +947,6 @@
                     
                     bigWeatherIcon = [UIButton buttonWithType:UIButtonTypeCustom];
                     bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 40, 20, 80, 80);
-                    [bigWeatherIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:bigWeatherIcon];
                     bigWeatherIcon.userInteractionEnabled = NO;
                     

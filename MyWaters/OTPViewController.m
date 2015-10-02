@@ -14,7 +14,7 @@
 
 @implementation OTPViewController
 @synthesize emailStringForVerification;
-@synthesize isChangingPassword,isValidatingEmail;
+@synthesize isResettingPassword,isValidatingEmail;
 
 
 //*************** Method To Submit OTP Code
@@ -43,9 +43,9 @@
             [parameters addObject:@"VerificationMode"];
             [values addObject:@"1"];
         }
-        else if (isChangingPassword) {
+        else if (isResettingPassword) {
             [parameters addObject:@"VerificationMode"];
-            [values addObject:@"1"];
+            [values addObject:@"2"];
         }
         
         
@@ -80,7 +80,7 @@
         [parameters addObject:@"VerificationMode"];
         [values addObject:@"3"];
     }
-    else if (isChangingPassword) {
+    else if (isResettingPassword) {
         [parameters addObject:@"VerificationMode"];
         [values addObject:@"4"];
     }
@@ -134,7 +134,7 @@
     [otpField2 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     otpField2.tag = 2;
     [[otpField2 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
-
+    
     
     
     otpField3 = [[UITextField alloc] initWithFrame:CGRectMake(otpField2.frame.origin.x+otpField2.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+20, self.view.bounds.size.width/6-8, 40)];
@@ -199,7 +199,7 @@
     [otpField6 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     otpField6.tag = 6;
     [[otpField6 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
-
+    
     
     submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
@@ -238,12 +238,20 @@
         
         if (isVerifyingEmail) {
             
-            [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
-            
-            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
-            [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
-            
-            appDelegate.IS_COMING_AFTER_LOGIN = YES;
+            if (isValidatingEmail) {
+                
+                [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
+                [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+                [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+                
+                appDelegate.IS_COMING_AFTER_LOGIN = YES;
+            }
+            else if (isResettingPassword) {
+                
+                PasswordResetViewController *viewObj = [[PasswordResetViewController alloc] init];
+                viewObj.emailString = emailStringForVerification;
+                [self.navigationController pushViewController:viewObj animated:YES];
+            }
         }
         else if (isResendingOTP) {
             

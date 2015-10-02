@@ -303,6 +303,8 @@
 
         OTPViewController *viewObj = [[OTPViewController alloc] init];
         viewObj.emailStringForVerification = emailField.text;
+        viewObj.isValidatingEmail = YES;
+        viewObj.isResettingPassword = NO;
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else {

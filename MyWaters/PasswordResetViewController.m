@@ -1,36 +1,26 @@
 //
-//  ChangePasswordViewController.m
+//  PasswordResetViewController.m
 //  MyWaters
 //
-//  Created by Ajay Bhardwaj on 23/4/15.
-//  Copyright (c) 2015 iAppsAsia. All rights reserved.
+//  Created by Ajay Bhardwaj on 2/10/15.
+//  Copyright © 2015 iAppsAsia. All rights reserved.
 //
 
-#import "ChangePasswordViewController.h"
+#import "PasswordResetViewController.h"
 
-@interface ChangePasswordViewController ()
+@interface PasswordResetViewController ()
 
 @end
 
-@implementation ChangePasswordViewController
-
-
-//*************** Method To Pop View Controller To Parent Controller
-
-- (void) pop2Dismiss:(id) sender {
-    
-    [self.navigationController popViewControllerAnimated:YES];
-}
+@implementation PasswordResetViewController
+@synthesize emailString;
 
 
 //*************** Method To Validate Change Password Inputs
 
-- (void) validateChangePasswordParameters {
+- (void) validateResetPasswordParameters {
     
-    if ([currentPassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Old Password is mandatory." cancel:@"OK" otherButton:nil];
-    }
-    else if ([newPassField.text length]==0) {
+    if ([newPassField.text length]==0) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a new password." cancel:@"OK" otherButton:nil];
     }
     else if ([confirmPassField.text length]==0) {
@@ -39,12 +29,8 @@
     else if (![confirmPassField.text isEqualToString:newPassField.text]) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password and confirm password are not same." cancel:@"OK" otherButton:nil];
     }
-    else if ([currentPassField.text isEqualToString:newPassField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"New password can not be same as current password." cancel:@"OK" otherButton:nil];
-    }
     else {
         
-        [currentPassField resignFirstResponder];
         [newPassField resignFirstResponder];
         [confirmPassField resignFirstResponder];
         
@@ -55,14 +41,11 @@
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
         
-        [parameters addObject:@"OldPassword"];
-        [values addObject:currentPassField.text];
-        
         [parameters addObject:@"NewPassword"];
         [values addObject:newPassField.text];
         
         [parameters addObject:@"Email"];
-        [values addObject:[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"]];
+        [values addObject:emailString];
         
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,PROFILE_API_URL]];
     }
@@ -79,14 +62,6 @@
     [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
-        
-        [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
-        
-        appDelegate.USER_PROFILE_DICTIONARY = [[responseString JSONValue] objectForKey:@"UserProfile"];
-        
-//        OTPViewController *viewObj = [[OTPViewController alloc] init];
-//        viewObj.emailStringForVerification = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
-//        [self.navigationController pushViewController:viewObj animated:YES];
         
         [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
         
@@ -110,7 +85,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (buttonIndex==0) {
-        [self.navigationController popViewControllerAnimated:YES];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
 
@@ -119,10 +94,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
-    if (textField==currentPassField) {
-        [newPassField becomeFirstResponder];
-    }
-    else if (textField==newPassField) {
+    if (textField==newPassField) {
         [confirmPassField becomeFirstResponder];
     }
     else {
@@ -139,33 +111,19 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.title = @"Change Password";
-    self.view.backgroundColor = RGB(247, 247, 247);
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-    
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    currentPassField = [[UITextField alloc] initWithFrame:CGRectMake(10, 20, self.view.bounds.size.width-20, 40)];
-    currentPassField.textColor = RGB(61, 71, 94);
-    currentPassField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-    currentPassField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-    currentPassField.leftViewMode = UITextFieldViewModeAlways;
-    currentPassField.borderStyle = UITextBorderStyleNone;
-    currentPassField.textAlignment=NSTextAlignmentLeft;
-    [currentPassField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    currentPassField.placeholder = @"Current password *";
-    [self.view addSubview:currentPassField];
-    currentPassField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    currentPassField.delegate = self;
-    currentPassField.keyboardType = UIKeyboardTypeDefault;
-    [currentPassField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    currentPassField.returnKeyType = UIReturnKeyNext;
-    currentPassField.secureTextEntry = YES;
-    [currentPassField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-    currentPassField.tag = 1;
+    UIImageView *bgView = [[UIImageView alloc] init];
+    if (IS_IPHONE_4_OR_LESS) {
+        bgView.frame = CGRectMake(0, 0, self.view.bounds.size.width, 580);
+    }
+    else {
+        bgView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    }
+    [bgView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_background.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [self.view addSubview:bgView];
     
-    
-    newPassField = [[UITextField alloc] initWithFrame:CGRectMake(10, currentPassField.frame.origin.y+currentPassField.bounds.size.height+10, self.view.bounds.size.width-20, 40)];
+    newPassField = [[UITextField alloc] initWithFrame:CGRectMake(10, 40, self.view.bounds.size.width-20, 40)];
     newPassField.textColor = RGB(61, 71, 94);
     newPassField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     newPassField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -181,7 +139,7 @@
     [newPassField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     newPassField.returnKeyType = UIReturnKeyNext;
     newPassField.secureTextEntry = YES;
-    [newPassField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [newPassField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
     newPassField.tag = 2;
     
     confirmPassField = [[UITextField alloc] initWithFrame:CGRectMake(10, newPassField.frame.origin.y+newPassField.bounds.size.height+10, self.view.bounds.size.width-20, 40)];
@@ -200,7 +158,7 @@
     [confirmPassField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     confirmPassField.returnKeyType = UIReturnKeyDone;
     confirmPassField.secureTextEntry = YES;
-    [confirmPassField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [confirmPassField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
     confirmPassField.tag = 3;
     
     submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -208,11 +166,10 @@
     [submitButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     submitButton.tag = 1;
-    submitButton.frame = CGRectMake(0, self.view.bounds.size.height-110, self.view.bounds.size.width, 45);
-    [submitButton addTarget:self action:@selector(validateChangePasswordParameters) forControlEvents:UIControlEventTouchUpInside];
+    submitButton.frame = CGRectMake(0, self.view.bounds.size.height-45, self.view.bounds.size.width, 45);
+    [submitButton addTarget:self action:@selector(validateResetPasswordParameters) forControlEvents:UIControlEventTouchUpInside];
     [submitButton setBackgroundColor:RGB(86, 46, 120)];
     [self.view addSubview:submitButton];
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -221,13 +178,13 @@
 }
 
 /*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
 
 @end

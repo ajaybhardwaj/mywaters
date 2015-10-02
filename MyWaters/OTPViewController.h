@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "ChangePasswordViewController.h"
+#import "PasswordResetViewController.h"
 
 @interface OTPViewController : UIViewController <UITextFieldDelegate> {
     
@@ -20,5 +22,5 @@
     BOOL isVerifyingEmail,isResendingOTP;
 }
 @property (nonatomic, strong) NSString *emailStringForVerification;
-@property (nonatomic, assign) BOOL isChangingPassword,isValidatingEmail;
+@property (nonatomic, assign) BOOL isResettingPassword,isValidatingEmail;
 @end

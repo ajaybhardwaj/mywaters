@@ -12,12 +12,10 @@
 #import "CustomButtons.h"
 #import "XMLDictionary.h"
 
-@interface WeatherForecastViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
+@interface WeatherForecastViewController : UIViewController {
     
     AppDelegate *appDelegate;
     
-    UITableView *weatherTableView;
-    NSArray *weatherDataSource;
     NSDictionary *nowCastWeatherData,*twelveHourWeatherData,*threeDayWeatherData;
     
     UILabel *threeHourDateTimeLabel;

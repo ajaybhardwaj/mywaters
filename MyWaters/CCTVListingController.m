@@ -115,7 +115,8 @@
     else
     {
         isFiltered = true;
-        [filteredDataSource removeAllObjects];
+        if (filteredDataSource.count!=0)
+            [filteredDataSource removeAllObjects];
         
         for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
             
@@ -152,7 +153,9 @@
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
         
-        NSArray *tempArray = [[responseString JSONValue] objectForKey:CCTV_LISTING_RESPONSE_NAME];
+        NSArray *tempArray = [[NSArray alloc] init];
+        
+        tempArray = [[responseString JSONValue] objectForKey:CCTV_LISTING_RESPONSE_NAME];
         cctvPageCount = [[[responseString JSONValue] objectForKey:CCTV_LISTING_TOTAL_COUNT] intValue];
         
         if (tempArray.count==0) {
@@ -255,14 +258,17 @@
     
     if (tableView==cctvListingTable) {
         if (isFiltered) {
-            return filteredDataSource.count;
+            if (filteredDataSource.count!=0)
+                return filteredDataSource.count;
         }
         else {
-            return appDelegate.CCTV_LISTING_ARRAY.count;
+            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
+                return appDelegate.CCTV_LISTING_ARRAY.count;
         }
     }
     else if (tableView==filterTableView) {
-        return filtersArray.count;
+        if (filtersArray.count!=0)
+            return filtersArray.count;
     }
     return 0;
 }
@@ -333,6 +339,9 @@
     self.view.backgroundColor = RGB(247, 247, 247);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
+    filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
+    filteredDataSource = [[NSMutableArray alloc] init];
+    
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
@@ -384,10 +393,6 @@
     filterTableView.alpha = 0.8;
     
     
-    filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
-    filteredDataSource = [[NSMutableArray alloc] init];
-    
-    
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;
     listinSearchBar.placeholder = @"Search...";
@@ -395,18 +400,23 @@
     listinSearchBar.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:listinSearchBar];
     
-    UITextField *searchField=[((UIView *)[listinSearchBar.subviews objectAtIndex:0]).subviews lastObject];;//Changed this line in ios 7
-    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)];
-    searchField.leftViewMode = UITextFieldViewModeAlways;
-    searchField.borderStyle = UITextBorderStyleNone;
-    searchField.textAlignment=NSTextAlignmentLeft;
-    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    searchField.placeholder = @"Search...";
-    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    searchField.returnKeyType = UIReturnKeyDone;
-    searchField.backgroundColor = [UIColor whiteColor];
-    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    
+    for (id object in [listinSearchBar subviews]) {
+        
+        if ([object isKindOfClass:[UITextField class]]) {
+            
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setFont:[UIFont fontWithName:ROBOTO_REGULAR size:14]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftViewMode:UITextFieldViewModeAlways];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBorderStyle:UITextBorderStyleNone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextAlignment:NSTextAlignmentLeft];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setPlaceholder:@"Search..."];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setClearButtonMode:UITextFieldViewModeWhileEditing];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setReturnKeyType:UIReturnKeyDone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];        }
+    }
+
     
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
