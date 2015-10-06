@@ -9,7 +9,7 @@
 #import "NotificationsSettingsViewController.h"
 
 @implementation NotificationsSettingsViewController
-
+@synthesize generalNotificationSwitch,floodAlertsSwitch,systemNotificationSwitch;
 
 
 //*************** Method To Open Side Menu
@@ -27,6 +27,90 @@
 - (void) pop2Dismiss:(id) sender {
     
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+//*************** Method To Register User For Flood Alerts
+
+- (void) registerForFloodALerts:(id) sender {
+    
+    isGeneralNotification = NO;
+    isSystemNotifications = NO;
+    isFloodAlerts = YES;
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    NSArray *parameters,*values;
+    if (isFloodAlertOff) {
+        isFloodAlertsTurningOff = YES;
+        isFloodAlertsTurningOn = NO;
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"1", @"2", nil];
+    }
+    else {
+        isFloodAlertsTurningOff = NO;
+        isFloodAlertsTurningOn = YES;
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"1", @"1", nil];
+    }
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
+}
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    DebugLog(@"%@",responseString);
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        if (isFloodAlerts) {
+            if (isFloodAlertsTurningOff) {
+                isFloodAlertOff = NO;
+                [prefs setValue:@"NO" forKey:@"floodAlert"];
+            }
+            else if (isFloodAlertsTurningOn) {
+                isFloodAlertOff = YES;
+                [prefs setValue:@"YES" forKey:@"floodAlert"];
+            }
+        }
+        
+        [prefs synchronize];
+        [notificationSettingsTable reloadData];
+    }
+    else {
+        if (isFloodAlerts) {
+            [floodAlertsSwitch setOn:NO];
+        }
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+    
+    if (isFloodAlerts) {
+        [floodAlertsSwitch setOn:NO];
+    }
+    
+    [appDelegate.hud hide:YES];
+}
+
+
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    
 }
 
 
@@ -59,34 +143,46 @@
     
     cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.numberOfLines = 0;
-    
-    
-//    if (indexPath.row==3) {
-//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//    }
-//    else {
-        //***** Later Check the preference values and show on/off status accordingly
 
-        UISwitch *switchControls = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
-        [switchControls addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
-        switchControls.tag = indexPath.row;
-        cell.accessoryView = switchControls;
-//    }
-    
     
     UIImageView *cellSeperator;
     if (indexPath.row==0) {
+        
+        generalNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
+        [generalNotificationSwitch addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
+        cell.accessoryView = generalNotificationSwitch;
+        
         cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
     else if (indexPath.row==1) {
+        
+        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+        floodAlertsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
+        if ([[prefs stringForKey:@"floodAlert"] isEqualToString:@"YES"]) {
+            [floodAlertsSwitch setOn:YES];
+            isFloodAlertOff = YES;
+        }
+        else {
+            [floodAlertsSwitch setOn:NO];
+            isFloodAlertOff = NO;
+        }
+        [floodAlertsSwitch addTarget:self action:@selector(registerForFloodALerts:) forControlEvents:UIControlEventValueChanged];
+        cell.accessoryView = floodAlertsSwitch;
+        
         cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
     else if (indexPath.row==2) {
+        
+        systemNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
+        [systemNotificationSwitch addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
+        cell.accessoryView = systemNotificationSwitch;
+        
         cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
-    else if (indexPath.row==3) {
-        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
-    }
+//    else if (indexPath.row==3) {
+//        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
+//    }
+    
     [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:cellSeperator];
     

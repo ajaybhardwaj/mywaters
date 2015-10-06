@@ -16,6 +16,13 @@
     
     UITableView *notificationSettingsTable;
     NSArray *tableTitleDataSource,*tableSubTitleDataSource;
+    
+    
+    
+    BOOL isGeneralNotification,isFloodAlerts,isSystemNotifications;
+    BOOL isFloodAlertsTurningOn,isFloodAlertsTurningOff;
+    BOOL isFloodAlertOff;
 }
+@property (nonatomic, strong) UISwitch *generalNotificationSwitch,*floodAlertsSwitch,*systemNotificationSwitch;
 
 @end

@@ -353,8 +353,8 @@
     
     
     //Temp Field Data
-//    emailField.text = @"ajay@iappsasia.com";
-//    passField.text = @"Myself8@8";
+    emailField.text = @"ajay@iappsasia.com";
+    passField.text = @"Myself8@9";
     
     loginButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [loginButton setTitle:@"LOG IN" forState:UIControlStateNormal];
@@ -419,9 +419,11 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
-    self.navigationController.navigationBar.hidden = YES;
-    self.navigationItem.hidesBackButton = YES;
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    emailField.text = @"";
+    passField.text = @"";
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

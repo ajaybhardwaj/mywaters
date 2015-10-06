@@ -14,7 +14,7 @@
 
 @implementation AppDelegate
 @synthesize RESOURCE_FOLDER_PATH,database;
-@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY,EVENTS_LISTING_ARRAY,WLS_LISTING_ARRAY,CCTV_LISTING_ARRAY;
+@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY,EVENTS_LISTING_ARRAY,WLS_LISTING_ARRAY,CCTV_LISTING_ARRAY,USER_FAVOURITES_ARRAY;
 @synthesize screen_width,left_deck_width;
 @synthesize IS_COMING_AFTER_LOGIN;
 @synthesize SELECTED_MENU_ID;
@@ -22,6 +22,23 @@
 @synthesize IS_MOVING_TO_WLS_FROM_DASHBOARD,IS_MOVING_TO_CCTV_FROM_DASHBOARD;
 @synthesize hud;
 @synthesize USER_PROFILE_DICTIONARY;
+
+
+
+
+
+//*************** Method To Register Device Toke For Push Notifications
+
+- (void) registerDeviceToken {
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"Token", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"], nil];
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_PUSH_TOKEN]];
+}
+
 
 //*************** Create Deck View Controller For App ***************//
 
@@ -247,7 +264,7 @@
 
 
 
-//*************** Method To Update Dashboard Preferences
+//*************** Method To Insert Favourite Items
 
 - (void) insertFavouriteItems:(NSMutableDictionary*) parametersDict {
     
@@ -305,6 +322,119 @@
         sqlite3_close(database);
     }
     
+}
+
+
+
+//*************** Method To Retrieve Favourites
+
+- (void) retrieveFavouriteItems:(NSInteger) favouriteType {
+    
+    [USER_FAVOURITES_ARRAY removeAllObjects];
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    sqlite3_stmt    *statement;
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        NSString *querySQL;
+        if (favouriteType==0) {
+            querySQL = [NSString stringWithFormat: @"SELECT * FROM favourites ORDER BY fav_type"];
+
+        }
+        else {
+            querySQL = [NSString stringWithFormat: @"SELECT * FROM favourites WHERE fav_type=\"%ld\" ORDER BY id",(long)favouriteType];
+        }
+        
+        const char *query_stmt = [querySQL UTF8String];
+        
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                NSString *idValue = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 0)];
+                NSString *nameValue = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)];
+                NSString *image = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 2)];
+                NSString *lat = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)];
+                NSString *lon = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)];
+                NSString *address = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 5)];
+                NSString *phoneno = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 6)];
+                NSString *description = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 7)];
+                NSString *eventStartDate = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 8)];
+                NSString *eventEndDate = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 9)];
+                NSString *eventWebsite = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 10)];
+                NSString *isCertified = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 11)];
+                NSString *waterLevel = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 12)];
+                NSString *drainDepth = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 13)];
+                NSString *waterLevelPercentage = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 14)];
+                NSString *waterLevelType = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 15)];
+                NSString *observationTime = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 16)];
+                NSString *favType = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 17)];
+                NSString *favId = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 18)];
+
+                
+                [USER_FAVOURITES_ARRAY addObject:idValue];
+                [USER_FAVOURITES_ARRAY addObject:nameValue];
+                [USER_FAVOURITES_ARRAY addObject:image];
+                [USER_FAVOURITES_ARRAY addObject:lat];
+                [USER_FAVOURITES_ARRAY addObject:lon];
+                [USER_FAVOURITES_ARRAY addObject:address];
+                [USER_FAVOURITES_ARRAY addObject:phoneno];
+                [USER_FAVOURITES_ARRAY addObject:description];
+                [USER_FAVOURITES_ARRAY addObject:eventStartDate];
+                [USER_FAVOURITES_ARRAY addObject:eventEndDate];
+                [USER_FAVOURITES_ARRAY addObject:eventWebsite];
+                [USER_FAVOURITES_ARRAY addObject:isCertified];
+                [USER_FAVOURITES_ARRAY addObject:waterLevel];
+                [USER_FAVOURITES_ARRAY addObject:drainDepth];
+                [USER_FAVOURITES_ARRAY addObject:waterLevelPercentage];
+                [USER_FAVOURITES_ARRAY addObject:waterLevelType];
+                [USER_FAVOURITES_ARRAY addObject:observationTime];
+                [USER_FAVOURITES_ARRAY addObject:favType];
+                [USER_FAVOURITES_ARRAY addObject:favId];
+            }
+        }
+        
+        //sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+}
+
+
+//*************** Method To Delete Favourites
+
+- (void) deleteFavouriteItems:(int) rowID {
+    
+    sqlite3_stmt *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        
+        NSString *deleteSQL = [NSString stringWithFormat: @"DELETE FROM favourites WHERE id=\"%d\"",rowID];
+        
+        DebugLog(@"query %@",deleteSQL);
+        const char *insert_stmt = [deleteSQL UTF8String];
+        
+        sqlite3_prepare_v2(database, insert_stmt, -1, &statement, NULL);
+        if (sqlite3_step(statement) == SQLITE_DONE)
+        {
+            DebugLog(@"Rows Deleted");
+        }
+        
+        else {
+            DebugLog(@"Failed to delete rows");
+        }
+        //sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
 }
 
 
@@ -391,10 +521,18 @@
     CCTV_LISTING_ARRAY = [[NSMutableArray alloc] init];
     POI_ARRAY = [[NSMutableArray alloc] init];
     USER_PROFILE_DICTIONARY = [[NSDictionary alloc] init];
+    USER_FAVOURITES_ARRAY = [[NSMutableArray alloc] init];
     SELECTED_MENU_ID = 0;
     
     
     [self retrieveDashboardPreferences];
+    
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    if ([prefs stringForKey:@"floodAlert"] == (id)[NSNull null] || [[prefs stringForKey:@"floodAlert"] length] == 0) {
+        [prefs setValue:@"NO" forKey:@"floodAlert"];
+    }
+    [prefs synchronize];
     
     screen_width = self.window.bounds.size.width;
     
@@ -422,6 +560,18 @@
     _rootDeckController.navigationController.interactivePopGestureRecognizer.enabled = NO;
     
     
+#ifdef __IPHONE_8_0
+    
+    if(NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge|UIUserNotificationTypeSound|UIUserNotificationTypeAlert) categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    }
+#endif
+    
+    UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeNewsstandContentAvailability;
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:myTypes];
+    
+    
     // Override point for customization after application launch.
     return YES;
 }
@@ -446,6 +596,9 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    // Register Device Token
+    [self registerDeviceToken];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -454,6 +607,48 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+
+
+# pragma mark - APN Methods For Push Notification
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    
+    DebugLog(@"APNS ERROR: %@",[error description]);
+}
+
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    //register to receive notifications
+    [application registerForRemoteNotifications];
+    
+}
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler {
+    
+}
+
+
+
+- (void) application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    
+    NSString *deviceTokenString = [NSString stringWithFormat:@"%@",deviceToken];
+    DebugLog(@"%@",deviceTokenString);
+    
+    deviceTokenString = [deviceTokenString stringByReplacingOccurrencesOfString:@"<" withString:@""];
+    deviceTokenString = [deviceTokenString stringByReplacingOccurrencesOfString:@">" withString:@""];
+    deviceTokenString = [deviceTokenString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    [prefs setObject:deviceTokenString forKey:@"device_token"];
+    [prefs synchronize];
+    
+    DebugLog(@"%@",deviceTokenString);
+    
+    [self registerDeviceToken];
+    
 }
 
 

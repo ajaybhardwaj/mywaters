@@ -11,6 +11,7 @@
 #import "CustomButtons.h"
 #import "UILabel + Extension.h"
 #import "AsyncImageView.h"
+#import "DirectionViewController.h"
 
 @interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate> {
     
@@ -43,7 +44,7 @@
     UILabel___Extension *descriptionLabel;
 }
 
-@property (nonatomic, strong) NSString *imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*imageName;
+@property (nonatomic, strong) NSString *abcSiteId,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*imageName;
 @property (nonatomic, assign) double latValue,longValue;
 @property (nonatomic, assign) BOOL isCertified;
 

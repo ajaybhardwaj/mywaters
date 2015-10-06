@@ -75,12 +75,110 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (tableView==filterTableView) {
-    
+        
         selectedFilterIndex = indexPath.row;
         [filterTableView reloadData];
         [self animateFilterTable];
     }
+    else {
+        
+        if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+17] isEqualToString:@"1"]) {
+            
+            CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
+            
+            viewObj.imageUrl = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2];
+            viewObj.titleString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+1];
+            viewObj.cctvID = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+18];
+            viewObj.latValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+3] doubleValue];
+            viewObj.longValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+4] doubleValue];
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+            
+        }
+        else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+17] isEqualToString:@"2"]) {
+            
+            EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
+            
+            viewObj.eventID = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+18];
+            viewObj.titleString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+1];
+            viewObj.descriptionString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+7];
+            viewObj.latValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+3] doubleValue];
+            viewObj.longValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+4] doubleValue];
+            viewObj.phoneNoString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+6];
+            viewObj.addressString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+5];
+            viewObj.startDateString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+8];
+            viewObj.endDateString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+9];
+            
+            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2]];
+            viewObj.imageName = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2];
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+            
+        }
+        else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+17] isEqualToString:@"3"]) {
+            
+            ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
+            
+            viewObj.titleString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+1];
+            viewObj.descriptionString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+7];
+            viewObj.latValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+3] doubleValue];
+            viewObj.longValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+4] doubleValue];
+            viewObj.phoneNoString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+6];
+            viewObj.addressString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+5];
+            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2]];
+            viewObj.imageName = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2];
+            viewObj.isCertified = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+11] intValue];
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+        }
+        else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+17] isEqualToString:@"4"]) {
+            
+            WaterLevelSensorsDetailViewController *viewObj = [[WaterLevelSensorsDetailViewController alloc] init];
+            
+            viewObj.wlsID = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)];
+            viewObj.wlsName = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+1];
+            viewObj.drainDepthType = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+13] intValue];
+            viewObj.latValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+3] doubleValue];
+            viewObj.longValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+4] doubleValue];
+            viewObj.observedTime = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+16];
+            viewObj.waterLevelValue = [NSString stringWithFormat:@"%d",[[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+12] intValue]];
+            viewObj.waterLevelPercentageValue = [NSString stringWithFormat:@"%d",[[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+14] intValue]];
+            viewObj.waterLevelTypeValue = [NSString stringWithFormat:@"%d",[[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+15] intValue]];
+            viewObj.drainDepthValue = [NSString stringWithFormat:@"%d",[[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+13] intValue]];
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+        }
+        
+    }
 }
+
+
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle==UITableViewCellEditingStyleDelete) {
+        
+        // Delete Data From Table
+        [appDelegate deleteFavouriteItems:[[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)] intValue]];
+
+        int count = 0;
+        for (int i=18; i>=0; i--) {
+           
+            count = count +1;
+            DebugLog(@"Count is %d",count);
+            [appDelegate.USER_FAVOURITES_ARRAY removeObjectAtIndex:(indexPath.row*19)+i];
+        }
+        
+        [favouritesListingTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+    }
+}
+
+
 
 
 # pragma mark - UITableViewDataSource Methods
@@ -88,7 +186,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (tableView==favouritesListingTableView) {
-        return favouritesDataSource.count;
+        return appDelegate.USER_FAVOURITES_ARRAY.count/19;
     }
     else if (tableView==filterTableView) {
         return filtersArray.count;
@@ -123,38 +221,70 @@
         }
     }
     else {
+        
         UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 70, 70)];
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/default_no_image.png",appDelegate.RESOURCE_FOLDER_PATH]];
         [cell.contentView addSubview:cellImage];
         
-        //-----Temp Code
-        if (indexPath.row==1  || indexPath.row==2) {
+        if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+17] isEqualToString:@"1"]) {
+            
             cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-2.png",appDelegate.RESOURCE_FOLDER_PATH]];
         }
-        else if (indexPath.row==0) {
-            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwater_list.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+17] isEqualToString:@"2"]) {
+            
+            NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+            NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+            NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"Events"]];
+            
+            NSString *localFile = [destinationPath stringByAppendingPathComponent:[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2]];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+                if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2]]] != nil)
+                    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2]]];
+            }
+        }
+        else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+17] isEqualToString:@"4"]) {
+            
+            cellImage.frame = CGRectMake(15, 15, 50, 50);
+            
+            if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+15] intValue] == 1) {
+                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+            }
+            else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+15] intValue] == 2) {
+                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+            }
+            else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+15] intValue] == 3) {
+                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+            }
+            else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+15] intValue] == 4){
+                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_maintenance.png",appDelegate.RESOURCE_FOLDER_PATH]];
+            }
+        }
+        else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+17] isEqualToString:@"3"]) {
+            
+            NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+            NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+            NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ABCWaters"]];
+            
+            NSString *localFile = [destinationPath stringByAppendingPathComponent:[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2]];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+                if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2]]] != nil)
+                    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+2]]];
+            }
         }
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, favouritesListingTableView.bounds.size.width-100, 40)];
-        //    titleLabel.text = [[favouritesDataSource objectAtIndex:indexPath.row] objectForKey:@"favouriteTitle"];
-        titleLabel.text = [favouritesDataSource objectAtIndex:indexPath.row];
+        titleLabel.text = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*19)+1];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.numberOfLines = 0;
         [cell.contentView addSubview:titleLabel];
         
-        //    UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, favouritesListingTableView.bounds.size.width-100, 20)];
-        //    distanceLabel.text = @"10 KM";
-        //    distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-        //    distanceLabel.backgroundColor = [UIColor clearColor];
-        //    distanceLabel.textColor = [UIColor lightGrayColor];
-        //    distanceLabel.numberOfLines = 0;
-        //    [cell.contentView addSubview:distanceLabel];
-        
-        
         UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, favouritesListingTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
+        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
     return cell;
@@ -194,7 +324,9 @@
     
     favouritesDataSource = [[NSArray alloc] initWithObjects:@"Sembawang Park - ABC Waters",@"Boon Lay Way - CCTV",@"Boon Keng Road/Bendemeer Road - CCTV", nil];
     filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTV",@"Event",@"Distance", nil];
-
+    
+    selectedFilterIndex = 0;
+    
 }
 
 
@@ -202,6 +334,20 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
+    
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(85,49,118) frame:CGRectMake(0, 0, 1, 1)];
+    [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+    
+    [appDelegate retrieveFavouriteItems:selectedFilterIndex];
+    if (appDelegate.USER_FAVOURITES_ARRAY.count!=0) {
+        [favouritesListingTableView reloadData];
+    }
+
 }
 
 

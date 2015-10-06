@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "CCTVDetailViewController.h"
+#import "ABCWaterDetailViewController.h"
+#import "EventsDetailsViewController.h"
+#import "WaterLevelSensorsDetailViewController.h"
 
 @interface FavouritesViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     

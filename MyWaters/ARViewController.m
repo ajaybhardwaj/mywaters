@@ -21,7 +21,7 @@
 @end
 
 @implementation ARViewController
-
+@synthesize abcWaterSiteID;
 
 //*************** Method To Pop View Controller To Parent Controller
 
@@ -53,11 +53,25 @@
 }
 
 
+
+//*************** Method To Call ABCWaterSites API
+
+- (void) fetchABCWaterSitePOI {
+    
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ABCWaterSitesID", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:abcWaterSiteID, nil];
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+}
+
+
+
 //*************** Method To Create AR View Pointers
 
-- (void)generateGeoLocations {
+- (void) generateGeoLocations {
     
-    [appDelegate retrievePointOfInterests:1];
+//    [appDelegate retrievePointOfInterests:1];
     
     DebugLog(@"%@",appDelegate.POI_ARRAY);
     
@@ -67,9 +81,11 @@
         
         for (int i=0; i<appDelegate.POI_ARRAY.count; i++) {
             
-            CLLocation *locationValue=[[CLLocation alloc] initWithLatitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"lat"] doubleValue] longitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"long"] doubleValue]];
-            
-            ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"name"]];
+//            CLLocation *locationValue=[[CLLocation alloc] initWithLatitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"lat"] doubleValue] longitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"long"] doubleValue]];
+            CLLocation *locationValue=[[CLLocation alloc] initWithLatitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Lat"] doubleValue] longitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Lon"] doubleValue]];
+
+            ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Name"]];
+//            ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"name"]];
             [coordinate calibrateUsingOrigin:[_userLocation location]];
             MarkerView *markerView = [[MarkerView alloc] initWithCoordinate:coordinate delegate:self];
             DebugLog(@"Marker view %@", markerView);
@@ -100,6 +116,55 @@
 //        }
     
 }
+
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    
+    DebugLog(@"%@",responseString);
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [appDelegate.POI_ARRAY removeAllObjects];
+        
+        NSArray *tempArray = [[responseString JSONValue] objectForKey:ABC_WATER_SITES_POI_RESPONSE_NAME];
+        
+        if (tempArray.count==0) {
+
+        }
+        else {
+
+            if (appDelegate.POI_ARRAY.count==0) {
+                [appDelegate.POI_ARRAY setArray:tempArray];
+            }
+            else {
+                if (appDelegate.POI_ARRAY.count!=0) {
+                    for (int i=0; i<tempArray.count; i++) {
+                        [appDelegate.POI_ARRAY addObject:[tempArray objectAtIndex:i]];
+                    }
+                }
+            }
+        }
+        
+        if (appDelegate.POI_ARRAY.count!=0) {
+            [self generateGeoLocations];
+        }
+        [appDelegate.hud hide:YES];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [appDelegate.hud hide:YES];
+}
+
 
 #pragma mark - ARLocationDelegate
 
@@ -357,7 +422,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    [self generateGeoLocations];
+//    [self generateGeoLocations];
     self.navigationController.navigationBar.hidden = YES;
     
     // Disable iOS 7 back gesture

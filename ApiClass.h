@@ -25,7 +25,7 @@
 #define REQUEST_FAILURE 400
 #define REQUEST_FAILURE_401 401
 #define SERVER_MESSAGE @"message"
-#define INVALID_OAUTH_CREDENTIAL 403
+#define INVALID_OAUTH_CREDENTIAL 403o
 #define ACCOUNT_ACCESS_TOKEN @"AccessToken"
 
 // API Parameters
@@ -38,6 +38,8 @@
 
 #define ABC_WATER_SITES_RESPONSE_NAME @"ListABCWaterSites"
 #define ABC_WATER_SITES_TOTAL_COUNT @"TotalABCWaterSites"
+#define ABC_WATER_SITES_POI_RESPONSE_NAME @"ListABCPOI"
+#define ABC_WATER_SITES_POI_TOTAL_COUNT @"TotalABCPOI"
 #define EVENTS_RESPONSE_NAME @"ListEvents"
 #define EVENTS_TOTAL_COUNT @"TotalEvents"
 #define WLS_LISTING_RESPONSE_NAME @"ListWaterLevelSensorStation"
@@ -56,6 +58,8 @@
 #define VERIFICATION_API_URL @"Verification/"
 #define LOGIN_API_URL @"Login/"
 #define PROFILE_API_URL @"Profile/"
+#define REGISTER_PUSH_TOKEN @"PushToken/"
+#define REGISTER_FOR_SUBSCRIPTION @"Subscription/"
 
 
 //#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"

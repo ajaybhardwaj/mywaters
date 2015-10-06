@@ -44,6 +44,17 @@
 
 
 
+//*************** Method To Move To Map Direction View
+
+- (void) moveToDirectionView {
+    
+    DirectionViewController *viewObj = [[DirectionViewController alloc] init];
+    viewObj.destinationLat = latValue;
+    viewObj.destinationLong = longValue;
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
 //*************** Method To Animate Top Menu
 
 - (void) animateTopMenu {
@@ -203,6 +214,7 @@
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     directionButton.frame = CGRectMake(0, eventImageView.frame.origin.y+eventImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
     [directionButton setBackgroundColor:[UIColor whiteColor]];
+    [directionButton addTarget:self action:@selector(moveToDirectionView) forControlEvents:UIControlEventTouchUpInside];
     [bgScrollView addSubview:directionButton];
     
     directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];

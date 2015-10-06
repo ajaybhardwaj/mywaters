@@ -82,6 +82,7 @@
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     directionButton.frame = CGRectMake(0, topImageView.frame.origin.y+topImageView.bounds.size.height, self.view.bounds.size.width, 40);
     [directionButton setBackgroundColor:[UIColor whiteColor]];
+    [directionButton addTarget:self action:@selector(moveToDirectionView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:directionButton];
     
     directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
@@ -137,6 +138,17 @@
 - (void) pop2Dismiss:(id) sender {
     
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+//*************** Method To Move To Map Direction View
+
+- (void) moveToDirectionView {
+    
+    DirectionViewController *viewObj = [[DirectionViewController alloc] init];
+    viewObj.destinationLat = latValue;
+    viewObj.destinationLong = longValue;
+    [self.navigationController pushViewController:viewObj animated:YES];
 }
 
 

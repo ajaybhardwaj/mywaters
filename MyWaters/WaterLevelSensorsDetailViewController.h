@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "CustomButtons.h"
 #import "QuickMapAnnotations.h"
+#import "DirectionViewController.h"
 
 @interface WaterLevelSensorsDetailViewController : UIViewController <MKMapViewDelegate,UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
     
@@ -47,6 +48,7 @@
 @property (nonatomic, assign) NSInteger drainDepthType;
 @property (nonatomic, strong) NSString *wlsID,*wlsName,*observedTime,*waterLevelValue,*waterLevelPercentageValue,*waterLevelTypeValue,*drainDepthValue;
 @property (nonatomic, assign) double latValue,longValue;
+@property (nonatomic, assign) BOOL isSubscribed;
 
 
 @end

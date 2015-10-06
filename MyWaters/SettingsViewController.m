@@ -31,7 +31,6 @@
 
 - (void) moveToLoginView {
     
-    self.navigationController.navigationBar.hidden = YES;
     [[ViewControllerHelper viewControllerHelper] signOut];
 }
 
@@ -129,13 +128,11 @@
     
     signoutButton = [UIButton buttonWithType:UIButtonTypeCustom];
     signoutButton.frame = CGRectMake(0, self.view.bounds.size.height-114, self.view.bounds.size.width, 50);
-//    [signoutButton setBackgroundColor:RGB(135, 135, 135)];
     [signoutButton setBackgroundColor:[UIColor redColor]];
     [signoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [signoutButton setTitle:@"SIGN OUT" forState:UIControlStateNormal];
-//    signoutButton.titleLabel.font = [UIFont fontWithName:BEBAS_NEUE_FONT size:19];
-    signoutButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:18];
-//    [signoutButton addTarget:self action:@selector(moveToLoginView) forControlEvents:UIControlEventTouchUpInside];
+    signoutButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:19];
+    [signoutButton addTarget:self action:@selector(moveToLoginView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:signoutButton];
 }
 

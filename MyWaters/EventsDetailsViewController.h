@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "UILabel + Extension.h"
 #import "AsyncImageView.h"
+#import "DirectionViewController.h"
 
 @interface EventsDetailsViewController : UIViewController {
     

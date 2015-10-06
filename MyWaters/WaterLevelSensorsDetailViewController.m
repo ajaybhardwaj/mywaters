@@ -13,7 +13,7 @@
 @end
 
 @implementation WaterLevelSensorsDetailViewController
-@synthesize wlsID,drainDepthType,latValue,longValue,wlsName,observedTime,waterLevelValue,waterLevelPercentageValue,waterLevelTypeValue,drainDepthValue;
+@synthesize wlsID,drainDepthType,latValue,longValue,wlsName,observedTime,waterLevelValue,waterLevelPercentageValue,waterLevelTypeValue,drainDepthValue,isSubscribed;
 
 //*************** Method To Open Side Menu
 
@@ -38,6 +38,27 @@
 - (void) pop2Dismiss:(id) sender {
     
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+//*************** Method To Register User For Flood Alerts
+
+- (void) registerForWLSALerts {
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    NSArray *parameters,*values;
+    
+    if (isSubscribed) {
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"2", @"3", wlsID, nil];
+    }
+    else {
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"1", @"3", wlsID, nil];
+    }
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
 }
 
 
@@ -68,6 +89,19 @@
         [UIView commitAnimations];
     }
 }
+
+
+
+//*************** Method To Move To Map Direction View
+
+- (void) moveToDirectionView {
+    
+    DirectionViewController *viewObj = [[DirectionViewController alloc] init];
+    viewObj.destinationLat = latValue;
+    viewObj.destinationLong = longValue;
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
 
 
 //*************** Method To Add WLS To Favourites
@@ -216,7 +250,12 @@
     notifiyButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, 40);
     [notifiyButton setBackgroundColor:[UIColor lightGrayColor]];
     [notifiyButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [notifiyButton setTitle:@"NOTIFY ME" forState:UIControlStateNormal];
+    if (isSubscribed) {
+        [notifiyButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
+    }
+    else {
+        [notifiyButton setTitle:@"NOTIFY ME" forState:UIControlStateNormal];
+    }
     notifiyButton.titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
     [self.view addSubview:notifiyButton];
     
@@ -279,6 +318,7 @@
     //    directionButton.frame = CGRectMake(0, topImageView.frame.origin.y+topImageView.bounds.size.height, self.view.bounds.size.width, 40);
     directionButton.frame = CGRectMake(0, 200, self.view.bounds.size.width, 40);
     [directionButton setBackgroundColor:[UIColor whiteColor]];
+    [directionButton addTarget:self action:@selector(moveToDirectionView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:directionButton];
     
     directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
@@ -328,6 +368,43 @@
     
     //    [cctvListingTable reloadData];
 }
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    DebugLog(@"%@",responseString);
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+    
+    [appDelegate.hud hide:YES];
+}
+
+
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 
 # pragma mark - UITextFieldDelegate Methods

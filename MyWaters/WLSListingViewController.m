@@ -50,15 +50,17 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
 //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
-    
+        
+        [appDelegate.WLS_LISTING_ARRAY removeAllObjects];
+        
         NSArray *tempArray = [[responseString JSONValue] objectForKey:WLS_LISTING_RESPONSE_NAME];
-        wlsTotalCount = [[[responseString JSONValue] objectForKey:WLS_LISTING_TOTAL_COUNT] intValue];
+//        wlsTotalCount = [[[responseString JSONValue] objectForKey:WLS_LISTING_TOTAL_COUNT] intValue];
         
         if (tempArray.count==0) {
-            wlsPageCount = 0;
+
         }
         else {
-            wlsPageCount = wlsPageCount + 1;
+
             if (appDelegate.WLS_LISTING_ARRAY.count==0) {
                 [appDelegate.WLS_LISTING_ARRAY setArray:tempArray];
             }
@@ -82,7 +84,6 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    wlsPageCount = -1;
     
     [appDelegate.hud hide:YES];
 }
@@ -102,6 +103,9 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     WaterLevelSensorsDetailViewController *viewObj = [[WaterLevelSensorsDetailViewController alloc] init];
+
+    if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
+        viewObj.wlsID = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"];
     
     if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"] != (id)[NSNull null])
         viewObj.wlsName = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"];
@@ -129,6 +133,10 @@
     
     if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"drainDepth"] != (id)[NSNull null])
         viewObj.drainDepthValue = [NSString stringWithFormat:@"%d",[[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"drainDepth"] intValue]];
+
+    if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
+        viewObj.isSubscribed = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+
     
     [self.navigationController pushViewController:viewObj animated:YES];
 }
@@ -218,7 +226,6 @@
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     appDelegate.hud.labelText = @"Loading..!!";
-    [self fetchWLSListing];
     
 }
 
@@ -231,6 +238,7 @@
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
+    [self fetchWLSListing];
 }
 
 

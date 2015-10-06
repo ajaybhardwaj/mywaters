@@ -15,7 +15,7 @@
 @end
 
 @implementation ABCWaterDetailViewController
-@synthesize imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,imageName,isCertified;
+@synthesize abcSiteId,imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,imageName,isCertified;
 
 
 //*************** Demo App UI
@@ -26,6 +26,17 @@
     [self.view addSubview:bgImageView];
     [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwaters_detail_options.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     
+}
+
+
+//*************** Method To Move To Map Direction View
+
+- (void) moveToDirectionView {
+    
+    DirectionViewController *viewObj = [[DirectionViewController alloc] init];
+    viewObj.destinationLat = latValue;
+    viewObj.destinationLong = longValue;
+    [self.navigationController pushViewController:viewObj animated:YES];
 }
 
 
@@ -162,6 +173,7 @@
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     directionButton.frame = CGRectMake(0, eventImageView.frame.origin.y+eventImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
     [directionButton setBackgroundColor:[UIColor whiteColor]];
+    [directionButton addTarget:self action:@selector(moveToDirectionView) forControlEvents:UIControlEventTouchUpInside];
     [bgScrollView addSubview:directionButton];
     
     directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
@@ -237,11 +249,13 @@
 }
 
 
+//*************** Method To Move To AR View
+
 - (void) moveToARView {
     
     ARViewController *viewObj = [[ARViewController alloc] init];
+    viewObj.abcWaterSiteID = abcSiteId;
     [self.navigationController pushViewController:viewObj animated:NO];
-//    [self.navigationController presentViewController:viewObj animated:NO completion:nil];
 }
 
 
