@@ -239,7 +239,7 @@
     
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading..!!";
+    appDelegate.hud.labelText = @"Loading...";
     
     NSMutableArray *parameters = [[NSMutableArray alloc] init];
     NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -691,6 +691,7 @@
     skipButton.frame = CGRectMake(0, backButton.frame.origin.y+backButton.bounds.size.height+5, self.view.bounds.size.width, 30);
     [skipButton addTarget:self action:@selector(skipSignUpProcess) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:skipButton];
+    skipButton.hidden = YES;
     
     //    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
     //    swipeGesture.direction = UISwipeGestureRecognizerDirectionRight;

@@ -16,7 +16,7 @@
     AppDelegate *appDelegate;
     UITextField *otpField1,*otpField2,*otpField3,*otpField4,*otpField5,*otpField6;
     
-    UIButton *submitButton,*resendOTPButton;
+    UIButton *submitButton,*resendOTPButton,*backButton;
     UILabel *instructionLabel;
     
     BOOL isVerifyingEmail,isResendingOTP;

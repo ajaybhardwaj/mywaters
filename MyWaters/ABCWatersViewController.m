@@ -312,16 +312,58 @@
         }
         else {
             //            abcWatersPageCount = abcWatersPageCount + 1;
-            if (appDelegate.ABC_WATERS_LISTING_ARRAY.count==0) {
+            if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0)
+                    [appDelegate.ABC_WATERS_LISTING_ARRAY removeAllObjects];
+            
                 [appDelegate.ABC_WATERS_LISTING_ARRAY setArray:tempArray];
-            }
-            else {
-                if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
-                    for (int i=0; i<tempArray.count; i++) {
-                        [appDelegate.ABC_WATERS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
-                    }
+                
+                
+                CLLocationCoordinate2D currentLocation;
+                currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+                currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+                
+                DebugLog(@"%f---%f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
+                DebugLog(@"%f---%f",currentLocation.latitude,currentLocation.longitude);
+                
+                for (int idx = 0; idx<[appDelegate.ABC_WATERS_LISTING_ARRAY count];idx++) {
+                    
+                    NSMutableDictionary *dict = [appDelegate.ABC_WATERS_LISTING_ARRAY[idx] mutableCopy];
+                    
+                    CLLocationCoordinate2D desinationLocation;
+                    desinationLocation.latitude = [dict[@"locationLatitude"] doubleValue];
+                    desinationLocation.longitude = [dict[@"locationLongitude"] doubleValue];
+                    
+                    DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+                    
+                    dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                    appDelegate.ABC_WATERS_LISTING_ARRAY[idx] = dict;
+                    
                 }
-            }
+                
+                DebugLog(@"%@",appDelegate.ABC_WATERS_LISTING_ARRAY);
+                
+                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"siteName" ascending:YES];
+                NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                    float v1 = [left floatValue];
+                    float v2 = [right floatValue];
+                    if (v1 < v2)
+                        return NSOrderedAscending;
+                    else if (v1 > v2)
+                        return NSOrderedDescending;
+                    else
+                        return NSOrderedSame;
+                }];
+                
+                [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+                
+//            }
+//            else {
+//                if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
+//                    for (int i=0; i<tempArray.count; i++) {
+//                        [appDelegate.ABC_WATERS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
+//                    }
+//                }
+//            }
         }
         
         [appDelegate.hud hide:YES];
@@ -398,15 +440,51 @@
         
         selectedFilterIndex = indexPath.row;
         
-        if (indexPath.row==1) {
-            if (([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) || ![CLLocationManager locationServicesEnabled]) {
-                [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
-                return;
-            }
+        
+//        if (indexPath.row==1) {
+//            if (([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) || ![CLLocationManager locationServicesEnabled]) {
+//                [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
+//                return;
+//            }
+//            
+//        }
+        
+        if (indexPath.row==0) {
+            
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"siteName" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+        }
+        else if (indexPath.row==1) {
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"siteName" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByName,nil]];
         }
         
         [self animateFilterTable];
-        [self fetchABCWaterSites];
+        [filterTableView reloadData];
+        [listTabeView reloadData];
+        [listTabeView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
     }
     else {
         
@@ -597,7 +675,7 @@
         
         
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 40)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 50)];
         if (isFiltered) {
             titleLabel.text = [NSString stringWithFormat:@"%@",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"]];
         }
@@ -608,6 +686,21 @@
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.numberOfLines = 0;
         [cell.contentView addSubview:titleLabel];
+        
+        
+        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, listTabeView.bounds.size.width-100, 20)];
+        subTitleLabel.textColor = [UIColor lightGrayColor];
+        if (isFiltered) {
+            subTitleLabel.text = [NSString stringWithFormat:@"%@ KM",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+        }
+        else {
+            subTitleLabel.text = [NSString stringWithFormat:@"%@ KM",[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+        }
+        subTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+        subTitleLabel.backgroundColor = [UIColor clearColor];
+        subTitleLabel.numberOfLines = 0;
+        subTitleLabel.textAlignment = NSTextAlignmentRight;
+        [cell.contentView addSubview:subTitleLabel];
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
@@ -620,6 +713,14 @@
     return cell;
 }
 
+
+# pragma mark - UISearchBarDelegate Methods
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    
+    [searchBar resignFirstResponder];
+    [self animateSearchBar];
+}
 
 
 # pragma mark - View Lifecycle Methods
@@ -726,13 +827,15 @@
             [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setPlaceholder:@"Search..."];
             [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setClearButtonMode:UITextFieldViewModeWhileEditing];
             [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setReturnKeyType:UIReturnKeyDone];
-            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];        }
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDelegate:self];
+        }
     }
     
     
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading..!!";
+    appDelegate.hud.labelText = @"Loading...";
     
     [self fetchABCWaterSites];
 }

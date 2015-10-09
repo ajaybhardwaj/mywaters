@@ -105,13 +105,9 @@
 
 - (void) fetchEventsListing {
     
-    if (eventsPageCount!=-1) {
-        
-        eventsPageCount = eventsPageCount + 1;
-        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"Limit",@"version", nil];
-        NSArray *values = [[NSArray alloc] initWithObjects:@"3",[NSString stringWithFormat:@"%ld",eventsPageCount],[NSString stringWithFormat:@"%ld",eventsSortOrder],@"10",@"1.0", nil];
+        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"3",[NSString stringWithFormat:@"%ld",eventsSortOrder],@"1.0", nil];
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
-    }
 }
 
 
@@ -211,6 +207,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
+    [textField resignFirstResponder];
     [self animateSearchBar];
     return YES;
 }
@@ -228,42 +225,71 @@
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         NSArray *tempArray = [[responseString JSONValue] objectForKey:EVENTS_RESPONSE_NAME];
-        eventsTotalCount = [[[responseString JSONValue] objectForKey:EVENTS_TOTAL_COUNT] intValue];
+//        eventsTotalCount = [[[responseString JSONValue] objectForKey:EVENTS_TOTAL_COUNT] intValue];
         
             if (tempArray.count==0) {
-                eventsPageCount = 0;
+//                eventsPageCount = 0;
             }
             else {
-                eventsPageCount = eventsPageCount + 1;
-                if (appDelegate.EVENTS_LISTING_ARRAY.count==0) {
+//                eventsPageCount = eventsPageCount + 1;
+
+                if (appDelegate.EVENTS_LISTING_ARRAY.count!=0)
+                    [appDelegate.EVENTS_LISTING_ARRAY removeAllObjects];
+                
                     [appDelegate.EVENTS_LISTING_ARRAY setArray:tempArray];
+                
+                CLLocationCoordinate2D currentLocation;
+                currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+                currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+                
+                
+                for (int idx = 0; idx<[appDelegate.EVENTS_LISTING_ARRAY count];idx++) {
+                    
+                    NSMutableDictionary *dict = [appDelegate.EVENTS_LISTING_ARRAY[idx] mutableCopy];
+                    
+                    CLLocationCoordinate2D desinationLocation;
+                    desinationLocation.latitude = [dict[@"locationLatitude"] doubleValue];
+                    desinationLocation.longitude = [dict[@"locationLongitude"] doubleValue];
+                    
+                    
+                    dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                    appDelegate.EVENTS_LISTING_ARRAY[idx] = dict;
+                    
                 }
-                else {
-                    if (appDelegate.EVENTS_LISTING_ARRAY.count!=0) {
-                        for (int i=0; i<tempArray.count; i++) {
-                            [appDelegate.EVENTS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
-                        }
-                    }
-                }
-            }
+                
+                
+                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+                NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+                NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                    float v1 = [left floatValue];
+                    float v2 = [right floatValue];
+                    if (v1 < v2)
+                        return NSOrderedAscending;
+                    else if (v1 > v2)
+                        return NSOrderedDescending;
+                    else
+                        return NSOrderedSame;
+                }];
+                
+                [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,sortByName,sortByDistance,nil]];
+                
         
         [appDelegate.hud hide:YES];
         [eventsListingTableView reloadData];
 
         }
-    
-//    DebugLog(@"%@",responseString);
-    DebugLog(@"%ld",appDelegate.EVENTS_LISTING_ARRAY.count);
-    DebugLog(@"%@",appDelegate.EVENTS_LISTING_ARRAY);
-    // Use when fetching binary data
-    //    NSData *responseData = [request responseData];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"Ok" otherButton:nil];
+    }
 }
 
 - (void) requestFailed:(ASIHTTPRequest *)request {
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    eventsPageCount = -1;
+//    eventsPageCount = -1;
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
     [appDelegate.hud hide:YES];
 }
 
@@ -283,15 +309,15 @@
 }
 
 
--(void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if ([indexPath row] == appDelegate.EVENTS_LISTING_ARRAY.count - 1) {
-        if (appDelegate.EVENTS_LISTING_ARRAY.count!=eventsTotalCount) {
-
-            [self fetchEventsListing];
-        }
-    }
-}
+//-(void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    if ([indexPath row] == appDelegate.EVENTS_LISTING_ARRAY.count - 1) {
+//        if (appDelegate.EVENTS_LISTING_ARRAY.count!=eventsTotalCount) {
+//
+//            [self fetchEventsListing];
+//        }
+//    }
+//}
 
 
 
@@ -307,14 +333,61 @@
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         selectedFilterIndex = indexPath.row;
         
-        [filterTableView reloadData];
+        if (indexPath.row==0) {
+            
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,sortByName,sortByDistance,nil]];
+        }
+        else if (indexPath.row==1) {
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDate,sortByDistance,nil]];
+        }
+        else if (indexPath.row==2) {
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByDate,sortByName,nil]];
+        }
+        
         [self animateFilterTable];
-        
-        [appDelegate.EVENTS_LISTING_ARRAY removeAllObjects];
-        eventsSortOrder = indexPath.row+1;
-        eventsPageCount = 0;
-        
-        [self fetchEventsListing];
+        [filterTableView reloadData];
+        [eventsListingTableView reloadData];
+        [eventsListingTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+
     }
     else if (tableView==eventsListingTableView) {
         
@@ -585,6 +658,16 @@
     return cell;
 }
 
+
+# pragma mark - UISearchBarDelegate Methods
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    
+    [searchBar resignFirstResponder];
+    [self animateSearchBar];
+}
+
+
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
@@ -658,13 +741,15 @@
             [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setPlaceholder:@"Search..."];
             [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setClearButtonMode:UITextFieldViewModeWhileEditing];
             [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setReturnKeyType:UIReturnKeyDone];
-            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];        }
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDelegate:self];
+        }
     }
     
     
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading..!!";
+    appDelegate.hud.labelText = @"Loading...";
 
     [self fetchEventsListing];
 }

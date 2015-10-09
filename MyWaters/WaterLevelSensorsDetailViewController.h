@@ -43,6 +43,10 @@
     
     QuickMapAnnotations *annotation1;
     
+    UIView *alertOptionsView;
+    int selectedAlertType;
+    UIButton *level50Button,*level75Button,*level90Button,*level100Button;
+    
 }
 
 @property (nonatomic, assign) NSInteger drainDepthType;

@@ -149,7 +149,6 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     
-    DebugLog(@"%@",responseString);
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
         
@@ -163,21 +162,65 @@
         }
         else {
             //            cctvPageCount = cctvPageCount + 1;
-            if (appDelegate.CCTV_LISTING_ARRAY.count==0) {
-                [appDelegate.CCTV_LISTING_ARRAY setArray:tempArray];
+            //            if (appDelegate.CCTV_LISTING_ARRAY.count==0) {
+            
+            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
+                [appDelegate.CCTV_LISTING_ARRAY removeAllObjects];
+            
+            [appDelegate.CCTV_LISTING_ARRAY setArray:tempArray];
+            
+            CLLocationCoordinate2D currentLocation;
+            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+            
+            DebugLog(@"%f---%f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
+            DebugLog(@"%f---%f",currentLocation.latitude,currentLocation.longitude);
+            
+            for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY count];idx++) {
+                
+                NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY[idx] mutableCopy];
+                
+                CLLocationCoordinate2D desinationLocation;
+                desinationLocation.latitude = [dict[@"Lat"] doubleValue];
+                desinationLocation.longitude = [dict[@"Lon"] doubleValue];
+                
+                DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+                
+                dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                appDelegate.CCTV_LISTING_ARRAY[idx] = dict;
+                
             }
-            else {
-                if (appDelegate.CCTV_LISTING_ARRAY.count!=0) {
-                    for (int i=0; i<tempArray.count; i++) {
-                        [appDelegate.CCTV_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
-                    }
-                }
-            }
+            
+            DebugLog(@"%@",appDelegate.CCTV_LISTING_ARRAY);
+            
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+            //            }
+            //            else {
+            //                if (appDelegate.CCTV_LISTING_ARRAY.count!=0) {
+            //                    for (int i=0; i<tempArray.count; i++) {
+            //                        [appDelegate.CCTV_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
+            //                    }
+            //                }
+            //            }
         }
         
         [appDelegate.hud hide:YES];
         [cctvListingTable reloadData];
-        
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"Ok" otherButton:nil];
     }
     
 }
@@ -186,8 +229,7 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    //    cctvPageCount = -1;
-    
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
     [appDelegate.hud hide:YES];
 }
 
@@ -214,8 +256,43 @@
     if (tableView==filterTableView) {
         
         selectedFilterIndex = indexPath.row;
-        [filterTableView reloadData];
+        
+        if (indexPath.row==0) {
+            
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+        }
+        else if (indexPath.row==1) {
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByName,nil]];
+        }
+        
         [self animateFilterTable];
+        [filterTableView reloadData];
+        [cctvListingTable reloadData];
+        [cctvListingTable scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
     }
     
     else if (tableView==cctvListingTable) {
@@ -306,7 +383,7 @@
         [cell.contentView addSubview:cellImage];
         
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, cctvListingTable.bounds.size.width-100, 60)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, cctvListingTable.bounds.size.width-100, 50)];
         if (isFiltered) {
             titleLabel.text = [NSString stringWithFormat:@"%@",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"]];
         }
@@ -317,6 +394,20 @@
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.numberOfLines = 0;
         [cell.contentView addSubview:titleLabel];
+        
+        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, cctvListingTable.bounds.size.width-100, 20)];
+        subTitleLabel.textColor = [UIColor lightGrayColor];
+        if (isFiltered) {
+            subTitleLabel.text = [NSString stringWithFormat:@"%@ KM",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+        }
+        else {
+            subTitleLabel.text = [NSString stringWithFormat:@"%@ KM",[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+        }
+        subTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+        subTitleLabel.backgroundColor = [UIColor clearColor];
+        subTitleLabel.numberOfLines = 0;
+        subTitleLabel.textAlignment = NSTextAlignmentRight;
+        [cell.contentView addSubview:subTitleLabel];
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
@@ -329,6 +420,14 @@
     return cell;
 }
 
+
+# pragma mark - UISearchBarDelegate Methods
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    
+    [searchBar resignFirstResponder];
+    [self animateSearchBar];
+}
 
 
 # pragma mark - View Lifecycle Methods
@@ -414,13 +513,15 @@
             [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setPlaceholder:@"Search..."];
             [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setClearButtonMode:UITextFieldViewModeWhileEditing];
             [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setReturnKeyType:UIReturnKeyDone];
-            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];        }
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDelegate:self];
+        }
     }
-
+    
     
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading..!!";
+    appDelegate.hud.labelText = @"Loading...";
     [self fetchCCTVListing];
 }
 

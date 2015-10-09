@@ -176,6 +176,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    selectedMenuIndex = indexPath.row;
+    
     //***** Animation Code Added to remove the menu form top view
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.5];
@@ -384,6 +386,9 @@
         default:
             break;
     }
+    
+    [tableView reloadData];
+
 }
 
 
@@ -442,6 +447,16 @@
     [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:seperatorImage];
 
+    if (indexPath.row==selectedMenuIndex) {
+        lbl.backgroundColor = [UIColor lightGrayColor];
+        img.backgroundColor = [UIColor lightGrayColor];
+        
+    }
+    else {
+        lbl.backgroundColor = [UIColor clearColor];
+        img.backgroundColor = [UIColor clearColor];
+
+    }
     
     return cell;
 }
@@ -453,7 +468,7 @@
     
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    selectedMenuIndex = 0;
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self load_TableData];
     
@@ -478,6 +493,15 @@
     [self setCurrentIndex:_currentIndex];
     [optionsTableView reloadData];
 }
+
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    //Getting indexpath for highlighened cell, to rehighlight
+    NSIndexPath *selectedIndex = [optionsTableView indexPathForSelectedRow];
+    [optionsTableView selectRowAtIndexPath:selectedIndex animated:NO scrollPosition:UITableViewScrollPositionNone];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

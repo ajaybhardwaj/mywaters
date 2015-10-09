@@ -59,6 +59,20 @@
 
 
 
+//*************** Method To Call PUB For ABC Water Site
+
+- (void) callPUB {
+    
+    if (phoneNoString != (id)[NSNull null] || [phoneNoString length] != 0) {
+        
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@", phoneNoString]]];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No contact available for this site." cancel:@"Ok" otherButton:nil];
+    }
+}
+
+
 //*************** Method To Animate Top Menu
 
 - (void) animateTopMenu {
@@ -192,11 +206,12 @@
     
     //----- Change Current Location With Either Current Location Value or Default Location Value
     
+    
     CLLocationCoordinate2D currentLocation;
     CLLocationCoordinate2D desinationLocation;
-    
-    currentLocation.latitude = 1.2912500;
-    currentLocation.longitude = 103.7870230;
+
+    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
     
     desinationLocation.latitude = latValue;
     desinationLocation.longitude = longValue;
@@ -320,8 +335,9 @@
     contactUsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     contactUsButton.frame = CGRectMake(((self.view.bounds.size.width/3)*2+(self.view.bounds.size.width/3-30)/2), bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+12, 25, 25);
     [contactUsButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_call_blue.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [contactUsButton addTarget:self action:@selector(callPUB) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:contactUsButton];
-    if ([phoneNoString length]==0) {
+    if (phoneNoString == (id)[NSNull null] || [phoneNoString length] == 0) {
         contactUsButton.userInteractionEnabled = NO;
     }
     

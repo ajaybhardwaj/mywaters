@@ -40,7 +40,7 @@
     else {
         appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading..!!";
+        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];

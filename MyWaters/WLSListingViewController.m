@@ -30,13 +30,11 @@
 
 - (void) fetchWLSListing {
     
-    if (wlsPageCount!=-1) {
-        
-        wlsPageCount = wlsPageCount + 1;
-        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"Offset",@"SortBy",@"Limit",@"version", nil];
-        NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"%ld",wlsPageCount],[NSString stringWithFormat:@"1"],@"10",@"1.0", nil];
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
-    }
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
 
@@ -47,30 +45,32 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    
+    DebugLog(@"%@",responseString);
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
-//    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
+        //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
         
         [appDelegate.WLS_LISTING_ARRAY removeAllObjects];
         
         NSArray *tempArray = [[responseString JSONValue] objectForKey:WLS_LISTING_RESPONSE_NAME];
-//        wlsTotalCount = [[[responseString JSONValue] objectForKey:WLS_LISTING_TOTAL_COUNT] intValue];
+        //        wlsTotalCount = [[[responseString JSONValue] objectForKey:WLS_LISTING_TOTAL_COUNT] intValue];
         
         if (tempArray.count==0) {
-
+            
         }
         else {
-
-            if (appDelegate.WLS_LISTING_ARRAY.count==0) {
+            
+            if (appDelegate.WLS_LISTING_ARRAY.count!=0)
+                [appDelegate.WLS_LISTING_ARRAY removeAllObjects];
+                
                 [appDelegate.WLS_LISTING_ARRAY setArray:tempArray];
-            }
-            else {
-                if (appDelegate.WLS_LISTING_ARRAY.count!=0) {
-                    for (int i=0; i<tempArray.count; i++) {
-                        [appDelegate.WLS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
-                    }
-                }
-            }
+            
+//            else {
+//                if (appDelegate.WLS_LISTING_ARRAY.count!=0) {
+//                    for (int i=0; i<tempArray.count; i++) {
+//                        [appDelegate.WLS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
+//                    }
+//                }
+//            }
         }
         
         [appDelegate.hud hide:YES];
@@ -103,13 +103,13 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     WaterLevelSensorsDetailViewController *viewObj = [[WaterLevelSensorsDetailViewController alloc] init];
-
+    
     if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
         viewObj.wlsID = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"];
     
     if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"] != (id)[NSNull null])
         viewObj.wlsName = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"];
-
+    
     if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevel"] != (id)[NSNull null])
         viewObj.drainDepthType = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevel"] intValue];
     
@@ -133,10 +133,10 @@
     
     if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"drainDepth"] != (id)[NSNull null])
         viewObj.drainDepthValue = [NSString stringWithFormat:@"%d",[[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"drainDepth"] intValue]];
-
+    
     if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
         viewObj.isSubscribed = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
-
+    
     
     [self.navigationController pushViewController:viewObj animated:YES];
 }
@@ -169,7 +169,7 @@
         cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
     else if ([[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 4){
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_maintenance.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
     [cell.contentView addSubview:cellImage];
     
@@ -210,7 +210,7 @@
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
-        
+    
     wlsListingtable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
     wlsListingtable.delegate = self;
     wlsListingtable.dataSource = self;
@@ -222,10 +222,10 @@
     responseData = [[NSMutableData alloc] init];
     
     wlsPageCount = 0;
-
+    
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading..!!";
+    appDelegate.hud.labelText = @"Loading...";
     
 }
 
@@ -234,7 +234,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-
+    
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
@@ -249,13 +249,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

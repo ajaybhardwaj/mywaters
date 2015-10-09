@@ -103,9 +103,9 @@
     
     CLLocationCoordinate2D currentLocation;
     CLLocationCoordinate2D desinationLocation;
-    
-    currentLocation.latitude = 1.2912500;
-    currentLocation.longitude = 103.7870230;
+
+    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
     
     desinationLocation.latitude = latValue;
     desinationLocation.longitude = longValue;
@@ -329,14 +329,7 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
 
     
-//    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-    if (appDelegate.IS_MOVING_TO_CCTV_FROM_DASHBOARD) {
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-        appDelegate.IS_MOVING_TO_CCTV_FROM_DASHBOARD = NO;
-    }
-    else {
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-    }
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
     
     UIButton *btnrefresh =  [UIButton buttonWithType:UIButtonTypeCustom];

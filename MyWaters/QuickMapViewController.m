@@ -16,7 +16,8 @@
 
 @implementation QuickMapViewController
 @synthesize isNotQuickMapController;
-
+@synthesize mapOverlay = _mapOverlay;
+@synthesize mapOverlayView = _mapOverlayView;
 
 //*************** Method To Get WLS Listing
 
@@ -134,7 +135,7 @@
         viewObj.latValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"Lat"] doubleValue];
     if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"Lon"] != (id)[NSNull null])
         viewObj.longValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:button.tag-1] objectForKey:@"Lon"] doubleValue];
-
+    
     [self.navigationController pushViewController:viewObj animated:YES];
 }
 
@@ -146,6 +147,11 @@
     
     
     if (appDelegate.CCTV_LISTING_ARRAY.count != 0) {
+        
+        if (!cctvAnnotationsArray) {
+            cctvAnnotationsArray = [[NSMutableArray alloc] init];
+        }
+        [cctvAnnotationsArray removeAllObjects];
         
         for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
             
@@ -174,6 +180,8 @@
             cctvAnnotation.annotationTag = i+1;
             cctvAnnotation.coordinate = annotationRegion.center;
             [quickMap addAnnotation:cctvAnnotation];
+            
+            [cctvAnnotationsArray addObject:cctvAnnotation];
             
         }
     }
@@ -479,7 +487,7 @@
                 
                 appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
                 appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-                appDelegate.hud.labelText = @"Loading..!!";
+                appDelegate.hud.labelText = @"Loading...";
                 [self fetchCCTVListing];
             }
             else {
@@ -768,13 +776,57 @@
 # pragma mark - MKMapViewDelegate Methods
 
 
+//- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
+//
+//    MapOverlay *mapOverlay = (MapOverlay*)overlay;
+//    MapOverlayView *mapOverlayView = [[MapOverlayView alloc] initWithOverlay:mapOverlay];
+//
+//    return mapOverlayView;
+//
+////    MapOverlayView *mapOverlayView;
+////    if([overlay isKindOfClass:[MapOverlay class]]) {
+////        MapOverlay *mapOverlay = overlay;
+////        if(!mapOverlayView) {
+////            mapOverlayView = [[MapOverlayView alloc] initWithOverlay:mapOverlay];
+////            UIImageView *imgV =[[UIImageView alloc] init];
+////            [imgV setContentMode:UIViewContentModeCenter];
+////            [imgV setFrame:CGRectMake(0, 0, mapOverlayView.frame.size.width, mapOverlayView.frame.size.height)];
+////            [imgV setCenter:mapOverlayView.center];
+////            [mapOverlayView addSubview:imgV];
+////        }
+////    }
+////    return mapOverlayView;
+//
+//}
+
+
+-(MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id)overlay {
+    
+    if([overlay isKindOfClass:[MapOverlay class]]) {
+        
+        MapOverlay *mapOverlay = overlay;
+        
+        if(!self.mapOverlayView) {
+            self.mapOverlayView = [[MapOverlayView alloc] initWithOverlay:mapOverlay];
+            UIImageView *imgV =[[UIImageView alloc] init];
+            [imgV setContentMode:UIViewContentModeCenter];
+            [imgV setFrame:CGRectMake(0, 0, self.mapOverlayView.frame.size.width, self.mapOverlayView.frame.size.height)];
+            [imgV setCenter:self.mapOverlayView.center];
+            [self.mapOverlayView addSubview:imgV];
+        }
+    }
+    return self.mapOverlayView;
+}
+
+
+
 -(MKAnnotationView *)mapView:(MKMapView *)mV viewForAnnotation:(id <MKAnnotation>)annotation {
     
     MKAnnotationView *pinView = nil;
     
     if(annotation != quickMap.userLocation) {
         
-//        static NSString *defaultPinID = @"com.invasivecode.pin";
+        //        static NSString *defaultPinID = @"com.invasivecode.pin";
         
         if (selectedAnnotationButton==4) {
             
@@ -904,7 +956,7 @@
         
         calloutView.frame = frame;
         
-
+        
         UIButton *overlayButon = [UIButton buttonWithType:UIButtonTypeCustom];
         overlayButon.frame = CGRectMake(0, 0, calloutView.bounds.size.width, calloutView.bounds.size.height);
         overlayButon.tag = temp.annotationTag;
@@ -1195,7 +1247,7 @@
                 
                 appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
                 appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-                appDelegate.hud.labelText = @"Loading..!!";
+                appDelegate.hud.labelText = @"Loading...";
                 [self fetchCCTVListing];
             }
             else {
@@ -1209,9 +1261,8 @@
         else {
             isShowingCamera = NO;
             
-            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation4,annotation41,annotation42,annotation43, nil];
             //Remove all annotations in the array from the mapView
-            [quickMap removeAnnotations: annotationsToRemove];
+            [quickMap removeAnnotations: cctvAnnotationsArray];
             
             [cctvStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
             //            [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -1325,89 +1376,35 @@
             
             isShowingRain = YES;
             
-            //Set Default location to zoom
-            //            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.375289, 103.852034); //Create the CLLocation from user cordinates
-            //            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 500, 500); //Set zooming level
+            self.mapOverlay = [[MapOverlay alloc] initWithLowerLeftCoordinate:CLLocationCoordinate2DMake(1.229001, 103.607254) withUpperRightCoordinate:CLLocationCoordinate2DMake(1.46926, 104.026108)];
+            
+            // add the custom overlay
+            [quickMap addOverlay:self.mapOverlay];
+            
+            // set the co-ordinates & zoom to specificly Singapore.
+            MKMapPoint lowerLeft = MKMapPointForCoordinate(CLLocationCoordinate2DMake(1.229001, 103.607254));
+            MKMapPoint upperRight = MKMapPointForCoordinate(CLLocationCoordinate2DMake(1.46926, 104.026108));
+            
+            MKMapRect mapRect = MKMapRectMake(lowerLeft.x, upperRight.y, upperRight.x - lowerLeft.x, lowerLeft.y - upperRight.y);
+            [quickMap setVisibleMapRect:mapRect animated:YES];
+            
+            //            //Set Default location to zoom
+            //            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.270414, 103.815994); //Create the CLLocation from user cordinates
+            //            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 2, 2); //Set zooming level
             //            MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
-            //            [quickMap setRegion:adjustedRegion animated:NO]; // create animation zooming
+            //            [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
             
-            
-            MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion.center.latitude = 1.375289; // Make lat dynamic later
-            annotationRegion.center.longitude = 103.852034; // Make long dynamic later
-            annotationRegion.span.latitudeDelta = 0.02f;
-            annotationRegion.span.longitudeDelta = 0.02f;
-            
-            annotation3 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation3.coordinate = annotationRegion.center;
-            annotation3.title = @"537 Ang Mo Kio Avenue 5";
-            annotation3.subtitle = @"";
-            [quickMap addAnnotation:annotation3];
-            
-            
-            MKCoordinateRegion annotationRegion31 = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion31.center.latitude = 1.373820; // Make lat dynamic later
-            annotationRegion31.center.longitude = 103.851058; // Make long dynamic later
-            annotationRegion31.span.latitudeDelta = 0.02f;
-            annotationRegion31.span.longitudeDelta = 0.02f;
-            
-            annotation31 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation31.coordinate = annotationRegion31.center;
-            annotation31.title = @"10 Ang Mo Kio Street 53";
-            annotation31.subtitle = @"";
-            [quickMap addAnnotation:annotation31];
-            
-            MKCoordinateRegion annotationRegion32 = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion32.center.latitude = 1.374077; // Make lat dynamic later
-            annotationRegion32.center.longitude = 103.853354; // Make long dynamic later
-            annotationRegion32.span.latitudeDelta = 0.02f;
-            annotationRegion32.span.longitudeDelta = 0.02f;
-            
-            annotation32 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation32.coordinate = annotationRegion32.center;
-            annotation32.title = @"535 Ang Mo Kio Avenue 5";
-            annotation32.subtitle = @"";
-            [quickMap addAnnotation:annotation32];
-            
-            MKCoordinateRegion annotationRegion33 = { {0.0, 0.0} , {0.0, 0.0} };
-            annotationRegion33.center.latitude = 1.372736; // Make lat dynamic later
-            annotationRegion33.center.longitude = 103.853171; // Make long dynamic later
-            annotationRegion33.span.latitudeDelta = 0.02f;
-            annotationRegion33.span.longitudeDelta = 0.02f;
-            
-            annotation33 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-            annotation33.coordinate = annotationRegion33.center;
-            annotation33.title = @"524 Ang Mo Kio Avenue 5";
-            annotation33.subtitle = @"";
-            [quickMap addAnnotation:annotation33];
             
             [rainMapStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
             
-            //            [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }
         else {
             isShowingRain = NO;
             
-            NSMutableArray *annotationsToRemove = [[NSMutableArray alloc] initWithObjects:annotation3,annotation31,annotation32,annotation33, nil];
-            //Remove all annotations in the array from the mapView
-            [quickMap removeAnnotations: annotationsToRemove];
-            
+            [quickMap removeOverlay:self.mapOverlay];
             [rainMapStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-            //            [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            
         }
-        
-        //        isShowingFlood = NO;
-        //        isShowingUserFeedback = NO;
-        //        isShowingRain = YES;
-        //        isShowingCamera = NO;
-        //        isShowingDrain = NO;
-        //
-        //        [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        //        [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        //        [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        //        [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        //        [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        
     }
 }
 
@@ -1415,7 +1412,7 @@
 - (void)setStackIconClosed:(BOOL)closed
 {
     UIImageView *icon = [[menuContentView subviews] objectAtIndex:0];
-    float angle = closed ? 0 : (M_PI * (135) / 180.0);
+    float angle = closed ? 0 : (M_PI * (90) / 180.0);
     [UIView animateWithDuration:0.3 animations:^{
         [icon.layer setAffineTransform:CGAffineTransformRotate(CGAffineTransformIdentity, angle)];
     }];
@@ -1650,10 +1647,14 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     
-    //    if (!isNotQuickMapController) {
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-    //    }
-    //    else {
+    if (appDelegate.IS_COMING_FROM_DASHBOARD) {
+        appDelegate.IS_COMING_FROM_DASHBOARD = NO;
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    }
+    else {
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
+    }
+    
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(229,0,87) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     

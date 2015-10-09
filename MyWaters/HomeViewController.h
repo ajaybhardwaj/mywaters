@@ -19,6 +19,7 @@
 #import "QuickMapAnnotations.h"
 #import <CoreLocation/CoreLocation.h>
 #import "EventsDetailsViewController.h"
+#import "CommonFunctions.h"
 
 @interface HomeViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,CLLocationManagerDelegate> {
     

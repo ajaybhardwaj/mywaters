@@ -97,7 +97,7 @@
     
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading..!!";
+    appDelegate.hud.labelText = @"Loading...";
     
     NSMutableArray *parameters = [[NSMutableArray alloc] init];
     NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -592,6 +592,8 @@
         nameField.delegate = self;
         [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         nameField.tag = 4;
+        nameField.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"];
+
         
         UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, nameField.bounds.size.height-0.5, nameField.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
@@ -639,6 +641,7 @@
         emailField.delegate = self;
         [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         emailField.tag = 5;
+        emailField.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
         
         UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, emailField.bounds.size.height-0.5, emailField.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
@@ -915,10 +918,12 @@
     }
     
     
-    if (([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) || ![CLLocationManager locationServicesEnabled]) {
-        [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
-        return;
-    }}
+//    if (([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) || ![CLLocationManager locationServicesEnabled]) {
+//        [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
+//        return;
+//    }
+    
+}
 
 
 - (void) viewWillDisappear:(BOOL)animated {

@@ -14,6 +14,8 @@
 #import "UPStackMenu.h"
 #import "CustomAnnotationView.h"
 #import "CCTVDetailViewController.h"
+#import "MapOverlay.h"
+#import "MapOverlayView.h"
 
 @interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UPStackMenuDelegate> {
     
@@ -54,9 +56,11 @@
     NSArray *floodTempArray,*wlsTempArray,*cctvTempArray,*userFeedbackArray,*rainTempArray;
     BOOL isLoadingFloods,isLoadingWLS,isLoadingCCTV,isLoadingFeedback,isLoadingRainMap;
     
-    
+    NSMutableArray *cctvAnnotationsArray;
 }
 
 @property (nonatomic, assign) BOOL isNotQuickMapController;
+@property (nonatomic, strong) MapOverlay *mapOverlay;
+@property (nonatomic, strong) MapOverlayView *mapOverlayView;
 
 @end

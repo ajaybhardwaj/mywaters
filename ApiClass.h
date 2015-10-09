@@ -39,6 +39,7 @@
 #define ABC_WATER_SITES_RESPONSE_NAME @"ListABCWaterSites"
 #define ABC_WATER_SITES_TOTAL_COUNT @"TotalABCWaterSites"
 #define ABC_WATER_SITES_POI_RESPONSE_NAME @"ListABCPOI"
+#define ABC_WATER_SITES_POI_IMAGES @"ListABCPOIImage"
 #define ABC_WATER_SITES_POI_TOTAL_COUNT @"TotalABCPOI"
 #define EVENTS_RESPONSE_NAME @"ListEvents"
 #define EVENTS_TOTAL_COUNT @"TotalEvents"
@@ -46,6 +47,8 @@
 #define WLS_LISTING_TOTAL_COUNT @"TotalWaterLevelSensorStation"
 #define CCTV_LISTING_RESPONSE_NAME @"ListCCTV"
 #define CCTV_LISTING_TOTAL_COUNT @"TotalCCTV"
+#define FEEDS_CHATTER_LISTING_RESPONSE_NAME @"ListMediaFeed"
+#define FEEDS_CHATTER_LISTING_TOTAL_COUNT @"TotalMediaFeed"
 
 
 # pragma mark - BASE URLS
@@ -60,6 +63,8 @@
 #define PROFILE_API_URL @"Profile/"
 #define REGISTER_PUSH_TOKEN @"PushToken/"
 #define REGISTER_FOR_SUBSCRIPTION @"Subscription/"
+#define ABC_WATERS_POI @"ABCPOI/"
+#define ABC_WATERS_UPLOAD_USER_IMAGE @"ABCPOIImage/"
 
 
 //#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"

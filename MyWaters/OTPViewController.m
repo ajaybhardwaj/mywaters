@@ -34,7 +34,7 @@
         
         appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading..!!";
+        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -62,6 +62,15 @@
 
 
 
+//*************** Method To Move Back To Parent View
+
+- (void) pop2Dismiss:(id) sender {
+    
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+
+
 //*************** Method To Request OTP Code
 
 - (void) requestNewOTPCode {
@@ -71,7 +80,7 @@
     
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading..!!";
+    appDelegate.hud.labelText = @"Loading...";
     
     NSMutableArray *parameters = [[NSMutableArray alloc] init];
     NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -211,11 +220,20 @@
     [self.view addSubview:submitButton];
     
     
+    backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backButton setTitle:@"BACK" forState:UIControlStateNormal];
+    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    backButton.frame = CGRectMake(10, submitButton.frame.origin.y+submitButton.bounds.size.height+15, self.view.bounds.size.width-20, 40);
+    [backButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
+    [backButton setBackgroundColor:RGB(83, 83, 83)];
+    [self.view addSubview:backButton];
+    
     resendOTPButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [resendOTPButton setTitle:@"Re-send OTP" forState:UIControlStateNormal];
     [resendOTPButton setTitleColor:RGB(22, 25, 62) forState:UIControlStateNormal];
     resendOTPButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:15];
-    resendOTPButton.frame = CGRectMake(0, submitButton.frame.origin.y+submitButton.bounds.size.height+15, self.view.bounds.size.width, 30);
+    resendOTPButton.frame = CGRectMake(0, backButton.frame.origin.y+backButton.bounds.size.height+15, self.view.bounds.size.width, 30);
     [resendOTPButton addTarget:self action:@selector(requestNewOTPCode) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:resendOTPButton];
     

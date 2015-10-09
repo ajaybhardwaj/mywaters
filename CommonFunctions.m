@@ -87,6 +87,7 @@
     CLLocationManager *locationManager = [[CLLocationManager alloc] init];
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     locationManager.distanceFilter = kCLDistanceFilterNone;
+    locationManager.delegate = self;
     [locationManager startUpdatingLocation];
     
     CLLocation *location = [locationManager location];
@@ -94,7 +95,6 @@
     
     return coordinate;
 }
-
 
 
 //*************** Method For Downloading Image Asynchronously
@@ -279,7 +279,7 @@
     CGSize size;
     
     CGSize boundingBox = [text boundingRectWithSize:constraint
-                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                            options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                          attributes:@{NSFontAttributeName:font}
                                             context:nil].size;
     
@@ -370,7 +370,8 @@
     
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     actionSheet.destructiveButtonIndex = destructiveButtonIndex;
-    [actionSheet showInView:view];
+//    [actionSheet showInView:view];
+    [actionSheet showInView:view.window];
 }
 
 

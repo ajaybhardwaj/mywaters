@@ -19,7 +19,7 @@
 #import "JSON.h"
 #import <CoreLocation/CoreLocation.h>
 
-@interface CommonFunctions : NSObject
+@interface CommonFunctions : NSObject <CLLocationManagerDelegate>
 
 
 + (BOOL) hasConnectivity;

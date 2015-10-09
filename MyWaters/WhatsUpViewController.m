@@ -34,10 +34,14 @@
     
     if (sender==segmentedControl) {
         if (sender.selectedSegmentIndex==0) {
+            isShowingChatterTable = YES;
+            isShowingFeedTable = NO;
             exploreTableView.hidden = YES;
             feedTableView.hidden = NO;
         }
         else if (sender.selectedSegmentIndex==1) {
+            isShowingFeedTable = YES;
+            isShowingChatterTable = NO;
             exploreTableView.hidden = NO;
             feedTableView.hidden = YES;
         }
@@ -45,16 +49,123 @@
 }
 
 
+//*************** Method To Get WLS Listing
+
+- (void) fetchFeedsAndChatterListing {
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"12",@"1.0", nil];
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+}
+
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    [appDelegate.hud hide:YES];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        NSArray *tempArray = [[NSArray alloc] init];
+        tempArray = [[responseString JSONValue] objectForKey:FEEDS_CHATTER_LISTING_RESPONSE_NAME];
+        
+        if (tempArray.count==0) {
+            
+        }
+        else {
+            
+            [feedDataSource removeAllObjects];
+            [chatterDataSource removeAllObjects];
+            
+            for (int i=0; i<tempArray.count; i++) {
+                if ([[[tempArray objectAtIndex:i] objectForKey:@"Type"] intValue] == 1) {
+                    [feedDataSource addObject:[tempArray objectAtIndex:i]];
+                }
+                if ([[[tempArray objectAtIndex:i] objectForKey:@"IsChatter"] intValue] == true) {
+                    [chatterDataSource addObject:[tempArray objectAtIndex:i]];
+                }
+            }
+        }
+        
+        if (chatterDataSource.count!=0) {
+            [exploreTableView reloadData];
+        }
+        if (feedDataSource.count!=0) {
+            [feedTableView reloadData];
+        }
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"Ok" otherButton:nil];
+    }
+}
+
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
+    [appDelegate.hud hide:YES];
+}
+
+
 # pragma mark - UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    float titleHeight = 0.0;
+    float subTitleHeight = 0.0;
+    float dateHeight = 0.0;
+    int subtractComponent = 0;
+    
     if (tableView==feedTableView) {
-        return 90.0f;
+        
+        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"] != (id)[NSNull null]) {
+            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:feedTableView.bounds.size.width-100];
+            subtractComponent = subtractComponent + 30;
+        }
+        
+        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null]) {
+            subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:feedTableView.bounds.size.width-100];
+            subtractComponent = subtractComponent + 30;
+        }
+        
+        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"] != (id)[NSNull null]) {
+            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:feedTableView.bounds.size.width-100];
+            subtractComponent = subtractComponent + 30;
+        }
+        
+        if ((titleHeight+subTitleHeight+dateHeight) < 90) {
+            return 90.0f;
+        }
+        
+        return titleHeight+subTitleHeight+dateHeight-subtractComponent;
     }
     else if (tableView==exploreTableView) {
-        return 80.0f;
+        
+        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"] != (id)[NSNull null]) {
+            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:exploreTableView.bounds.size.width];
+            subtractComponent = subtractComponent + 30;
+        }
+        
+        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null]) {
+            subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:exploreTableView.bounds.size.width];
+            subtractComponent = subtractComponent + 30;
+        }
+        
+        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"] != (id)[NSNull null]) {
+            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:exploreTableView.bounds.size.width];
+            subtractComponent = subtractComponent + 30;
+        }
+        
+        
+        return titleHeight+subTitleHeight+dateHeight-subtractComponent;
     }
+    
     return 0.0f;
 }
 
@@ -62,12 +173,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if (tableView==exploreTableView) {
-
-    }
-    else if (tableView==feedTableView) {
-
-    }
+    
+    //    if (tableView==exploreTableView) {
+    //
+    //    }
+    //    else if (tableView==feedTableView) {
+    //
+    //    }
 }
 
 
@@ -95,12 +207,10 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (tableView==feedTableView) {
-//        return feedDataSource.count;
-        return 4;
+        return feedDataSource.count;
     }
     else if (tableView==exploreTableView) {
-//        return exploreDataSource.count;
-        return 4;
+        return chatterDataSource.count;
     }
     
     return 0;
@@ -111,42 +221,70 @@
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     cell.backgroundColor = RGB(247, 247, 247);
-
+    
     if (tableView==exploreTableView) {
         
-//        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 70, 70)];
-//        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
-//        [cell.contentView addSubview:cellImage];
-
-        
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, exploreTableView.bounds.size.width-20, 40)];
-        //                titleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedTitle"];
-        titleLabel.text = [NSString stringWithFormat:@"%@",[exploreDataSource objectAtIndex:(indexPath.row*2)]];
+        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"] != (id)[NSNull null])
+            titleLabel.text = [NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.backgroundColor = [UIColor clearColor];
-//        titleLabel.textColor = RGB(247,196,9);
         titleLabel.textColor = RGB(0,0,0);
         titleLabel.numberOfLines = 0;
+        
+        CGRect newTitleLabelLabelFrame = titleLabel.frame;
+        newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]] font:titleLabel.font withinWidth:exploreTableView.bounds.size.width];//expectedDescriptionLabelSize.height;
+        titleLabel.frame = newTitleLabelLabelFrame;
         [cell.contentView addSubview:titleLabel];
         [titleLabel sizeToFit];
         
-        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 50, exploreTableView.bounds.size.width-20, 15)];
-        //                dateLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
-        subtitleLabel.text = [NSString stringWithFormat:@"%@",[exploreDataSource objectAtIndex:(indexPath.row*2)+1]];
-        subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+        
+        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, exploreTableView.bounds.size.width-20, 15)];
+        subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
         subtitleLabel.backgroundColor = [UIColor clearColor];
         subtitleLabel.textColor = [UIColor darkGrayColor];
         subtitleLabel.numberOfLines = 0;
+        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null])
+            subtitleLabel.text = [[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"];
+        
+        CGRect newSubTitleLabelLabelFrame = subtitleLabel.frame;
+        newSubTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:subtitleLabel.font withinWidth:exploreTableView.bounds.size.width];//expectedDescriptionLabelSize.height;
+        subtitleLabel.frame = newSubTitleLabelLabelFrame;
         [cell.contentView addSubview:subtitleLabel];
         [subtitleLabel sizeToFit];
         
-        UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        socialButton.frame = CGRectMake(exploreTableView.bounds.size.width-25, 55, 15, 15);
-        [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_facebook_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        [cell.contentView addSubview:socialButton];
-
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 74.5, exploreTableView.bounds.size.width, 0.5)];
+        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, subtitleLabel.frame.origin.y+subtitleLabel.bounds.size.height+5, exploreTableView.bounds.size.width-20, 15)];
+        dateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
+        dateLabel.backgroundColor = [UIColor clearColor];
+        dateLabel.textColor = [UIColor darkGrayColor];
+        dateLabel.numberOfLines = 0;
+        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"] != (id)[NSNull null])
+            dateLabel.text = [CommonFunctions dateTimeFromString:[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]];
+        
+        CGRect newDateLabelLabelFrame = dateLabel.frame;
+        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:subtitleLabel.font withinWidth:exploreTableView.bounds.size.width];//expectedDescriptionLabelSize.height;
+        dateLabel.frame = newDateLabelLabelFrame;
+        [cell.contentView addSubview:dateLabel];
+        [dateLabel sizeToFit];
+        
+        
+        UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        socialButton.frame = CGRectMake(exploreTableView.bounds.size.width-25, subtitleLabel.frame.origin.y+subtitleLabel.bounds.size.height+5, 15, 15);
+        if ([[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 1) {
+            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_facebook_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        }
+        else if ([[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 2) {
+            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_twitter_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        }
+        else if ([[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 3) {
+            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        }
+        [cell.contentView addSubview:socialButton];
+        
+        
+        float height = [self tableView:tableView heightForRowAtIndexPath:indexPath];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, height-1, exploreTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -157,38 +295,136 @@
     else if (tableView==feedTableView) {
         
         UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 70, 70)];
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%d.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
         [cell.contentView addSubview:cellImage];
-
+        
+        
+        NSString *imageName = [NSString stringWithFormat:@"wu%d.jpg",[[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] intValue]];
+        NSString *imageURLString = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"ImageURL"];
+        
+        
+        NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+        NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+        NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"Whatsup"]];
+        
+        NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+            
+            if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+            else
+                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        
+        else {
+            
+            if (imageURLString != (id)[NSNull null]) {
+                UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                activityIndicator.center = CGPointMake(cellImage.bounds.size.width/2, cellImage.bounds.size.height/2);
+                [cellImage addSubview:activityIndicator];
+                [activityIndicator startAnimating];
+                
+                [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                    if (succeeded) {
+                        
+                        cellImage.image = image;
+                        
+                        DebugLog(@"Path %@",destinationPath);
+                        
+                        NSFileManager *fileManger=[NSFileManager defaultManager];
+                        NSError* error;
+                        
+                        if (![fileManger fileExistsAtPath:destinationPath]){
+                            
+                            if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                                ;// success
+                            else
+                            {
+                                DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                            }
+                        }
+                        
+                        NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                        [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+                    }
+                    else {
+                        DebugLog(@"Image Loading Failed..!!");
+                        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+                    }
+                    [activityIndicator stopAnimating];
+                }];
+            }
+            else {
+                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+            }
+        }
+        
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, feedTableView.bounds.size.width-100, 40)];
-//                titleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedTitle"];
-        titleLabel.text = [NSString stringWithFormat:@"%@",[feedDataSource objectAtIndex:(indexPath.row*2)]];
-        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"] != (id)[NSNull null])
+            titleLabel.text = [NSString stringWithFormat:@"%@",[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]];
+        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.backgroundColor = [UIColor clearColor];
-//        titleLabel.textColor = RGB(247,196,9);
         titleLabel.textColor = RGB(0,0,0);
         titleLabel.numberOfLines = 0;
+        [titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
+        
+        CGRect newTitleLabelLabelFrame = titleLabel.frame;
+        newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]] font:titleLabel.font withinWidth:exploreTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        titleLabel.frame = newTitleLabelLabelFrame;
         [cell.contentView addSubview:titleLabel];
         [titleLabel sizeToFit];
         
-        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, feedTableView.bounds.size.width-100, 30)];
-//                subtitleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"feedSubtitle"];
-        subtitleLabel.text = [NSString stringWithFormat:@"%@",[feedDataSource objectAtIndex:(indexPath.row*2)+1]];
-        subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+        [cell.contentView addSubview:titleLabel];
+        [titleLabel sizeToFit];
+        
+        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, exploreTableView.bounds.size.width-100, 15)];
+        subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
         subtitleLabel.backgroundColor = [UIColor clearColor];
         subtitleLabel.textColor = [UIColor darkGrayColor];
         subtitleLabel.numberOfLines = 0;
+        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null])
+            subtitleLabel.text = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"];
+        
+        CGRect newSubTitleLabelLabelFrame = subtitleLabel.frame;
+        newSubTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:subtitleLabel.font withinWidth:exploreTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        subtitleLabel.frame = newSubTitleLabelLabelFrame;
         [cell.contentView addSubview:subtitleLabel];
         [subtitleLabel sizeToFit];
         
+        
+        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, subtitleLabel.frame.origin.y+subtitleLabel.bounds.size.height+5, exploreTableView.bounds.size.width-100, 15)];
+        dateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
+        dateLabel.backgroundColor = [UIColor clearColor];
+        dateLabel.textColor = [UIColor darkGrayColor];
+        dateLabel.numberOfLines = 0;
+        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"] != (id)[NSNull null])
+            dateLabel.text = [CommonFunctions dateTimeFromString:[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]];
+        
+        CGRect newDateLabelLabelFrame = dateLabel.frame;
+        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:subtitleLabel.font withinWidth:exploreTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        dateLabel.frame = newDateLabelLabelFrame;
+        [cell.contentView addSubview:dateLabel];
+        [dateLabel sizeToFit];
+        
+        
         UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        socialButton.frame = CGRectMake(feedTableView.bounds.size.width-25, 70, 15, 15);
-        [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        socialButton.frame = CGRectMake(exploreTableView.bounds.size.width-25, subtitleLabel.frame.origin.y+subtitleLabel.bounds.size.height+5, 15, 15);
+        if ([[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 1) {
+            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_facebook_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        }
+        else if ([[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 2) {
+            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_twitter_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        }
+        else if ([[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 3) {
+            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        }
         [cell.contentView addSubview:socialButton];
         
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 89.5, feedTableView.bounds.size.width, 0.5)];
+        float height = [self tableView:tableView heightForRowAtIndexPath:indexPath];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, height-1, exploreTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -215,18 +451,8 @@
     
     NSArray *itemArray = [NSArray arrayWithObjects: @"FEED", @"CHATTER", nil];
     
-    //***** Temp Datasource Content
-    feedDataSource = [[NSArray alloc] initWithObjects:@"World Waters Data at Punggol Park",@"So excited to see a huge crowd!",
-                                                      @"Seletar Reservoir",@"Do you know how reservoirs are formed?",
-                                                      @"Water Campaign at Bishan Park",@"Water is.. Important, ya?",
-                                                      @"Run Carnival at Sembawang Park",@"Who is the ultimate running king?",
-                      nil];
-    
-    exploreDataSource = [[NSArray alloc] initWithObjects:@"David Chong",@"Err... #sgflood",
-                                                         @"Jennie Chew",@"Yes, right here right now #sgflood",
-                                                         @"Alan Tan",@"Nature and its cons $sgflood",
-                                                         @"Elaine Wee",@"Surprise surprise #sgflood",
-                         nil];
+    feedDataSource = [[NSMutableArray alloc] init];
+    chatterDataSource = [[NSMutableArray alloc] init];
     
     
     segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
@@ -263,7 +489,7 @@
     feedTableView.backgroundColor = [UIColor clearColor];
     feedTableView.backgroundView = nil;
     feedTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-
+    
     
     exploreTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, self.view.bounds.size.width, self.view.bounds.size.height-114) style:UITableViewStylePlain];
     exploreTableView.delegate = self;
@@ -273,7 +499,10 @@
     exploreTableView.backgroundView = nil;
     exploreTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     exploreTableView.hidden = YES;
-
+    
+    isShowingFeedTable = YES;
+    isShowingChatterTable = NO;
+    
 }
 
 
@@ -281,25 +510,27 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-
     
-//    if (!isNotWhatsUpController) {
+    
+    if (appDelegate.IS_COMING_FROM_DASHBOARD) {
+        appDelegate.IS_COMING_FROM_DASHBOARD = NO;
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    }
+    else {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-//    }
-//    else {
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
-        [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
-        
-        NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
-        [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
-        [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
-        [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-        
-        self.title = @"What's Up";
-        
-//        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-//        
-//    }
+    }
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+    [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+    
+    self.title = @"What's Up";
+    
+    [self fetchFeedsAndChatterListing];
+    
 }
 
 
@@ -320,13 +551,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

@@ -15,12 +15,22 @@
 #import "ARGeoCoordinate.h"
 #import "UILabel + Extension.h"
 
-@interface ARViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate, ARLocationDelegate, ARDelegate, ARMarkerDelegate, UINavigationControllerDelegate> {
+@interface ARViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate, ARLocationDelegate, ARDelegate, ARMarkerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate> {
     
     AppDelegate *appDelegate;
     UIScrollView *overlayScrollview;
     
     NSArray *pictureDataSource;
+    UILabel___Extension *descriptionLabel;
+    UIScrollView *picturesScrollView;
+    
+    UILabel *titleLabel,*distanceLabel;
+    UIImageView *seperatorImageView;
+    
+    BOOL isFetchingImages,isUploadingImage,isFetchingPOI,isShowingPictureOptions;
+    UITableView *imageUploadOptionsTable;
+    
+    NSInteger poiID,poiType;
 }
 
 @property (weak, nonatomic) MKMapView *mapView;

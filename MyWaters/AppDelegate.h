@@ -32,6 +32,8 @@
 @property (nonatomic, strong) MBProgressHUD *hud;
 
 @property (nonatomic, strong) NSDictionary *USER_PROFILE_DICTIONARY;
+@property (nonatomic, assign) double CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG;
+@property (nonatomic, assign) BOOL IS_COMING_FROM_DASHBOARD;
 
 - (void) createViewDeckController;
 - (void) retrieveDashboardPreferences;

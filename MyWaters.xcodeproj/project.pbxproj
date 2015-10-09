@@ -152,6 +152,10 @@
 		FE82AC5B1A92DE0800CCC94D /* GEOLocations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC561A92DE0800CCC94D /* GEOLocations.m */; };
 		FE82AC5E1A92E34100CCC94D /* MarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC5D1A92E34100CCC94D /* MarkerView.m */; };
 		FE82AC661A93312700CCC94D /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC651A93312700CCC94D /* Place.m */; };
+		FE8652141BC4BE6600BA5689 /* rainmaptemp.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8652131BC4BE6600BA5689 /* rainmaptemp.png */; settings = {ASSET_TAGS = (); }; };
+		FE8652161BC4CF4F00BA5689 /* 201509281910.rain.zo.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8652151BC4CF4F00BA5689 /* 201509281910.rain.zo.png */; settings = {ASSET_TAGS = (); }; };
+		FE86521B1BC4F5C000BA5689 /* MapOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8652181BC4F5C000BA5689 /* MapOverlay.m */; settings = {ASSET_TAGS = (); }; };
+		FE86521C1BC4F5C000BA5689 /* MapOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE86521A1BC4F5C000BA5689 /* MapOverlayView.m */; settings = {ASSET_TAGS = (); }; };
 		FE8691471AE0A05C00EC2A77 /* icn_cctv_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8691421AE0A05C00EC2A77 /* icn_cctv_small@3x.png */; };
 		FE8691481AE0A05C00EC2A77 /* icn_floodinfo_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8691431AE0A05C00EC2A77 /* icn_floodinfo_small@3x.png */; };
 		FE86914A1AE0A05C00EC2A77 /* icn_rainarea_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8691451AE0A05C00EC2A77 /* icn_rainarea_small@3x.png */; };
@@ -436,6 +440,9 @@
 		FEFCD2731B05A11700B7A0DD /* icn_twitter_settings@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD26F1B05A11700B7A0DD /* icn_twitter_settings@3x.png */; };
 		FEFCD2741B05A11700B7A0DD /* icn_web_settings@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD2701B05A11700B7A0DD /* icn_web_settings@3x.png */; };
 		FEFCD2771B05A7A800B7A0DD /* BookingWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEFCD2761B05A7A800B7A0DD /* BookingWebViewController.m */; };
+		FEFD024F1BC510AB002E2177 /* wls_cross@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFD024C1BC510AB002E2177 /* wls_cross@3x.png */; settings = {ASSET_TAGS = (); }; };
+		FEFD02501BC510AB002E2177 /* wls_radio_selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFD024D1BC510AB002E2177 /* wls_radio_selected@3x.png */; settings = {ASSET_TAGS = (); }; };
+		FEFD02511BC510AB002E2177 /* wls_radio_unselected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFD024E1BC510AB002E2177 /* wls_radio_unselected@3x.png */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -613,6 +620,12 @@
 		FE82AC5D1A92E34100CCC94D /* MarkerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkerView.m; sourceTree = "<group>"; };
 		FE82AC641A93312700CCC94D /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
 		FE82AC651A93312700CCC94D /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Place.m; sourceTree = "<group>"; };
+		FE8652131BC4BE6600BA5689 /* rainmaptemp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rainmaptemp.png; sourceTree = "<group>"; };
+		FE8652151BC4CF4F00BA5689 /* 201509281910.rain.zo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 201509281910.rain.zo.png; sourceTree = "<group>"; };
+		FE8652171BC4F5C000BA5689 /* MapOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapOverlay.h; sourceTree = "<group>"; };
+		FE8652181BC4F5C000BA5689 /* MapOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapOverlay.m; sourceTree = "<group>"; };
+		FE8652191BC4F5C000BA5689 /* MapOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapOverlayView.h; sourceTree = "<group>"; };
+		FE86521A1BC4F5C000BA5689 /* MapOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapOverlayView.m; sourceTree = "<group>"; };
 		FE8691421AE0A05C00EC2A77 /* icn_cctv_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_cctv_small@3x.png"; sourceTree = "<group>"; };
 		FE8691431AE0A05C00EC2A77 /* icn_floodinfo_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_small@3x.png"; sourceTree = "<group>"; };
 		FE8691451AE0A05C00EC2A77 /* icn_rainarea_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_rainarea_small@3x.png"; sourceTree = "<group>"; };
@@ -997,6 +1010,9 @@
 		FEFCD2701B05A11700B7A0DD /* icn_web_settings@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_web_settings@3x.png"; sourceTree = "<group>"; };
 		FEFCD2751B05A7A800B7A0DD /* BookingWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookingWebViewController.h; sourceTree = "<group>"; };
 		FEFCD2761B05A7A800B7A0DD /* BookingWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookingWebViewController.m; sourceTree = "<group>"; };
+		FEFD024C1BC510AB002E2177 /* wls_cross@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wls_cross@3x.png"; sourceTree = "<group>"; };
+		FEFD024D1BC510AB002E2177 /* wls_radio_selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wls_radio_selected@3x.png"; sourceTree = "<group>"; };
+		FEFD024E1BC510AB002E2177 /* wls_radio_unselected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wls_radio_unselected@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1489,6 +1505,7 @@
 		FEA7301D1A772FDD00D274A6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FE8652151BC4CF4F00BA5689 /* 201509281910.rain.zo.png */,
 				FEA37B4F1BBE765C006A8514 /* MyWaters.sqlite */,
 				FE99BE201A7B7D21000B83E8 /* Fonts */,
 				FEA730B81A773A8100D274A6 /* PrefixHeader.pch */,
@@ -1724,6 +1741,10 @@
 				FE86914D1AE0B15E00EC2A77 /* QuickMapAnnotations.m */,
 				FEFC8EBD1BBBD3BE00139944 /* CustomAnnotationView.h */,
 				FEFC8EBE1BBBD3BE00139944 /* CustomAnnotationView.m */,
+				FE8652171BC4F5C000BA5689 /* MapOverlay.h */,
+				FE8652181BC4F5C000BA5689 /* MapOverlay.m */,
+				FE8652191BC4F5C000BA5689 /* MapOverlayView.h */,
+				FE86521A1BC4F5C000BA5689 /* MapOverlayView.m */,
 			);
 			name = "Quick Map";
 			sourceTree = "<group>";
@@ -1758,6 +1779,7 @@
 		FEA730B11A77394300D274A6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FE8652131BC4BE6600BA5689 /* rainmaptemp.png */,
 				FE3238E21B57608C00BB3DA8 /* Icons */,
 				FE9625701B55FF2900A25BCA /* splash_iphone@3x.png */,
 				FEFCD26C1B05A0D600B7A0DD /* Settings */,
@@ -1892,6 +1914,9 @@
 		FEBA99711ADCC5F700ED3555 /* Water Level Sensors */ = {
 			isa = PBXGroup;
 			children = (
+				FEFD024C1BC510AB002E2177 /* wls_cross@3x.png */,
+				FEFD024D1BC510AB002E2177 /* wls_radio_selected@3x.png */,
+				FEFD024E1BC510AB002E2177 /* wls_radio_unselected@3x.png */,
 				FED8A85B1B16FD21008B2341 /* blue_wls@3x.png */,
 				FED8A85C1B16FD21008B2341 /* empty_bucket_level@3x.png */,
 				FED8A85D1B16FD21008B2341 /* filled_bucket_level@3x.png */,
@@ -2198,6 +2223,7 @@
 				FEC631F41B2A71910006A885 /* CCTV-2@3x.png in Resources */,
 				FEE04EB21AD781C900BEA6C6 /* icn_tips_notification@3x.png in Resources */,
 				FEFCD2711B05A11700B7A0DD /* icn_facebook_settings@3x.png in Resources */,
+				FEFD02501BC510AB002E2177 /* wls_radio_selected@3x.png in Resources */,
 				FEF4C6CC1ACB9F1300C57304 /* icn_expand@3x.png in Resources */,
 				FE25CB731B5CDF1E00A5B2B3 /* 3_color@3x.png in Resources */,
 				FE8845DE1AB6B3EE005537C6 /* w1.png in Resources */,
@@ -2206,6 +2232,7 @@
 				FE8D7F421AB7B6BB002BA233 /* abcwaters_grid1@2x_old.png in Resources */,
 				FEA37B451BBE5E8A006A8514 /* FN@3x.png in Resources */,
 				FE99BE351A7B7E69000B83E8 /* Roboto-Bold.ttf in Resources */,
+				FEFD024F1BC510AB002E2177 /* wls_cross@3x.png in Resources */,
 				FE73E5791AC143C5007B2179 /* 3_color@3x_old.png in Resources */,
 				FE99BE361A7B7E69000B83E8 /* Roboto-BoldItalic.ttf in Resources */,
 				FE8845C01AB68F02005537C6 /* no_image.png in Resources */,
@@ -2391,6 +2418,7 @@
 				FE99BDF21A7B295D000B83E8 /* waterlevelsensor_detail.png in Resources */,
 				FEB13FC91A7766410061CE74 /* icn_quickmap@3x.png in Resources */,
 				FED8A8601B16FD21008B2341 /* empty_bucket_level@3x.png in Resources */,
+				FE8652141BC4BE6600BA5689 /* rainmaptemp.png in Resources */,
 				FE3239021B57980F00BB3DA8 /* icn_location_top@3x.png in Resources */,
 				FE99BE091A7B63FB000B83E8 /* profile_rewards.png in Resources */,
 				FE3239131B57AA5A00BB3DA8 /* abcwaters_grid7@2x_old.png in Resources */,
@@ -2398,6 +2426,7 @@
 				FE0BD2511AC16C9D005A4CC3 /* icn_directions_purple@3x.png in Resources */,
 				FE99BE0A1A7B63FB000B83E8 /* profile_rewards_detail.png in Resources */,
 				FEA7302B1A772FDD00D274A6 /* Images.xcassets in Resources */,
+				FEFD02511BC510AB002E2177 /* wls_radio_unselected@3x.png in Resources */,
 				FEB13FC31A7766410061CE74 /* icn_events@3x.png in Resources */,
 				FE78C2FB1B0ED75500D909FD /* default_no_image.png in Resources */,
 				FEFCD2641B0594F200B7A0DD /* icn_location_quick_map@3x.png in Resources */,
@@ -2433,6 +2462,7 @@
 				FE4F377A1A88A6DC0028903C /* icon_tick@3x.png in Resources */,
 				FEC3134F1B79A35800AC2E08 /* icn_money_purple@3x.png in Resources */,
 				FE4F37791A88A6DC0028903C /* checkbox@3x.png in Resources */,
+				FE8652161BC4CF4F00BA5689 /* 201509281910.rain.zo.png in Resources */,
 				FE8845D61AB6B158005537C6 /* e3.png in Resources */,
 				FE3238F61B576C8400BB3DA8 /* textfield_bg@3x.png in Resources */,
 				FE73E5801AC14BDE007B2179 /* dummy_my_pic@3x.png in Resources */,
@@ -2589,6 +2619,7 @@
 				FEA730A41A77354F00D274A6 /* BookingViewController.m in Sources */,
 				FE9B55EE1A89B7B00045E4F9 /* CommonFunctions.m in Sources */,
 				FEE65A701B8ABB55002C5C6D /* ASIFormDataRequest.m in Sources */,
+				FE86521B1BC4F5C000BA5689 /* MapOverlay.m in Sources */,
 				FE82AC5B1A92DE0800CCC94D /* GEOLocations.m in Sources */,
 				FE99BE471A7B8015000B83E8 /* WaterLevelAlertsSettingViewController.m in Sources */,
 				FE99BDF01A7B28C3000B83E8 /* ABCWaterDetailViewController.m in Sources */,
@@ -2596,6 +2627,7 @@
 				FED999AC1BAAAC65007BEE55 /* SDImageCache.m in Sources */,
 				FE82AC491A92DBA500CCC94D /* ARViewController.m in Sources */,
 				FE647CEF1BA6AF3D00C436A6 /* UPStackMenu.m in Sources */,
+				FE86521C1BC4F5C000BA5689 /* MapOverlayView.m in Sources */,
 				FED999451BAA75D2007BEE55 /* MBProgressHUD.m in Sources */,
 				FEA730B01A77357300D274A6 /* FavouritesViewController.m in Sources */,
 				FEA7304A1A7733E700D274A6 /* SFHFKeychainUtils.m in Sources */,

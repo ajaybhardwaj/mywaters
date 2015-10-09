@@ -110,7 +110,7 @@
         
         appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading..!!";
+        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -154,7 +154,7 @@
                          
                          appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
                          appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-                         appDelegate.hud.labelText = @"Loading..!!";
+                         appDelegate.hud.labelText = @"Loading...";
                          
                          NSMutableArray *parameters = [[NSMutableArray alloc] init];
                          NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -354,7 +354,7 @@
     
     //Temp Field Data
     emailField.text = @"ajay@iappsasia.com";
-    passField.text = @"Myself8@9";
+    passField.text = @"M123456@";
     
     loginButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [loginButton setTitle:@"LOG IN" forState:UIControlStateNormal];
@@ -420,8 +420,8 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-    emailField.text = @"";
-    passField.text = @"";
+//    emailField.text = @"";
+//    passField.text = @"";
 }
 
 

@@ -19,7 +19,8 @@
     
     UITableView *feedTableView,*exploreTableView;
     
-    NSArray *feedDataSource,*exploreDataSource;
+    NSMutableArray *feedDataSource,*chatterDataSource;
+    BOOL isShowingFeedTable,isShowingChatterTable;
 }
 
 @property (nonatomic, assign) BOOL isNotWhatsUpController;

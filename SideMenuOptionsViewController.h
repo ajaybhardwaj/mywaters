@@ -34,6 +34,7 @@ typedef enum {
 @interface SideMenuOptionsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     
     AppDelegate *appDelegate;
+    NSInteger selectedMenuIndex;
 }
 @property (nonatomic, retain) NSArray *optionsArray;
 @property (nonatomic, assign) NSInteger currentIndex;

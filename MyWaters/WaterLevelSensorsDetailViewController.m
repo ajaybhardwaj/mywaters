@@ -45,21 +45,178 @@
 
 - (void) registerForWLSALerts {
     
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+    
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    
     NSArray *parameters,*values;
-    
+
     if (isSubscribed) {
         parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
         values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"2", @"3", wlsID, nil];
     }
     else {
+        
+        [self hideAlertOptionsView];
+        
         parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
-        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"1", @"3", wlsID, nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
     }
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
 }
+
+
+
+//************** Method To Handle WLS ALert Options
+
+- (void) handleAlertOptions:(id) sender {
+    
+    if (sender==level50Button) {
+        selectedAlertType = 1;
+        [level50Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_selected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level90Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level100Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+    else if (sender==level75Button) {
+        selectedAlertType = 2;
+        [level50Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_selected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level90Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level100Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+    else if (sender==level90Button) {
+        selectedAlertType = 3;
+        [level50Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level90Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_selected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level100Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+    else if (sender==level100Button) {
+        selectedAlertType = 4;
+        [level50Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level90Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [level100Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_selected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+}
+
+
+//*************** Method To HIDE Alert Options Popup
+
+- (void) hideAlertOptionsView {
+    
+    alertOptionsView.transform = CGAffineTransformIdentity;
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        alertOptionsView.transform = CGAffineTransformMakeScale(0.01, 0.01);
+    } completion:^(BOOL finished){
+        [alertOptionsView removeFromSuperview];
+        notifiyButton.userInteractionEnabled = YES;
+    }];
+}
+
+
+
+//*************** Method To Create Alert Options Popup
+
+- (void) createAlertOptions {
+    
+    notifiyButton.userInteractionEnabled = NO;
+    
+    alertOptionsView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-100, self.view.bounds.size.height/2-150, 200, 300)];
+    alertOptionsView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:alertOptionsView];
+    
+    UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    closeButton.frame = CGRectMake(alertOptionsView.bounds.size.width-20, -5, 25, 25);
+    [closeButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_cross.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [closeButton addTarget:self action:@selector(hideAlertOptionsView) forControlEvents:UIControlEventTouchUpInside];
+    [alertOptionsView addSubview:closeButton];
+
+    UILabel *headingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 20, alertOptionsView.bounds.size.width-30, 20)];
+    headingLabel.text = @"Subscribe To iAlerts";
+    headingLabel.backgroundColor = [UIColor clearColor];
+    headingLabel.textColor = RGB(52,158,240);
+    headingLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:15.0];
+    [alertOptionsView addSubview:headingLabel];
+    
+    level50Button = [UIButton buttonWithType:UIButtonTypeCustom];
+    level50Button.frame = CGRectMake(20, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, 25, 25);
+    [level50Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_selected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    level50Button.tag = 1;
+    [level50Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
+    [alertOptionsView addSubview:level50Button];
+    
+    UILabel *level50 = [[UILabel alloc] initWithFrame:CGRectMake(60, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, alertOptionsView.bounds.size.width-70, 20)];
+    level50.text = @"Water Level >= 50%";
+    level50.backgroundColor = [UIColor clearColor];
+    level50.textColor = RGB(0,0,0);
+    level50.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    [alertOptionsView addSubview:level50];
+    
+    level75Button = [UIButton buttonWithType:UIButtonTypeCustom];
+    level75Button.frame = CGRectMake(20, level50.frame.origin.y+level50.bounds.size.height+20, 25, 25);
+    [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    level75Button.tag = 2;
+    [level75Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
+    [alertOptionsView addSubview:level75Button];
+    
+    UILabel *level75 = [[UILabel alloc] initWithFrame:CGRectMake(60, level50.frame.origin.y+level50.bounds.size.height+20, alertOptionsView.bounds.size.width-70, 20)];
+    level75.text = @"Water Level >= 75%";
+    level75.backgroundColor = [UIColor clearColor];
+    level75.textColor = RGB(0,0,0);
+    level75.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    [alertOptionsView addSubview:level75];
+    
+    level90Button = [UIButton buttonWithType:UIButtonTypeCustom];
+    level90Button.frame = CGRectMake(20, level75.frame.origin.y+level75.bounds.size.height+20, 25, 25);
+    [level90Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    level90Button.tag = 3;
+    [level90Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
+    [alertOptionsView addSubview:level90Button];
+    
+    UILabel *level90 = [[UILabel alloc] initWithFrame:CGRectMake(60, level75.frame.origin.y+level75.bounds.size.height+20, alertOptionsView.bounds.size.width-70, 20)];
+    level90.text = @"Water Level >= 90%";
+    level90.backgroundColor = [UIColor clearColor];
+    level90.textColor = RGB(0,0,0);
+    level90.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    [alertOptionsView addSubview:level90];
+    
+    level100Button = [UIButton buttonWithType:UIButtonTypeCustom];
+    level100Button.frame = CGRectMake(20, level90.frame.origin.y+level90.bounds.size.height+20, 25, 25);
+    [level100Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    level100Button.tag = 4;
+    [level100Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
+    [alertOptionsView addSubview:level100Button];
+    
+    UILabel *level100 = [[UILabel alloc] initWithFrame:CGRectMake(60, level90.frame.origin.y+level90.bounds.size.height+20, alertOptionsView.bounds.size.width-70, 20)];
+    level100.text = @"Water Level = 100%";
+    level100.backgroundColor = [UIColor clearColor];
+    level100.textColor = RGB(0,0,0);
+    level100.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    [alertOptionsView addSubview:level100];
+    
+    
+    UIButton *subscribeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [subscribeButton setTitle:@"SUBSCRIBE" forState:UIControlStateNormal];
+    [subscribeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    subscribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
+    subscribeButton.frame = CGRectMake(10, level100.frame.origin.y+level100.bounds.size.height+30, alertOptionsView.bounds.size.width-20, 40);
+    [subscribeButton setBackgroundColor:RGB(68, 78, 98)];
+    [subscribeButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
+    [alertOptionsView addSubview:subscribeButton];
+    
+    alertOptionsView.transform = CGAffineTransformMakeScale(0.01, 0.01);
+    [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        alertOptionsView.transform = CGAffineTransformIdentity;
+    } completion:^(BOOL finished){
+        // do something once the animation finishes, put it here
+    }];
+    
+}
+
 
 
 //*************** Method To Animate Top Menu
@@ -252,9 +409,11 @@
     [notifiyButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     if (isSubscribed) {
         [notifiyButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
+        [notifiyButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
     }
     else {
         [notifiyButton setTitle:@"NOTIFY ME" forState:UIControlStateNormal];
+        [notifiyButton addTarget:self action:@selector(createAlertOptions) forControlEvents:UIControlEventTouchUpInside];
     }
     notifiyButton.titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
     [self.view addSubview:notifiyButton];
@@ -377,6 +536,7 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
+    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
@@ -590,15 +750,11 @@
     self.title = @"Water Level Sensor";
     self.view.backgroundColor = RGB(247, 247, 247);
     
+    selectedAlertType = 1;
+    
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    //    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-    if (appDelegate.IS_MOVING_TO_WLS_FROM_DASHBOARD) {
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-        appDelegate.IS_MOVING_TO_WLS_FROM_DASHBOARD = NO;
-    }
-    else {
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-    }
+    
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots.png"]];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];

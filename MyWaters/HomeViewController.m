@@ -218,11 +218,11 @@
 - (void) handleColumnsTouchEvent:(UIButton *) sender {
     
     UIButton *touchedView = (id) sender;
+    appDelegate.IS_COMING_FROM_DASHBOARD = YES;
     
     if (touchedView.tag==1) {
-        //        QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
-        //        viewObj.isNotQuickMapController = YES;
-        //        [self.navigationController pushViewController:viewObj animated:YES];
+        QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==2) {
         // Water Level Sensors
@@ -316,10 +316,10 @@
                 UIView *columnView = [[UIView alloc] initWithFrame:CGRectMake(10, left_yAxis, (self.view.bounds.size.width-30)/2, [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"height"] floatValue])];
                 columnView.backgroundColor = [UIColor whiteColor];
                 columnView.layer.cornerRadius = 10;
-//                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-//                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
-//                [columnView.layer setShadowOpacity:1];
-//                [columnView.layer setShadowRadius:1.0];
+                //                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+                //                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
+                //                [columnView.layer setShadowOpacity:1];
+                //                [columnView.layer setShadowRadius:1.0];
                 [backgroundScrollView addSubview:columnView];
                 columnView.userInteractionEnabled = YES;
                 
@@ -349,7 +349,7 @@
                         quickMap.delegate = self;
                         [quickMap setMapType:MKMapTypeStandard];
                         [quickMap setZoomEnabled:YES];
-                        [quickMap setScrollEnabled:YES];
+                        [quickMap setScrollEnabled:NO];
                         quickMap.showsUserLocation = YES;
                         quickMap.layer.cornerRadius = 10;
                         quickMap.userTrackingMode = MKUserTrackingModeFollow;
@@ -555,11 +555,11 @@
                     isShowingWeatherModule = YES;
                     
                     bigWeatherIcon = [UIButton buttonWithType:UIButtonTypeCustom];
-                    bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 40, 20, 80, 80);
+                    bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 25, 30, 50, 50);
                     [columnView addSubview:bigWeatherIcon];
                     bigWeatherIcon.userInteractionEnabled = NO;
                     
-                    bigTempSubtitle = [[UILabel alloc] initWithFrame:CGRectMake(0, bigWeatherIcon.frame.origin.y+bigWeatherIcon.bounds.size.height-5, columnView.bounds.size.width, 15)];
+                    bigTempSubtitle = [[UILabel alloc] initWithFrame:CGRectMake(0, bigWeatherIcon.frame.origin.y+bigWeatherIcon.bounds.size.height+10, columnView.bounds.size.width, 15)];
                     bigTempSubtitle.text = @"";
                     bigTempSubtitle.font = [UIFont fontWithName:ROBOTO_BOLD size:14];
                     bigTempSubtitle.textColor = [UIColor blackColor];
@@ -700,7 +700,7 @@
                 }
                 
                 
-                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==1 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
+                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
                     //                    DebugLog(@"Dont do anything");
                 }
                 else {
@@ -717,10 +717,10 @@
                 UIView *columnView = [[UIView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/2)+5, right_yAxis, (self.view.bounds.size.width-30)/2, [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"height"] floatValue])];
                 columnView.backgroundColor = [UIColor whiteColor];
                 columnView.layer.cornerRadius = 10;
-//                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-//                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
-//                [columnView.layer setShadowOpacity:1];
-//                [columnView.layer setShadowRadius:1.0];
+                //                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+                //                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
+                //                [columnView.layer setShadowOpacity:1];
+                //                [columnView.layer setShadowRadius:1.0];
                 [backgroundScrollView addSubview:columnView];
                 columnView.userInteractionEnabled = YES;
                 
@@ -752,7 +752,7 @@
                         quickMap.delegate = self;
                         [quickMap setMapType:MKMapTypeStandard];
                         [quickMap setZoomEnabled:YES];
-                        [quickMap setScrollEnabled:YES];
+                        [quickMap setScrollEnabled:NO];
                         quickMap.showsUserLocation = YES;
                         quickMap.layer.cornerRadius = 10;
                         quickMap.userTrackingMode = MKUserTrackingModeFollow;
@@ -946,11 +946,11 @@
                     isShowingWeatherModule = YES;
                     
                     bigWeatherIcon = [UIButton buttonWithType:UIButtonTypeCustom];
-                    bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 40, 20, 80, 80);
+                    bigWeatherIcon.frame = CGRectMake(columnView.bounds.size.width/2 - 25, 30, 50, 50);
                     [columnView addSubview:bigWeatherIcon];
                     bigWeatherIcon.userInteractionEnabled = NO;
                     
-                    bigTempSubtitle = [[UILabel alloc] initWithFrame:CGRectMake(0, bigWeatherIcon.frame.origin.y+bigWeatherIcon.bounds.size.height-5, columnView.bounds.size.width, 15)];
+                    bigTempSubtitle = [[UILabel alloc] initWithFrame:CGRectMake(0, bigWeatherIcon.frame.origin.y+bigWeatherIcon.bounds.size.height+10, columnView.bounds.size.width, 15)];
                     bigTempSubtitle.text = @"";
                     bigTempSubtitle.font = [UIFont fontWithName:ROBOTO_BOLD size:14];
                     bigTempSubtitle.textColor = [UIColor blackColor];
@@ -1085,7 +1085,7 @@
                     
                 }
                 
-                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==1 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
+                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
                     //                    DebugLog(@"Dont do anything");
                 }
                 else {
@@ -1140,7 +1140,7 @@
                        initWithAnnotation:annotation reuseIdentifier:defaultPinID];
         
         pinView.canShowCallout = YES;
-                pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
+        pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
         [quickMap.userLocation setTitle:@"You are here..!!"];
         
     }
@@ -1164,6 +1164,9 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
+    
+    appDelegate.CURRENT_LOCATION_LAT = newLocation.coordinate.latitude;
+    appDelegate.CURRENT_LOCATION_LONG = newLocation.coordinate.longitude;
     
     DebugLog(@"current Latitude is %f",newLocation.coordinate.latitude);
     DebugLog(@"current Longitude is %f",newLocation.coordinate.longitude);
@@ -1199,11 +1202,12 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (tableView==whatsUpListingTable) {
         WhatsUpViewController *viewObj = [[WhatsUpViewController alloc] init];
+        appDelegate.IS_COMING_FROM_DASHBOARD = YES;
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (tableView==eventsListingTable) {
-//        EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
-//        [self.navigationController pushViewController:viewObj animated:YES];
+        EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
 
@@ -1235,16 +1239,16 @@
     
     //    DebugLog(@"cell width %f",cell.bounds.size.width);
     
-    UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 45, 45)];
+    UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 45, 45)];
     [cell.contentView addSubview:cellImageView];
     
     //    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 5, cell.bounds.size.width-60, 25)];
     //    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 5, cell.bounds.size.width-60, cell.bounds.size.height)];
-    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 5, tableView.bounds.size.width-60, cell.bounds.size.height)];
+    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, tableView.bounds.size.width-65, 45)];
     cellTitleLabel.backgroundColor = [UIColor clearColor];
     cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
     cellTitleLabel.numberOfLines = 0;
-    cellTitleLabel.textColor = RGB(245, 193, 12);
+    cellTitleLabel.textColor = [UIColor blackColor];//RGB(245, 193, 12);
     [cell.contentView addSubview:cellTitleLabel];
     
     
@@ -1310,10 +1314,10 @@
     welcomeView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.view.bounds.size.width-20, 110)];
     welcomeView.backgroundColor = [UIColor whiteColor];
     welcomeView.layer.cornerRadius = 10;
-//    [welcomeView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-//    [welcomeView.layer setShadowOffset:CGSizeMake(2, 2)];
-//    [welcomeView.layer setShadowOpacity:1];
-//    [welcomeView.layer setShadowRadius:1.0];
+    //    [welcomeView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+    //    [welcomeView.layer setShadowOffset:CGSizeMake(2, 2)];
+    //    [welcomeView.layer setShadowOpacity:1];
+    //    [welcomeView.layer setShadowRadius:1.0];
     [backgroundScrollView addSubview:welcomeView];
     
     UILabel *welcomeHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, welcomeView.bounds.size.width, 20)];
@@ -1329,9 +1333,27 @@
     profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 30, 70, 70)];
     profileImageView.layer.cornerRadius = 35;
     profileImageView.layer.masksToBounds = YES;
-    [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_avatar_image.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [welcomeView addSubview:profileImageView];
     
+    
+    if ([appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"ImageName"] != (id)[NSNull null] || [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"ImageName"] length] !=0) {
+        
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"ImageName"]];
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicator.center = CGPointMake(profileImageView.bounds.size.width/2, profileImageView.bounds.size.height/2);
+        [profileImageView addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+        
+        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+            if (succeeded) {
+                profileImageView.image = image;
+            }
+            else {
+                [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_avatar_image.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+            }
+            [activityIndicator stopAnimating];
+        }];
+    }
     
     welcomeUserLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 30, welcomeView.bounds.size.width-110, 70)];
     welcomeUserLabel.text = @"";
@@ -1349,10 +1371,10 @@
     reportIncidentButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     [reportIncidentButton setTintColor:[UIColor whiteColor]];
     reportIncidentButton.layer.cornerRadius = 10;
-//    [reportIncidentButton.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-//    [reportIncidentButton.layer setShadowOffset:CGSizeMake(2, 2)];
-//    [reportIncidentButton.layer setShadowOpacity:1];
-//    [reportIncidentButton.layer setShadowRadius:1.0];
+    //    [reportIncidentButton.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+    //    [reportIncidentButton.layer setShadowOffset:CGSizeMake(2, 2)];
+    //    [reportIncidentButton.layer setShadowOpacity:1];
+    //    [reportIncidentButton.layer setShadowRadius:1.0];
     [reportIncidentButton addTarget:self action:@selector(moveToFeedbackView) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:reportIncidentButton];
     
