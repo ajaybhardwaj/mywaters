@@ -12,6 +12,7 @@
 
 @interface BookingWebViewController : UIViewController <UIWebViewDelegate> {
     
+    AppDelegate *appDelegate;
     UIWebView *bookingWebView;
 }
 

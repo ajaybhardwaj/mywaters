@@ -17,6 +17,20 @@
 @synthesize isResettingPassword,isValidatingEmail;
 
 
+
+//*************** Method To Resign Keypad
+
+- (void) removeKeypad {
+    
+    [otpField1 resignFirstResponder];
+    [otpField2 resignFirstResponder];
+    [otpField3 resignFirstResponder];
+    [otpField4 resignFirstResponder];
+    [otpField5 resignFirstResponder];
+    [otpField6 resignFirstResponder];
+}
+
+
 //*************** Method To Submit OTP Code
 
 - (void) submitOTPCode {
@@ -238,6 +252,12 @@
     [self.view addSubview:resendOTPButton];
     
     [otpField1 becomeFirstResponder];
+    
+    UIButton *resignKeyPadButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    resignKeyPadButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [resignKeyPadButton addTarget:self action:@selector(removeKeypad) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:resignKeyPadButton];
+    [self.view sendSubviewToBack:resignKeyPadButton];
 }
 
 

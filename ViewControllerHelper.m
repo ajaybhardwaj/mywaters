@@ -337,7 +337,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_cctvNavController) {
         
         CCTVListingController *cctv = [[CCTVListingController alloc] init];
-        [cctv setTitle:@"CCTV"];
+        [cctv setTitle:@"CCTVs"];
         _cctvNavController = [[UINavigationController alloc] initWithRootViewController:cctv];
         
         [self setNavigationBarStyle_Transclucent:_cctvNavController.navigationBar];

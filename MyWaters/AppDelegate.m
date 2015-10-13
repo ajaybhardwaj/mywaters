@@ -14,7 +14,7 @@
 
 @implementation AppDelegate
 @synthesize RESOURCE_FOLDER_PATH,database;
-@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY,EVENTS_LISTING_ARRAY,WLS_LISTING_ARRAY,CCTV_LISTING_ARRAY,USER_FAVOURITES_ARRAY;
+@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY,EVENTS_LISTING_ARRAY,WLS_LISTING_ARRAY,CCTV_LISTING_ARRAY,USER_FAVOURITES_ARRAY,APP_CONFIG_DATA_ARRAY;
 @synthesize screen_width,left_deck_width;
 @synthesize IS_COMING_AFTER_LOGIN;
 @synthesize SELECTED_MENU_ID;
@@ -22,9 +22,9 @@
 @synthesize IS_MOVING_TO_WLS_FROM_DASHBOARD,IS_MOVING_TO_CCTV_FROM_DASHBOARD;
 @synthesize hud;
 @synthesize USER_PROFILE_DICTIONARY;
-@synthesize CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG;
+@synthesize CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG,USER_CURRENT_LOCATION_COORDINATE;
 @synthesize IS_COMING_FROM_DASHBOARD;
-
+@synthesize DASHBOARD_PREFERENCES_CHANGED;
 
 
 //*************** Method To Register Device Toke For Push Notifications
@@ -251,6 +251,7 @@
         if (sqlite3_step(statement) == SQLITE_DONE)
         {
             DebugLog(@"Row updated");
+            DASHBOARD_PREFERENCES_CHANGED = YES;
         }
         
         else {
@@ -260,6 +261,46 @@
         sqlite3_close(database);
     }
     
+}
+
+
+
+
+//*************** Method To Check If Item Is Favourite
+
+- (BOOL) checkItemForFavourite:(NSString*)favType idValue:(NSString*)favID {
+    
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    int recordCount =0;
+
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        NSString *searchQuery = [NSString stringWithFormat: @"SELECT COUNT(*) FROM favourites WHERE fav_type=\"%@\" AND fav_id=\"%@\"",favType,favID];
+        
+        const char *query_stmt = [searchQuery UTF8String];
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                recordCount = sqlite3_column_int(statement, 0);
+            }
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+    if (recordCount > 0) {
+        return YES;
+    }
+    else {
+        return NO;
+    }
 }
 
 
@@ -315,7 +356,24 @@
             
         }
         else {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Favourite already exists" cancel:@"OK" otherButton:nil];
+            
+            
+            NSString *deleteSQL = [NSString stringWithFormat: @"DELETE FROM favourites WHERE fav_type=\"%@\" AND fav_id=\"%@\"",[parametersDict objectForKey:@"fav_type"],[parametersDict objectForKey:@"fav_id"]];
+            
+            DebugLog(@"query %@",deleteSQL);
+            const char *insert_stmt = [deleteSQL UTF8String];
+            
+            sqlite3_prepare_v2(database, insert_stmt, -1, &statement, NULL);
+            if (sqlite3_step(statement) == SQLITE_DONE)
+            {
+                DebugLog(@"Rows Deleted");
+                [CommonFunctions showAlertView:nil title:nil msg:@"Removed from favourites." cancel:@"OK" otherButton:nil];
+            }
+            
+            else {
+                DebugLog(@"Failed to delete rows");
+                [CommonFunctions showAlertView:nil title:nil msg:@"Failed to remove from favourites. Please try later." cancel:@"OK" otherButton:nil];
+            }
         }
         
         sqlite3_finalize(statement);
@@ -342,7 +400,7 @@
         NSString *querySQL;
         if (favouriteType==0) {
             querySQL = [NSString stringWithFormat: @"SELECT * FROM favourites ORDER BY fav_type"];
-
+            
         }
         else {
             querySQL = [NSString stringWithFormat: @"SELECT * FROM favourites WHERE fav_type=\"%ld\" ORDER BY id",(long)favouriteType];
@@ -374,7 +432,7 @@
                 NSString *observationTime = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 16)];
                 NSString *favType = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 17)];
                 NSString *favId = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 18)];
-
+                
                 
                 [USER_FAVOURITES_ARRAY addObject:idValue];
                 [USER_FAVOURITES_ARRAY addObject:nameValue];
@@ -522,6 +580,7 @@
     POI_ARRAY = [[NSMutableArray alloc] init];
     USER_PROFILE_DICTIONARY = [[NSDictionary alloc] init];
     USER_FAVOURITES_ARRAY = [[NSMutableArray alloc] init];
+    APP_CONFIG_DATA_ARRAY = [[NSMutableArray alloc] init];
     SELECTED_MENU_ID = 0;
     
     

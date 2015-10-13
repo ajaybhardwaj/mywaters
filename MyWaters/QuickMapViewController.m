@@ -19,6 +19,20 @@
 @synthesize mapOverlay = _mapOverlay;
 @synthesize mapOverlayView = _mapOverlayView;
 
+
+
+
+//*************** Method For Zooming In To User Location
+
+- (void) zoomInUserLocation {
+    
+    // showing them in the mapView
+//    quickMap.region = MKCoordinateRegionMakeWithDistance(appDelegate.USER_CURRENT_LOCATION_COORDINATE, 250, 250);
+    [quickMap setRegion:MKCoordinateRegionMake(appDelegate.USER_CURRENT_LOCATION_COORDINATE, MKCoordinateSpanMake(0.1f, 0.1f)) animated:YES];
+}
+
+
+
 //*************** Method To Get WLS Listing
 
 - (void) fetchCCTVListing {
@@ -776,6 +790,11 @@
 # pragma mark - MKMapViewDelegate Methods
 
 
+//- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
+//    
+//    [quickMap setRegion:MKCoordinateRegionMake(userLocation.coordinate, MKCoordinateSpanMake(0.1f, 0.1f)) animated:YES];
+//}
+
 //- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
 //
 //    MapOverlay *mapOverlay = (MapOverlay*)overlay;
@@ -896,7 +915,13 @@
         pinView.tag = selectedAnnotationButton;
     }
     else {
-        [quickMap.userLocation setTitle:@"You are here..!!"];
+        
+        return nil;
+//        MKPinAnnotationView *userLocationPin = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinView"];
+//        userLocationPin.pinColor = MKPinAnnotationColorRed;
+//        userLocationPin.annotation = annotation;
+//        userLocationPin.canShowCallout = YES;
+//        [quickMap.userLocation setTitle:@"You are here..!!"];
     }
     return pinView;
 }
@@ -907,10 +932,11 @@
     
     QuickMapAnnotations *temp = (QuickMapAnnotations*)view.annotation;
     
-    [calloutView removeFromSuperview];
     isShowingCallout = NO;
     
     if ([temp.annotationType isEqualToString:@"CCTV"]) {
+        
+        [calloutView removeFromSuperview];
         
         isShowingCallout = YES;
         calloutView = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 150, 100)];
@@ -1435,6 +1461,7 @@
     [quickMap setMapType:MKMapTypeStandard];
     [quickMap setZoomEnabled:YES];
     [quickMap setScrollEnabled:YES];
+    [quickMap setShowsUserLocation:YES];
     [self.view  addSubview:quickMap];
     //    [quickMap setBackgroundColor:[[UIColor clearColor] colorWithAlphaComponent:0.5]];
     //    quickMap.alpha = 0.5;
@@ -1480,7 +1507,7 @@
     
     
     currentLocationButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [currentLocationButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [currentLocationButton addTarget:self action:@selector(zoomInUserLocation) forControlEvents:UIControlEventTouchUpInside];
     [currentLocationButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_quick_map.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-60, 40, 40);
     [quickMap addSubview:currentLocationButton];

@@ -13,7 +13,7 @@
     
     AppDelegate *appDelegate;
     UITextField *emailField;
-    UIButton *submitButton;
+    UIButton *submitButton,*backButton;
 }
 
 @end

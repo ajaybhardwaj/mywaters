@@ -307,6 +307,106 @@
 
 - (void) createDynamicUIColumns {
     
+    
+    for (UIView * view in backgroundScrollView.subviews) {
+        [view removeFromSuperview];
+    }
+    
+    welcomeView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.view.bounds.size.width-20, 110)];
+    welcomeView.backgroundColor = [UIColor whiteColor];
+    welcomeView.layer.cornerRadius = 10;
+    //    [welcomeView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+    //    [welcomeView.layer setShadowOffset:CGSizeMake(2, 2)];
+    //    [welcomeView.layer setShadowOpacity:1];
+    //    [welcomeView.layer setShadowRadius:1.0];
+    [backgroundScrollView addSubview:welcomeView];
+    
+    UILabel *welcomeHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, welcomeView.bounds.size.width, 20)];
+    welcomeHeaderLabel.text = @"   Welcome!";
+    welcomeHeaderLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
+    welcomeHeaderLabel.textColor = [UIColor whiteColor];
+    welcomeHeaderLabel.backgroundColor = RGB(67, 79, 93);
+    [welcomeView addSubview:welcomeHeaderLabel];
+    
+    [self setMaskTo:welcomeHeaderLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
+    
+    
+    profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 30, 70, 70)];
+    profileImageView.layer.cornerRadius = 35;
+    profileImageView.layer.masksToBounds = YES;
+    [welcomeView addSubview:profileImageView];
+    
+    
+    if ([[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"] != (id)[NSNull null] || [[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"] length] !=0) {
+        
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"]];
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicator.center = CGPointMake(profileImageView.bounds.size.width/2, profileImageView.bounds.size.height/2);
+        [profileImageView addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+        
+        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+            if (succeeded) {
+                profileImageView.image = image;
+            }
+            else {
+                [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+            }
+            [activityIndicator stopAnimating];
+        }];
+    }
+    
+    welcomeUserLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 30, welcomeView.bounds.size.width-110, 70)];
+    welcomeUserLabel.text = @"";
+    welcomeUserLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13];
+    welcomeUserLabel.textColor = [UIColor blackColor];
+    welcomeUserLabel.backgroundColor = [UIColor clearColor];
+    welcomeUserLabel.numberOfLines = 0;
+    [welcomeView addSubview:welcomeUserLabel];
+    
+    
+    reportIncidentButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    reportIncidentButton.frame = CGRectMake(10, welcomeView.frame.origin.y + welcomeView.bounds.size.height + 10, self.view.bounds.size.width-20, 40);
+    [reportIncidentButton setBackgroundColor:RGB(242, 47, 56)];
+    [reportIncidentButton setTitle:@"Report Incident" forState:UIControlStateNormal];
+    reportIncidentButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+    [reportIncidentButton setTintColor:[UIColor whiteColor]];
+    reportIncidentButton.layer.cornerRadius = 10;
+    //    [reportIncidentButton.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
+    //    [reportIncidentButton.layer setShadowOffset:CGSizeMake(2, 2)];
+    //    [reportIncidentButton.layer setShadowOpacity:1];
+    //    [reportIncidentButton.layer setShadowRadius:1.0];
+    [reportIncidentButton addTarget:self action:@selector(moveToFeedbackView) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundScrollView addSubview:reportIncidentButton];
+    
+    
+    UIImageView *reportIncidentImage = [[UIImageView alloc] initWithFrame:CGRectMake(20, 7, 30, 30)];
+    [reportIncidentImage setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icon_report.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [reportIncidentButton addSubview:reportIncidentImage];
+    
+    
+    left_yAxis = reportIncidentButton.frame.origin.y + reportIncidentButton.bounds.size.height + 10;
+    right_yAxis = reportIncidentButton.frame.origin.y + reportIncidentButton.bounds.size.height + 10.1;
+    
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+    [dateFormatter setDateFormat:@"HH:mm"];
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *components = [calendar components:(NSCalendarUnitHour | NSCalendarUnitMinute) fromDate:[NSDate date]];
+    NSInteger hour = [components hour];
+    
+    if (hour < 12) {
+        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Morning, %@",[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"]];
+    }
+    else if (hour >= 12 && hour <= 16) {
+        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Afternoon, %@",[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"]];
+    }
+    else if (hour > 16) {
+        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Evening, %@",[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"]];
+    }
+    
     for (int i=0; i<appDelegate.DASHBOARD_PREFERENCES_ARRAY.count; i++) {
         
         if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"status"] isEqualToString:@"1"]) {
@@ -344,21 +444,22 @@
                     //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
                     //                    [columnView addSubview:dotsbutton];
                     
-                    if (!quickMap) {
-                        quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-3, columnView.bounds.size.height-23)];
-                        quickMap.delegate = self;
-                        [quickMap setMapType:MKMapTypeStandard];
-                        [quickMap setZoomEnabled:YES];
-                        [quickMap setScrollEnabled:NO];
-                        quickMap.showsUserLocation = YES;
-                        quickMap.layer.cornerRadius = 10;
-                        quickMap.userTrackingMode = MKUserTrackingModeFollow;
-                        [columnView addSubview:quickMap];
-                        
-                        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-                        lpgr.minimumPressDuration = 2.0; //user needs to press for 2 seconds
-                        [quickMap addGestureRecognizer:lpgr];
-                    }
+                    //                    if (!quickMap) {
+                    
+                    quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-3, columnView.bounds.size.height-23)];
+                    quickMap.delegate = self;
+                    [quickMap setMapType:MKMapTypeStandard];
+                    [quickMap setZoomEnabled:YES];
+                    [quickMap setScrollEnabled:NO];
+                    quickMap.showsUserLocation = YES;
+                    quickMap.layer.cornerRadius = 10;
+                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
+                    [columnView addSubview:quickMap];
+                    
+                    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+                    lpgr.minimumPressDuration = 2.0; //user needs to press for 2 seconds
+                    [quickMap addGestureRecognizer:lpgr];
+                    //                    }
                     
                     if (!locationManager) {
                         locationManager = [[CLLocationManager alloc] init];
@@ -747,21 +848,21 @@
                     //                    [columnView addSubview:dotsbutton];
                     
                     
-                    if (!quickMap) {
-                        quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-3, columnView.bounds.size.height-23)];
-                        quickMap.delegate = self;
-                        [quickMap setMapType:MKMapTypeStandard];
-                        [quickMap setZoomEnabled:YES];
-                        [quickMap setScrollEnabled:NO];
-                        quickMap.showsUserLocation = YES;
-                        quickMap.layer.cornerRadius = 10;
-                        quickMap.userTrackingMode = MKUserTrackingModeFollow;
-                        [columnView addSubview:quickMap];
-                        
-                        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-                        lpgr.minimumPressDuration = 2.0; //user needs to press for 2 seconds
-                        [quickMap addGestureRecognizer:lpgr];
-                    }
+                    //                    if (!quickMap) {
+                    quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-3, columnView.bounds.size.height-23)];
+                    quickMap.delegate = self;
+                    [quickMap setMapType:MKMapTypeStandard];
+                    [quickMap setZoomEnabled:YES];
+                    [quickMap setScrollEnabled:NO];
+                    quickMap.showsUserLocation = YES;
+                    quickMap.layer.cornerRadius = 10;
+                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
+                    [columnView addSubview:quickMap];
+                    
+                    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+                    lpgr.minimumPressDuration = 2.0; //user needs to press for 2 seconds
+                    [quickMap addGestureRecognizer:lpgr];
+                    //                    }
                     
                     if (!locationManager) {
                         locationManager = [[CLLocationManager alloc] init];
@@ -1146,15 +1247,17 @@
     }
     
     else {
-        static NSString *defaultPinID = @"com.invasivecode.pin";
-        pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
-        if ( pinView == nil )
-            pinView = [[MKAnnotationView alloc]
-                       initWithAnnotation:annotation reuseIdentifier:defaultPinID];
+//        static NSString *defaultPinID = @"com.invasivecode.pin";
+//        pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
+//        if ( pinView == nil )
+//            pinView = [[MKAnnotationView alloc]
+//                       initWithAnnotation:annotation reuseIdentifier:defaultPinID];
+//        
+//        pinView.canShowCallout = YES;
+//        pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
+//        [quickMap.userLocation setTitle:@"You are here..!!"];
         
-        pinView.canShowCallout = YES;
-        pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
-        [quickMap.userLocation setTitle:@"You are here..!!"];
+        return nil;
     }
     return pinView;
 }
@@ -1168,24 +1271,28 @@
     appDelegate.CURRENT_LOCATION_LAT = newLocation.coordinate.latitude;
     appDelegate.CURRENT_LOCATION_LONG = newLocation.coordinate.longitude;
     
-    DebugLog(@"current Latitude is %f",newLocation.coordinate.latitude);
-    DebugLog(@"current Longitude is %f",newLocation.coordinate.longitude);
-    //    region.span.longitudeDelta  *= 0.05;
-    //    region.span.latitudeDelta  *= 0.05;
-    region.span.latitudeDelta = 0.02f;
-    region.span.longitudeDelta = 0.02f;
-    region.center.latitude = newLocation.coordinate.latitude;
-    region.center.longitude = newLocation.coordinate.longitude;
-    [quickMap setRegion:region animated:YES];
+    appDelegate.USER_CURRENT_LOCATION_COORDINATE = [newLocation coordinate];
+    
+//    DebugLog(@"current Latitude is %f",newLocation.coordinate.latitude);
+//    DebugLog(@"current Longitude is %f",newLocation.coordinate.longitude);
+//    //    region.span.longitudeDelta  *= 0.05;
+//    //    region.span.latitudeDelta  *= 0.05;
+//    region.span.latitudeDelta = 0.02f;
+//    region.span.longitudeDelta = 0.02f;
+//    region.center.latitude = newLocation.coordinate.latitude;
+//    region.center.longitude = newLocation.coordinate.longitude;
+//    [quickMap setRegion:region animated:YES];
     [locationManager stopUpdatingLocation];
     
-    if (!annotation1) {
-        annotation1 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-        annotation1.coordinate = region.center;
-        annotation1.title = @"226H Ang Mo Kio Street 22";
-        annotation1.subtitle = @"";
-        [quickMap addAnnotation:annotation1];
-    }
+//    if (!annotation1) {
+//        annotation1 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+//        annotation1.coordinate = region.center;
+//        annotation1.title = @"226H Ang Mo Kio Street 22";
+//        annotation1.subtitle = @"";
+//        [quickMap addAnnotation:annotation1];
+//    }
+    [quickMap setRegion:MKCoordinateRegionMake(appDelegate.USER_CURRENT_LOCATION_COORDINATE, MKCoordinateSpanMake(0.1f, 0.1f)) animated:YES];
+
     
 }
 
@@ -1307,111 +1414,17 @@
     self.title = @"Home";
     
     
-    for (UIView * view in backgroundScrollView.subviews) {
-        [view removeFromSuperview];
-    }
     
-    welcomeView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.view.bounds.size.width-20, 110)];
-    welcomeView.backgroundColor = [UIColor whiteColor];
-    welcomeView.layer.cornerRadius = 10;
-    //    [welcomeView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-    //    [welcomeView.layer setShadowOffset:CGSizeMake(2, 2)];
-    //    [welcomeView.layer setShadowOpacity:1];
-    //    [welcomeView.layer setShadowRadius:1.0];
-    [backgroundScrollView addSubview:welcomeView];
-    
-    UILabel *welcomeHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, welcomeView.bounds.size.width, 20)];
-    welcomeHeaderLabel.text = @"   Welcome!";
-    welcomeHeaderLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12];
-    welcomeHeaderLabel.textColor = [UIColor whiteColor];
-    welcomeHeaderLabel.backgroundColor = RGB(67, 79, 93);
-    [welcomeView addSubview:welcomeHeaderLabel];
-    
-    [self setMaskTo:welcomeHeaderLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
-    
-    
-    profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 30, 70, 70)];
-    profileImageView.layer.cornerRadius = 35;
-    profileImageView.layer.masksToBounds = YES;
-    [welcomeView addSubview:profileImageView];
-    
-    
-    if ([appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"ImageName"] != (id)[NSNull null] || [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"ImageName"] length] !=0) {
-        
-        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"ImageName"]];
-        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        activityIndicator.center = CGPointMake(profileImageView.bounds.size.width/2, profileImageView.bounds.size.height/2);
-        [profileImageView addSubview:activityIndicator];
-        [activityIndicator startAnimating];
-        
-        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
-            if (succeeded) {
-                profileImageView.image = image;
-            }
-            else {
-                [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_avatar_image.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-            }
-            [activityIndicator stopAnimating];
-        }];
-    }
-    
-    welcomeUserLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 30, welcomeView.bounds.size.width-110, 70)];
-    welcomeUserLabel.text = @"";
-    welcomeUserLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13];
-    welcomeUserLabel.textColor = [UIColor blackColor];
-    welcomeUserLabel.backgroundColor = [UIColor clearColor];
-    welcomeUserLabel.numberOfLines = 0;
-    [welcomeView addSubview:welcomeUserLabel];
-    
-    
-    reportIncidentButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    reportIncidentButton.frame = CGRectMake(10, welcomeView.frame.origin.y + welcomeView.bounds.size.height + 10, self.view.bounds.size.width-20, 40);
-    [reportIncidentButton setBackgroundColor:RGB(242, 47, 56)];
-    [reportIncidentButton setTitle:@"Report Incident" forState:UIControlStateNormal];
-    reportIncidentButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-    [reportIncidentButton setTintColor:[UIColor whiteColor]];
-    reportIncidentButton.layer.cornerRadius = 10;
-    //    [reportIncidentButton.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-    //    [reportIncidentButton.layer setShadowOffset:CGSizeMake(2, 2)];
-    //    [reportIncidentButton.layer setShadowOpacity:1];
-    //    [reportIncidentButton.layer setShadowRadius:1.0];
-    [reportIncidentButton addTarget:self action:@selector(moveToFeedbackView) forControlEvents:UIControlEventTouchUpInside];
-    [backgroundScrollView addSubview:reportIncidentButton];
-    
-    
-    UIImageView *reportIncidentImage = [[UIImageView alloc] initWithFrame:CGRectMake(20, 7, 30, 30)];
-    [reportIncidentImage setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icon_report.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    [reportIncidentButton addSubview:reportIncidentImage];
-    
-    
-    left_yAxis = reportIncidentButton.frame.origin.y + reportIncidentButton.bounds.size.height + 10;
-    right_yAxis = reportIncidentButton.frame.origin.y + reportIncidentButton.bounds.size.height + 10.1;
     
     [self createDynamicUIColumns];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
-    [dateFormatter setDateFormat:@"HH:mm"];
     
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [calendar components:(NSCalendarUnitHour | NSCalendarUnitMinute) fromDate:[NSDate date]];
-    NSInteger hour = [components hour];
-    
-    if (hour < 12) {
-        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Morning, %@",[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"]];
-    }
-    else if (hour >= 12 && hour <= 16) {
-        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Afternoon, %@",[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"]];
-    }
-    else if (hour > 16) {
-        welcomeUserLabel.text = [NSString stringWithFormat:@"Good Evening, %@",[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"]];
-    }
     
     
     // Temp DataSoruce Code
     
-    NSDate *todayDate = [NSDate date];
-    [dateFormatter setDateFormat:@"dd MMM yyyy"];
+    //    NSDate *todayDate = [NSDate date];
+    //    [dateFormatter setDateFormat:@"dd MMM yyyy"];
     
     //    if (whatsUpFeedDataSource.count==0) {
     //        for (int i=0; i<3; i++) {
@@ -1477,6 +1490,11 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
     
+    if (appDelegate.DASHBOARD_PREFERENCES_CHANGED) {
+        
+        appDelegate.DASHBOARD_PREFERENCES_CHANGED = NO;
+        [self createDynamicUIColumns];
+    }
 }
 
 

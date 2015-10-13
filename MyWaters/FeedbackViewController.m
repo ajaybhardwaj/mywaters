@@ -592,7 +592,7 @@
         nameField.delegate = self;
         [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         nameField.tag = 4;
-        nameField.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"];
+        nameField.text = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"];
 
         
         UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, nameField.bounds.size.height-0.5, nameField.bounds.size.width, 0.5)];
@@ -616,6 +616,7 @@
         phoneField.clearButtonMode = UITextFieldViewModeWhileEditing;
         phoneField.backgroundColor = [UIColor clearColor];
         phoneField.delegate = self;
+        phoneField.keyboardType = UIKeyboardTypeNumberPad;
         [phoneField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         phoneField.tag = 5;
         
@@ -641,7 +642,8 @@
         emailField.delegate = self;
         [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         emailField.tag = 5;
-        emailField.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
+        emailField.keyboardType = UIKeyboardTypeEmailAddress;
+        emailField.text = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Email"];
         
         UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, emailField.bounds.size.height-0.5, emailField.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
@@ -917,6 +919,8 @@
         
     }
     
+    tempNameString = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"];
+    tempEmailString = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Email"];
     
 //    if (([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) || ![CLLocationManager locationServicesEnabled]) {
 //        [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];

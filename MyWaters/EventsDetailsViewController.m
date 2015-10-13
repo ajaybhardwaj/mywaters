@@ -11,7 +11,7 @@
 
 @implementation EventsDetailsViewController
 @synthesize eventID,imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,websiteString,imageName;
-
+@synthesize isSubscribed;
 
 
 //*************** Demo App UI
@@ -44,9 +44,35 @@
 
 
 
+//*************** Method To Close Top Menu For Outside Touch
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event  {
+    
+    UITouch *touch = [touches anyObject];
+    
+    if(touch.view!=topMenu) {
+        if (isShowingTopMenu) {
+            [self animateTopMenu];
+        }
+    }
+}
+
+
+- (void) hideTopMenu {
+    
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
+}
+
+
 //*************** Method To Move To Map Direction View
 
 - (void) moveToDirectionView {
+    
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
     
     DirectionViewController *viewObj = [[DirectionViewController alloc] init];
     viewObj.destinationLat = latValue;
@@ -139,7 +165,46 @@
     
     
     [appDelegate insertFavouriteItems:parametersDict];
+    
+    isAlreadyFav = [appDelegate checkItemForFavourite:@"2" idValue:eventID];
+    
+    if (isAlreadyFav)
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
 }
+
+
+
+//*************** Method To Register For Event Notification
+
+- (void) registerForEventNotification {
+    
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSArray *parameters,*values;
+    
+    if (isSubscribed) {
+        
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"EventID", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"3", @"2", eventID, nil];
+    }
+    else {
+        
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"EventID", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"3", @"1", eventID, nil];
+    }
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
+}
+
 
 
 
@@ -269,7 +334,7 @@
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
     CGRect newDescriptionLabelFrame = descriptionLabel.frame;
-    newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width];//expectedDescriptionLabelSize.height;
+    newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width-40];//expectedDescriptionLabelSize.height;
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
     
@@ -319,13 +384,50 @@
     locationValueLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
     CGRect newLocationLabelFrame = locationValueLabel.frame;
-    newLocationLabelFrame.size.height = [CommonFunctions heightForText:addressString font:locationValueLabel.font withinWidth:bgScrollView.bounds.size.width];//expectedDescriptionLabelSize.height;
+    newLocationLabelFrame.size.height = [CommonFunctions heightForText:addressString font:locationValueLabel.font withinWidth:bgScrollView.bounds.size.width-40];//expectedDescriptionLabelSize.height;
     locationValueLabel.frame = newLocationLabelFrame;
     [bgScrollView addSubview:locationValueLabel];
-    [locationValueLabel sizeToFit];
+//    [locationValueLabel sizeToFit];
     
     bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+startDateLabel.bounds.size.height+startDateValueLabel.bounds.size.height+endDateLabel.bounds.size.height+endDateValueLabel.bounds.size.height+locationLabel.bounds.size.height+locationValueLabel.bounds.size.height+100);
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideTopMenu)];
+    // prevents the scroll view from swallowing up the touch event of child buttons
+    tapGesture.cancelsTouchesInView = NO;
+    [bgScrollView addGestureRecognizer:tapGesture];
 }
+
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    DebugLog(@"%@",responseString);
+    [appDelegate.hud hide:YES];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        notifyLabel.text = @"Unsubscribe Me";
+        isSubscribed = YES;
+        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+    
+    [appDelegate.hud hide:YES];
+}
+
 
 
 # pragma mark - View Lifecycle Methods
@@ -340,6 +442,8 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];
+    
+    isAlreadyFav = [appDelegate checkItemForFavourite:@"2" idValue:eventID];
     
     //    [self createDemoAppControls];
     
@@ -358,7 +462,6 @@
     bgScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:bgScrollView];
     bgScrollView.backgroundColor = [UIColor whiteColor];
-    
     
     [self createUI];
     
@@ -385,13 +488,15 @@
     notifyButton = [UIButton buttonWithType:UIButtonTypeCustom];
     notifyButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [notifyButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_notifyme.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [notifyButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [notifyButton addTarget:self action:@selector(registerForEventNotification) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:notifyButton];
     
     favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
-    [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [favouritesButton addTarget:self action:@selector(addEventsToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    if (isAlreadyFav)
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];    [favouritesButton addTarget:self action:@selector(addEventsToFavourites) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:favouritesButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -404,7 +509,12 @@
     notifyLabel.backgroundColor = [UIColor clearColor];
     notifyLabel.textAlignment = NSTextAlignmentCenter;
     notifyLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    notifyLabel.text = @"Notify Me";
+    if (isSubscribed) {
+        notifyLabel.text = @"Unsubscribe Me";
+    }
+    else {
+        notifyLabel.text = @"Notify Me";
+    }
     notifyLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:notifyLabel];
     

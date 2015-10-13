@@ -11,7 +11,7 @@
 #import "CustomButtons.h"
 #import "ViewControllerHelper.h"
 #import "AppDelegate.h"
-#import "BookingWebViewController.h"
+#import "WebViewUrlViewController.h"
 
 @interface AboutMyWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     

@@ -36,7 +36,7 @@
     
     //===== Badges Controls
     UIView *badgesBackgroundView;
-    
+    NSArray *badgesDataSource;
     
     //===== Rewards Controls
     UITableView *rewardsListingTableView;
@@ -48,7 +48,7 @@
     
     //===== Photos Controls
     UIView *photosBackgroundView;
-
+    NSArray *photosDataSource;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

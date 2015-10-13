@@ -38,7 +38,7 @@
 + (CLLocationCoordinate2D) getUserCurrentLocation;
 
 # pragma mark - Server GET & POST Methods
-+ (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data;
++ (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data accessToken:(NSString*)token;
 + (void) grabPostRequest:(NSArray *)paramters paramtersValue:(NSArray *)values delegate:(UIViewController *)viewObj isNSData:(BOOL)data baseUrl:(NSString*) baseUrl;
 
 

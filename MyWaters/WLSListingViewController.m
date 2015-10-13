@@ -32,8 +32,10 @@
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
+//    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
+//    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"1"],@"1.0", nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -110,8 +112,8 @@
     if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"] != (id)[NSNull null])
         viewObj.wlsName = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"name"];
     
-    if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevel"] != (id)[NSNull null])
-        viewObj.drainDepthType = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevel"] intValue];
+    if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] != (id)[NSNull null])
+        viewObj.drainDepthType = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue];
     
     if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"latitude"] != (id)[NSNull null])
         viewObj.latValue = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"latitude"] doubleValue];

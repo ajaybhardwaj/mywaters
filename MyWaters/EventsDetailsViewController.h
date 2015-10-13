@@ -34,10 +34,12 @@
     UILabel *eventInfoLabel,*eventTitle,*distanceLabel;
     
     UILabel___Extension *descriptionLabel;
+    
+    BOOL isAlreadyFav;
 }
 
 @property (nonatomic, strong) NSString *eventID,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*startDateString,*endDateString,*websiteString,*imageName;
 @property (nonatomic, assign) double latValue,longValue;
-
+@property (nonatomic, assign) BOOL isSubscribed;
 
 @end

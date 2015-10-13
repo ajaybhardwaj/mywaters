@@ -29,9 +29,36 @@
 }
 
 
+//*************** Method To Close Top Menu For Outside Touch
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event  {
+    
+    UITouch *touch = [touches anyObject];
+    
+    if(touch.view!=topMenu) {
+        if (isShowingTopMenu) {
+            [self animateTopMenu];
+        }
+    }
+}
+
+
+- (void) hideTopMenu {
+    
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
+}
+
+
 //*************** Method To Move To Map Direction View
 
 - (void) moveToDirectionView {
+    
+    if (isShowingTopMenu) {
+        
+        [self animateTopMenu];
+    }
     
     DirectionViewController *viewObj = [[DirectionViewController alloc] init];
     viewObj.destinationLat = latValue;
@@ -63,7 +90,12 @@
 
 - (void) callPUB {
     
-    if (phoneNoString != (id)[NSNull null] || [phoneNoString length] != 0) {
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
+    
+    DebugLog(@"%ld",[phoneNoString length]);
+    if ([phoneNoString length] != 0) {
         
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@", phoneNoString]]];
     }
@@ -71,6 +103,41 @@
         [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No contact available for this site." cancel:@"Ok" otherButton:nil];
     }
 }
+
+
+
+//*************** Method To Add Photo To Site
+
+- (void) moveToGalleryView {
+    
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
+    
+    GalleryViewController *viewObj = [[GalleryViewController alloc] init];
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
+//*************** Method To Add Photo To Site
+
+- (void) addPhotoToSite {
+    
+    [self animateTopMenu];
+    
+    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
+}
+
+
+//*************** Method To Share Site
+
+- (void) shareSiteOnSocialNetwork {
+    
+    [self animateTopMenu];
+    
+    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Share on" msg:nil cancel:nil tag:2 destructive:nil otherButton:@"Facebook",@"Twitter",@"Email",@"Cancel",nil];
+}
+
 
 
 //*************** Method To Animate Top Menu
@@ -256,11 +323,16 @@
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
     CGRect newDescriptionLabelFrame = descriptionLabel.frame;
-    newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width];//expectedDescriptionLabelSize.height;
+    newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width-40];//expectedDescriptionLabelSize.height;
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
     
     bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+50);
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideTopMenu)];
+    // prevents the scroll view from swallowing up the touch event of child buttons
+    tapGesture.cancelsTouchesInView = NO;
+    [bgScrollView addGestureRecognizer:tapGesture];
 }
 
 
@@ -268,9 +340,123 @@
 
 - (void) moveToARView {
     
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
+    
     ARViewController *viewObj = [[ARViewController alloc] init];
     viewObj.abcWaterSiteID = abcSiteId;
     [self.navigationController pushViewController:viewObj animated:NO];
+}
+
+
+# pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag==1) {
+        
+        if (buttonIndex==0) {
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }
+        else if (buttonIndex==1) {
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }
+    }
+}
+
+
+
+# pragma mark - UIImagePickerControllerDelegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    
+    NSData* data = UIImageJPEGRepresentation(chosenImage, 0.5f);
+    NSString *base64ImageString = [Base64 encode:data];
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+    
+    NSMutableArray *parameters = [[NSMutableArray alloc] init];
+    NSMutableArray *values = [[NSMutableArray alloc] init];
+    
+    [parameters addObject:@"ABCPOIImage.Image"];
+    [values addObject:base64ImageString];
+    
+    [parameters addObject:@"ABCPOIImage.ABCID"];
+    [values addObject:abcSiteId];
+    
+    [parameters addObject:@"ABCPOIImage.UserProfileID"];
+    [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ID"]];
+    
+    [parameters addObject:@"ABCPOIImage.UserProfileName"];
+    [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"]];
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,ABC_WATERS_UPLOAD_USER_IMAGE]];
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    
+    DebugLog(@"%@",responseString);
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+    
+    [appDelegate.hud hide:YES];
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+    [appDelegate.hud hide:YES];
 }
 
 
@@ -284,7 +470,7 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
 
     self.view.backgroundColor = RGB(242, 242, 242);
-    self.title = @"ABC Waters";
+    self.title = @"ABC Waters Info";
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];
@@ -337,9 +523,6 @@
     [contactUsButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_call_blue.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [contactUsButton addTarget:self action:@selector(callPUB) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:contactUsButton];
-    if (phoneNoString == (id)[NSNull null] || [phoneNoString length] == 0) {
-        contactUsButton.userInteractionEnabled = NO;
-    }
     
     contactUsLabel = [[UILabel alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/3)*2, contactUsButton.frame.origin.y+contactUsButton.bounds.size.height+6, self.view.bounds.size.width/3, 15)];
     contactUsLabel.backgroundColor = [UIColor clearColor];
@@ -358,19 +541,19 @@
     addPhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];
     addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [addPhotoButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_camera.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [addPhotoButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [addPhotoButton addTarget:self action:@selector(addPhotoToSite) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addPhotoButton];
     
     galleryButton = [UIButton buttonWithType:UIButtonTypeCustom];
     galleryButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [galleryButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_gallery.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [galleryButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [galleryButton addTarget:self action:@selector(moveToGalleryView) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:galleryButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
     shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 25, 20);
     [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [shareButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [shareButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:shareButton];
     
     addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/3, 10)];

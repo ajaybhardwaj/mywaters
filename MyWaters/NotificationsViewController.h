@@ -19,7 +19,8 @@
     
     NSArray *filtersArray;
     
-    BOOL isShowingFilter;
+    BOOL isShowingFilter,canReadNotifications;
+    UIButton *btnSpeaker;
     NSInteger selectedFilterIndex;
     
     //*************** Demo App Variables

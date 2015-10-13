@@ -26,6 +26,9 @@
     
     UITableView *cctvListingTable;
     NSArray *tableDataSource;
+    BOOL isAlreadyFav;
+    
+    NSMutableArray *tempNearByArray;
 }
 
 @property (nonatomic, strong) NSString *imageUrl,*titleString,*cctvID;

@@ -1,27 +1,26 @@
 //
-//  BookingWebViewController.m
+//  WebViewUrlViewController.m
 //  MyWaters
 //
-//  Created by Ajay Bhardwaj on 15/5/15.
-//  Copyright (c) 2015 iAppsAsia. All rights reserved.
+//  Created by Ajay Bhardwaj on 13/10/15.
+//  Copyright © 2015 iAppsAsia. All rights reserved.
 //
 
-#import "BookingWebViewController.h"
+#import "WebViewUrlViewController.h"
 
-@interface BookingWebViewController ()
+@interface WebViewUrlViewController ()
 
 @end
 
-@implementation BookingWebViewController
+@implementation WebViewUrlViewController
+@synthesize webUrl,headerTitle;
 
 
-//*************** Method To Open Side Menu
+//*************** Method To Pop View Controller To Parent Controller
 
-- (void) openDeckMenu:(id) sender {
+- (void) pop2Dismiss:(id) sender {
     
-    self.view.alpha = 0.5;
-    self.navigationController.navigationBar.alpha = 0.5;
-    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 
@@ -36,7 +35,7 @@
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     appDelegate.hud.labelText = @"Loading...";
-
+    
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -55,8 +54,9 @@
     NSString* errorString = [NSString stringWithFormat:
                              @"<html><center><font size=+5 color='red'>An error occurred:<br>%@</font></center></html>",
                              error.localizedDescription];
-    [bookingWebView loadHTMLString:errorString baseURL:nil];
+    [defaultWebview loadHTMLString:errorString baseURL:nil];
 }
+
 
 
 # pragma mark - View Lifecycle Methods
@@ -66,39 +66,22 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.title = @"Booking";
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
-
+    self.title = headerTitle;
+    self.view.backgroundColor = RGB(247, 247, 247);
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    bookingWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
-    bookingWebView.delegate = self;
-    bookingWebView.backgroundColor = [UIColor clearColor];
-    bookingWebView.opaque = NO;
-    NSURL *nsurl=[NSURL URLWithString:@"http://www.pub.gov.sg/E-Services/Booking/Pages/default.aspx"];
+    defaultWebview = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    defaultWebview.delegate = self;
+    defaultWebview.backgroundColor = [UIColor clearColor];
+    defaultWebview.opaque = NO;
+    NSURL *nsurl=[NSURL URLWithString:webUrl];
     
     NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
-    [bookingWebView loadRequest:nsrequest];
-    [self.view addSubview:bookingWebView];
+    [defaultWebview loadRequest:nsrequest];
+    [self.view addSubview:defaultWebview];
 }
-
-
-- (void) viewWillAppear:(BOOL)animated {
-    
-    self.view.alpha = 1.0;
-    self.navigationController.navigationBar.alpha = 1.0;
-}
-
-- (void) viewDidAppear:(BOOL)animated {
-    
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-    
-    [self.view addGestureRecognizer:swipeGesture];
-    
-}
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -12,12 +12,18 @@
 #import "ChangePasswordViewController.h"
 #import "AppDelegate.h"
 
-@interface EditProfileViewController : UIViewController <UITextFieldDelegate> {
+@interface EditProfileViewController : UIViewController <UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate> {
     
     AppDelegate *appDelegate;
     
     UITextField *nameField,*emailField;
     UIButton *changePasswordButton,*updateButton;
+    
+    UIImageView *profileImageView;
+    UITapGestureRecognizer *profileImageTap;
+    UILabel *uploadAvatarLabel;
+    
+    BOOL isProfilePictureSelected;
 }
 
 @end

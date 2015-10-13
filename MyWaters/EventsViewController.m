@@ -393,6 +393,10 @@
         
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         
+        if (isShowingSearchBar) {
+            [self animateSearchBar];
+        }
+        
         EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
         
         if (isFiltered) {
@@ -415,8 +419,8 @@
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
             viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
             
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
-            viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"];
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
+            viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"location"];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
                 viewObj.startDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"];
@@ -453,8 +457,8 @@
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
             viewObj.phoneNoString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
             
-            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
-            viewObj.addressString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"];
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
+            viewObj.addressString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"];
 
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
                 viewObj.startDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"];
@@ -681,12 +685,12 @@
     UIButton *btnSearch =  [UIButton buttonWithType:UIButtonTypeCustom];
     [btnSearch setImage:[UIImage imageNamed:@"icn_search"] forState:UIControlStateNormal];
     [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
-    [btnSearch setFrame:CGRectMake(0, 0, 32, 32)];
+    [btnSearch setFrame:CGRectMake(44, 0, 32, 32)];
     
     UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
     [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
     [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
-    [btnfilter setFrame:CGRectMake(44, 0, 32, 32)];
+    [btnfilter setFrame:CGRectMake(0, 0, 32, 32)];
     
     UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
     [rightBarButtonItems addSubview:btnSearch];

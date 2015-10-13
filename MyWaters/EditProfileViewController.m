@@ -25,6 +25,17 @@
 
 
 
+//*************** Method To Handle Tap Gesture For Profile Pic
+
+- (void) handleSingleTapGesture: (UITapGestureRecognizer*) sender {
+    
+    if (sender==profileImageTap) {
+        [CommonFunctions showActionSheet:self containerView:self.view title:@"Profile Picture" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Camera",@"Photo Library",@"Cancel",nil];
+    }
+}
+
+
+
 //*************** Method For Handling Edit Profile Actions
 
 - (void) handleEitProfileActions:(id) sender {
@@ -59,6 +70,16 @@
             [parameters addObject:@"Email"];
             [values addObject:emailField.text];
             
+            if (isProfilePictureSelected) {
+                
+                NSData* data = UIImageJPEGRepresentation(profileImageView.image, 0.5f);
+                NSString *base64ImageString = [Base64 encode:data];
+                
+                [parameters addObject:@"ImageBase64"];
+                [values addObject:base64ImageString];
+                
+            }
+            
             [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,PROFILE_API_URL]];
         }
     }
@@ -66,6 +87,64 @@
         
         ChangePasswordViewController *viewObj = [[ChangePasswordViewController alloc] init];
         [self.navigationController pushViewController:viewObj animated:YES];
+    }
+}
+
+
+# pragma mark - UIImagePickerControllerDelegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    isProfilePictureSelected = YES;
+    UIImage *image=[info objectForKey:UIImagePickerControllerEditedImage];
+    profileImageView.image=image;
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    isProfilePictureSelected = NO;
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+
+
+# pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag==1) {
+        
+        if (buttonIndex==0) {
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }
+        else if (buttonIndex==1) {
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }
     }
 }
 
@@ -98,7 +177,7 @@
         
         [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
         
-        appDelegate.USER_PROFILE_DICTIONARY = [[responseString JSONValue] objectForKey:@"UserProfile"];
+        appDelegate.USER_PROFILE_DICTIONARY = [responseString JSONValue];
         
         //        OTPViewController *viewObj = [[OTPViewController alloc] init];
         //        viewObj.emailStringForVerification = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
@@ -146,7 +225,53 @@
 
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    nameField = [[UITextField alloc] initWithFrame:CGRectMake(10, 20, self.view.bounds.size.width-20, 40)];
+    
+    profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/2)-50, 15, 100, 100)];
+    profileImageView.layer.cornerRadius = profileImageView.bounds.size.width/2;
+    profileImageView.layer.masksToBounds = YES;
+    [self.view addSubview:profileImageView];
+    profileImageView.userInteractionEnabled = YES;
+    
+    profileImageTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTapGesture:)];
+    profileImageTap.numberOfTapsRequired = 1;
+    profileImageTap.numberOfTouchesRequired = 1;
+    [profileImageView addGestureRecognizer: profileImageTap];
+    
+    
+    uploadAvatarLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, profileImageView.frame.origin.y+profileImageView.bounds.size.height+2, self.view.bounds.size.width, 20)];
+    uploadAvatarLabel.backgroundColor = [UIColor clearColor];
+    uploadAvatarLabel.textAlignment = NSTextAlignmentCenter;
+    uploadAvatarLabel.textColor = RGB(61, 71, 94);
+    uploadAvatarLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    [self.view addSubview:uploadAvatarLabel];
+    
+    if ([[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"] != (id)[NSNull null] || [[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"] length] !=0) {
+        
+        uploadAvatarLabel.text = @"Tap To Change Avatar";
+        
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"]];
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicator.center = CGPointMake(profileImageView.bounds.size.width/2, profileImageView.bounds.size.height/2);
+        [profileImageView addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+        
+        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+            if (succeeded) {
+                profileImageView.image = image;
+            }
+            else {
+                [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+            }
+            [activityIndicator stopAnimating];
+        }];
+    }
+    else {
+        [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        uploadAvatarLabel.text = @"Tap To Upload Avatar";
+    }
+    
+    
+    nameField = [[UITextField alloc] initWithFrame:CGRectMake(10, profileImageView.frame.origin.y+profileImageView.bounds.size.height+30, self.view.bounds.size.width-20, 40)];
     nameField.textColor = RGB(61, 71, 94);
     nameField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
     nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -163,7 +288,7 @@
     nameField.returnKeyType = UIReturnKeyNext;
     [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     nameField.tag = 1;
-    nameField.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"];
+    nameField.text = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"];
     
     emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, nameField.frame.origin.y+nameField.bounds.size.height+10, self.view.bounds.size.width-20, 40)];
     emailField.textColor = RGB(61, 71, 94);
@@ -182,7 +307,7 @@
     emailField.returnKeyType = UIReturnKeyDefault;
     [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     emailField.tag = 2;
-    emailField.text = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
+    emailField.text = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Email"];
     
     updateButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [updateButton setTitle:@"UPDATE" forState:UIControlStateNormal];

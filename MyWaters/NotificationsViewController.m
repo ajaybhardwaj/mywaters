@@ -28,6 +28,22 @@
 }
 
 
+
+//*************** Method To Toggle Notifications Reading
+
+- (void) toggleNotificationSpeech {
+    
+    if (canReadNotifications) {
+        canReadNotifications = NO;
+        [btnSpeaker setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_speaker_mute.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+    else {
+        canReadNotifications = YES;
+        [btnSpeaker setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_speaker.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+}
+
+
 //*************** Method To ANimate Filter Table
 
 - (void) animateFilterTable {
@@ -82,13 +98,16 @@
         [self animateFilterTable];
     }
     else {
-        DebugLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
-        
-        //    if (self.synthesizer.speaking == NO) {
-        AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:[tableDataSource objectAtIndex:indexPath.row]];
-        utterance.rate = AVSpeechUtteranceMinimumSpeechRate;
-        AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
-        [synth speakUtterance:utterance];
+        if (canReadNotifications) {
+            
+            DebugLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
+            
+            //    if (self.synthesizer.speaking == NO) {
+            AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:[tableDataSource objectAtIndex:indexPath.row]];
+            utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
+            AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
+            [synth speakUtterance:utterance];
+        }
     }
 }
 
@@ -188,25 +207,27 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     self.view.backgroundColor = RGB(247, 247, 247);
     
+    canReadNotifications = YES;
+    
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-
+    
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-//    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+    //    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
     
     
     
     UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
+    [btnfilter setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_filter.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
     [btnfilter setFrame:CGRectMake(0, 0, 32, 32)];
     
-    UIButton *btnSpeaker =  [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnSpeaker setImage:[UIImage imageNamed:@"icn_speaker"] forState:UIControlStateNormal];
-//    [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
+    btnSpeaker =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnSpeaker setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_speaker.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [btnSpeaker addTarget:self action:@selector(toggleNotificationSpeech) forControlEvents:UIControlEventTouchUpInside];
     [btnSpeaker setFrame:CGRectMake(44, 0, 32, 32)];
     
     UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
@@ -214,7 +235,7 @@
     [rightBarButtonItems addSubview:btnSpeaker];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
-
+    
     
     notificationsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     notificationsTable.delegate = self;
@@ -237,16 +258,16 @@
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     filterTableView.alpha = 0.8;
     
-//    filtersArray = [[NSArray alloc] initWithObjects:@"Announcements",@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
+    //    filtersArray = [[NSArray alloc] initWithObjects:@"Announcements",@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
     filtersArray = [[NSArray alloc] initWithObjects:@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
-
+    
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-
+    
 }
 
 

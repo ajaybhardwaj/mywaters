@@ -28,6 +28,16 @@
 }
 
 
+//*************** Method To Pop View Controller To Parent Controller
+
+- (void) pop2Dismiss:(id) sender {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+
+
 //*************** Method To Handle Segmented Control Action
 
 - (void) handleSegmentedControl:(UISegmentedControl*) sender {
@@ -92,9 +102,17 @@
         }
         
         if (chatterDataSource.count!=0) {
+            
+            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"PostedAt" ascending:NO];
+            [chatterDataSource sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,nil]];
+            
             [exploreTableView reloadData];
         }
         if (feedDataSource.count!=0) {
+            
+            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"PostedAt" ascending:NO];
+            [feedDataSource sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,nil]];
+            
             [feedTableView reloadData];
         }
     }
@@ -528,6 +546,10 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
     self.title = @"What's Up";
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
     
     [self fetchFeedsAndChatterListing];
     

@@ -138,7 +138,7 @@
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Events",CELL__MAIN_TXT,@"icn_events",CELL__IMG, nil],
                                                                                                            
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"CCTV",CELL__MAIN_TXT,@"icn_cctv",CELL__IMG, nil],
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"CCTVs",CELL__MAIN_TXT,@"icn_cctv",CELL__IMG, nil],
                                                                                                         
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Water Level Sensor",CELL__MAIN_TXT,@"icn_wls",CELL__IMG, nil],
                                

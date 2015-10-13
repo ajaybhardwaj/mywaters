@@ -62,7 +62,7 @@
         [values addObject:newPassField.text];
         
         [parameters addObject:@"Email"];
-        [values addObject:[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"]];
+        [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Email"]];
         
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,PROFILE_API_URL]];
     }
@@ -82,7 +82,7 @@
         
         [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
         
-        appDelegate.USER_PROFILE_DICTIONARY = [[responseString JSONValue] objectForKey:@"UserProfile"];
+        appDelegate.USER_PROFILE_DICTIONARY = [responseString JSONValue];
         
 //        OTPViewController *viewObj = [[OTPViewController alloc] init];
 //        viewObj.emailStringForVerification = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];

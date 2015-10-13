@@ -284,10 +284,10 @@
     [values addObject:[NSString stringWithFormat:@"%ld",poiType]];
 
     [parameters addObject:@"ABCPOIImage.UserProfileID"];
-    [values addObject:[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"ID"]];
+    [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ID"]];
 
     [parameters addObject:@"ABCPOIImage.UserProfileName"];
-    [values addObject:[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Name"]];
+    [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"]];
 
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,ABC_WATERS_UPLOAD_USER_IMAGE]];
 }

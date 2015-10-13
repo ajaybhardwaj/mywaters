@@ -25,10 +25,11 @@
     BOOL isFiltered;
     NSMutableArray *filteredDataSource;
     NSInteger eventsPageCount,eventsTotalCount;
-    
+        
     //*************** Demo App Variables
     UIButton *eventDetailButton;
 }
 @property (nonatomic, assign) BOOL isNotEventController;
+
 
 @end

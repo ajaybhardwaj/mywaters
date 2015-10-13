@@ -23,6 +23,14 @@
     
 }
 
+//*************** Method To Move Back To Parent View
+
+- (void) pop2Dismiss:(id) sender {
+    
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+
 
 //*************** Method For Submitting Forgot Password Data
 
@@ -152,10 +160,20 @@
     [submitButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     submitButton.tag = 1;
-    submitButton.frame = CGRectMake(0, self.view.bounds.size.height-45, self.view.bounds.size.width, 45);
+    submitButton.frame = CGRectMake(10, self.view.bounds.size.height-100, self.view.bounds.size.width-20, 40);
     [submitButton addTarget:self action:@selector(submitForgotPasswordRequest) forControlEvents:UIControlEventTouchUpInside];
     [submitButton setBackgroundColor:RGB(68, 78, 98)];
     [self.view addSubview:submitButton];
+    
+    
+    backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backButton setTitle:@"BACK" forState:UIControlStateNormal];
+    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    backButton.frame = CGRectMake(10, self.view.bounds.size.height-45, self.view.bounds.size.width-20, 40);
+    [backButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
+    [backButton setBackgroundColor:RGB(83, 83, 83)];
+    [self.view addSubview:backButton];
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
     swipeGesture.direction = UISwipeGestureRecognizerDirectionRight;

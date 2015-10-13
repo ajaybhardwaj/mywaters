@@ -299,7 +299,7 @@
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         
-        appDelegate.USER_PROFILE_DICTIONARY = [[responseString JSONValue] objectForKey:@"UserProfile"];
+        appDelegate.USER_PROFILE_DICTIONARY = [responseString JSONValue];
 
         OTPViewController *viewObj = [[OTPViewController alloc] init];
         viewObj.emailStringForVerification = emailField.text;
@@ -566,7 +566,7 @@
     uploadAvatarLabel.textAlignment = NSTextAlignmentCenter;
     uploadAvatarLabel.textColor = RGB(61, 71, 94);
     uploadAvatarLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
-    uploadAvatarLabel.text = @"Upload Avatar";
+    uploadAvatarLabel.text = @"Tap To Upload Avatar";
     [backgroundScrollView addSubview:uploadAvatarLabel];
     
     

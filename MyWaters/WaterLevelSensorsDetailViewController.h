@@ -37,7 +37,6 @@
     UILabel *cctvTitleLabel,*distanceLabel;
     
     UITableView *wlsListingTable;
-    NSArray *nearbyWlsDatasource;
     
     UIButton *notifiyButton;
     
@@ -47,6 +46,11 @@
     int selectedAlertType;
     UIButton *level50Button,*level75Button,*level90Button,*level100Button;
     
+    UIImageView *dimmedImageView;
+    
+    BOOL isAlreadyFav;
+    NSMutableArray *tempNearByArray;
+
 }
 
 @property (nonatomic, assign) NSInteger drainDepthType;

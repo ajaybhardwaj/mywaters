@@ -40,7 +40,7 @@
     
     ForgotPasswordViewController *viewObj = [[ForgotPasswordViewController alloc] init];
     [self.navigationController pushViewController:viewObj animated:YES];
-
+    
 }
 
 
@@ -68,16 +68,24 @@
     [emailField resignFirstResponder];
     [passField resignFirstResponder];
     
-    //    if (IS_IPHONE_4_OR_LESS) {
-    
-    [UIView beginAnimations:@"emailField" context:NULL];
-    [UIView setAnimationDuration:0.5];
-    CGPoint viewPOS = self.view.center;
-    viewPOS.y = self.view.bounds.size.height-250;
-    backgroundScrollView.center = viewPOS;
-    [UIView commitAnimations];
-    
-    //    }
+    if (IS_IPHONE_4_OR_LESS) {
+        
+        [UIView beginAnimations:@"emailField" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = self.view.center;
+        viewPOS.y = self.view.bounds.size.height-250;
+        backgroundScrollView.center = viewPOS;
+        [UIView commitAnimations];
+        
+    }
+    else {
+        [UIView beginAnimations:@"emailField" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = self.view.center;
+        viewPOS.y = self.view.bounds.size.height-294;
+        backgroundScrollView.center = viewPOS;
+        [UIView commitAnimations];
+    }
 }
 
 
@@ -99,14 +107,15 @@
         [emailField resignFirstResponder];
         [passField resignFirstResponder];
         
-//        if (IS_IPHONE_4_OR_LESS) {
+        if (!IS_IPHONE_4_OR_LESS) {
+            
             [UIView beginAnimations:@"emailField" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = self.view.center;
             viewPOS.y = self.view.bounds.size.height-294;
             backgroundScrollView.center = viewPOS;
             [UIView commitAnimations];
-//        }
+        }
         
         appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
@@ -189,7 +198,7 @@
     DebugLog(@"%@",responseString);
     
     [appDelegate.hud hide:YES];
-
+    
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
@@ -197,11 +206,11 @@
         if ([[[[responseString JSONValue] objectForKey:@"UserProfile"] objectForKey:@"IsEmailVerified"] intValue] ==  true) {
             
             appDelegate.IS_COMING_AFTER_LOGIN = YES;
-            appDelegate.USER_PROFILE_DICTIONARY = [[responseString JSONValue] objectForKey:@"UserProfile"];
+            appDelegate.USER_PROFILE_DICTIONARY = [responseString JSONValue];
             
             [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
             [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
-
+            
         }
         else {
             
@@ -253,16 +262,24 @@
     else {
         [textField resignFirstResponder];
         
-//        if (IS_IPHONE_4_OR_LESS) {
-        
+        if (IS_IPHONE_4_OR_LESS) {
+            
+            [UIView beginAnimations:@"emailField" context:NULL];
+            [UIView setAnimationDuration:0.5];
+            CGPoint viewPOS = self.view.center;
+            viewPOS.y = self.view.bounds.size.height-250;
+            backgroundScrollView.center = viewPOS;
+            [UIView commitAnimations];
+            
+        }
+        else {
             [UIView beginAnimations:@"emailField" context:NULL];
             [UIView setAnimationDuration:0.5];
             CGPoint viewPOS = self.view.center;
             viewPOS.y = self.view.bounds.size.height-294;
             backgroundScrollView.center = viewPOS;
             [UIView commitAnimations];
-            
-//        }
+        }
     }
     return YES;
 }
@@ -420,8 +437,8 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-//    emailField.text = @"";
-//    passField.text = @"";
+    //    emailField.text = @"";
+    //    passField.text = @"";
 }
 
 

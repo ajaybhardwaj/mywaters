@@ -176,6 +176,17 @@
         
         [favouritesListingTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     }
+    
+    [appDelegate retrieveFavouriteItems:selectedFilterIndex];
+    if (appDelegate.USER_FAVOURITES_ARRAY.count!=0) {
+        favouritesListingTableView.hidden = NO;
+        noFavFoundLabel.hidden = YES;
+        [favouritesListingTableView reloadData];
+    }
+    else {
+        noFavFoundLabel.hidden = NO;
+        favouritesListingTableView.hidden = YES;
+    }
 }
 
 
@@ -312,6 +323,7 @@
     favouritesListingTableView.backgroundColor = [UIColor clearColor];
     favouritesListingTableView.backgroundView = nil;
     favouritesListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    favouritesListingTableView.hidden = YES;
     
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -160, self.view.bounds.size.width, 160) style:UITableViewStylePlain];
     filterTableView.delegate = self;
@@ -323,9 +335,17 @@
     filterTableView.alpha = 0.8;
     
     favouritesDataSource = [[NSArray alloc] initWithObjects:@"Sembawang Park - ABC Waters",@"Boon Lay Way - CCTV",@"Boon Keng Road/Bendemeer Road - CCTV", nil];
-    filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTV",@"Event",@"Distance", nil];
+    filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTVs",@"Event",@"Water Level Sensor",@"Distance", nil];
     
     selectedFilterIndex = 0;
+    
+    noFavFoundLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height/2 - 40, self.view.bounds.size.width-20, 20)];
+    noFavFoundLabel.text = @"No favourites found.";
+    noFavFoundLabel.textAlignment = NSTextAlignmentCenter;
+    noFavFoundLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+    noFavFoundLabel.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:noFavFoundLabel];
+    noFavFoundLabel.hidden = YES;
     
 }
 
@@ -345,7 +365,13 @@
     
     [appDelegate retrieveFavouriteItems:selectedFilterIndex];
     if (appDelegate.USER_FAVOURITES_ARRAY.count!=0) {
+        favouritesListingTableView.hidden = NO;
+        noFavFoundLabel.hidden = YES;
         [favouritesListingTableView reloadData];
+    }
+    else {
+        noFavFoundLabel.hidden = NO;
+        favouritesListingTableView.hidden = YES;
     }
 
 }

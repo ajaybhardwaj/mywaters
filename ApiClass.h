@@ -49,6 +49,12 @@
 #define CCTV_LISTING_TOTAL_COUNT @"TotalCCTV"
 #define FEEDS_CHATTER_LISTING_RESPONSE_NAME @"ListMediaFeed"
 #define FEEDS_CHATTER_LISTING_TOTAL_COUNT @"TotalMediaFeed"
+#define APP_CONFIG_DATA_RESPONSE_NAME @"ListConfigData"
+#define USER_PROFILE_RESPONSE_NAME @"UserProfile"
+#define USER_UPLOADED_IMAGES_RESPONSE_NAME @"UserUploadedImages"
+#define USER_BADGES_RESPONSE_NAME @"ListBadge"
+#define REWARDS_RESPONSE_NAME @"ListReward"
+#define USER_ACTION_HISTORY_RESPONSE_NAME @"ListActionHistory"
 
 
 # pragma mark - BASE URLS
@@ -65,6 +71,8 @@
 #define REGISTER_FOR_SUBSCRIPTION @"Subscription/"
 #define ABC_WATERS_POI @"ABCPOI/"
 #define ABC_WATERS_UPLOAD_USER_IMAGE @"ABCPOIImage/"
+#define APP_CONFIG_DATA @"ConfigData/"
+#define USER_PROFILE_OTHERS_DATA @"ProfileDetail/"
 
 
 //#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"

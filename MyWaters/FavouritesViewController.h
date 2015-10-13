@@ -23,6 +23,7 @@
     BOOL isShowingFilter;
     NSInteger selectedFilterIndex;
 
+    UILabel *noFavFoundLabel;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

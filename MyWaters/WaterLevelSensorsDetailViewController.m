@@ -25,6 +25,20 @@
 }
 
 
+//*************** Method To Close Top Menu For Outside Touch
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event  {
+    
+    UITouch *touch = [touches anyObject];
+    
+    if(touch.view!=topMenu) {
+        if (isShowingTopMenu) {
+            [self animateTopMenu];
+        }
+    }
+}
+
+
 //*************** Method To Hide Search Bar Keypad
 
 - (void) hideSearchBarKeypad {
@@ -107,6 +121,8 @@
 //*************** Method To HIDE Alert Options Popup
 
 - (void) hideAlertOptionsView {
+    
+    dimmedImageView.hidden = YES;
     
     alertOptionsView.transform = CGAffineTransformIdentity;
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -208,6 +224,8 @@
     [subscribeButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:subscribeButton];
     
+    dimmedImageView.hidden = NO;
+    
     alertOptionsView.transform = CGAffineTransformMakeScale(0.01, 0.01);
     [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         alertOptionsView.transform = CGAffineTransformIdentity;
@@ -252,6 +270,10 @@
 //*************** Method To Move To Map Direction View
 
 - (void) moveToDirectionView {
+    
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
     
     DirectionViewController *viewObj = [[DirectionViewController alloc] init];
     viewObj.destinationLat = latValue;
@@ -310,6 +332,13 @@
         [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
     
     [appDelegate insertFavouriteItems:parametersDict];
+    
+    isAlreadyFav = [appDelegate checkItemForFavourite:@"4" idValue:wlsID];
+    
+    if (isAlreadyFav)
+        [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
 }
 
 
@@ -374,8 +403,10 @@
     addToFavButton = [UIButton buttonWithType:UIButtonTypeCustom];
     //    addToFavButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)+15, 10, 25, 25);
     addToFavButton.frame = CGRectMake((topMenu.bounds.size.width/2)/3/2 - 10 + (topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/2)/3, 5, 20, 20);
-    [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [addToFavButton addTarget:self action:@selector(addWLSToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    if (isAlreadyFav)
+        [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];    [addToFavButton addTarget:self action:@selector(addWLSToFavourites) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addToFavButton];
     
     
@@ -402,6 +433,9 @@
 
 - (void) createUI {
     
+    for (UIView * view in self.view.subviews) {
+        [view removeFromSuperview];
+    }
     
     notifiyButton = [UIButton buttonWithType:UIButtonTypeCustom];
     notifiyButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, 40);
@@ -427,6 +461,7 @@
     riskLabel.backgroundColor = [UIColor clearColor];
     riskLabel.numberOfLines = 0;
     [self.view addSubview:riskLabel];
+    
     if (drainDepthType==1) {
         riskLabel.text = @"Low Flood Risk";
         [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
@@ -499,8 +534,8 @@
     CLLocationCoordinate2D currentLocation;
     CLLocationCoordinate2D desinationLocation;
     
-    currentLocation.latitude = 1.2912500;
-    currentLocation.longitude = 103.7870230;
+    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
     
     desinationLocation.latitude = latValue;
     desinationLocation.longitude = longValue;
@@ -526,6 +561,14 @@
     wlsListingTable.separatorStyle = UITableViewCellSelectionStyleNone;
     
     //    [cctvListingTable reloadData];
+    
+    dimmedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    [dimmedImageView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
+    [self.view addSubview:dimmedImageView];
+    dimmedImageView.hidden = YES;
+    
+    [self createTopMenu];
+
 }
 
 
@@ -540,6 +583,8 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
+        [notifiyButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
+        isSubscribed = YES;
         [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
     else {
@@ -612,6 +657,25 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
+    
+    
+    wlsID = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"id"];
+    wlsName = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"name"];
+    drainDepthType = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue];
+    latValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"latitude"] doubleValue];
+    longValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"longitude"] doubleValue];
+    observedTime = [CommonFunctions dateTimeFromString:[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"observationTime"]];
+    waterLevelValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevel"] intValue]];
+    waterLevelPercentageValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelPercentage"] intValue]];
+    waterLevelTypeValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue]];
+    drainDepthValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"drainDepth"] intValue]];
+    isSubscribed = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+    
+    [self createUI];
 }
 
 
@@ -619,8 +683,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    //    return eventsTableDataSource.count;
-    return 0;
+    return 3;
 }
 
 
@@ -631,39 +694,28 @@
     
     cell.backgroundColor = RGB(247, 247, 247);
     
-    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 7.5, 45, 45)];
-    //    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
-    //    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-2.png",appDelegate.RESOURCE_FOLDER_PATH]];
-    [cell.contentView addSubview:cellImage];
-    
-    if (indexPath.row==0) {
+    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
+    if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 1) {
         cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
-    else if (indexPath.row==1) {
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
-    }
-    else if (indexPath.row==2) {
+    else if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 2) {
         cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
+    else if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 3) {
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    else if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 4){
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    [cell.contentView addSubview:cellImage];
     
     
-    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 5, wlsListingTable.bounds.size.width-80, 30)];
-    //        titleLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
-    cellTitleLabel.text = [nearbyWlsDatasource objectAtIndex:indexPath.row];
-    cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 5, wlsListingTable.bounds.size.width-90, 50)];
+    cellTitleLabel.text = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"name"];
+    cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     cellTitleLabel.backgroundColor = [UIColor clearColor];
     cellTitleLabel.numberOfLines = 0;
     [cell.contentView addSubview:cellTitleLabel];
-    
-    
-    UILabel *cellDistanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 40, wlsListingTable.bounds.size.width-80, 15)];
-    cellDistanceLabel.text = @"1.5 KM";
-    cellDistanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:10.0];
-    cellDistanceLabel.backgroundColor = [UIColor clearColor];
-    cellDistanceLabel.textColor = [UIColor lightGrayColor];
-    cellDistanceLabel.numberOfLines = 0;
-    cellDistanceLabel.textAlignment = NSTextAlignmentLeft;
-    [cell.contentView addSubview:cellDistanceLabel];
     
     
     UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 59.5, wlsListingTable.bounds.size.width, 0.5)];
@@ -753,6 +805,8 @@
     selectedAlertType = 1;
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    isAlreadyFav = [appDelegate checkItemForFavourite:@"4" idValue:wlsID];
+
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots.png"]];
@@ -763,10 +817,22 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
     
-    nearbyWlsDatasource = [[NSArray alloc] initWithObjects:@"Sun Yat-sen Nanyang memorial hall",@"Mandalay Rd",@"Kim Keat Rd", nil];
+    tempNearByArray = appDelegate.WLS_LISTING_ARRAY;
+    
+    NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+        float v1 = [left floatValue];
+        float v2 = [right floatValue];
+        if (v1 < v2)
+            return NSOrderedAscending;
+        else if (v1 > v2)
+            return NSOrderedDescending;
+        else
+            return NSOrderedSame;
+    }];
+    
+    [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
     
     [self createUI];
-    [self createTopMenu];
     
 }
 

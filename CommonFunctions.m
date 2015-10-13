@@ -165,7 +165,7 @@
     
     // Convert the RFC 3339 date time string to an NSDate.
     NSDate *result = [rfc3339DateFormatter dateFromString:rfc3339DateTimeString];
-    [rfc3339DateFormatter setDateFormat:@"dd MMM yyyy"];
+    [rfc3339DateFormatter setDateFormat:@"EEE, dd MMM yyyy @ HH:mm a"];
     
     NSString *resultStrig = [rfc3339DateFormatter stringFromDate:result];
     return resultStrig;
@@ -203,9 +203,9 @@
 
 //*************** Method For ASIHTTPRequest
 
-+ (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data {
++ (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data accessToken:(NSString*)token {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BASE_URL,apiName]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@?accessToken=%@&ClientTag=%@",API_BASE_URL,apiName,token,API_CLIENT_TAG_VALUE]];
     
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setName:apiName];

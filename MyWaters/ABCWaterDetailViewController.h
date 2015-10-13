@@ -12,8 +12,9 @@
 #import "UILabel + Extension.h"
 #import "AsyncImageView.h"
 #import "DirectionViewController.h"
+#import "GalleryViewController.h"
 
-@interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate> {
+@interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate> {
     
     AppDelegate *appDelegate;
     BOOL isControlMaximize;
@@ -42,6 +43,7 @@
     UILabel *eventInfoLabel,*abcWaterTitle,*distanceLabel;
     
     UILabel___Extension *descriptionLabel;
+    
 }
 
 @property (nonatomic, strong) NSString *abcSiteId,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*imageName;

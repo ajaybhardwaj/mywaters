@@ -297,6 +297,11 @@
     
     else if (tableView==cctvListingTable) {
         
+
+        if (isShowingSearchBar) {
+            [self animateSearchBar];
+        }
+
         CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
         
         if (isFiltered) {
@@ -378,7 +383,7 @@
     }
     else {
         
-        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 70, 70)];
+        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 50, 50)];
         cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-2.png",appDelegate.RESOURCE_FOLDER_PATH]];
         [cell.contentView addSubview:cellImage];
         
@@ -434,7 +439,7 @@
 
 - (void) viewDidLoad {
     
-    self.title = @"CCTV";
+    self.title = @"CCTVs";
     self.view.backgroundColor = RGB(247, 247, 247);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     

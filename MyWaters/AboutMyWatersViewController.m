@@ -58,6 +58,50 @@
 }
 
 
+
+//*************** Method To Call Get Config API
+
+- (void) getConfigData {
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+
+    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"AccessToken"]];
+}
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    DebugLog(@"%@",responseString);
+    [appDelegate.hud hide:YES];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [appDelegate.APP_CONFIG_DATA_ARRAY removeAllObjects];
+        appDelegate.APP_CONFIG_DATA_ARRAY = [[responseString JSONValue] objectForKey:APP_CONFIG_DATA_RESPONSE_NAME];
+        
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+    
+    [appDelegate.hud hide:YES];
+}
+
+
+
 # pragma mark - UITableViewDataSource Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -112,10 +156,67 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+
     if (indexPath.row==0) {
-        BookingWebViewController *viewObj = [[BookingWebViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:YES];
+        
+        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"WebsiteURL"]) {
+                viewObj.headerTitle = @"About PUB";
+                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                break;
+            }
+        }
     }
+    else if (indexPath.row==1) {
+        
+        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"FacebookURL"]) {
+                viewObj.headerTitle = @"Facebook";
+                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                break;
+            }
+        }
+    }
+    else if (indexPath.row==2) {
+        
+        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"TwitterURL"]) {
+                viewObj.headerTitle = @"Twitter";
+                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                break;
+            }
+        }
+    }
+    else if (indexPath.row==3) {
+        
+        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"InstagramURL"]) {
+                viewObj.headerTitle = @"Instagram";
+                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                break;
+            }
+        }
+    }
+    else if (indexPath.row==4) {
+        
+        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"YoutubeURL"]) {
+                viewObj.headerTitle = @"YouTube";
+                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                break;
+            }
+        }
+    }
+    else if (indexPath.row==5) {
+        
+    }
+    
+    DebugLog(@"%@---%@",viewObj.headerTitle,viewObj.webUrl);
+    
+    [self.navigationController pushViewController:viewObj animated:YES];
+
 }
 
 
@@ -142,7 +243,9 @@
     aboutTableView.backgroundView = nil;
     aboutTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
+    
     [self createTableHeader];
+    [self getConfigData];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

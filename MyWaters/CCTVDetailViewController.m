@@ -21,6 +21,21 @@
 }
 
 
+
+//*************** Method To Close Top Menu For Outside Touch
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event  {
+
+    UITouch *touch = [touches anyObject];
+    
+    if(touch.view!=topMenu) {
+        if (isShowingTopMenu) {
+            [self animateTopMenu];
+        }
+    }
+}
+
+
 //*************** Method For Refreshing CCTV Image
 
 - (void) refreshTopImageViewCCTVImage {
@@ -55,6 +70,14 @@
 - (void) createUI {
     
     
+    for (UIView * view in self.view.subviews) {
+        [view removeFromSuperview];
+    }
+    
+    
+    
+    
+    
     topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 249)];
     [self.view addSubview:topImageView];
     
@@ -77,7 +100,7 @@
         }
         [activityIndicator stopAnimating];
     }];
-
+    
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     directionButton.frame = CGRectMake(0, topImageView.frame.origin.y+topImageView.bounds.size.height, self.view.bounds.size.width, 40);
@@ -103,7 +126,7 @@
     
     CLLocationCoordinate2D currentLocation;
     CLLocationCoordinate2D desinationLocation;
-
+    
     currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
     currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
     
@@ -129,7 +152,64 @@
     cctvListingTable.backgroundColor = [UIColor clearColor];
     cctvListingTable.backgroundView = nil;
     
-//    [cctvListingTable reloadData];
+    //    [cctvListingTable reloadData];
+    
+    
+    //Top Menu Item
+    
+    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -160, self.view.bounds.size.width, 45)];
+    topMenu.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
+    [self.view addSubview:topMenu];
+    
+    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2), 35)];
+    searchField.textColor = RGB(35, 35, 35);
+    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    searchField.leftViewMode = UITextFieldViewModeAlways;
+    searchField.borderStyle = UITextBorderStyleNone;
+    searchField.textAlignment=NSTextAlignmentLeft;
+    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    searchField.placeholder = @"Search...";
+    searchField.layer.borderWidth = 0.5;
+    searchField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    [topMenu addSubview:searchField];
+    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    searchField.delegate = self;
+    searchField.keyboardType = UIKeyboardTypeEmailAddress;
+    searchField.backgroundColor = [UIColor whiteColor];
+    searchField.returnKeyType = UIReturnKeyDone;
+    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    
+    favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (50), 5, 20, 20);
+    if (isAlreadyFav)
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [favouritesButton addTarget:self action:@selector(addCCTVToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:favouritesButton];
+    
+    shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (10), 5, 20, 20);
+    [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [shareButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:shareButton];
+    
+    addToFavlabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)+50, 30, topMenu.bounds.size.width/3, 10)];
+    addToFavlabel.backgroundColor = [UIColor clearColor];
+    addToFavlabel.textAlignment = NSTextAlignmentCenter;
+    addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    addToFavlabel.text = @"Add To Fav";
+    addToFavlabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:addToFavlabel];
+    
+    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2+10, 30, topMenu.bounds.size.width/3, 10)];
+    shareLabel.backgroundColor = [UIColor clearColor];
+    shareLabel.textAlignment = NSTextAlignmentCenter;
+    shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    shareLabel.text = @"Share";
+    shareLabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:shareLabel];
 }
 
 
@@ -144,6 +224,10 @@
 //*************** Method To Move To Map Direction View
 
 - (void) moveToDirectionView {
+    
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
     
     DirectionViewController *viewObj = [[DirectionViewController alloc] init];
     viewObj.destinationLat = latValue;
@@ -167,7 +251,7 @@
     [parametersDict setValue:imageUrl forKey:@"image"];
     [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"lat"];
     [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"long"];
-
+    
     [parametersDict setValue:@"NA" forKey:@"address"];
     [parametersDict setValue:@"NA" forKey:@"phoneno"];
     [parametersDict setValue:@"NA" forKey:@"description"];
@@ -180,9 +264,17 @@
     [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
     [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
     [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
-
+    
     
     [appDelegate insertFavouriteItems:parametersDict];
+    
+    isAlreadyFav = [appDelegate checkItemForFavourite:@"1" idValue:cctvID];
+    
+    if (isAlreadyFav)
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    
 }
 
 //*************** Method To Animate Top Menu
@@ -249,6 +341,19 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (isShowingTopMenu) {
+        [self animateTopMenu];
+    }
+    
+
+    latValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"Lat"] doubleValue];
+    longValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
+    imageUrl = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"];
+    titleString = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"Name"];
+    cctvID = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"ID"];
+    
+    [self createUI];
 }
 
 
@@ -256,8 +361,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    //    return eventsTableDataSource.count;
-    return 0;
+    return 3;
 }
 
 
@@ -269,28 +373,25 @@
     cell.backgroundColor = RGB(247, 247, 247);
     
     UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 70, 70)];
-//    cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
     cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-2.png",appDelegate.RESOURCE_FOLDER_PATH]];
     [cell.contentView addSubview:cellImage];
-
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, cctvListingTable.bounds.size.width-100, 40)];
-    //        titleLabel.text = [[eventsTableDataSource objectAtIndex:indexPath.row] objectForKey:@"eventTitle"];
-    titleLabel.text = [NSString stringWithFormat:@"CCTV Location %ld",indexPath.row+1];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, cctvListingTable.bounds.size.width-100, 50)];
+    titleLabel.text = [NSString stringWithFormat:@"%@",[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"Name"]];
     titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.numberOfLines = 0;
     [cell.contentView addSubview:titleLabel];
     
-    
-    UILabel *cellDistanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, cctvListingTable.bounds.size.width-100, 20)];
-    cellDistanceLabel.text = @"10 KM";
-    cellDistanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-    cellDistanceLabel.backgroundColor = [UIColor clearColor];
-    cellDistanceLabel.textColor = [UIColor lightGrayColor];
-    cellDistanceLabel.numberOfLines = 0;
-    cellDistanceLabel.textAlignment = NSTextAlignmentLeft;
-    [cell.contentView addSubview:cellDistanceLabel];
+    UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, cctvListingTable.bounds.size.width-100, 20)];
+    subTitleLabel.textColor = [UIColor lightGrayColor];
+    subTitleLabel.text = [NSString stringWithFormat:@"%@ KM",[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+    subTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    subTitleLabel.backgroundColor = [UIColor clearColor];
+    subTitleLabel.numberOfLines = 0;
+    subTitleLabel.textAlignment = NSTextAlignmentRight;
+    [cell.contentView addSubview:subTitleLabel];
     
     
     UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, cctvListingTable.bounds.size.width, 0.5)];
@@ -319,15 +420,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.title = @"CCTV";
+    self.title = @"CCTVs";
     self.view.backgroundColor = RGB(247, 247, 247);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    
+    isAlreadyFav = [appDelegate checkItemForFavourite:@"1" idValue:cctvID];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-
+    
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
@@ -348,64 +451,26 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
     
-
-//    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];
+    
+    //    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];
     
     
     [self createUI];
     
-    //Top Menu Item
+    tempNearByArray = appDelegate.CCTV_LISTING_ARRAY;
     
-    topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -160, self.view.bounds.size.width, 45)];
-    topMenu.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
-    [self.view addSubview:topMenu];
+    NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+        float v1 = [left floatValue];
+        float v2 = [right floatValue];
+        if (v1 < v2)
+            return NSOrderedAscending;
+        else if (v1 > v2)
+            return NSOrderedDescending;
+        else
+            return NSOrderedSame;
+    }];
     
-    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2), 35)];
-    searchField.textColor = RGB(35, 35, 35);
-    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-    searchField.leftViewMode = UITextFieldViewModeAlways;
-    searchField.borderStyle = UITextBorderStyleNone;
-    searchField.textAlignment=NSTextAlignmentLeft;
-    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    searchField.placeholder = @"Search...";
-    searchField.layer.borderWidth = 0.5;
-    searchField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-    [topMenu addSubview:searchField];
-    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    searchField.delegate = self;
-    searchField.keyboardType = UIKeyboardTypeEmailAddress;
-    searchField.backgroundColor = [UIColor whiteColor];
-    searchField.returnKeyType = UIReturnKeyDone;
-    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-    
-    favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (50), 5, 20, 20);
-    [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [favouritesButton addTarget:self action:@selector(addCCTVToFavourites) forControlEvents:UIControlEventTouchUpInside];
-    [topMenu addSubview:favouritesButton];
-    
-    shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (10), 5, 20, 20);
-    [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [shareButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
-    [topMenu addSubview:shareButton];
-    
-    addToFavlabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)+50, 30, topMenu.bounds.size.width/3, 10)];
-    addToFavlabel.backgroundColor = [UIColor clearColor];
-    addToFavlabel.textAlignment = NSTextAlignmentCenter;
-    addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    addToFavlabel.text = @"Add To Fav";
-    addToFavlabel.textColor = [UIColor whiteColor];
-    [topMenu addSubview:addToFavlabel];
-    
-    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2+10, 30, topMenu.bounds.size.width/3, 10)];
-    shareLabel.backgroundColor = [UIColor clearColor];
-    shareLabel.textAlignment = NSTextAlignmentCenter;
-    shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    shareLabel.text = @"Share";
-    shareLabel.textColor = [UIColor whiteColor];
-    [topMenu addSubview:shareLabel];
+    [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -415,7 +480,7 @@
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
-
+    
 }
 
 @end

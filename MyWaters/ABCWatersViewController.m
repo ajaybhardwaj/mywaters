@@ -33,20 +33,20 @@
     
     NSArray *parameters,*values;
     
-    if (selectedFilterIndex==0) {
+//    if (selectedFilterIndex==0) {
         parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
         values = [[NSArray alloc] initWithObjects:@"2",@"2",@"1.0", nil];
-    }
-    
-    else if (selectedFilterIndex==1) {
-        
-        CLLocationCoordinate2D coordinate = [CommonFunctions getUserCurrentLocation];
-        NSString *latitude = [NSString stringWithFormat:@"%f", coordinate.latitude];
-        NSString *longitude = [NSString stringWithFormat:@"%f", coordinate.longitude];
-        
-        parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version",@"Lat",@"Lon", nil];
-        values = [[NSArray alloc] initWithObjects:@"2",@"3",@"1.0",latitude,longitude, nil];
-    }
+//    }
+//    
+//    else if (selectedFilterIndex==1) {
+//        
+//        CLLocationCoordinate2D coordinate = [CommonFunctions getUserCurrentLocation];
+//        NSString *latitude = [NSString stringWithFormat:@"%f", coordinate.latitude];
+//        NSString *longitude = [NSString stringWithFormat:@"%f", coordinate.longitude];
+//        
+//        parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version",@"Lat",@"Lon", nil];
+//        values = [[NSArray alloc] initWithObjects:@"2",@"3",@"1.0",latitude,longitude, nil];
+//    }
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
@@ -71,20 +71,20 @@
             //            [appDelegate retrieveABCWatersListing];
             [listTabeView reloadData];
             
-            UIButton *btnSearch =  [UIButton buttonWithType:UIButtonTypeCustom];
-            [btnSearch setImage:[UIImage imageNamed:@"icn_search"] forState:UIControlStateNormal];
-            [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
-            [btnSearch setFrame:CGRectMake(0, 0, 32, 32)];
-            
             UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
             [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
             [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
-            [btnfilter setFrame:CGRectMake(44, 0, 32, 32)];
+            [btnfilter setFrame:CGRectMake(0, 0, 32, 32)];
+            
+            UIButton *btnSearch =  [UIButton buttonWithType:UIButtonTypeCustom];
+            [btnSearch setImage:[UIImage imageNamed:@"icn_search"] forState:UIControlStateNormal];
+            [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
+            [btnSearch setFrame:CGRectMake(44, 0, 32, 32)];
             
             UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
-            [rightBarButtonItems addSubview:btnSearch];
             [rightBarButtonItems addSubview:btnfilter];
-            
+            [rightBarButtonItems addSubview:btnSearch];
+
             self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
             
         }
@@ -487,6 +487,10 @@
         [listTabeView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
     }
     else {
+        
+        if (isShowingSearchBar) {
+            [self animateSearchBar];
+        }
         
         ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
         
