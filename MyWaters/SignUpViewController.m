@@ -48,6 +48,24 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+
+//*************** Method To Move To FOW Page
+
+- (void) moveToFowWebView {
+    
+    WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+    
+    for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+        if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"FriendOfWaterWebPage"]) {
+            viewObj.headerTitle = @"Friend Of Water";
+            viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+            break;
+        }
+    }
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
 //*************** Method To Handle Tap Gesture For Profile Pic
 
 - (void) handleSingleTapGesture: (UITapGestureRecognizer*) sender {
@@ -653,14 +671,14 @@
     [backgroundScrollView addSubview:checkboxButton];
     
     termsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [termsButton setTitle:@"I would like to sign up as a Friend of Water." forState:UIControlStateNormal];
+    [termsButton setTitle:@"I would like to sign up as a Friend of Water.  (?)" forState:UIControlStateNormal];
     [termsButton setTitleColor:RGB(22, 25, 62) forState:UIControlStateNormal];
     termsButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
     termsButton.tag = 3;
     termsButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     termsButton.contentEdgeInsets = UIEdgeInsetsMake(0, 45, 0, 0);
     termsButton.frame = CGRectMake(0, retypePassField.frame.origin.y+retypePassField.bounds.size.height+20, self.view.bounds.size.width, 20);
-    [termsButton addTarget:self action:@selector(changeTermsAgreeStatus) forControlEvents:UIControlEventTouchUpInside];
+    [termsButton addTarget:self action:@selector(moveToFowWebView) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:termsButton];
     
     signUpButton = [UIButton buttonWithType:UIButtonTypeCustom];

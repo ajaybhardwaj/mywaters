@@ -313,6 +313,7 @@
 		FEA730B41A77395700D274A6 /* dashboard.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B31A77395700D274A6 /* dashboard.png */; };
 		FEA730B71A77396800D274A6 /* icn_menu@2x_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B61A77396800D274A6 /* icn_menu@2x_old.png */; };
 		FEAA8EF91BD50916007D4C9A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEAA8EF81BD50916007D4C9A /* Social.framework */; };
+		FEAA8EFF1BD526B6007D4C9A /* SMSSubscriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAA8EFE1BD526B6007D4C9A /* SMSSubscriptionViewController.m */; settings = {ASSET_TAGS = (); }; };
 		FEB02A071AD62D62004B7DDF /* icn_add@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB02A061AD62D62004B7DDF /* icn_add@3x.png */; };
 		FEB13FB41A77658A0061CE74 /* QuickMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */; };
 		FEB13FC11A7766410061CE74 /* icn_abcwaters@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FB61A7766410061CE74 /* icn_abcwaters@3x.png */; };
@@ -845,6 +846,8 @@
 		FEA730B61A77396800D274A6 /* icn_menu@2x_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_menu@2x_old.png"; sourceTree = "<group>"; };
 		FEA730B81A773A8100D274A6 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		FEAA8EF81BD50916007D4C9A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		FEAA8EFD1BD526B6007D4C9A /* SMSSubscriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMSSubscriptionViewController.h; sourceTree = "<group>"; };
+		FEAA8EFE1BD526B6007D4C9A /* SMSSubscriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSSubscriptionViewController.m; sourceTree = "<group>"; };
 		FEB02A061AD62D62004B7DDF /* icn_add@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_add@3x.png"; sourceTree = "<group>"; };
 		FEB13FB21A77658A0061CE74 /* QuickMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickMapViewController.h; sourceTree = "<group>"; };
 		FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuickMapViewController.m; sourceTree = "<group>"; };
@@ -1932,6 +1935,8 @@
 				FE0016951B535A77004B57C8 /* WLSListingViewController.m */,
 				FEBA996E1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.h */,
 				FEBA996F1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m */,
+				FEAA8EFD1BD526B6007D4C9A /* SMSSubscriptionViewController.h */,
+				FEAA8EFE1BD526B6007D4C9A /* SMSSubscriptionViewController.m */,
 			);
 			name = "Water Level Sensors";
 			sourceTree = "<group>";
@@ -2606,6 +2611,7 @@
 				FE4F375D1A8862C10028903C /* LoginViewController.m in Sources */,
 				FEA7309E1A77353F00D274A6 /* ABCWatersViewController.m in Sources */,
 				FE99BE1C1A7B7918000B83E8 /* DashboardSettingsViewController.m in Sources */,
+				FEAA8EFF1BD526B6007D4C9A /* SMSSubscriptionViewController.m in Sources */,
 				FE4F37601A8862CD0028903C /* SignUpViewController.m in Sources */,
 				FEE65A841B8AC39E002C5C6D /* NSString+SBJSON.m in Sources */,
 				FED999B41BAAAC65007BEE55 /* UIImage+GIF.m in Sources */,

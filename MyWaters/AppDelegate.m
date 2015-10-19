@@ -40,6 +40,42 @@
 }
 
 
+//*************** Method To Call Get Config API
+
+- (void) getConfigData {
+    
+    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[USER_PROFILE_DICTIONARY objectForKey:@"AccessToken"]];
+}
+
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    DebugLog(@"%@",responseString);
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [APP_CONFIG_DATA_ARRAY removeAllObjects];
+        APP_CONFIG_DATA_ARRAY = [[responseString JSONValue] objectForKey:APP_CONFIG_DATA_RESPONSE_NAME];
+        
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+}
+
+
 //*************** Create Deck View Controller For App ***************//
 
 - (void) createViewDeckController {
@@ -630,7 +666,7 @@
     UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeNewsstandContentAvailability;
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:myTypes];
     
-    
+    [self getConfigData];
     // Override point for customization after application launch.
     return YES;
 }

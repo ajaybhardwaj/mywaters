@@ -55,30 +55,47 @@
 }
 
 
+//*************** Method To Move To SMS Subscription
+
+- (void) moveToSMSSubscriptionView {
+    
+    [self hideAlertOptionsView];
+    
+    SMSSubscriptionViewController *viewObj = [[SMSSubscriptionViewController alloc] init];
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
 //*************** Method To Register User For Flood Alerts
 
 - (void) registerForWLSALerts {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
-    
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    NSArray *parameters,*values;
-
-    if (isSubscribed) {
-        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
-        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"2", @"3", wlsID, nil];
+    if (selectedAlertType!=-1) {
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+        
+        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+        NSArray *parameters,*values;
+        
+        if (isSubscribed) {
+            parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
+            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"2", @"3", wlsID, nil];
+        }
+        else {
+            
+            [self hideAlertOptionsView];
+            
+            parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
+            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
+        }
+        
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
     }
     else {
-        
-        [self hideAlertOptionsView];
-        
-        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
-        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Please select alert option." cancel:@"Ok" otherButton:nil];
     }
-    
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
 }
 
 
@@ -141,7 +158,7 @@
     
     notifiyButton.userInteractionEnabled = NO;
     
-    alertOptionsView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-100, self.view.bounds.size.height/2-150, 200, 300)];
+    alertOptionsView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-100, self.view.bounds.size.height/2-140, 200, 280)];
     alertOptionsView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:alertOptionsView];
     
@@ -150,7 +167,7 @@
     [closeButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_cross.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [closeButton addTarget:self action:@selector(hideAlertOptionsView) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:closeButton];
-
+    
     UILabel *headingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 20, alertOptionsView.bounds.size.width-30, 20)];
     headingLabel.text = @"Subscribe To iAlerts";
     headingLabel.backgroundColor = [UIColor clearColor];
@@ -158,28 +175,28 @@
     headingLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:15.0];
     [alertOptionsView addSubview:headingLabel];
     
-    level50Button = [UIButton buttonWithType:UIButtonTypeCustom];
-    level50Button.frame = CGRectMake(20, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, 25, 25);
-    [level50Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_selected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    level50Button.tag = 1;
-    [level50Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
-    [alertOptionsView addSubview:level50Button];
-    
-    UILabel *level50 = [[UILabel alloc] initWithFrame:CGRectMake(60, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, alertOptionsView.bounds.size.width-70, 20)];
-    level50.text = @"Water Level >= 50%";
-    level50.backgroundColor = [UIColor clearColor];
-    level50.textColor = RGB(0,0,0);
-    level50.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
-    [alertOptionsView addSubview:level50];
+    //    level50Button = [UIButton buttonWithType:UIButtonTypeCustom];
+    //    level50Button.frame = CGRectMake(20, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, 25, 25);
+    //    [level50Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_selected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    //    level50Button.tag = 1;
+    //    [level50Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
+    //    [alertOptionsView addSubview:level50Button];
+    //
+    //    UILabel *level50 = [[UILabel alloc] initWithFrame:CGRectMake(60, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, alertOptionsView.bounds.size.width-70, 20)];
+    //    level50.text = @"Water Level >= 50%";
+    //    level50.backgroundColor = [UIColor clearColor];
+    //    level50.textColor = RGB(0,0,0);
+    //    level50.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    //    [alertOptionsView addSubview:level50];
     
     level75Button = [UIButton buttonWithType:UIButtonTypeCustom];
-    level75Button.frame = CGRectMake(20, level50.frame.origin.y+level50.bounds.size.height+20, 25, 25);
+    level75Button.frame = CGRectMake(20, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, 25, 25);
     [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     level75Button.tag = 2;
     [level75Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:level75Button];
     
-    UILabel *level75 = [[UILabel alloc] initWithFrame:CGRectMake(60, level50.frame.origin.y+level50.bounds.size.height+20, alertOptionsView.bounds.size.width-70, 20)];
+    UILabel *level75 = [[UILabel alloc] initWithFrame:CGRectMake(60, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, alertOptionsView.bounds.size.width-70, 20)];
     level75.text = @"Water Level >= 75%";
     level75.backgroundColor = [UIColor clearColor];
     level75.textColor = RGB(0,0,0);
@@ -200,29 +217,39 @@
     level90.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
     [alertOptionsView addSubview:level90];
     
-    level100Button = [UIButton buttonWithType:UIButtonTypeCustom];
-    level100Button.frame = CGRectMake(20, level90.frame.origin.y+level90.bounds.size.height+20, 25, 25);
-    [level100Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    level100Button.tag = 4;
-    [level100Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
-    [alertOptionsView addSubview:level100Button];
-    
-    UILabel *level100 = [[UILabel alloc] initWithFrame:CGRectMake(60, level90.frame.origin.y+level90.bounds.size.height+20, alertOptionsView.bounds.size.width-70, 20)];
-    level100.text = @"Water Level = 100%";
-    level100.backgroundColor = [UIColor clearColor];
-    level100.textColor = RGB(0,0,0);
-    level100.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
-    [alertOptionsView addSubview:level100];
+    //    level100Button = [UIButton buttonWithType:UIButtonTypeCustom];
+    //    level100Button.frame = CGRectMake(20, level90.frame.origin.y+level90.bounds.size.height+20, 25, 25);
+    //    [level100Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    //    level100Button.tag = 4;
+    //    [level100Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
+    //    [alertOptionsView addSubview:level100Button];
+    //
+    //    UILabel *level100 = [[UILabel alloc] initWithFrame:CGRectMake(60, level90.frame.origin.y+level90.bounds.size.height+20, alertOptionsView.bounds.size.width-70, 20)];
+    //    level100.text = @"Water Level = 100%";
+    //    level100.backgroundColor = [UIColor clearColor];
+    //    level100.textColor = RGB(0,0,0);
+    //    level100.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    //    [alertOptionsView addSubview:level100];
     
     
     UIButton *subscribeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [subscribeButton setTitle:@"SUBSCRIBE" forState:UIControlStateNormal];
     [subscribeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     subscribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
-    subscribeButton.frame = CGRectMake(10, level100.frame.origin.y+level100.bounds.size.height+30, alertOptionsView.bounds.size.width-20, 40);
+    subscribeButton.frame = CGRectMake(10, level90.frame.origin.y+level90.bounds.size.height+30, alertOptionsView.bounds.size.width-20, 40);
     [subscribeButton setBackgroundColor:RGB(68, 78, 98)];
     [subscribeButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:subscribeButton];
+    
+    UIButton *subscribeToSMSButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [subscribeToSMSButton setTitle:@"SMS SUBSCRIBE" forState:UIControlStateNormal];
+    [subscribeToSMSButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    subscribeToSMSButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
+    subscribeToSMSButton.tag = 6;
+    subscribeToSMSButton.frame = CGRectMake(10, subscribeButton.frame.origin.y+subscribeButton.bounds.size.height+10, alertOptionsView.bounds.size.width-20, 40);
+    [subscribeToSMSButton addTarget:self action:@selector(moveToSMSSubscriptionView) forControlEvents:UIControlEventTouchUpInside];
+    [subscribeToSMSButton setBackgroundColor:RGB(83, 83, 83)];
+    [alertOptionsView addSubview:subscribeToSMSButton];
     
     dimmedImageView.hidden = NO;
     
@@ -335,10 +362,14 @@
     
     isAlreadyFav = [appDelegate checkItemForFavourite:@"4" idValue:wlsID];
     
-    if (isAlreadyFav)
+    if (isAlreadyFav) {
         [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    else
+        addToFavLabel.text = @"Favourited";
+    }
+    else {
         [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        addToFavLabel.text = @"Favourite";
+    }
 }
 
 
@@ -396,7 +427,10 @@
     addToFavLabel.backgroundColor = [UIColor clearColor];
     addToFavLabel.textAlignment = NSTextAlignmentCenter;
     addToFavLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    addToFavLabel.text = @"Add To Fav";
+    if (isAlreadyFav)
+        addToFavLabel.text = @"Favourited";
+    else
+        addToFavLabel.text = @"Favourite";
     addToFavLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:addToFavLabel];
     
@@ -432,6 +466,7 @@
 //*************** Method For Creating UI
 
 - (void) createUI {
+    
     
     for (UIView * view in self.view.subviews) {
         [view removeFromSuperview];
@@ -486,7 +521,7 @@
     timeLabel.numberOfLines = 0;
     timeLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
     [self.view addSubview:timeLabel];
-
+    
     
     depthValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2, timeLabel.frame.origin.y+timeLabel.bounds.size.height+5, self.view.bounds.size.width/2 -10, 15)];
     depthValueLabel.backgroundColor = [UIColor clearColor];
@@ -494,7 +529,7 @@
     depthValueLabel.textColor = [UIColor darkGrayColor];//RGB(26, 158, 241);
     [self.view addSubview:depthValueLabel];
     
-
+    
     if (drainDepthType==1) {
         depthValueLabel.text = @"Drain Below 75% Full";
     }
@@ -568,7 +603,7 @@
     dimmedImageView.hidden = YES;
     
     [self createTopMenu];
-
+    
 }
 
 
@@ -806,11 +841,11 @@
     self.title = @"Water Level Sensor";
     self.view.backgroundColor = RGB(247, 247, 247);
     
-    selectedAlertType = 1;
+    selectedAlertType = -1;
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     isAlreadyFav = [appDelegate checkItemForFavourite:@"4" idValue:wlsID];
-
+    
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots.png"]];
@@ -822,20 +857,20 @@
     
     
     if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
-    tempNearByArray = appDelegate.WLS_LISTING_ARRAY;
-    
-    NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-        float v1 = [left floatValue];
-        float v2 = [right floatValue];
-        if (v1 < v2)
-            return NSOrderedAscending;
-        else if (v1 > v2)
-            return NSOrderedDescending;
-        else
-            return NSOrderedSame;
-    }];
-    
-    [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        tempNearByArray = appDelegate.WLS_LISTING_ARRAY;
+        
+        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            float v1 = [left floatValue];
+            float v2 = [right floatValue];
+            if (v1 < v2)
+                return NSOrderedAscending;
+            else if (v1 > v2)
+                return NSOrderedDescending;
+            else
+                return NSOrderedSame;
+        }];
+        
+        [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
     }
     [self createUI];
     

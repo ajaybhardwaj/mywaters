@@ -206,7 +206,12 @@
     addToFavlabel.backgroundColor = [UIColor clearColor];
     addToFavlabel.textAlignment = NSTextAlignmentCenter;
     addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    addToFavlabel.text = @"Add To Fav";
+    if (isAlreadyFav) {
+        addToFavlabel.text = @"Favourited";
+    }
+    else {
+        addToFavlabel.text = @"Favourite";
+    }
     addToFavlabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:addToFavlabel];
     
@@ -277,10 +282,14 @@
     
     isAlreadyFav = [appDelegate checkItemForFavourite:@"1" idValue:cctvID];
     
-    if (isAlreadyFav)
+    if (isAlreadyFav) {
         [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    else
+        addToFavlabel.text = @"Favourited";
+    }
+    else {
         [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        addToFavlabel.text = @"Favourite";
+    }
     
 }
 
@@ -321,11 +330,25 @@
     if (actionSheet.tag==2) {
         
         if (buttonIndex==0) {
-            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:@"https://itunes.apple.com/sg/app/mywaters/id533051315?mt=8" title:titleString desc:nil view:self];
+            
+            NSString *appUrl;
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSShareURL"]) {
+                    appUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:appUrl title:titleString desc:nil view:self];
         }
         else if (buttonIndex==1) {
-            
-            [CommonFunctions sharePostOnTwitter:@"https://itunes.apple.com/sg/app/mywaters/id533051315?mt=8" title:titleString view:self];
+            NSString *appUrl;
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSShareURL"]) {
+                    appUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            [CommonFunctions sharePostOnTwitter:appUrl title:titleString view:self];
         }
     }
 }

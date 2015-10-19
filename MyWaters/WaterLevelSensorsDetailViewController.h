@@ -12,6 +12,7 @@
 #import "CustomButtons.h"
 #import "QuickMapAnnotations.h"
 #import "DirectionViewController.h"
+#import "SMSSubscriptionViewController.h"
 
 @interface WaterLevelSensorsDetailViewController : UIViewController <MKMapViewDelegate,UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
     

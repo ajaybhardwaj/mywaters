@@ -250,7 +250,9 @@
     
     
     [self createTableHeader];
-    [self getConfigData];
+    
+    if (appDelegate.APP_CONFIG_DATA_ARRAY.count==0)
+        [self getConfigData];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

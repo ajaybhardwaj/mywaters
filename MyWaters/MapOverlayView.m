@@ -19,7 +19,7 @@
 {
 //    image = [APP_DEL imageForRadar];
     
-    image = [UIImage imageNamed:@"201509281910.rain.zo.png"];//[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://radar.weather.gov/ridge/Conus/RadarImg/latest_radaronly.gif"]]];
+    image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@RainArea/rain.zo.png",IMAGE_BASE_URL]]]];//[UIImage imageNamed:@"201509281910.rain.zo.png"];;
             
     MKMapRect theMapRect = [self.overlay boundingMapRect];
     CGRect theRect = [self rectForMapRect:theMapRect];
