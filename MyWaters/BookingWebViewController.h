@@ -14,6 +14,8 @@
     
     AppDelegate *appDelegate;
     UIWebView *bookingWebView;
+    
+    UIActivityIndicatorView *loadingIndicator;
 }
 
 @end

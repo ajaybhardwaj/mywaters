@@ -17,30 +17,15 @@
 @implementation ProfileViewController
 
 
-- (void) handleDemoAction: (id) sender {
+//*************** Method To Move To Photo Gallery
+
+- (void) tapToMoveToPhotoGallery:(id) sender {
     
-    UIButton *button = (id) sender;
-    
-    if (button.tag==1) {
-        rewardsDetailButton.hidden = YES;
-        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/profile_badges.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    }
-    else if (button.tag==2) {
-        rewardsDetailButton.hidden = YES;
-        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/profile_points.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    }
-    else if (button.tag==3) {
-        rewardsDetailButton.hidden = NO;
-        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/profile_rewards.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    }
-    else if (button.tag==4) {
-        rewardsDetailButton.hidden = YES;
-        [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/profile_photos.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    }
-    else if (button.tag==5) {
-        RewardDetailsViewController *viewObj = [[RewardDetailsViewController alloc] init];
-        [self.navigationController pushViewController:viewObj animated:YES];
-    }
+    GalleryViewController *viewObj = [[GalleryViewController alloc] init];
+    viewObj.galleryImages = photosDataSource;
+    viewObj.isABCGallery = NO;
+    viewObj.isUserGallery = YES;
+    [self.navigationController pushViewController:viewObj animated:YES];
 }
 
 
@@ -139,6 +124,8 @@
         [photosButton setBackgroundColor:[UIColor clearColor]];
         [photosIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_poloroid_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         photosLabel.textColor = RGB(83, 83, 83);
+        
+        [self refreshBadgesScrollView];
         
     }
     else if (button.tag==2) {
@@ -269,6 +256,13 @@
             UIImageView *badgeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, photosScrollView.bounds.size.width/3 - 1, photosScrollView.bounds.size.width/3)];
             badgeImageView.tag = i+1;
             [photosScrollView addSubview:badgeImageView];
+            badgeImageView.userInteractionEnabled = YES;
+            
+            UIButton *tapButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            tapButton.frame = CGRectMake(0, 0, badgeImageView.bounds.size.width, badgeImageView.bounds.size.height);
+            tapButton.tag = i;
+            [tapButton addTarget:self action:@selector(tapToMoveToPhotoGallery:) forControlEvents:UIControlEventTouchUpInside];
+            [badgeImageView addSubview:tapButton];
             
             NSString *imageName = [photosDataSource objectAtIndex:i];
             imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
@@ -331,6 +325,13 @@
 //            [badgeImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/dummy_my_pic_new.jpeg",appDelegate.RESOURCE_FOLDER_PATH]]];
             badgeImageView.tag = i+1;
             [photosScrollView addSubview:badgeImageView];
+            badgeImageView.userInteractionEnabled = YES;
+            
+            UIButton *tapButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            tapButton.frame = CGRectMake(0, 0, badgeImageView.bounds.size.width, badgeImageView.bounds.size.height);
+            tapButton.tag = i;
+            [tapButton addTarget:self action:@selector(tapToMoveToPhotoGallery:) forControlEvents:UIControlEventTouchUpInside];
+            [badgeImageView addSubview:tapButton];
             
             NSString *imageName = [photosDataSource objectAtIndex:i];
             imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
@@ -415,9 +416,72 @@
             counter = 1;
             
             UIImageView *badgeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, (badgesScrollView.bounds.size.width-75)/4, (badgesScrollView.bounds.size.width-75)/4)];
-            [badgeImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%d_color.png",appDelegate.RESOURCE_FOLDER_PATH,i+1]]];
             badgeImageView.tag = i+1;
+            badgeImageView.backgroundColor = [UIColor clearColor];
             [badgesScrollView addSubview:badgeImageView];
+            
+            NSString *imageName,*imageURLString;
+            
+            imageName = [[badgesDataSource objectAtIndex:i] objectForKey:@"Image"];
+            imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
+            
+            if ([[badgesDataSource objectAtIndex:i] objectForKey:@"UnlockedAt"] == (id)[NSNull null]) {
+                imageURLString = [NSString stringWithFormat:@"%@grey/%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
+
+            }
+            else {
+                imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
+            }
+            
+            DebugLog(@"%@",imageURLString);
+            
+            
+            NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+            NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+            NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
+            
+            NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+                if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+                    badgeImageView.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+            }
+            
+            else {
+                
+                UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                activityIndicator.center = CGPointMake(badgeImageView.bounds.size.width/2, badgeImageView.bounds.size.height/2);
+                [badgeImageView addSubview:activityIndicator];
+                [activityIndicator startAnimating];
+                
+                [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                    if (succeeded) {
+                        
+                        badgeImageView.image = image;
+                        
+                        NSFileManager *fileManger=[NSFileManager defaultManager];
+                        NSError* error;
+                        
+                        if (![fileManger fileExistsAtPath:destinationPath]){
+                            
+                            if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                                ;// success
+                            else
+                            {
+                                DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                            }
+                        }
+                        
+                        NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                        [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+                    }
+                    else {
+                        DebugLog(@"Image Loading Failed..!!");
+                    }
+                    [activityIndicator stopAnimating];
+                }];
+            }
             
             yAxis = yAxis + (badgesScrollView.bounds.size.width-100)/4;
             xAxis = 20;
@@ -425,9 +489,72 @@
         else {
             
             UIImageView *badgeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, (badgesScrollView.bounds.size.width-75)/4, (badgesScrollView.bounds.size.width-75)/4)];
-            [badgeImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%d_color.png",appDelegate.RESOURCE_FOLDER_PATH,i+1]]];
             badgeImageView.tag = i+1;
+            badgeImageView.backgroundColor = [UIColor clearColor];
             [badgesScrollView addSubview:badgeImageView];
+            
+            
+            NSString *imageName,*imageURLString;
+
+            imageName = [[badgesDataSource objectAtIndex:i] objectForKey:@"Image"];
+            imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
+            
+            if ([[badgesDataSource objectAtIndex:i] objectForKey:@"UnlockedAt"] == (id)[NSNull null]) {
+                imageURLString = [NSString stringWithFormat:@"%@grey/%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
+                
+            }
+            else {
+                imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
+            }
+            
+            DebugLog(@"%@",imageURLString);
+            
+            NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+            NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+            NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
+            
+            NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+                if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+                    badgeImageView.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+            }
+            
+            else {
+                
+                UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                activityIndicator.center = CGPointMake(badgeImageView.bounds.size.width/2, badgeImageView.bounds.size.height/2);
+                [badgeImageView addSubview:activityIndicator];
+                [activityIndicator startAnimating];
+                
+                [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                    if (succeeded) {
+                        
+                        badgeImageView.image = image;
+                        
+                        NSFileManager *fileManger=[NSFileManager defaultManager];
+                        NSError* error;
+                        
+                        if (![fileManger fileExistsAtPath:destinationPath]){
+                            
+                            if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                                ;// success
+                            else
+                            {
+                                DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                            }
+                        }
+                        
+                        NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                        [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+                    }
+                    else {
+                        DebugLog(@"Image Loading Failed..!!");
+                    }
+                    [activityIndicator stopAnimating];
+                }];
+            }
             
             xAxis = xAxis + (badgesScrollView.bounds.size.width-100)/4 + 20;
             counter = counter + 1;
@@ -451,15 +578,27 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
-        photosDataSource = [[responseString JSONValue] objectForKey:USER_UPLOADED_IMAGES_RESPONSE_NAME];
-        badgesDataSource = [[responseString JSONValue] objectForKey:USER_BADGES_RESPONSE_NAME];
-        rewardsDataSource = [[responseString JSONValue] objectForKey:REWARDS_RESPONSE_NAME];
-        pointsDataSource = [[responseString JSONValue] objectForKey:USER_ACTION_HISTORY_RESPONSE_NAME];
+        [photosDataSource removeAllObjects];
+        [badgesDataSource removeAllObjects];
+        [rewardsDataSource removeAllObjects];
+        [pointsDataSource removeAllObjects];
         
-//        DebugLog(@"%@",photosDataSource);
-//        DebugLog(@"%@",badgesDataSource);
-//        DebugLog(@"%@",rewardsDataSource);
-//        DebugLog(@"%@",pointsDataSource);
+        [photosDataSource setArray:[[responseString JSONValue] objectForKey:USER_UPLOADED_IMAGES_RESPONSE_NAME]];
+        [badgesDataSource setArray:[[responseString JSONValue] objectForKey:USER_BADGES_RESPONSE_NAME]];
+        [rewardsDataSource setArray:[[responseString JSONValue] objectForKey:REWARDS_RESPONSE_NAME]];
+        [pointsDataSource setArray:[[responseString JSONValue] objectForKey:USER_ACTION_HISTORY_RESPONSE_NAME]];
+        
+//        photosDataSource = [[responseString JSONValue] objectForKey:USER_UPLOADED_IMAGES_RESPONSE_NAME];
+//        badgesDataSource = [[responseString JSONValue] objectForKey:USER_BADGES_RESPONSE_NAME];
+//        rewardsDataSource = [[responseString JSONValue] objectForKey:REWARDS_RESPONSE_NAME];
+//        pointsDataSource = [[responseString JSONValue] objectForKey:USER_ACTION_HISTORY_RESPONSE_NAME];
+        
+        DebugLog(@"%@",photosDataSource);
+        DebugLog(@"%@",badgesDataSource);
+        DebugLog(@"%@",rewardsDataSource);
+        DebugLog(@"%@",pointsDataSource);
+        
+        [self refreshBadgesScrollView];
         
     }
     else {
@@ -540,7 +679,46 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (tableView==rewardsListingTableView) {
+        
         RewardDetailsViewController *viewObj = [[RewardDetailsViewController alloc] init];
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] != (id)[NSNull null])
+            viewObj.rewardID = [NSString stringWithFormat:@"%d",[[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] intValue]];
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null])
+            viewObj.titleString = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"];
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Description"] != (id)[NSNull null])
+            viewObj.descriptionString = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Description"];
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Lat"] != (id)[NSNull null])
+            viewObj.latValue = [[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Lat"] doubleValue];
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Lon"] != (id)[NSNull null])
+            viewObj.longValue = [[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"ValidFrom"] != (id)[NSNull null]) {
+            viewObj.validFromDateString = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"ValidFrom"];
+            viewObj.validFromDateString = [CommonFunctions dateTimeFromString:viewObj.validFromDateString];
+        }
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"ValidTo"] != (id)[NSNull null]) {
+            viewObj.validTillDateString = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"ValidTo"];
+            viewObj.validTillDateString = [CommonFunctions dateTimeFromString:viewObj.validTillDateString];
+        }
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"] != (id)[NSNull null])
+            viewObj.locationValueString = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"];
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] != (id)[NSNull null])
+            viewObj.pointsValueString = [NSString stringWithFormat:@"%d",[[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] intValue]];
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Image"] != (id)[NSNull null]) {
+            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Image"]];
+            viewObj.imageName = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Image"];
+        }
+        
+        
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (tableView==pointsTableView) {
@@ -658,6 +836,8 @@
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
         return cell;
     }
     else if (tableView==pointsTableView) {
@@ -706,6 +886,11 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     self.view.backgroundColor = RGB(247, 247, 247);
+    
+    photosDataSource = [[NSMutableArray alloc] init];
+    badgesDataSource = [[NSMutableArray alloc] init];
+    pointsDataSource = [[NSMutableArray alloc] init];
+    rewardsDataSource = [[NSMutableArray alloc] init];
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(moveToEditProfile)];
@@ -1060,8 +1245,6 @@
     badgesScrollView.backgroundColor = [UIColor clearColor];
     badgesScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 100);
     
-    [self refreshBadgesScrollView];
-    
     
     
     //===== For Rewards SubViews
@@ -1105,6 +1288,7 @@
     photosScrollView.backgroundColor = [UIColor clearColor];
     photosScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 100);
     photosBackgroundView.hidden = YES;
+    photosScrollView.userInteractionEnabled = YES;
     
     
 }

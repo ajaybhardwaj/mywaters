@@ -52,6 +52,10 @@
     NSDictionary *twelveHourForecastDictionary;
     BOOL isShowingWeatherModule;
     
+    NSMutableArray *eventsDataArray,*feedsDataArray,*wlsDataArray,*cctvDataArray,*floodsDataArray;
+    
+    BOOL isExpandingMenu;
+    
     //*************** Demo App UI Variables
     UIButton *quickMapButton,*whatsUpButton,*cctvButton,*reportButton;
 }

@@ -61,6 +61,46 @@
 }
 
 
+
+//*************** Method For Sharing Content On Facebook
+
++ (void) sharePostOnFacebook:(NSString*)postImageUrl appUrl:(NSString*)appstoreUrl title:(NSString*)postTitle desc:(NSString*)postDescription view:(UIViewController*) viewObj {
+    
+    // Present share dialog
+    [FBDialogs presentShareDialogWithLink:[NSURL URLWithString:appstoreUrl]
+                                     name:postTitle
+                                  caption:nil
+                              description:postDescription
+                                  picture:[NSURL URLWithString:postImageUrl]
+                              clientState:nil
+                                  handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                                      if(error) {
+                                          // An error occurred, we need to handle the error
+                                          // See: https://developers.facebook.com/docs/ios/errors
+                                          [self showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
+                                      } else {
+                                          // Success
+                                          DebugLog(@"%@",results);
+                                      }
+                                  }];
+    
+}
+
+
+//*************** Method For Sharing On Twitter
+
++ (void) sharePostOnTwitter:(NSString *)appStoreUrl title:(NSString *)postTitle view:(UIViewController *)viewObj {
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+    {
+        SLComposeViewController *tweetSheet = [SLComposeViewController
+                                               composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [tweetSheet setInitialText:[NSString stringWithFormat:@"MyWater Site: %@\n%@",postTitle,[NSURL URLWithString:appStoreUrl]]];
+        [viewObj presentViewController:tweetSheet animated:YES completion:nil];
+    }
+}
+
+
 //*************** Method For Checking If Location Services Are Enabled Or Not
 
 + (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj {

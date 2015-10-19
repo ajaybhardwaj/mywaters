@@ -32,9 +32,7 @@
     // starting the load, show the activity indicator in the status bar
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [loadingIndicator startAnimating];
     
 }
 
@@ -42,14 +40,14 @@
 {
     // finished loading, hide the activity indicator in the status bar
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    [appDelegate.hud hide:YES];
+    [loadingIndicator stopAnimating];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     // load error, hide the activity indicator in the status bar
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    [appDelegate.hud hide:YES];
+    [loadingIndicator stopAnimating];
     // report the error inside the webview
     NSString* errorString = [NSString stringWithFormat:
                              @"<html><center><font size=+5 color='red'>An error occurred:<br>%@</font></center></html>",
@@ -81,6 +79,10 @@
     NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
     [defaultWebview loadRequest:nsrequest];
     [self.view addSubview:defaultWebview];
+    
+    loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    loadingIndicator.hidesWhenStopped = YES;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loadingIndicator];
 }
 
 - (void)didReceiveMemoryWarning {

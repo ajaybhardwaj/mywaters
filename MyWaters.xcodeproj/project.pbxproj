@@ -312,6 +312,7 @@
 		FEA730B01A77357300D274A6 /* FavouritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA730AF1A77357300D274A6 /* FavouritesViewController.m */; };
 		FEA730B41A77395700D274A6 /* dashboard.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B31A77395700D274A6 /* dashboard.png */; };
 		FEA730B71A77396800D274A6 /* icn_menu@2x_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FEA730B61A77396800D274A6 /* icn_menu@2x_old.png */; };
+		FEAA8EF91BD50916007D4C9A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEAA8EF81BD50916007D4C9A /* Social.framework */; };
 		FEB02A071AD62D62004B7DDF /* icn_add@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB02A061AD62D62004B7DDF /* icn_add@3x.png */; };
 		FEB13FB41A77658A0061CE74 /* QuickMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */; };
 		FEB13FC11A7766410061CE74 /* icn_abcwaters@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FB61A7766410061CE74 /* icn_abcwaters@3x.png */; };
@@ -414,6 +415,8 @@
 		FEE65A8C1B8ACBE4002C5C6D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEE65A8B1B8ACBE4002C5C6D /* SystemConfiguration.framework */; };
 		FEE65A8E1B8ACC75002C5C6D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FEE65A8D1B8ACC75002C5C6D /* libz.dylib */; };
 		FEE65AF11B8B0FD7002C5C6D /* ABCWatersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA7309D1A77353F00D274A6 /* ABCWatersViewController.m */; };
+		FEF12BEF1BD4E8FA00BE2925 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF12BEE1BD4E8FA00BE2925 /* FacebookSDK.framework */; settings = {ASSET_TAGS = (); }; };
+		FEF12BF31BD4EB9D00BE2925 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF12BEE1BD4E8FA00BE2925 /* FacebookSDK.framework */; settings = {ASSET_TAGS = (); }; };
 		FEF43C241A79EE7B00237CAD /* events_listing.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF43C231A79EE7B00237CAD /* events_listing.png */; };
 		FEF43C261A79EE9400237CAD /* events_filter.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF43C251A79EE9400237CAD /* events_filter.png */; };
 		FEF43C2A1A79F17500237CAD /* events_detail_options.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF43C281A79F17500237CAD /* events_detail_options.png */; };
@@ -841,6 +844,7 @@
 		FEA730B31A77395700D274A6 /* dashboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dashboard.png; sourceTree = "<group>"; };
 		FEA730B61A77396800D274A6 /* icn_menu@2x_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_menu@2x_old.png"; sourceTree = "<group>"; };
 		FEA730B81A773A8100D274A6 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		FEAA8EF81BD50916007D4C9A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		FEB02A061AD62D62004B7DDF /* icn_add@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_add@3x.png"; sourceTree = "<group>"; };
 		FEB13FB21A77658A0061CE74 /* QuickMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickMapViewController.h; sourceTree = "<group>"; };
 		FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuickMapViewController.m; sourceTree = "<group>"; };
@@ -985,6 +989,7 @@
 		FEE65A891B8ACBCA002C5C6D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		FEE65A8B1B8ACBE4002C5C6D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FEE65A8D1B8ACC75002C5C6D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		FEF12BEE1BD4E8FA00BE2925 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		FEF43C231A79EE7B00237CAD /* events_listing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = events_listing.png; sourceTree = "<group>"; };
 		FEF43C251A79EE9400237CAD /* events_filter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = events_filter.png; sourceTree = "<group>"; };
 		FEF43C281A79F17500237CAD /* events_detail_options.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = events_detail_options.png; sourceTree = "<group>"; };
@@ -1030,7 +1035,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FEAA8EF91BD50916007D4C9A /* Social.framework in Frameworks */,
 				FEE65A8E1B8ACC75002C5C6D /* libz.dylib in Frameworks */,
+				FEF12BEF1BD4E8FA00BE2925 /* FacebookSDK.framework in Frameworks */,
 				FEE65A8C1B8ACBE4002C5C6D /* SystemConfiguration.framework in Frameworks */,
 				FEE65A8A1B8ACBCA002C5C6D /* CFNetwork.framework in Frameworks */,
 				FE2BED321AD3DBB60039C317 /* AVFoundation.framework in Frameworks */,
@@ -1047,6 +1054,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE17457F1BBA780F001B231B /* FBSDKLoginKit.framework in Frameworks */,
+				FEF12BF31BD4EB9D00BE2925 /* FacebookSDK.framework in Frameworks */,
 				FE17457D1BBA780F001B231B /* FBSDKCoreKit.framework in Frameworks */,
 				FE1745811BBA780F001B231B /* FBSDKShareKit.framework in Frameworks */,
 			);
@@ -1451,6 +1459,8 @@
 		FEA730111A772FDD00D274A6 = {
 			isa = PBXGroup;
 			children = (
+				FEAA8EF81BD50916007D4C9A /* Social.framework */,
+				FEF12BEE1BD4E8FA00BE2925 /* FacebookSDK.framework */,
 				FE1745791BBA780F001B231B /* FBSDKCoreKit.framework */,
 				FE17457A1BBA780F001B231B /* FBSDKLoginKit.framework */,
 				FE17457B1BBA780F001B231B /* FBSDKShareKit.framework */,
@@ -2209,6 +2219,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = FEA730111A772FDD00D274A6;
 			productRefGroup = FEA7301B1A772FDD00D274A6 /* Products */;
@@ -2728,11 +2739,15 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = "/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters";
+				FRAMEWORK_SEARCH_PATHS = (
+					"/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters",
+					"\\\"$(SRCROOT)/../../../FacebookSDK\\\"",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2750,7 +2765,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2772,12 +2787,16 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = "/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters";
+				FRAMEWORK_SEARCH_PATHS = (
+					"/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters",
+					"\\\"$(SRCROOT)/../../../FacebookSDK\\\"",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -2787,7 +2806,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2799,15 +2818,20 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
-				FRAMEWORK_SEARCH_PATHS = "/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters";
+				FRAMEWORK_SEARCH_PATHS = (
+					"/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters",
+					"$(PROJECT_DIR)",
+					"\\\"$(SRCROOT)/../../../FacebookSDK\\\"",
+				);
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -2818,15 +2842,20 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
-				FRAMEWORK_SEARCH_PATHS = "/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters";
+				FRAMEWORK_SEARCH_PATHS = (
+					"/Users/ajaybhardwaj/Documents/FacebookSDK-MyWaters",
+					"$(PROJECT_DIR)",
+					"\\\"$(SRCROOT)/../../../FacebookSDK\\\"",
+				);
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
@@ -2836,11 +2865,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
+					"\\\"$(SRCROOT)/../../../FacebookSDK\\\"",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -2849,7 +2880,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Debug;
@@ -2859,16 +2890,18 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
+					"\\\"$(SRCROOT)/../../../FacebookSDK\\\"",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Release;

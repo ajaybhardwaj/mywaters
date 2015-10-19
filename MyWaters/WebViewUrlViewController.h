@@ -13,6 +13,8 @@
     
     AppDelegate *appDelegate;
     UIWebView *defaultWebview;
+    
+    UIActivityIndicatorView *loadingIndicator;
 }
 @property (nonatomic, strong) NSString *webUrl,*headerTitle;
 

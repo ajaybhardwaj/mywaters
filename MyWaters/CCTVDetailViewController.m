@@ -22,10 +22,20 @@
 
 
 
+//*************** Method To Share Site
+
+- (void) shareSiteOnSocialNetwork {
+    
+    [self animateTopMenu];
+    
+    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Share on" msg:nil cancel:nil tag:2 destructive:nil otherButton:@"Facebook",@"Twitter",@"Cancel",nil];
+}
+
+
 //*************** Method To Close Top Menu For Outside Touch
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event  {
-
+    
     UITouch *touch = [touches anyObject];
     
     if(touch.view!=topMenu) {
@@ -73,9 +83,6 @@
     for (UIView * view in self.view.subviews) {
         [view removeFromSuperview];
     }
-    
-    
-    
     
     
     topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 249)];
@@ -306,6 +313,26 @@
 }
 
 
+
+# pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag==2) {
+        
+        if (buttonIndex==0) {
+            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:@"https://itunes.apple.com/sg/app/mywaters/id533051315?mt=8" title:titleString desc:nil view:self];
+        }
+        else if (buttonIndex==1) {
+            
+            [CommonFunctions sharePostOnTwitter:@"https://itunes.apple.com/sg/app/mywaters/id533051315?mt=8" title:titleString view:self];
+        }
+    }
+}
+
+
+
+
 # pragma mark - UITableViewDelegate Methods
 
 
@@ -346,7 +373,7 @@
         [self animateTopMenu];
     }
     
-
+    
     latValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"Lat"] doubleValue];
     longValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
     imageUrl = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"];
@@ -361,7 +388,11 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 3;
+    if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
+        return 3;
+    }
+    
+    return 0;
 }
 
 
@@ -457,20 +488,22 @@
     
     [self createUI];
     
-    tempNearByArray = appDelegate.CCTV_LISTING_ARRAY;
-    
-    NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-        float v1 = [left floatValue];
-        float v2 = [right floatValue];
-        if (v1 < v2)
-            return NSOrderedAscending;
-        else if (v1 > v2)
-            return NSOrderedDescending;
-        else
-            return NSOrderedSame;
-    }];
-    
-    [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+    if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
+        tempNearByArray = appDelegate.CCTV_LISTING_ARRAY;
+        
+        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            float v1 = [left floatValue];
+            float v2 = [right floatValue];
+            if (v1 < v2)
+                return NSOrderedAscending;
+            else if (v1 > v2)
+                return NSOrderedDescending;
+            else
+                return NSOrderedSame;
+        }];
+        
+        [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {

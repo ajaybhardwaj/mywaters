@@ -25,6 +25,17 @@
 }
 
 
+//*************** Method To Share Site
+
+- (void) shareSiteOnSocialNetwork {
+    
+    [self animateTopMenu];
+    
+    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Share on" msg:nil cancel:nil tag:2 destructive:nil otherButton:@"Facebook",@"Twitter",@"Cancel",nil];
+}
+
+
+
 //*************** Method To Open Side Menu
 
 - (void) openDeckMenu:(id) sender {
@@ -399,6 +410,24 @@
 
 
 
+# pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag==2) {
+        
+        if (buttonIndex==0) {
+            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:@"https://itunes.apple.com/sg/app/mywaters/id533051315?mt=8" title:titleString desc:descriptionString view:self];
+        }
+        else if (buttonIndex==1) {
+            [CommonFunctions sharePostOnTwitter:@"https://itunes.apple.com/sg/app/mywaters/id533051315?mt=8" title:titleString view:self];
+        }
+    }
+}
+
+
+
+
 # pragma mark - ASIHTTPRequestDelegate Methods
 
 - (void) requestFinished:(ASIHTTPRequest *)request {
@@ -502,7 +531,7 @@
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
     shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [shareButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    [shareButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:shareButton];
     
     notifyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/3, 10)];

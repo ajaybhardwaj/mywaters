@@ -683,7 +683,11 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 3;
+    if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
+        return 3;
+    }
+    
+    return 0;
 }
 
 
@@ -817,6 +821,7 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
     
+    if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
     tempNearByArray = appDelegate.WLS_LISTING_ARRAY;
     
     NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
@@ -831,7 +836,7 @@
     }];
     
     [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
-    
+    }
     [self createUI];
     
 }

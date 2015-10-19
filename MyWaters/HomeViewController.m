@@ -22,6 +22,7 @@
 
 - (void) openDeckMenu:(id) sender {
     
+//    isExpandingMenu = YES;
     self.view.alpha = 0.5;
     self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
@@ -32,7 +33,6 @@
 //*************** Method To Get Nowcast Weather XML Data
 
 - (void) getTwelveHourWeatherData {
-    
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:TWELVE_HOUR_FORECAST] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10];
     
@@ -235,8 +235,21 @@
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==4) {
+        
         CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
         appDelegate.IS_MOVING_TO_CCTV_FROM_DASHBOARD = YES;
+        
+        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
+            viewObj.imageUrl = [[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"];
+        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"Name"] != (id)[NSNull null])
+            viewObj.titleString = [[cctvDataArray objectAtIndex:0] objectForKey:@"Name"];
+        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"ID"] != (id)[NSNull null])
+            viewObj.cctvID = [[cctvDataArray objectAtIndex:0] objectForKey:@"ID"];
+        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] != (id)[NSNull null])
+            viewObj.latValue = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] doubleValue];
+        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] != (id)[NSNull null])
+            viewObj.longValue = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] doubleValue];
+        
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==5) {
@@ -303,6 +316,119 @@
 
 
 
+//*************** Method To Call Dashboard API
+
+- (void) fetchDashboardData {
+    
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
+
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"true",@"1.0", nil];
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+}
+
+
+//*************** Method To Refresh Home Page UI
+
+
+- (void) refreshHomePageContent {
+    
+    
+    // WLS Content Refresh
+    
+    if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
+        drainDepthValueLabel.text = @"Low Flood Risk";
+    }
+    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==2) {
+        drainDepthValueLabel.text = @"Moderate Flood Risk";
+    }
+    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==3) {
+        drainDepthValueLabel.text = @"High Flood Risk";
+    }
+    else {
+        drainDepthValueLabel.text = @"Under Maintenance";
+    }
+    drainDepthValueLabel.numberOfLines = 0;
+    [drainDepthValueLabel sizeToFit];
+
+    waterSensorLocationLabel.text = [[wlsDataArray objectAtIndex:0] objectForKey:@"name"];
+ 
+    
+    CLLocationCoordinate2D currentLocation;
+    CLLocationCoordinate2D desinationLocationWLS;
+    
+    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+    
+    desinationLocationWLS.latitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
+    desinationLocationWLS.longitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
+    NSString *wlsDistanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationWLS]];
+    waterSensorDrainDepthLabel.text = wlsDistanceString;
+    
+    if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
+        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==2) {
+        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==3) {
+        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    else {
+        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    
+    
+    
+    // CCTV Content Refresh
+    
+    NSString *imageURLString = [NSString stringWithFormat:@"%@",[[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"]];
+    
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityIndicator.center = CGPointMake(cctvImageView.bounds.size.width/2, cctvImageView.bounds.size.height/2);
+    [cctvImageView addSubview:activityIndicator];
+    [activityIndicator startAnimating];
+    
+    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+        if (succeeded) {
+            
+            cctvImageView.image = image;
+            
+        }
+        else {
+            DebugLog(@"Image Loading Failed..!!");
+            cctvImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        [activityIndicator stopAnimating];
+    }];
+    
+    cctvLocationLabel.text = [[cctvDataArray objectAtIndex:0] objectForKey:@"Name"];
+    
+    CLLocationCoordinate2D desinationLocationCCTV;
+    desinationLocationCCTV.latitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] doubleValue];
+    desinationLocationCCTV.longitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] doubleValue];
+    NSString *cctvDistanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationCCTV]];
+    cctvDistanceLabel.text = cctvDistanceString;
+    
+    
+    // Weather Content Refresh
+    
+    if (isShowingWeatherModule) {
+        [self getTwelveHourWeatherData];
+    }
+    
+    // Whatsup Content Refresh
+    [whatsUpListingTable reloadData];
+    
+    // Events Content Refresh
+    [eventsListingTable reloadData];
+}
+
+
+
 //*************** Method To Create Home Page UI
 
 - (void) createDynamicUIColumns {
@@ -315,10 +441,6 @@
     welcomeView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.view.bounds.size.width-20, 110)];
     welcomeView.backgroundColor = [UIColor whiteColor];
     welcomeView.layer.cornerRadius = 10;
-    //    [welcomeView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-    //    [welcomeView.layer setShadowOffset:CGSizeMake(2, 2)];
-    //    [welcomeView.layer setShadowOpacity:1];
-    //    [welcomeView.layer setShadowRadius:1.0];
     [backgroundScrollView addSubview:welcomeView];
     
     UILabel *welcomeHeaderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, welcomeView.bounds.size.width, 20)];
@@ -372,10 +494,6 @@
     reportIncidentButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     [reportIncidentButton setTintColor:[UIColor whiteColor]];
     reportIncidentButton.layer.cornerRadius = 10;
-    //    [reportIncidentButton.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-    //    [reportIncidentButton.layer setShadowOffset:CGSizeMake(2, 2)];
-    //    [reportIncidentButton.layer setShadowOpacity:1];
-    //    [reportIncidentButton.layer setShadowRadius:1.0];
     [reportIncidentButton addTarget:self action:@selector(moveToFeedbackView) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:reportIncidentButton];
     
@@ -416,10 +534,6 @@
                 UIView *columnView = [[UIView alloc] initWithFrame:CGRectMake(10, left_yAxis, (self.view.bounds.size.width-30)/2, [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"height"] floatValue])];
                 columnView.backgroundColor = [UIColor whiteColor];
                 columnView.layer.cornerRadius = 10;
-                //                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-                //                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
-                //                [columnView.layer setShadowOpacity:1];
-                //                [columnView.layer setShadowRadius:1.0];
                 [backgroundScrollView addSubview:columnView];
                 columnView.userInteractionEnabled = YES;
                 
@@ -436,15 +550,6 @@
                 
                 
                 if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==1) {
-                    
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
-                    
-                    //                    if (!quickMap) {
                     
                     quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-3, columnView.bounds.size.height-23)];
                     quickMap.delegate = self;
@@ -482,89 +587,31 @@
                         [locationManager startUpdatingLocation];
                     }
                     
-                    //                    quickMapLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    quickMapLocationImage.frame = CGRectMake(5, 130, 20, 20);
-                    //                    [quickMapLocationImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_pink.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:quickMapLocationImage];
-                    //                    quickMapLocationImage.userInteractionEnabled = NO;
-                    //
-                    //                    quickMapDistanceImage = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    quickMapDistanceImage.frame = CGRectMake(5, 155, 20, 20);
-                    //                    [quickMapDistanceImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_distance_pink.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:quickMapDistanceImage];
-                    //                    quickMapDistanceImage.userInteractionEnabled = NO;
-                    //
-                    //                    quickMapLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 130, columnView.bounds.size.width-40, 25)];
-                    //                    quickMapLocationLabel.text = @"TPE exit towards AYE";
-                    //                    quickMapLocationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
-                    //                    quickMapLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
-                    //                    quickMapLocationLabel.backgroundColor = [UIColor clearColor];
-                    //                    quickMapLocationLabel.numberOfLines = 0;
-                    //                    [quickMapLocationLabel sizeToFit];
-                    //                    [columnView addSubview:quickMapLocationLabel];
-                    //
-                    //                    quickMapDistanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 155, columnView.bounds.size.width-40, 25)];
-                    //                    quickMapDistanceLabel.text = @"2.1 KM";
-                    //                    quickMapDistanceLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
-                    //                    quickMapDistanceLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
-                    //                    quickMapDistanceLabel.backgroundColor = [UIColor clearColor];
-                    //                    [quickMapDistanceLabel sizeToFit];
-                    //                    [columnView addSubview:quickMapDistanceLabel];
-                    //
-                    //                    quickMapFloodIcon = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    quickMapFloodIcon.frame = CGRectMake(90, 50, 40, 40);
-                    //                    [quickMapFloodIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_quickmap_car.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:quickMapFloodIcon];
-                    //                    quickMapFloodIcon.userInteractionEnabled = NO;
-                    //
-                    //                    nearbyQuickMapLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 25, columnView.bounds.size.width-20, 25)];
-                    //                    nearbyQuickMapLabel.text = @"Nearby";
-                    //                    nearbyQuickMapLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
-                    //                    nearbyQuickMapLabel.textColor = [UIColor blackColor];
-                    //                    nearbyQuickMapLabel.backgroundColor = [UIColor clearColor];
-                    //                    [nearbyQuickMapLabel sizeToFit];
-                    //                    [columnView addSubview:nearbyQuickMapLabel];
-                    //
-                    //                    floodTagLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 40, 50, 40)];
-                    //                    floodTagLabel.text = @"01";
-                    //                    floodTagLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:40];
-                    //                    floodTagLabel.textColor = [UIColor blackColor];
-                    //                    floodTagLabel.backgroundColor = [UIColor clearColor];
-                    //                    [floodTagLabel sizeToFit];
-                    //                    [columnView addSubview:floodTagLabel];
-                    //
-                    //                    floodReasonLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 95, columnView.bounds.size.width-20, 30)];
-                    //                    floodReasonLabel.text = @"Lane covered due to flood.";
-                    //                    floodReasonLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
-                    //                    floodReasonLabel.textColor = [UIColor blackColor];
-                    //                    floodReasonLabel.backgroundColor = [UIColor clearColor];
-                    //                    floodReasonLabel.numberOfLines = 0;
-                    //                    [columnView addSubview:floodReasonLabel];
-                    
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==2) {
                     
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
-                    
-                    
+                
                     drainDepthValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(columnView.bounds.size.width/2, 30, columnView.bounds.size.width/2 -10, 60)];
-                    drainDepthValueLabel.text = @"Moderate Flood Risk";
                     drainDepthValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
                     drainDepthValueLabel.textColor = [UIColor blackColor];//RGB(26, 158, 241);
                     drainDepthValueLabel.backgroundColor = [UIColor clearColor];
                     drainDepthValueLabel.numberOfLines = 0;
-                    [drainDepthValueLabel sizeToFit];
+//                    if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
+//                        drainDepthValueLabel.text = @"Low Flood Risk";
+//                    }
+//                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==2) {
+//                        drainDepthValueLabel.text = @"Moderate Flood Risk";
+//                    }
+//                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==3) {
+//                        drainDepthValueLabel.text = @"High Flood Risk";
+//                    }
+//                    else {
+//                        drainDepthValueLabel.text = @"Under Maintenance";
+//                    }
+//                    [drainDepthValueLabel sizeToFit];
                     [columnView addSubview:drainDepthValueLabel];
                     
-                    //waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(columnView.bounds.size.width/2 - 28, 45, 56, 50)];
                     waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 30, 50, 50)];
-                    //[waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_level1.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
                     [columnView addSubview:waterLevelImageView];
                     
                     waterSensorLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -580,78 +627,48 @@
                     waterSensorDrainDepthImage.userInteractionEnabled = NO;
                     
                     waterSensorLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 100, columnView.bounds.size.width-40, 25)];
-                    waterSensorLocationLabel.text = @"Bukit Timah Road";
+                    waterSensorLocationLabel.text = @"";//[[wlsDataArray objectAtIndex:0] objectForKey:@"name"];
                     waterSensorLocationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     waterSensorLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     waterSensorLocationLabel.backgroundColor = [UIColor clearColor];
                     waterSensorLocationLabel.numberOfLines = 0;
-                    [waterSensorLocationLabel sizeToFit];
+//                    [waterSensorLocationLabel sizeToFit];
                     [columnView addSubview:waterSensorLocationLabel];
                     
+                    
+//                    CLLocationCoordinate2D currentLocation;
+//                    CLLocationCoordinate2D desinationLocation;
+//                    
+//                    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+//                    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+//                    
+//                    desinationLocation.latitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
+//                    desinationLocation.longitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
+                    
                     waterSensorDrainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 125, columnView.bounds.size.width-40, 25)];
-                    waterSensorDrainDepthLabel.text = @"2.7 KM";
+//                    waterSensorDrainDepthLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
                     waterSensorDrainDepthLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     waterSensorDrainDepthLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     waterSensorDrainDepthLabel.backgroundColor = [UIColor clearColor];
-                    [waterSensorDrainDepthLabel sizeToFit];
+//                    [waterSensorDrainDepthLabel sizeToFit];
                     [columnView addSubview:waterSensorDrainDepthLabel];
+                    
+                    
+                    
+//                    if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
+//                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    }
+//                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==2) {
+//                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    }
+//                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==3) {
+//                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    }
+//                    else {
+//                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    }
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==3) {
-                    
-                    //                    bigWeatherTempTitle = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, 45, 45)];
-                    //                    bigWeatherTempTitle.text = [NSString stringWithFormat:@"29%@",@"°"]; //Use shift+option+8
-                    //                    bigWeatherTempTitle.font = [UIFont fontWithName:ROBOTO_BOLD size:40];
-                    //                    bigWeatherTempTitle.textColor = [UIColor blackColor];
-                    //                    bigWeatherTempTitle.backgroundColor = [UIColor clearColor];
-                    //                    [bigWeatherTempTitle sizeToFit];
-                    //                    [columnView addSubview:bigWeatherTempTitle];
-                    //
-                    //                    bigTempSubtitle = [[UILabel alloc] initWithFrame:CGRectMake(15, 65, columnView.bounds.size.width/2, 10)];
-                    //                    bigTempSubtitle.text = @"Cloudy";
-                    //                    bigTempSubtitle.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-                    //                    bigTempSubtitle.textColor = [UIColor darkGrayColor];
-                    //                    bigTempSubtitle.backgroundColor = [UIColor clearColor];
-                    //                    bigTempSubtitle.numberOfLines = 0;
-                    //                    [columnView addSubview:bigTempSubtitle];
-                    
-                    //                    smallWeatherTempTitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 85, 30, 30)];
-                    //                    smallWeatherTempTitle1.text = [NSString stringWithFormat:@"28%@",@"°"];
-                    //                    smallWeatherTempTitle1.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
-                    //                    smallWeatherTempTitle1.textColor = [UIColor blackColor];
-                    //                    smallWeatherTempTitle1.backgroundColor = [UIColor clearColor];
-                    //                    [smallWeatherTempTitle1 sizeToFit];
-                    //                    [columnView addSubview:smallWeatherTempTitle1];
-                    //
-                    //                    smallTempSubtitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 112, columnView.bounds.size.width/2, 10)];
-                    //                    smallTempSubtitle1.text = @"Cloudy";
-                    //                    smallTempSubtitle1.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
-                    //                    smallTempSubtitle1.textColor = [UIColor darkGrayColor];
-                    //                    smallTempSubtitle1.backgroundColor = [UIColor clearColor];
-                    //                    smallTempSubtitle1.numberOfLines = 0;
-                    //                    [columnView addSubview:smallTempSubtitle1];
-                    //
-                    //                    smallWeatherTempTitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, 30, 30)];
-                    //                    smallWeatherTempTitle2.text = [NSString stringWithFormat:@"32%@",@"°"];
-                    //                    smallWeatherTempTitle2.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
-                    //                    smallWeatherTempTitle2.textColor = [UIColor blackColor];
-                    //                    smallWeatherTempTitle2.backgroundColor = [UIColor clearColor];
-                    //                    [smallWeatherTempTitle2 sizeToFit];
-                    //                    [columnView addSubview:smallWeatherTempTitle2];
-                    //
-                    //                    smallTempSubtitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 157, columnView.bounds.size.width/2, 10)];
-                    //                    smallTempSubtitle2.text = @"Sunny";
-                    //                    smallTempSubtitle2.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
-                    //                    smallTempSubtitle2.textColor = [UIColor darkGrayColor];
-                    //                    smallTempSubtitle2.backgroundColor = [UIColor clearColor];
-                    //                    smallTempSubtitle2.numberOfLines = 0;
-                    //                    [columnView addSubview:smallTempSubtitle2];
-                    
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
                     
                     isShowingWeatherModule = YES;
                     
@@ -686,50 +703,32 @@
                     bigTimeLabel.textAlignment = NSTextAlignmentCenter;
                     [columnView addSubview:bigTimeLabel];
                     
-                    
-                    
-                    //                    smallWeatherIcon1 = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    smallWeatherIcon1.frame = CGRectMake(90, 80, 28, 28);
-                    //                    [smallWeatherIcon1 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:smallWeatherIcon1];
-                    //                    smallWeatherIcon1.userInteractionEnabled = NO;
-                    //
-                    //                    smallTimeLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(90, 108, columnView.bounds.size.width/2, 10)];
-                    //                    smallTimeLabel1.text = @"05:18 PM";
-                    //                    smallTimeLabel1.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
-                    //                    smallTimeLabel1.textColor = [UIColor blackColor];
-                    //                    smallTimeLabel1.backgroundColor = [UIColor clearColor];
-                    //                    smallTimeLabel1.numberOfLines = 0;
-                    //                    [columnView addSubview:smallTimeLabel1];
-                    //
-                    //                    smallWeatherIcon2 = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    smallWeatherIcon2.frame = CGRectMake(90, 130, 28, 28);
-                    //                    [smallWeatherIcon2 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_sunny_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:smallWeatherIcon2];
-                    //                    smallWeatherIcon2.userInteractionEnabled = NO;
-                    //
-                    //                    smallTimeLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(90, 158, columnView.bounds.size.width/2, 10)];
-                    //                    smallTimeLabel2.text = @"08:05 PM";
-                    //                    smallTimeLabel2.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
-                    //                    smallTimeLabel2.textColor = [UIColor blackColor];
-                    //                    smallTimeLabel2.backgroundColor = [UIColor clearColor];
-                    //                    smallTimeLabel2.numberOfLines = 0;
-                    //                    [columnView addSubview:smallTimeLabel2];
-                    
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
                     
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
-                    
-                    
                     cctvImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
-                    [cctvImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/cctv_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
                     [columnView addSubview:cctvImageView];
+                    
+//                    NSString *imageURLString = [NSString stringWithFormat:@"%@",[[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"]];
+                    
+//                    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//                    activityIndicator.center = CGPointMake(cctvImageView.bounds.size.width/2, cctvImageView.bounds.size.height/2);
+//                    [cctvImageView addSubview:activityIndicator];
+//                    [activityIndicator startAnimating];
+//                    
+//                    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+//                        if (succeeded) {
+//                            
+//                            cctvImageView.image = image;
+//                            
+//                        }
+//                        else {
+//                            DebugLog(@"Image Loading Failed..!!");
+//                            cctvImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+//                        }
+//                        [activityIndicator stopAnimating];
+//                    }];
+                    
                     
                     cctvLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     cctvLocationImage.frame = CGRectMake(5, 100, 20, 20);
@@ -744,31 +743,33 @@
                     cctvDistanceImage.userInteractionEnabled = NO;
                     
                     cctvLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 100, columnView.bounds.size.width-40, 25)];
-                    cctvLocationLabel.text = @"Mandalay Road";
+                    cctvLocationLabel.text = @"";//[[cctvDataArray objectAtIndex:0] objectForKey:@"Name"];
                     cctvLocationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     cctvLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     cctvLocationLabel.backgroundColor = [UIColor clearColor];
                     cctvLocationLabel.numberOfLines = 0;
-                    [cctvLocationLabel sizeToFit];
+//                    [cctvLocationLabel sizeToFit];
                     [columnView addSubview:cctvLocationLabel];
                     
+                    
+//                    CLLocationCoordinate2D currentLocation;
+//                    CLLocationCoordinate2D desinationLocation;
+//                    
+//                    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+//                    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+//                    
+//                    desinationLocation.latitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] doubleValue];
+//                    desinationLocation.longitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] doubleValue];
+                    
                     cctvDistanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 125, columnView.bounds.size.width-40, 25)];
-                    cctvDistanceLabel.text = @"3.1 KM";
+                    cctvDistanceLabel.text = @"";//[NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
                     cctvDistanceLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     cctvDistanceLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     cctvDistanceLabel.backgroundColor = [UIColor clearColor];
-                    [cctvDistanceLabel sizeToFit];
+//                    [cctvDistanceLabel sizeToFit];
                     [columnView addSubview:cctvDistanceLabel];
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5) {
-                    
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
-                    
                     
                     whatsUpListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     whatsUpListingTable.delegate = self;
@@ -781,13 +782,6 @@
                     
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
-                    
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
                     
                     eventsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     eventsListingTable.delegate = self;
@@ -802,7 +796,7 @@
                 
                 
                 if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
-                    //                    DebugLog(@"Dont do anything");
+
                 }
                 else {
                     
@@ -818,10 +812,6 @@
                 UIView *columnView = [[UIView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/2)+5, right_yAxis, (self.view.bounds.size.width-30)/2, [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"height"] floatValue])];
                 columnView.backgroundColor = [UIColor whiteColor];
                 columnView.layer.cornerRadius = 10;
-                //                [columnView.layer setShadowColor:[[UIColor lightGrayColor] CGColor]];
-                //                [columnView.layer setShadowOffset:CGSizeMake(2, 2)];
-                //                [columnView.layer setShadowOpacity:1];
-                //                [columnView.layer setShadowRadius:1.0];
                 [backgroundScrollView addSubview:columnView];
                 columnView.userInteractionEnabled = YES;
                 
@@ -840,15 +830,6 @@
                 
                 if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==1) {
                     
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
-                    
-                    
-                    //                    if (!quickMap) {
                     quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-3, columnView.bounds.size.height-23)];
                     quickMap.delegate = self;
                     [quickMap setMapType:MKMapTypeStandard];
@@ -877,7 +858,7 @@
                             if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied) {
                                 [locationManager requestWhenInUseAuthorization];
                             }
-                            //[locationManager requestAlwaysAuthorization];
+
                         }
                         [locationManager requestWhenInUseAuthorization];
                         locationManager.delegate = self;
@@ -885,164 +866,90 @@
                         [locationManager startUpdatingLocation];
                     }
                     
-                    //                    quickMapLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    quickMapLocationImage.frame = CGRectMake(5, 130, 20, 20);
-                    //                    [quickMapLocationImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_pink.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:quickMapLocationImage];
-                    //                    quickMapLocationImage.userInteractionEnabled = NO;
-                    //
-                    //                    quickMapDistanceImage = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    quickMapDistanceImage.frame = CGRectMake(5, 155, 20, 20);
-                    //                    [quickMapDistanceImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_distance_pink.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:quickMapDistanceImage];
-                    //                    quickMapDistanceImage.userInteractionEnabled = NO;
-                    //
-                    //                    quickMapLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 130, columnView.bounds.size.width-40, 25)];
-                    //                    quickMapLocationLabel.text = @"TPE exit towards AYE";
-                    //                    quickMapLocationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
-                    //                    quickMapLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
-                    //                    quickMapLocationLabel.backgroundColor = [UIColor clearColor];
-                    //                    quickMapLocationLabel.numberOfLines = 0;
-                    //                    [quickMapLocationLabel sizeToFit];
-                    //                    [columnView addSubview:quickMapLocationLabel];
-                    //
-                    //                    quickMapDistanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 155, columnView.bounds.size.width-40, 25)];
-                    //                    quickMapDistanceLabel.text = @"2.1 KM";
-                    //                    quickMapDistanceLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
-                    //                    quickMapDistanceLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
-                    //                    quickMapDistanceLabel.backgroundColor = [UIColor clearColor];
-                    //                    [quickMapDistanceLabel sizeToFit];
-                    //                    [columnView addSubview:quickMapDistanceLabel];
-                    //
-                    //                    quickMapFloodIcon = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    quickMapFloodIcon.frame = CGRectMake(90, 50, 40, 40);
-                    //                    [quickMapFloodIcon setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_quickmap_car.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:quickMapFloodIcon];
-                    //                    quickMapFloodIcon.userInteractionEnabled = NO;
-                    //
-                    //                    nearbyQuickMapLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 25, columnView.bounds.size.width-20, 25)];
-                    //                    nearbyQuickMapLabel.text = @"Nearby";
-                    //                    nearbyQuickMapLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
-                    //                    nearbyQuickMapLabel.textColor = [UIColor blackColor];
-                    //                    nearbyQuickMapLabel.backgroundColor = [UIColor clearColor];
-                    //                    [nearbyQuickMapLabel sizeToFit];
-                    //                    [columnView addSubview:nearbyQuickMapLabel];
-                    //
-                    //                    floodTagLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 40, 50, 40)];
-                    //                    floodTagLabel.text = @"01";
-                    //                    floodTagLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:40];
-                    //                    floodTagLabel.textColor = [UIColor blackColor];
-                    //                    floodTagLabel.backgroundColor = [UIColor clearColor];
-                    //                    [floodTagLabel sizeToFit];
-                    //                    [columnView addSubview:floodTagLabel];
-                    //
-                    //                    floodReasonLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 95, columnView.bounds.size.width-20, 30)];
-                    //                    floodReasonLabel.text = @"Lane covered due to flood.";
-                    //                    floodReasonLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
-                    //                    floodReasonLabel.textColor = [UIColor blackColor];
-                    //                    floodReasonLabel.backgroundColor = [UIColor clearColor];
-                    //                    floodReasonLabel.numberOfLines = 0;
-                    //                    [columnView addSubview:floodReasonLabel];
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==2) {
                     
-                    //                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
-                    //                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/water_level_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-                    //                    [columnView addSubview:waterLevelImageView];
-                    
-                    
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
-                    
                     
                     drainDepthValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(columnView.bounds.size.width/2, 30, columnView.bounds.size.width/2 -10, 60)];
-                    drainDepthValueLabel.text = @"Moderate Flood Risk";
                     drainDepthValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
                     drainDepthValueLabel.textColor = [UIColor blackColor];//RGB(26, 158, 241);
                     drainDepthValueLabel.backgroundColor = [UIColor clearColor];
                     drainDepthValueLabel.numberOfLines = 0;
-                    [drainDepthValueLabel sizeToFit];
+//                    if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
+//                        drainDepthValueLabel.text = @"Low Flood Risk";
+//                    }
+//                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==2) {
+//                        drainDepthValueLabel.text = @"Moderate Flood Risk";
+//                    }
+//                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==3) {
+//                        drainDepthValueLabel.text = @"High Flood Risk";
+//                    }
+//                    else {
+//                        drainDepthValueLabel.text = @"Under Maintenance";
+//                    }
+//                    [drainDepthValueLabel sizeToFit];
                     [columnView addSubview:drainDepthValueLabel];
                     
-                    //waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(columnView.bounds.size.width/2 - 28, 45, 56, 50)];
-                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 30, 50, 50)];
-                    //[waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_level1.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-                    [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-                    [columnView addSubview:waterLevelImageView];
                     
+                    waterLevelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 30, 50, 50)];
+                    [columnView addSubview:waterLevelImageView];
                     
                     waterSensorLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     waterSensorLocationImage.frame = CGRectMake(5, 100, 20, 20);
                     [waterSensorLocationImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_blue.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:waterSensorLocationImage];
+                    waterSensorLocationImage.userInteractionEnabled = NO;
                     
                     waterSensorDrainDepthImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     waterSensorDrainDepthImage.frame = CGRectMake(5, 125, 20, 20);
                     [waterSensorDrainDepthImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_distance_blue_wls.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:waterSensorDrainDepthImage];
+                    waterSensorDrainDepthImage.userInteractionEnabled = NO;
                     
                     waterSensorLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 100, columnView.bounds.size.width-40, 25)];
-                    waterSensorLocationLabel.text = @"Bukit Timah Road";
+                    waterSensorLocationLabel.text = @"";//[[wlsDataArray objectAtIndex:0] objectForKey:@"name"];
                     waterSensorLocationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     waterSensorLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     waterSensorLocationLabel.backgroundColor = [UIColor clearColor];
                     waterSensorLocationLabel.numberOfLines = 0;
-                    [waterSensorLocationLabel sizeToFit];
+//                    [waterSensorLocationLabel sizeToFit];
                     [columnView addSubview:waterSensorLocationLabel];
                     
+                    
+//                    CLLocationCoordinate2D currentLocation;
+//                    CLLocationCoordinate2D desinationLocation;
+//                    
+//                    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+//                    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+//                    
+//                    desinationLocation.latitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
+//                    desinationLocation.longitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
+                    
                     waterSensorDrainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 125, columnView.bounds.size.width-40, 25)];
-                    waterSensorDrainDepthLabel.text = @"2.7 KM";
+//                    waterSensorDrainDepthLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
                     waterSensorDrainDepthLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     waterSensorDrainDepthLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     waterSensorDrainDepthLabel.backgroundColor = [UIColor clearColor];
-                    [waterSensorDrainDepthLabel sizeToFit];
+//                    [waterSensorDrainDepthLabel sizeToFit];
                     [columnView addSubview:waterSensorDrainDepthLabel];
+                    
+                    
+                    
+//                    if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
+//                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    }
+//                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==2) {
+//                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    }
+//                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==3) {
+//                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    }
+//                    else {
+//                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//                    }
+                    
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==3) {
-                    
-                    
-                    //                    smallWeatherTempTitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 85, 30, 30)];
-                    //                    smallWeatherTempTitle1.text = [NSString stringWithFormat:@"28%@",@"°"];
-                    //                    smallWeatherTempTitle1.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
-                    //                    smallWeatherTempTitle1.textColor = [UIColor blackColor];
-                    //                    smallWeatherTempTitle1.backgroundColor = [UIColor clearColor];
-                    //                    [smallWeatherTempTitle1 sizeToFit];
-                    //                    [columnView addSubview:smallWeatherTempTitle1];
-                    //
-                    //                    smallTempSubtitle1 = [[UILabel alloc] initWithFrame:CGRectMake(15, 112, columnView.bounds.size.width/2, 10)];
-                    //                    smallTempSubtitle1.text = @"Cloudy";
-                    //                    smallTempSubtitle1.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
-                    //                    smallTempSubtitle1.textColor = [UIColor darkGrayColor];
-                    //                    smallTempSubtitle1.backgroundColor = [UIColor clearColor];
-                    //                    smallTempSubtitle1.numberOfLines = 0;
-                    //                    [columnView addSubview:smallTempSubtitle1];
-                    //
-                    //                    smallWeatherTempTitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, 30, 30)];
-                    //                    smallWeatherTempTitle2.text = [NSString stringWithFormat:@"32%@",@"°"];
-                    //                    smallWeatherTempTitle2.font = [UIFont fontWithName:ROBOTO_BOLD size:24];
-                    //                    smallWeatherTempTitle2.textColor = [UIColor blackColor];
-                    //                    smallWeatherTempTitle2.backgroundColor = [UIColor clearColor];
-                    //                    [smallWeatherTempTitle2 sizeToFit];
-                    //                    [columnView addSubview:smallWeatherTempTitle2];
-                    //
-                    //                    smallTempSubtitle2 = [[UILabel alloc] initWithFrame:CGRectMake(15, 157, columnView.bounds.size.width/2, 10)];
-                    //                    smallTempSubtitle2.text = @"Sunny";
-                    //                    smallTempSubtitle2.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
-                    //                    smallTempSubtitle2.textColor = [UIColor darkGrayColor];
-                    //                    smallTempSubtitle2.backgroundColor = [UIColor clearColor];
-                    //                    smallTempSubtitle2.numberOfLines = 0;
-                    //                    [columnView addSubview:smallTempSubtitle2];
-                    
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
                     
                     isShowingWeatherModule = YES;
                     
@@ -1077,84 +984,74 @@
                     bigTimeLabel.textAlignment = NSTextAlignmentCenter;
                     [columnView addSubview:bigTimeLabel];
                     
-                    //                    smallWeatherIcon1 = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    smallWeatherIcon1.frame = CGRectMake(90, 80, 28, 28);
-                    //                    [smallWeatherIcon1 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:smallWeatherIcon1];
-                    //                    smallWeatherIcon1.userInteractionEnabled = NO;
-                    //
-                    //                    smallTimeLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(90, 108, columnView.bounds.size.width/2, 10)];
-                    //                    smallTimeLabel1.text = @"05:18 PM";
-                    //                    smallTimeLabel1.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
-                    //                    smallTimeLabel1.textColor = [UIColor blackColor];
-                    //                    smallTimeLabel1.backgroundColor = [UIColor clearColor];
-                    //                    smallTimeLabel1.numberOfLines = 0;
-                    //                    [columnView addSubview:smallTimeLabel1];
-                    //
-                    //                    smallWeatherIcon2 = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    smallWeatherIcon2.frame = CGRectMake(90, 130, 28, 28);
-                    //                    [smallWeatherIcon2 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_sunny_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    [columnView addSubview:smallWeatherIcon2];
-                    //                    smallWeatherIcon2.userInteractionEnabled = NO;
-                    //
-                    //                    smallTimeLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(90, 158, columnView.bounds.size.width/2, 10)];
-                    //                    smallTimeLabel2.text = @"08:05 PM";
-                    //                    smallTimeLabel2.font = [UIFont fontWithName:ROBOTO_REGULAR size:9];
-                    //                    smallTimeLabel2.textColor = [UIColor blackColor];
-                    //                    smallTimeLabel2.backgroundColor = [UIColor clearColor];
-                    //                    smallTimeLabel2.numberOfLines = 0;
-                    //                    [columnView addSubview:smallTimeLabel2];
-                    
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
                     
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
-                    
-                    
                     cctvImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width+1, 78)];
-                    [cctvImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/cctv_dummy.png",appDelegate.RESOURCE_FOLDER_PATH]]];
                     [columnView addSubview:cctvImageView];
+                    
+                    
+//                    NSString *imageURLString = [NSString stringWithFormat:@"%@",[[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"]];
+//                    
+//                    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//                    activityIndicator.center = CGPointMake(cctvImageView.bounds.size.width/2, cctvImageView.bounds.size.height/2);
+//                    [cctvImageView addSubview:activityIndicator];
+//                    [activityIndicator startAnimating];
+//                    
+//                    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+//                        if (succeeded) {
+//                            
+//                            cctvImageView.image = image;
+//                            
+//                        }
+//                        else {
+//                            DebugLog(@"Image Loading Failed..!!");
+//                            cctvImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+//                        }
+//                        [activityIndicator stopAnimating];
+//                    }];
+                    
                     
                     cctvLocationImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     cctvLocationImage.frame = CGRectMake(5, 100, 20, 20);
                     [cctvLocationImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_turqoise.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:cctvLocationImage];
+                    cctvLocationImage.userInteractionEnabled = NO;
                     
                     cctvDistanceImage = [UIButton buttonWithType:UIButtonTypeCustom];
                     cctvDistanceImage.frame = CGRectMake(5, 125, 20, 20);
                     [cctvDistanceImage setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_distance_turqoise.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
                     [columnView addSubview:cctvDistanceImage];
+                    cctvDistanceImage.userInteractionEnabled = NO;
                     
                     cctvLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 100, columnView.bounds.size.width-40, 25)];
-                    cctvLocationLabel.text = @"Mandalay Road";
+                    cctvLocationLabel.text = @"";//[[cctvDataArray objectAtIndex:0] objectForKey:@"Name"];
                     cctvLocationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     cctvLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     cctvLocationLabel.backgroundColor = [UIColor clearColor];
                     cctvLocationLabel.numberOfLines = 0;
-                    [cctvLocationLabel sizeToFit];
+//                    [cctvLocationLabel sizeToFit];
                     [columnView addSubview:cctvLocationLabel];
                     
+                    
+//                    CLLocationCoordinate2D currentLocation;
+//                    CLLocationCoordinate2D desinationLocation;
+//                    
+//                    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+//                    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+//                    
+//                    desinationLocation.latitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] doubleValue];
+//                    desinationLocation.longitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] doubleValue];
+                    
                     cctvDistanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 125, columnView.bounds.size.width-40, 25)];
-                    cctvDistanceLabel.text = @"3.1 KM";
+                    cctvDistanceLabel.text = @"";//[NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
                     cctvDistanceLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     cctvDistanceLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     cctvDistanceLabel.backgroundColor = [UIColor clearColor];
-                    [cctvDistanceLabel sizeToFit];
+//                    [cctvDistanceLabel sizeToFit];
                     [columnView addSubview:cctvDistanceLabel];
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5) {
-                    
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
                     
                     whatsUpListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     whatsUpListingTable.delegate = self;
@@ -1168,13 +1065,6 @@
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
                     
-                    //                    UIButton *dotsbutton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    //                    dotsbutton.frame = CGRectMake(columnView.bounds.size.width-30, 0, 20, 20);
-                    //                    [dotsbutton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_3dots_horizontal.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-                    //                    dotsbutton.tag = [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue];
-                    //                    [dotsbutton addTarget:self action:@selector(handleDotsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-                    //                    [columnView addSubview:dotsbutton];
-                    
                     eventsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(2, 20, columnView.bounds.size.width-5, columnView.bounds.size.height-25) style:UITableViewStylePlain];
                     eventsListingTable.delegate = self;
                     eventsListingTable.dataSource = self;
@@ -1187,7 +1077,7 @@
                 }
                 
                 if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
-                    //                    DebugLog(@"Dont do anything");
+
                 }
                 else {
                     
@@ -1208,6 +1098,44 @@
         backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, left_yAxis+80);
     }
     
+}
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    [appDelegate.hud hide:YES];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [eventsDataArray removeAllObjects];
+        [feedsDataArray removeAllObjects];
+        [wlsDataArray removeAllObjects];
+        [cctvDataArray removeAllObjects];
+        [floodsDataArray removeAllObjects];
+        
+        [eventsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_EVENTS_RESPONSE_NAME]];
+        [feedsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_FEEDS_RESPONSE_NAME]];
+        [wlsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_WLS_RESPONSE_NAME]];
+        [cctvDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_CCTV_RESPONSE_NAME]];
+        [floodsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_FLOODS_RESPONSE_NAME]];
+        
+        [self refreshHomePageContent];
+        
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    [appDelegate.hud hide:YES];
+    NSError *error = [request error];
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
 }
 
 
@@ -1307,13 +1235,60 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    appDelegate.IS_COMING_FROM_DASHBOARD = YES;
+
     if (tableView==whatsUpListingTable) {
+        
         WhatsUpViewController *viewObj = [[WhatsUpViewController alloc] init];
-        appDelegate.IS_COMING_FROM_DASHBOARD = YES;
+        
+        if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"IsChatter"] intValue] == true) {
+            viewObj.isDashboardChatter = YES;
+        }
+        else {
+            viewObj.isDashboardChatter = NO;
+        }
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (tableView==eventsListingTable) {
+        
         EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
+            viewObj.eventID = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"id"];
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
+            viewObj.titleString = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
+            viewObj.descriptionString = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"description"];
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+            viewObj.latValue = [[[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+            viewObj.longValue = [[[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
+            viewObj.phoneNoString = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
+            viewObj.addressString = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"location"];
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
+            viewObj.startDateString = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"startDate"];
+            viewObj.startDateString = [CommonFunctions dateTimeFromString:viewObj.startDateString];
+        }
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
+            viewObj.endDateString = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"endDate"];
+            viewObj.endDateString = [CommonFunctions dateTimeFromString:viewObj.endDateString];
+        }
+        
+        if ([[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
+            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"image"]];
+            viewObj.imageName = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"image"];
+        }
+        
         [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
@@ -1324,10 +1299,10 @@
     
     
     if (tableView==whatsUpListingTable) {
-        return whatsUpFeedDataSource.count;
+        return feedsDataArray.count;
     }
     else if (tableView==eventsListingTable) {
-        return eventsDataSource.count;
+        return eventsDataArray.count;
     }
     
     return 0;
@@ -1337,49 +1312,87 @@
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
     
-    //    cell.textLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
-    //    cell.detailTextLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:9.0];
-    //
-    //    cell.textLabel.numberOfLines = 0;
-    //    cell.detailTextLabel.numberOfLines = 0;
-    //    cell.textLabel.textColor = RGB(245, 193, 12);
-    
-    //    DebugLog(@"cell width %f",cell.bounds.size.width);
-    
-    UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 45, 45)];
-    [cell.contentView addSubview:cellImageView];
-    
-    //    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 5, cell.bounds.size.width-60, 25)];
-    //    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 5, cell.bounds.size.width-60, cell.bounds.size.height)];
-    UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, tableView.bounds.size.width-65, 45)];
-    cellTitleLabel.backgroundColor = [UIColor clearColor];
-    cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
-    cellTitleLabel.numberOfLines = 0;
-    cellTitleLabel.textColor = [UIColor blackColor];//RGB(245, 193, 12);
-    [cell.contentView addSubview:cellTitleLabel];
-    
-    
-    
+
     if (tableView==whatsUpListingTable) {
         
-        cellImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/e%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
-        cellTitleLabel.text = [[whatsUpFeedDataSource objectAtIndex:indexPath.row] objectForKey:@"Title"];
-        //        cellSubTitleLabel.text = [[whatsUpFeedDataSource objectAtIndex:indexPath.row] objectForKey:@"Subtitle"];
+        UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 10, tableView.bounds.size.width-10, 45)];
+        cellTitleLabel.backgroundColor = [UIColor clearColor];
+        cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
+        cellTitleLabel.numberOfLines = 0;
+        cellTitleLabel.textColor = [UIColor blackColor];//RGB(245, 193, 12);
+        [cell.contentView addSubview:cellTitleLabel];
+        
+        cellTitleLabel.text = [[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"FeedText"];
+        
     }
     else if (tableView==eventsListingTable) {
         
-        //        cellTitleLabel.frame = CGRectMake(55, 5, cell.bounds.size.width-60, 25);
+        UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 45, 45)];
+        [cell.contentView addSubview:cellImageView];
         
-        //        UILabel *cellSubTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 31, cell.bounds.size.width-60, 20)];
-        //        cellSubTitleLabel.backgroundColor = [UIColor clearColor];
-        //        cellSubTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:9.0];
-        //        cellSubTitleLabel.numberOfLines = 0;
-        //        [cell.contentView addSubview:cellSubTitleLabel];
+        UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, tableView.bounds.size.width-65, 45)];
+        cellTitleLabel.backgroundColor = [UIColor clearColor];
+        cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
+        cellTitleLabel.numberOfLines = 0;
+        cellTitleLabel.textColor = [UIColor blackColor];//RGB(245, 193, 12);
+        [cell.contentView addSubview:cellTitleLabel];
+        
+        cellTitleLabel.text = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"title"];
+        
+        NSString *imageName = [[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"image"];
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[eventsDataArray objectAtIndex:indexPath.row] objectForKey:@"image"]];
+        [cell.contentView addSubview:cellImageView];
         
         
-        cellImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/w%ld.png",appDelegate.RESOURCE_FOLDER_PATH,indexPath.row+1]];
-        cellTitleLabel.text = [[eventsDataSource objectAtIndex:indexPath.row] objectForKey:@"Title"];
-        //        cellSubTitleLabel.text = [[eventsDataSource objectAtIndex:indexPath.row] objectForKey:@"Date"];
+        NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+        NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+        NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"Events"]];
+        
+        NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+            if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+                cellImageView.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+        }
+        
+        else {
+            
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            activityIndicator.center = CGPointMake(cellImageView.bounds.size.width/2, cellImageView.bounds.size.height/2);
+            [cellImageView addSubview:activityIndicator];
+            [activityIndicator startAnimating];
+            
+            [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                if (succeeded) {
+                    
+                    cellImageView.image = image;
+                    
+                    DebugLog(@"Path %@",destinationPath);
+                    
+                    NSFileManager *fileManger=[NSFileManager defaultManager];
+                    NSError* error;
+                    
+                    if (![fileManger fileExistsAtPath:destinationPath]){
+                        
+                        if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                            ;// success
+                        else
+                        {
+                            DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                        }
+                    }
+                    
+                    NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                    [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+                }
+                else {
+                    DebugLog(@"Image Loading Failed..!!");
+                    cellImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+                }
+                [activityIndicator stopAnimating];
+            }];
+        }
         
     }
     
@@ -1413,55 +1426,14 @@
     
     self.title = @"Home";
     
-    
-    
+    eventsDataArray = [[NSMutableArray alloc] init];
+    feedsDataArray = [[NSMutableArray alloc] init];
+    wlsDataArray = [[NSMutableArray alloc] init];
+    cctvDataArray = [[NSMutableArray alloc] init];
+    floodsDataArray = [[NSMutableArray alloc] init];
     
     [self createDynamicUIColumns];
     
-    
-    
-    
-    // Temp DataSoruce Code
-    
-    //    NSDate *todayDate = [NSDate date];
-    //    [dateFormatter setDateFormat:@"dd MMM yyyy"];
-    
-    //    if (whatsUpFeedDataSource.count==0) {
-    //        for (int i=0; i<3; i++) {
-    //            NSDictionary *dictEvents = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",i+1],[NSString stringWithFormat:@"Feed Title %d",i+1],[NSString stringWithFormat:@"Feed Sub-Title %d",i+1],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
-    //            [whatsUpFeedDataSource addObject:dictEvents];
-    //        }
-    //    }
-    
-    //----- Temp Data
-    NSDictionary *dictEvents1 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"1"],[NSString stringWithFormat:@"World Waters Data"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
-    NSDictionary *dictEvents2 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"2"],[NSString stringWithFormat:@"Seletar Reservoir"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
-    //    NSDictionary *dictEvents3 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"3"],[NSString stringWithFormat:@"Water campaign at Bishan Park"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
-    
-    if (whatsUpFeedDataSource.count==0) {
-        [whatsUpFeedDataSource addObject:dictEvents1];
-        [whatsUpFeedDataSource addObject:dictEvents2];
-        //        [whatsUpFeedDataSource addObject:dictEvents3];
-    }
-    
-    
-    //    if (eventsDataSource.count==0) {
-    //        for (int i=0; i<3; i++) {
-    //            NSDate *newDate = [todayDate dateByAddingTimeInterval:60*60*24*(i+1)];
-    //            NSString *newDateString = [dateFormatter stringFromDate:newDate];
-    //
-    //            NSDictionary *dictWhatsUp = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",i+1],[NSString stringWithFormat:@"Event Title %d",i+1],newDateString,nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Date", nil]];
-    //            [eventsDataSource addObject:dictWhatsUp];
-    //        }
-    //    }
-    
-    //----- Temp Data
-    NSDictionary *dictEvents11 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"1"],[NSString stringWithFormat:@"Fireworks display for SEA games"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
-    NSDictionary *dictEvents12 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"2"],[NSString stringWithFormat:@"Mass exercise"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
-    //    NSDictionary *dictEvents13 = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:[NSString stringWithFormat:@"3"],[NSString stringWithFormat:@"Cross country"],[NSString stringWithFormat:@"Feed Sub-Title"],nil] forKeys:[NSArray arrayWithObjects:@"id",@"Title",@"Subtitle", nil]];
-    [eventsDataSource addObject:dictEvents11];
-    [eventsDataSource addObject:dictEvents12];
-    //    [eventsDataSource addObject:dictEvents13];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -1490,11 +1462,20 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
     
-    if (appDelegate.DASHBOARD_PREFERENCES_CHANGED) {
+    
+//    if (!isExpandingMenu) {
+    
+        if (appDelegate.DASHBOARD_PREFERENCES_CHANGED) {
+            
+            appDelegate.DASHBOARD_PREFERENCES_CHANGED = NO;
+            [self createDynamicUIColumns];
+        }
         
-        appDelegate.DASHBOARD_PREFERENCES_CHANGED = NO;
-        [self createDynamicUIColumns];
-    }
+        [self fetchDashboardData];
+//    }
+//    else {
+//        isExpandingMenu = NO;
+//    }
 }
 
 
@@ -1506,9 +1487,6 @@
     
     [self.view addGestureRecognizer:swipeGesture];
     
-    if (isShowingWeatherModule) {
-        [self getTwelveHourWeatherData];
-    }
 }
 
 

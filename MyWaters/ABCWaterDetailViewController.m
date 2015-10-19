@@ -9,7 +9,6 @@
 #import "ABCWaterDetailViewController.h"
 #import "ARViewController.h"
 
-
 @interface UIDevice (MyPrivateNameThatAppleWouldNeverUseGoesHere)
 - (void) setOrientation:(UIInterfaceOrientation)orientation;
 @end
@@ -114,8 +113,16 @@
         [self animateTopMenu];
     }
     
-    GalleryViewController *viewObj = [[GalleryViewController alloc] init];
-    [self.navigationController pushViewController:viewObj animated:YES];
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+    
+    isFetchingGalleryImages = YES;
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ABCWaterSitesID", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:abcSiteId, nil];
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,ABC_WATERS_POI]];
 }
 
 
@@ -135,7 +142,7 @@
     
     [self animateTopMenu];
     
-    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Share on" msg:nil cancel:nil tag:2 destructive:nil otherButton:@"Facebook",@"Twitter",@"Email",@"Cancel",nil];
+    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Share on" msg:nil cancel:nil tag:2 destructive:nil otherButton:@"Facebook",@"Twitter",@"Cancel",nil];
 }
 
 
@@ -183,7 +190,7 @@
         h2 = (h1*self.view.bounds.size.width)/w1;
     }
     
-
+    
     
     eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
     [bgScrollView addSubview:eventImageView];
@@ -196,7 +203,7 @@
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
         if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
-        eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+            eventImageView.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
     }
     else {
         
@@ -211,7 +218,7 @@
             if (succeeded) {
                 
                 eventImageView.image = image;
-                                
+                
                 NSFileManager *fileManger=[NSFileManager defaultManager];
                 NSError* error;
                 
@@ -236,8 +243,8 @@
             [activityIndicator stopAnimating];
         }];
     }
-
-
+    
+    
     
     UIImageView *certifiedLogo = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 59, 25)];
     [certifiedLogo setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwater_certified_logo.png",appDelegate.RESOURCE_FOLDER_PATH]]];
@@ -276,7 +283,7 @@
     
     CLLocationCoordinate2D currentLocation;
     CLLocationCoordinate2D desinationLocation;
-
+    
     currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
     currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
     
@@ -350,6 +357,68 @@
 }
 
 
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    [appDelegate.hud hide:YES];
+    
+    DebugLog(@"%@",responseString);
+    
+    if (isFetchingGalleryImages) {
+        
+        isFetchingGalleryImages = NO;
+        
+        if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+            
+            [abcGalleryImages removeAllObjects];
+            NSArray *tempArray = [[responseString JSONValue] objectForKey:ABC_GALLERY_RESPONSE_NAME];
+            
+            if (tempArray.count!=0) {
+                
+                for (int i=0; i<tempArray.count; i++) {
+                    NSString *galleryImageName = [[tempArray objectAtIndex:i] objectForKey:@"Image"];
+                    [abcGalleryImages addObject:galleryImageName];
+                }
+                
+                GalleryViewController *viewObj = [[GalleryViewController alloc] init];
+                viewObj.isABCGallery = YES;
+                viewObj.isUserGallery = NO;
+                viewObj.galleryImages = abcGalleryImages;
+                [self.navigationController pushViewController:viewObj animated:YES];
+                
+            }
+            else {
+                [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"Ok" otherButton:nil];
+            }
+        }
+        else {
+            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        }
+    }
+    else {
+        if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+            
+            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        }
+        else {
+            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        }
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
+    [appDelegate.hud hide:YES];
+}
+
+
+
 # pragma mark - UIActionSheetDelegate Methods
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -387,6 +456,30 @@
             }
         }
     }
+    else if (actionSheet.tag==2) {
+        if (buttonIndex==0) {
+            
+            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:@"https://itunes.apple.com/sg/app/mywaters/id533051315?mt=8" title:titleString desc:descriptionString view:self];
+        }
+        else if (buttonIndex==1) {
+            
+            [CommonFunctions sharePostOnTwitter:@"https://itunes.apple.com/sg/app/mywaters/id533051315?mt=8" title:titleString view:self];
+        }
+    }
+}
+
+
+#pragma mark - FBSDKSharingDelegate
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults :(NSDictionary *)results {
+    NSLog(@"FB: SHARE RESULTS=%@\n",[results debugDescription]);
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    NSLog(@"FB: ERROR=%@\n",[error debugDescription]);
+}
+
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+    NSLog(@"FB: CANCELED SHARER=%@\n",[sharer debugDescription]);
 }
 
 
@@ -430,36 +523,6 @@
 }
 
 
-
-# pragma mark - ASIHTTPRequestDelegate Methods
-
-- (void) requestFinished:(ASIHTTPRequest *)request {
-    
-    // Use when fetching text data
-    NSString *responseString = [request responseString];
-    
-    DebugLog(@"%@",responseString);
-    
-    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
-        
-        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
-    }
-    else {
-        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
-    }
-    
-    [appDelegate.hud hide:YES];
-}
-
-- (void) requestFailed:(ASIHTTPRequest *)request {
-    
-    NSError *error = [request error];
-    DebugLog(@"%@",[error description]);
-    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-    [appDelegate.hud hide:YES];
-}
-
-
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
@@ -468,16 +531,16 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-
+    
     self.view.backgroundColor = RGB(242, 242, 242);
     self.title = @"ABC Waters Info";
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];
-
+    
     //[self createDemoAppControls];
     
-    
+    abcGalleryImages = [[NSMutableArray alloc] init];
     
     bgScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-124)];
     bgScrollView.showsHorizontalScrollIndicator = NO;
@@ -567,7 +630,7 @@
     UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
     [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
     [topMenu addSubview:seperatorOne];
-
+    
     
     galleryLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
     galleryLabel.backgroundColor = [UIColor clearColor];
@@ -580,7 +643,7 @@
     UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(galleryLabel.frame.origin.x+galleryLabel.bounds.size.width-1, 0, 0.5, 45)];
     [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
     [topMenu addSubview:seperatorTwo];
-
+    
     
     shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
     shareLabel.backgroundColor = [UIColor clearColor];
@@ -615,7 +678,7 @@
     
     [self.view addGestureRecognizer:swipeGesture];
     
-//    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
+    //    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
     
 }
 

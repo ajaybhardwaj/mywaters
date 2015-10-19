@@ -41,6 +41,7 @@
 #define ABC_WATER_SITES_POI_RESPONSE_NAME @"ListABCPOI"
 #define ABC_WATER_SITES_POI_IMAGES @"ListABCPOIImage"
 #define ABC_WATER_SITES_POI_TOTAL_COUNT @"TotalABCPOI"
+#define ABC_GALLERY_RESPONSE_NAME @"ListABCImage"
 #define EVENTS_RESPONSE_NAME @"ListEvents"
 #define EVENTS_TOTAL_COUNT @"TotalEvents"
 #define WLS_LISTING_RESPONSE_NAME @"ListWaterLevelSensorStation"
@@ -55,6 +56,13 @@
 #define USER_BADGES_RESPONSE_NAME @"ListBadge"
 #define REWARDS_RESPONSE_NAME @"ListReward"
 #define USER_ACTION_HISTORY_RESPONSE_NAME @"ListActionHistory"
+
+
+#define DASHBOARD_API_CCTV_RESPONSE_NAME @"ListCCTV"
+#define DASHBOARD_API_WLS_RESPONSE_NAME @"ListWaterLevelSensorStation"
+#define DASHBOARD_API_EVENTS_RESPONSE_NAME @"ListEvents"
+#define DASHBOARD_API_FEEDS_RESPONSE_NAME @"ListMediaFeed"
+#define DASHBOARD_API_FLOODS_RESPONSE_NAME @"ListFloodPUBSubmission"
 
 
 # pragma mark - BASE URLS

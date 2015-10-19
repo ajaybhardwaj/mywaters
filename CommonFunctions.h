@@ -18,6 +18,11 @@
 #import "ASINetworkQueue.h"
 #import "JSON.h"
 #import <CoreLocation/CoreLocation.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
+#import <FacebookSDK/FacebookSDK.h>
+#import <Social/Social.h>
+
 
 @interface CommonFunctions : NSObject <CLLocationManagerDelegate>
 
@@ -44,5 +49,9 @@
 
 
 + (void)downloadImageWithURL:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))completionBlock;
+
+# pragma mark - Facebook & Twitter Share Method
++ (void) sharePostOnFacebook:(NSString*)postImageUrl appUrl:(NSString*)appstoreUrl title:(NSString*)postTitle desc:(NSString*)postDescription view:(UIViewController*) viewObj;
++ (void) sharePostOnTwitter:(NSString*)appStoreUrl title:(NSString*)postTitle view:(UIViewController*) viewObj;
 
 @end

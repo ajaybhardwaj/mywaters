@@ -13,8 +13,11 @@
 #import "AsyncImageView.h"
 #import "DirectionViewController.h"
 #import "GalleryViewController.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate> {
+
+@interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,FBSDKSharingDelegate> {
     
     AppDelegate *appDelegate;
     BOOL isControlMaximize;
@@ -44,6 +47,8 @@
     
     UILabel___Extension *descriptionLabel;
     
+    NSMutableArray *abcGalleryImages;
+    BOOL isFetchingGalleryImages;
 }
 
 @property (nonatomic, strong) NSString *abcSiteId,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*imageName;

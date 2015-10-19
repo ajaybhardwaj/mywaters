@@ -9,7 +9,8 @@
 #import "RewardDetailsViewController.h"
 
 @implementation RewardDetailsViewController
-
+@synthesize rewardID,descriptionString,titleString,validFromDateString,validTillDateString,locationValueString,pointsValueString,imageName,imageUrl;
+@synthesize latValue,longValue;
 
 //*************** Demo App UI
 
@@ -47,52 +48,111 @@
 
 - (void) createUI {
     
-    float h2 = 0;
+//    float h2 = 0;
+//    
+//    if ([dataDict objectForKey:@"image_size"] !=(id)[NSNull null]) {
+//        NSArray *tempArray = [[dataDict objectForKey:@"image_size"] componentsSeparatedByString: @","];
+//        
+//        float w1 = [[tempArray objectAtIndex:0] floatValue];
+//        float h1 = [[tempArray objectAtIndex:1] floatValue];
+//        h2 = (h1*self.view.bounds.size.width)/w1;
+//    }
     
-    if ([dataDict objectForKey:@"image_size"] !=(id)[NSNull null]) {
-        NSArray *tempArray = [[dataDict objectForKey:@"image_size"] componentsSeparatedByString: @","];
-        
-        float w1 = [[tempArray objectAtIndex:0] floatValue];
-        float h1 = [[tempArray objectAtIndex:1] floatValue];
-        h2 = (h1*self.view.bounds.size.width)/w1;
-    }
-    
-    rewardImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 184)];
-    [rewardImageView setImage:[UIImage imageNamed:@"reward_temp_image.png"]];
+    rewardImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
     [bgScrollView addSubview:rewardImageView];
     
-//    directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    directionButton.frame = CGRectMake(0, rewardImageView.frame.origin.y+rewardImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
-//    [directionButton setBackgroundColor:[UIColor whiteColor]];
-//    [bgScrollView addSubview:directionButton];
-//    
-//    directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
-//    [directionIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_directions_purple.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-//    [directionButton addSubview:directionIcon];
-//    
-//    
-//    rewardTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-120, 40)];
-//    rewardTitle.backgroundColor = [UIColor whiteColor];
-//    rewardTitle.textAlignment = NSTextAlignmentLeft;
-//    rewardTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-//    rewardTitle.text = @"25% off Tree Top Course";
-//    [directionButton addSubview:rewardTitle];
-//    
-//    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
-//    distanceLabel.backgroundColor = [UIColor clearColor];
-//    distanceLabel.textAlignment = NSTextAlignmentRight;
-//    distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-//    distanceLabel.text = @"1.03 KM";
-//    [directionButton addSubview:distanceLabel];
-//    
-//    arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, 12.5, 15, 15)];
-//    [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-//    [directionButton addSubview:arrowIcon];
+    
+    NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+    NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"Events"]];
+    
+    NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+        if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+            rewardImageView.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+    }
+    else {
+        
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,imageName];
+        
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicator.center = CGPointMake(rewardImageView.bounds.size.width/2, rewardImageView.bounds.size.height/2);
+        [rewardImageView addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+        
+        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+            if (succeeded) {
+                
+                rewardImageView.image = image;
+                
+                NSFileManager *fileManger=[NSFileManager defaultManager];
+                NSError* error;
+                
+                if (![fileManger fileExistsAtPath:destinationPath]){
+                    
+                    if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                        ;// success
+                    else
+                    {
+                        DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                        NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                    }
+                }
+                
+                NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+            }
+            else {
+                DebugLog(@"Image Loading Failed..!!");
+                rewardImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+            }
+            [activityIndicator stopAnimating];
+        }];
+    }
+    
+    
+    directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    directionButton.frame = CGRectMake(0, rewardImageView.frame.origin.y+rewardImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
+    [directionButton setBackgroundColor:[UIColor whiteColor]];
+    [bgScrollView addSubview:directionButton];
+    
+    directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
+    [directionIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_directions_purple.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [directionButton addSubview:directionIcon];
+    
+    
+    rewardTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-120, 40)];
+    rewardTitle.backgroundColor = [UIColor whiteColor];
+    rewardTitle.textAlignment = NSTextAlignmentLeft;
+    rewardTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
+    rewardTitle.text = titleString;
+    [directionButton addSubview:rewardTitle];
+
+    
+    CLLocationCoordinate2D currentLocation;
+    CLLocationCoordinate2D desinationLocation;
+    
+    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+    
+    desinationLocation.latitude = latValue;
+    desinationLocation.longitude = longValue;
+    
+    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
+    distanceLabel.backgroundColor = [UIColor clearColor];
+    distanceLabel.textAlignment = NSTextAlignmentRight;
+    distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
+    distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+    [directionButton addSubview:distanceLabel];
+    
+    arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, 12.5, 15, 15)];
+    [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [directionButton addSubview:arrowIcon];
     
     
     
-//    rewardInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height+5, self.view.bounds.size.width, 40)];
-    rewardInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, rewardImageView.frame.origin.y+rewardImageView.bounds.size.height, self.view.bounds.size.width, 40)];
+    rewardInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height+5, self.view.bounds.size.width, 40)];
     rewardInfoLabel.backgroundColor = [UIColor whiteColor];
     rewardInfoLabel.textAlignment = NSTextAlignmentLeft;
     rewardInfoLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
@@ -110,30 +170,84 @@
     
     
     descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, rewardInfoLabel.frame.origin.y+rewardInfoLabel.bounds.size.height, bgScrollView.bounds.size.width, 40)];
-    descriptionLabel.backgroundColor = [UIColor whiteColor];
-//    descriptionLabel.text = [NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\n\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n\nDummy Description Text. Dummy Description Text. Dummy Description Text"];
-    descriptionLabel.text = [NSString stringWithFormat:@"Forest adventure, first and ony tree top adventure course in Singapore. 58 obstacles, 5 giants zip lines. Simply a great day out at Bedok Reservoir Park.\n\nValid From\n3May 15 -31 Dec 15\n\nLocation\nBedok Reservoir\n\nPoints: 50\n50"];
+    descriptionLabel.backgroundColor = [UIColor clearColor];
+    descriptionLabel.text = [NSString stringWithFormat:@"%@",descriptionString];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
     descriptionLabel.numberOfLines = 0;
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    //    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"%@",[dataDict objectForKey:@"description"]] sizeWithFont:descriptionLabel.font
-    //                                                                                                              constrainedToSize:descriptionLabel.frame.size
-    //                                                                                                                  lineBreakMode:NSLineBreakByWordWrapping];
-    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"Forest adventure, first and ony tree top adventure course in Singapore. 58 obstacles, 5 giants zip lines. Simply a great day out at Bedok Reservoir Park.\n\nValid From\n3May 15 -31 Dec 15\n\nLocation\nBedok Reservoir\n\nPoints - 50"]
-                                           sizeWithFont:descriptionLabel.font
-                                           constrainedToSize:descriptionLabel.frame.size
-                                           lineBreakMode:NSLineBreakByWordWrapping];
-    
-    
     
     CGRect newDescriptionLabelFrame = descriptionLabel.frame;
-    newDescriptionLabelFrame.size.height = expectedDescriptionLabelSize.height+100;
+    newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width-40];//expectedDescriptionLabelSize.height;
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
-    [descriptionLabel sizeToFit];
     
-    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, rewardImageView.bounds.size.height+directionButton.bounds.size.height+rewardInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+100);
+    validFromLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, descriptionLabel.frame.origin.y+descriptionLabel.bounds.size.height+10, bgScrollView.bounds.size.width, 20)];
+    validFromLabel.backgroundColor = [UIColor clearColor];
+    validFromLabel.text = @"Valid From";
+    validFromLabel.textColor = [UIColor darkGrayColor];
+    validFromLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    validFromLabel.numberOfLines = 0;
+    validFromLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [bgScrollView addSubview:validFromLabel];
+    
+    validFromValueLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, validFromLabel.frame.origin.y+validFromLabel.bounds.size.height, bgScrollView.bounds.size.width, 20)];
+    validFromValueLabel.backgroundColor = [UIColor clearColor];
+    validFromValueLabel.text = [NSString stringWithFormat:@"%@",validFromDateString];
+    validFromValueLabel.textColor = [UIColor darkGrayColor];
+    validFromValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    validFromValueLabel.numberOfLines = 0;
+    validFromValueLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [bgScrollView addSubview:validFromValueLabel];
+    
+    validToLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, validFromValueLabel.frame.origin.y+validFromValueLabel.bounds.size.height+10, bgScrollView.bounds.size.width, 20)];
+    validToLabel.backgroundColor = [UIColor clearColor];
+    validToLabel.text = @"Valid Till";
+    validToLabel.textColor = [UIColor darkGrayColor];
+    validToLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    validToLabel.numberOfLines = 0;
+    validToLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [bgScrollView addSubview:validToLabel];
+    
+    validToValueLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, validToLabel.frame.origin.y+validToLabel.bounds.size.height, bgScrollView.bounds.size.width, 20)];
+    validToValueLabel.backgroundColor = [UIColor clearColor];
+    validToValueLabel.text = [NSString stringWithFormat:@"%@",validTillDateString];
+    validToValueLabel.textColor = [UIColor darkGrayColor];
+    validToValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    validToValueLabel.numberOfLines = 0;
+    validToValueLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [bgScrollView addSubview:validToValueLabel];
+    
+    locationLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, validToValueLabel.frame.origin.y+validToValueLabel.bounds.size.height+10, bgScrollView.bounds.size.width, 20)];
+    locationLabel.backgroundColor = [UIColor clearColor];
+    locationLabel.text = @"Location";
+    locationLabel.textColor = [UIColor darkGrayColor];
+    locationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    locationLabel.numberOfLines = 0;
+    locationLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [bgScrollView addSubview:locationLabel];
+    
+    
+    locationValueLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, locationLabel.frame.origin.y+locationLabel.bounds.size.height, bgScrollView.bounds.size.width, 20)];
+    locationValueLabel.backgroundColor = [UIColor clearColor];
+    locationValueLabel.text = [NSString stringWithFormat:@"%@",locationValueString];
+    locationValueLabel.textColor = [UIColor darkGrayColor];
+    locationValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    locationValueLabel.numberOfLines = 0;
+    locationValueLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [bgScrollView addSubview:locationValueLabel];
+
+    
+    pointsLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, locationValueLabel.frame.origin.y+locationValueLabel.bounds.size.height+10, bgScrollView.bounds.size.width, 20)];
+    pointsLabel.backgroundColor = [UIColor clearColor];
+    pointsLabel.text = [NSString stringWithFormat:@"Points: %@",pointsValueString];
+    pointsLabel.textColor = [UIColor darkGrayColor];
+    pointsLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    pointsLabel.numberOfLines = 0;
+    pointsLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [bgScrollView addSubview:pointsLabel];
+    
+    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, rewardImageView.bounds.size.height+directionButton.bounds.size.height+rewardInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+validFromLabel.bounds.size.height+validFromValueLabel.bounds.size.height+validToLabel.bounds.size.height+validToValueLabel.bounds.size.height+locationLabel.bounds.size.height+locationValueLabel.bounds.size.height+pointsLabel.bounds.size.height+100);
 }
 
 

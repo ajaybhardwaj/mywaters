@@ -15,7 +15,7 @@
 @end
 
 @implementation WhatsUpViewController
-@synthesize isNotWhatsUpController;
+@synthesize isNotWhatsUpController,isDashboardChatter;
 
 
 //*************** Method To Open Side Menu
@@ -531,8 +531,30 @@
     
     
     if (appDelegate.IS_COMING_FROM_DASHBOARD) {
-        appDelegate.IS_COMING_FROM_DASHBOARD = NO;
+
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+        
+        appDelegate.IS_COMING_FROM_DASHBOARD = NO;
+        
+        if (isDashboardChatter) {
+            isShowingChatterTable = YES;
+            exploreTableView.hidden = NO;
+            
+            isShowingFeedTable = NO;
+            feedTableView.hidden = YES;
+            
+            segmentedControl.selectedSegmentIndex = 1;
+        }
+        else {
+            
+            isShowingChatterTable = NO;
+            exploreTableView.hidden = YES;
+            
+            isShowingFeedTable = YES;
+            feedTableView.hidden = NO;
+            
+            segmentedControl.selectedSegmentIndex = 0;
+        }
     }
     else {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];

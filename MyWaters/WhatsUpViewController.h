@@ -23,6 +23,6 @@
     BOOL isShowingFeedTable,isShowingChatterTable;
 }
 
-@property (nonatomic, assign) BOOL isNotWhatsUpController;
+@property (nonatomic, assign) BOOL isNotWhatsUpController,isDashboardChatter;
 
 @end

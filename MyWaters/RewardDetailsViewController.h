@@ -23,10 +23,13 @@
     UIImageView *rewardImageView,*directionIcon,*infoIcon,*arrowIcon;
     UILabel *rewardInfoLabel,*rewardTitle,*distanceLabel;
     
-    UILabel___Extension *descriptionLabel;
+    UILabel___Extension *descriptionLabel,*validFromLabel,*validFromValueLabel,*validToLabel,*validToValueLabel,*locationLabel,*locationValueLabel,*pointsLabel;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;
 }
+
+@property (nonatomic, strong) NSString *rewardID,*descriptionString,*titleString,*validFromDateString,*validTillDateString,*locationValueString,*pointsValueString,*imageName,*imageUrl;
+@property (nonatomic, assign) double latValue,longValue;
 
 @end

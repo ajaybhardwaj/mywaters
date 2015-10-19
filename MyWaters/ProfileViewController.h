@@ -14,6 +14,7 @@
 #import "BadgesViewController.h"
 #import "PointsViewController.h"
 #import "PhotosViewController.h"
+#import "GalleryViewController.h"
 
 @interface ProfileViewController : UIViewController <UITabBarControllerDelegate,UITableViewDataSource,UITableViewDelegate> {
     
@@ -36,19 +37,19 @@
     
     //===== Badges Controls
     UIView *badgesBackgroundView;
-    NSArray *badgesDataSource;
+    NSMutableArray *badgesDataSource;
     
     //===== Rewards Controls
     UITableView *rewardsListingTableView;
-    NSArray *rewardsDataSource;
+    NSMutableArray *rewardsDataSource;
     
     //===== Points Controls
     UITableView *pointsTableView;
-    NSArray *pointsDataSource;
+    NSMutableArray *pointsDataSource;
     
     //===== Photos Controls
     UIView *photosBackgroundView;
-    NSArray *photosDataSource;
+    NSMutableArray *photosDataSource;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;
