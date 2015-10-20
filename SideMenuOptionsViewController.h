@@ -25,6 +25,7 @@ typedef enum {
     OPTION_WLS,
     OPTION_BOOKING,
     OPTION_FEEDBACK,
+    OPTION_TIPS,
     OPTION_SETTINGS,
     OPTION_ABOUT_PUB,
     

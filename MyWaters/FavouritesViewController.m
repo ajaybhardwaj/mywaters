@@ -27,8 +27,22 @@
 }
 
 
+//*************** Method To Set Table In edit Mode
 
-//*************** Method To ANimate Filter Table
+- (void) setTableEditMode {
+    
+    if (!isEditingTable) {
+        isEditingTable = YES;
+        [favouritesListingTableView setEditing:YES animated:YES];
+    }
+    else {
+        isEditingTable = NO;
+        [favouritesListingTableView setEditing:NO animated:YES];
+    }
+}
+
+
+//*************** Method To Animate Filter Table
 
 - (void) animateFilterTable {
     
@@ -79,6 +93,21 @@
         selectedFilterIndex = indexPath.row;
         [filterTableView reloadData];
         [self animateFilterTable];
+        
+        if (indexPath.row==0) {
+            [appDelegate retrieveFavouriteItems:0];
+        }
+        else if (indexPath.row==1) {
+            [appDelegate retrieveFavouriteItems:1];
+        }
+        else if (indexPath.row==2) {
+            [appDelegate retrieveFavouriteItems:2];
+        }
+        else if (indexPath.row==3) {
+            [appDelegate retrieveFavouriteItems:4];
+        }
+        
+        [favouritesListingTableView reloadData];
     }
     else {
         
@@ -314,7 +343,23 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+    
+    UIButton *btnEdit =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnEdit setImage:[UIImage imageNamed:@"icn_trash"] forState:UIControlStateNormal];
+    [btnEdit addTarget:self action:@selector(setTableEditMode) forControlEvents:UIControlEventTouchUpInside];
+    [btnEdit setFrame:CGRectMake(44, 0, 32, 32)];
+    
+    UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
+    [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [btnfilter setFrame:CGRectMake(0, 0, 32, 32)];
+    
+    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
+    [rightBarButtonItems addSubview:btnEdit];
+    [rightBarButtonItems addSubview:btnfilter];
+
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
+
     
     favouritesListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     favouritesListingTableView.delegate = self;
@@ -377,15 +422,15 @@
 }
 
 
-- (void) viewDidAppear:(BOOL)animated {
-    
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-    
-    [self.view addGestureRecognizer:swipeGesture];
-    
-}
+//- (void) viewDidAppear:(BOOL)animated {
+//    
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+//    swipeGesture.numberOfTouchesRequired = 1;
+//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+//    
+//    [self.view addGestureRecognizer:swipeGesture];
+//    
+//}
 
 
 - (void)didReceiveMemoryWarning {

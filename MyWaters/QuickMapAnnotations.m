@@ -16,11 +16,13 @@
 @synthesize annotationSubtitle = _annotationSubtitle;
 @synthesize annotationType = _annotationType;
 @synthesize annotationTag = _annotationTag;
+@synthesize waterLevel = _waterLevel;
+@synthesize annotationImageName = _annotationImageName;
 
 @synthesize title = _title;
 @synthesize subtitle = _subtitle;
 
-- (id) initWithTitle:(NSString *)title AndCoordinates:(CLLocationCoordinate2D)coordinate type:(NSString*)annotationType tag:(NSInteger)annotationTag subtitleValue:(NSString*) subtitle {
+- (id) initWithTitle:(NSString *)title AndCoordinates:(CLLocationCoordinate2D)coordinate type:(NSString*)annotationType tag:(NSInteger)annotationTag subtitleValue:(NSString*) subtitle level:(NSInteger) waterLevel image:(NSString*) imageName {
     
     self = [super init];
     _title = title;
@@ -30,6 +32,8 @@
     _subtitle = subtitle;
     _annotationTitle = title;
     _annotationSubtitle = subtitle;
+    _waterLevel = waterLevel;
+    _annotationImageName = imageName;
     
     return self;
 }

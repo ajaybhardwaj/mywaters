@@ -228,6 +228,40 @@
         // Water Level Sensors
         WaterLevelSensorsDetailViewController *viewObj = [[WaterLevelSensorsDetailViewController alloc] init];
         appDelegate.IS_MOVING_TO_WLS_FROM_DASHBOARD = YES;
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"id"] != (id)[NSNull null])
+            viewObj.wlsID = [[wlsDataArray objectAtIndex:0] objectForKey:@"id"];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"name"] != (id)[NSNull null])
+            viewObj.wlsName = [[wlsDataArray objectAtIndex:0] objectForKey:@"name"];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] != (id)[NSNull null])
+            viewObj.drainDepthType = [[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] != (id)[NSNull null])
+            viewObj.latValue = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] != (id)[NSNull null])
+            viewObj.longValue = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"observationTime"] != (id)[NSNull null])
+            viewObj.observedTime = [CommonFunctions dateTimeFromString:[[wlsDataArray objectAtIndex:0] objectForKey:@"observationTime"]];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevel"] != (id)[NSNull null])
+            viewObj.waterLevelValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevel"] intValue]];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelPercentage"] != (id)[NSNull null])
+            viewObj.waterLevelPercentageValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelPercentage"] intValue]];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] != (id)[NSNull null])
+            viewObj.waterLevelTypeValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"drainDepth"] != (id)[NSNull null])
+            viewObj.drainDepthValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"drainDepth"] intValue]];
+        
+        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"isSubscribed"] != (id)[NSNull null])
+            viewObj.isSubscribed = [[[wlsDataArray objectAtIndex:0] objectForKey:@"isSubscribed"] intValue];
+        
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==3) {
@@ -425,6 +459,25 @@
     
     // Events Content Refresh
     [eventsListingTable reloadData];
+    
+    // Tips Content Refresh
+    
+    NSString *urlString;
+    for (int i=0; i<tipsDataArray.count; i++) {
+        if ([[[tipsDataArray objectAtIndex:i] objectForKey:@"Media"] intValue] == 4) {
+            urlString = [[tipsDataArray objectAtIndex:i] objectForKey:@"EmbedURL"];
+            break;
+        }
+    }
+    // iframe
+    NSString *url = urlString;//@"https://www.youtube.com/embed/5fDrVA2_nbg";
+    url = [NSString stringWithFormat:@"%@?rel=0&showinfo=0&controls=0",url];
+    NSString* embedHTML = [NSString stringWithFormat:@"\
+                           <iframe width=\"150\" height=\"150\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
+                           ",url];
+    
+    NSString* html = [NSString stringWithFormat:embedHTML, url, self.view.bounds.size.width+10, 150];
+    [tipsWebView loadHTMLString:html baseURL:nil];
 }
 
 
@@ -794,8 +847,28 @@
                     
                 }
                 
+                else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
+                    
+                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.5, columnView.bounds.size.width-5, columnView.bounds.size.height-25)];
+                    tipsWebView.backgroundColor = [UIColor colorWithRed:28.0/256.0 green:27.0/256.0 blue:28.0/256.0 alpha:1.0];
+                    [columnView addSubview:tipsWebView];
+                    tipsWebView.scrollView.scrollEnabled = NO;
+                    tipsWebView.scrollView.bounces = NO;
+                    
+//                    // iframe
+//                    NSString *url = [[tipsDataArray objectAtIndex:0] objectForKey:@"EmbedURL"];//@"https://www.youtube.com/embed/5fDrVA2_nbg";
+//                    url = [NSString stringWithFormat:@"%@?rel=0&showinfo=0&controls=0",url];
+//                    NSString* embedHTML = [NSString stringWithFormat:@"\
+//                                           <iframe width=\"330\" height=\"150\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
+//                                           ",url];
+//                    
+//                    NSString* html = [NSString stringWithFormat:embedHTML, url, self.view.bounds.size.width+10, 150];
+//                    [tipsWebView loadHTMLString:html baseURL:nil];
+                    
+                }
                 
-                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
+                
+                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
 
                 }
                 else {
@@ -1076,7 +1149,17 @@
                     
                 }
                 
-                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
+                else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
+                    
+                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.5, columnView.bounds.size.width-5, columnView.bounds.size.height-25)];
+                    tipsWebView.backgroundColor = [UIColor colorWithRed:28.0/256.0 green:27.0/256.0 blue:28.0/256.0 alpha:1.0];
+                    [columnView addSubview:tipsWebView];
+                    tipsWebView.scrollView.scrollEnabled = NO;
+                    tipsWebView.scrollView.bounces = NO;
+                    
+                }
+                
+                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
 
                 }
                 else {
@@ -1101,6 +1184,26 @@
 }
 
 
+# pragma mark - Youtube Video Method For Orientation
+
+- (void)youTubeStarted:(NSNotification *)notification{
+    // Entered Fullscreen code goes here..
+}
+
+- (void)youTubeFinished:(NSNotification *)notification{
+    // Left fullscreen code goes here...
+    
+    //CODE BELOW FORCES APP BACK TO PORTRAIT ORIENTATION ONCE YOU LEAVE VIDEO.
+    [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationPortrait animated:NO];
+    //present/dismiss viewcontroller in order to activate rotating.
+    UIViewController *mVC = [[UIViewController alloc] init];
+    [self presentViewController:mVC animated:NO completion:NULL];
+    [self dismissViewControllerAnimated:NO completion:NULL];
+}
+
+
+
+
 # pragma mark - ASIHTTPRequestDelegate Methods
 
 - (void) requestFinished:(ASIHTTPRequest *)request {
@@ -1116,12 +1219,14 @@
         [wlsDataArray removeAllObjects];
         [cctvDataArray removeAllObjects];
         [floodsDataArray removeAllObjects];
+        [tipsDataArray removeAllObjects];
         
         [eventsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_EVENTS_RESPONSE_NAME]];
         [feedsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_FEEDS_RESPONSE_NAME]];
         [wlsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_WLS_RESPONSE_NAME]];
         [cctvDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_CCTV_RESPONSE_NAME]];
         [floodsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_FLOODS_RESPONSE_NAME]];
+        [tipsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_TIPS_RESPONSE_NAME]];
         
         [self refreshHomePageContent];
         
@@ -1414,6 +1519,9 @@
     self.view.backgroundColor = RGB(245, 245, 245);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeStarted:) name:@"UIMoviePlayerControllerDidEnterFullscreenNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeFinished:) name:@"UIMoviePlayerControllerDidExitFullscreenNotification" object:nil];
+    
     backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     backgroundScrollView.showsHorizontalScrollIndicator = NO;
     backgroundScrollView.showsVerticalScrollIndicator = NO;
@@ -1431,6 +1539,7 @@
     wlsDataArray = [[NSMutableArray alloc] init];
     cctvDataArray = [[NSMutableArray alloc] init];
     floodsDataArray = [[NSMutableArray alloc] init];
+    tipsDataArray = [[NSMutableArray alloc] init];
     
     [self createDynamicUIColumns];
     

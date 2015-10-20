@@ -16,6 +16,7 @@
 #import "CCTVDetailViewController.h"
 #import "MapOverlay.h"
 #import "MapOverlayView.h"
+#import "WaterLevelSensorsDetailViewController.h"
 
 @interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UPStackMenuDelegate> {
     
@@ -34,7 +35,7 @@
     NSDictionary *locationsDict;
     
     // Place Annotation Point
-    QuickMapAnnotations *cctvAnnotation;
+    QuickMapAnnotations *cctvAnnotation,*wlsAnnotation,*userFloodAnnotation,*pubFloodAnnotation;
     UIView *calloutView;
     BOOL isShowingCallout;
     UITapGestureRecognizer *cctvTapGesture;
@@ -56,7 +57,7 @@
     NSArray *floodTempArray,*wlsTempArray,*cctvTempArray,*userFeedbackArray,*rainTempArray;
     BOOL isLoadingFloods,isLoadingWLS,isLoadingCCTV,isLoadingFeedback,isLoadingRainMap;
     
-    NSMutableArray *cctvAnnotationsArray;
+    NSMutableArray *cctvAnnotationsArray,*wlsAnnotationsArray,*userFeedbackAnnotationsArray,*pubFloodAnnotationsArray;
 }
 
 @property (nonatomic, assign) BOOL isNotQuickMapController;

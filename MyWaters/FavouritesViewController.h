@@ -20,7 +20,7 @@
     UITableView *favouritesListingTableView,*filterTableView;
     NSArray *favouritesDataSource,*filtersArray;
     
-    BOOL isShowingFilter;
+    BOOL isShowingFilter,isEditingTable;
     NSInteger selectedFilterIndex;
 
     UILabel *noFavFoundLabel;

@@ -585,13 +585,14 @@
     bookingFormButton = [UIButton buttonWithType:UIButtonTypeCustom];
     bookingFormButton.frame = CGRectMake(((self.view.bounds.size.width/3)+(self.view.bounds.size.width/3-30)/2), bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+10, 30, 30);
     [bookingFormButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_bookingform.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [bookingFormButton addTarget:self action:@selector(moveToGalleryView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:bookingFormButton];
     
     bookingFormLabel = [[UILabel alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/3), bookingFormButton.frame.origin.y+bookingFormButton.bounds.size.height+3, self.view.bounds.size.width/3, 15)];
     bookingFormLabel.backgroundColor = [UIColor clearColor];
     bookingFormLabel.textAlignment = NSTextAlignmentCenter;
     bookingFormLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
-    bookingFormLabel.text = @"Booking Form";
+    bookingFormLabel.text = @"Gallery";
     [self.view addSubview:bookingFormLabel];
     
     contactUsButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -615,24 +616,25 @@
     [self.view addSubview:topMenu];
     
     addPhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
+//    addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
+    addPhotoButton.frame = CGRectMake(topMenu.bounds.size.width/4-10, 5, 20, 20);
     [addPhotoButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_camera.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [addPhotoButton addTarget:self action:@selector(addPhotoToSite) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addPhotoButton];
     
-    galleryButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    galleryButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
-    [galleryButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_gallery.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [galleryButton addTarget:self action:@selector(moveToGalleryView) forControlEvents:UIControlEventTouchUpInside];
-    [topMenu addSubview:galleryButton];
+//    galleryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    galleryButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
+//    [galleryButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_gallery.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+//    [galleryButton addTarget:self action:@selector(moveToGalleryView) forControlEvents:UIControlEventTouchUpInside];
+//    [topMenu addSubview:galleryButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 25, 20);
+    shareButton.frame = CGRectMake((topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/4)-10, 5, 20, 20);
     [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [shareButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:shareButton];
     
-    addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/3, 10)];
+    addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/2, 10)];
     addPhotoLabel.backgroundColor = [UIColor clearColor];
     addPhotoLabel.textAlignment = NSTextAlignmentCenter;
     addPhotoLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
@@ -640,25 +642,27 @@
     addPhotoLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:addPhotoLabel];
     
-    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
+//    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
+    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2-1, 0, 0.5, 45)];
     [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
     [topMenu addSubview:seperatorOne];
     
     
-    galleryLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
-    galleryLabel.backgroundColor = [UIColor clearColor];
-    galleryLabel.textAlignment = NSTextAlignmentCenter;
-    galleryLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    galleryLabel.text = @"Gallery";
-    galleryLabel.textColor = [UIColor whiteColor];
-    [topMenu addSubview:galleryLabel];
+//    galleryLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
+//    galleryLabel.backgroundColor = [UIColor clearColor];
+//    galleryLabel.textAlignment = NSTextAlignmentCenter;
+//    galleryLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+//    galleryLabel.text = @"Gallery";
+//    galleryLabel.textColor = [UIColor whiteColor];
+//    [topMenu addSubview:galleryLabel];
     
-    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(galleryLabel.frame.origin.x+galleryLabel.bounds.size.width-1, 0, 0.5, 45)];
-    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
-    [topMenu addSubview:seperatorTwo];
+//    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(galleryLabel.frame.origin.x+galleryLabel.bounds.size.width-1, 0, 0.5, 45)];
+//    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
+//    [topMenu addSubview:seperatorTwo];
     
     
-    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
+//    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
+    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2, 32, topMenu.bounds.size.width/2, 10)];
     shareLabel.backgroundColor = [UIColor clearColor];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];

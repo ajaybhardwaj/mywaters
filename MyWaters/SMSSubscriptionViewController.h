@@ -9,14 +9,27 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface SMSSubscriptionViewController : UIViewController <UITextFieldDelegate> {
+@interface SMSSubscriptionViewController : UIViewController <UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate> {
     
     AppDelegate *appDelegate;
     
-    UITextField *nameField,*idTypeField,*identificationNumberField,*emailField,*mobileField,*postalCodeField;
+    NSArray *idTypeArray;
+    UITextField *nameField,*idTypeField,*identificationNumberField,*emailField,*mobileField,*postalCodeField,*locationField;
     UILabel *termsLabel;
     
     UIButton *subscribreButton;
+    
+    UIToolbar *dropDownToolbar;
+    UIPickerView *dropDownPicker;
+    UIBarButtonItem *cancelBarButton,*doneBarButton,*flexibleSpace;
+    UIView *dropDownBg;
+    NSInteger pickerSelectedIndex;
+    
+    UIView *uiBackgroundView;
+    
+    BOOL isShowingIDType,isShwoingLocations;
 }
+
+@property (nonatomic, strong) NSString *wlsID;
 
 @end

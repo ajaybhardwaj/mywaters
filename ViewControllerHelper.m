@@ -447,6 +447,36 @@ static ViewControllerHelper *sharedViewHelper = nil;
 }
 
 
+- (UINavigationController*) getTipsController {
+    
+    if (!_tipsNavController) {
+        
+        TipsListingViewController *feedback = [[TipsListingViewController alloc] init];
+        [feedback setTitle:@"Tips"];
+        _tipsNavController = [[UINavigationController alloc] initWithRootViewController:feedback];
+        
+        [self setNavigationBarStyle_Transclucent:_tipsNavController.navigationBar];
+        [[[feedback navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+        //        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(140,164,0) frame:CGRectMake(0, 0, 1, 1)];
+        //        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(113, 75, 51) frame:CGRectMake(0, 0, 1, 1)];
+        [[[feedback navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+        
+        [_tipsNavController.view setAutoresizesSubviews:TRUE];
+        [_tipsNavController.view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin)];
+        _currentDeckIndex = TIPS_CONTROLLER;
+        
+        [_tipsNavController popToRootViewControllerAnimated:NO];
+        
+    }
+    else {
+        [_tipsNavController popToRootViewControllerAnimated:NO];
+    }
+    
+    return _tipsNavController;
+}
+
+
 - (UINavigationController*) getSettingsController {
     
     if (!_settingsNavController) {
@@ -797,6 +827,21 @@ static ViewControllerHelper *sharedViewHelper = nil;
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:FEEDBACK_CONTROLLER];
             break;
             
+        case TIPS_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getTipsController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getTipsController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:TIPS_CONTROLLER];
+            break;
+            
         case SETTINGS_CONTROLLER:
             if (center) {
                 [[appDelegate rootDeckController] setCenterController:nil];
@@ -933,6 +978,9 @@ static ViewControllerHelper *sharedViewHelper = nil;
     [self clear_All_ControllersInThisNavigationCntrl:[self feedbackNavController]];
     [self setFeedbackNavController:nil];
     
+    [self clear_All_ControllersInThisNavigationCntrl:[self tipsNavController]];
+    [self setAbcwatersNavController:nil];
+    
     [self clear_All_ControllersInThisNavigationCntrl:[self settingsNavController]];
     [self setSettingsNavController:nil];
     
@@ -944,7 +992,6 @@ static ViewControllerHelper *sharedViewHelper = nil;
     
     [self clear_All_ControllersInThisNavigationCntrl:[self aboutPUBController]];
     [self setAbcwatersNavController:nil];
-
     
 }
 

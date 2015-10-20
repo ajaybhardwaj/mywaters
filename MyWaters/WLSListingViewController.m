@@ -30,6 +30,11 @@
 
 - (void) fetchWLSListing {
     
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+
+    
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
 //    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
@@ -224,10 +229,6 @@
     responseData = [[NSMutableData alloc] init];
     
     wlsPageCount = 0;
-    
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
     
 }
 

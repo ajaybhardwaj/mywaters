@@ -25,6 +25,67 @@
 }
 
 
+
+
+//*************** Method For Animating Dropdown Picker
+
+- (void) animateOptionsPicker {
+    
+    dropDownBg.hidden = NO;
+    
+    [UIView beginAnimations:@"PickerAnimation" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    
+    CGPoint pos = dropDownBg.center;
+    pos.y = self.view.bounds.size.height-90;
+    dropDownBg.center = pos;
+    
+    [UIView commitAnimations];
+    
+    pickerSelectedIndex = 0;
+    [dropDownPicker reloadAllComponents];
+    [dropDownPicker selectRow:0 inComponent:0 animated:NO];
+    
+    [self.view bringSubviewToFront:dropDownBg];
+    alertOptionsView.alpha = 0.7;
+    
+}
+
+
+//*************** Method For Dismissing The Picker View With Animation
+
+- (void) dismissDropdownPicker {
+    
+    [UIView beginAnimations:@"PickerAnimation" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    
+    CGPoint pos = dropDownBg.center;
+    pos.y = self.view.bounds.size.height+100;
+    dropDownBg.center = pos;
+    
+    [UIView commitAnimations];
+    alertOptionsView.alpha = 1.0;
+
+}
+
+
+//*************** Method For Selecting Option Value & Dismissing The Picker View With Animation
+
+- (void) selectPickerValue {
+    
+    [UIView beginAnimations:@"PickerAnimation" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    
+    CGPoint pos = dropDownBg.center;
+    pos.y = self.view.bounds.size.height+100;
+    dropDownBg.center = pos;
+    [UIView commitAnimations];
+    
+    locationField.text = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:pickerSelectedIndex] objectForKey:@"name"];
+    alertOptionsView.alpha = 1.0;
+}
+
+
 //*************** Method To Close Top Menu For Outside Touch
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event  {
@@ -62,6 +123,7 @@
     [self hideAlertOptionsView];
     
     SMSSubscriptionViewController *viewObj = [[SMSSubscriptionViewController alloc] init];
+    viewObj.wlsID = wlsID;
     [self.navigationController pushViewController:viewObj animated:YES];
 }
 
@@ -72,6 +134,13 @@
     
     if (selectedAlertType!=-1) {
         
+        if ([locationField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please select WLS location." cancel:@"Ok" otherButton:nil];
+            return;
+        }
+        
+        isSubscribingForAlert = YES;
+        
         appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
         appDelegate.hud.labelText = @"Loading...";
@@ -81,7 +150,7 @@
         
         if (isSubscribed) {
             parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
-            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"2", @"3", wlsID, nil];
+            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"2", @"3", [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:pickerSelectedIndex] objectForKey:@"id"], nil];
         }
         else {
             
@@ -96,6 +165,26 @@
     else {
         [CommonFunctions showAlertView:nil title:nil msg:@"Please select alert option." cancel:@"Ok" otherButton:nil];
     }
+}
+
+
+//*************** Method To Get WLS Listing
+
+- (void) fetchWLSListing {
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+
+    
+    isSubscribingForAlert = NO;
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    //    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
+    //    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"1"],@"1.0", nil];
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
 
@@ -190,13 +279,13 @@
     //    [alertOptionsView addSubview:level50];
     
     level75Button = [UIButton buttonWithType:UIButtonTypeCustom];
-    level75Button.frame = CGRectMake(20, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, 25, 25);
+    level75Button.frame = CGRectMake(20, headingLabel.frame.origin.y+headingLabel.bounds.size.height+20, 25, 25);
     [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     level75Button.tag = 2;
     [level75Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:level75Button];
     
-    UILabel *level75 = [[UILabel alloc] initWithFrame:CGRectMake(60, headingLabel.frame.origin.y+headingLabel.bounds.size.height+35, alertOptionsView.bounds.size.width-70, 20)];
+    UILabel *level75 = [[UILabel alloc] initWithFrame:CGRectMake(60, headingLabel.frame.origin.y+headingLabel.bounds.size.height+20, alertOptionsView.bounds.size.width-70, 20)];
     level75.text = @"Water Level >= 75%";
     level75.backgroundColor = [UIColor clearColor];
     level75.textColor = RGB(0,0,0);
@@ -231,12 +320,30 @@
     //    level100.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
     //    [alertOptionsView addSubview:level100];
     
+    locationField = [[UITextField alloc] initWithFrame:CGRectMake(10, level90.frame.origin.y+level90.bounds.size.height+20, alertOptionsView.bounds.size.width-20, 40)];
+    locationField.textColor = RGB(0, 0, 0);
+    locationField.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
+    locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    locationField.leftViewMode = UITextFieldViewModeAlways;
+    locationField.borderStyle = UITextBorderStyleNone;
+    locationField.textAlignment=NSTextAlignmentLeft;
+    [locationField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    locationField.placeholder=@"Select Location *";
+    [alertOptionsView addSubview:locationField];
+    locationField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    locationField.delegate = self;
+    locationField.keyboardType = UIKeyboardTypeEmailAddress;
+    locationField.returnKeyType = UIReturnKeyNext;
+    [locationField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
+    [locationField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    locationField.tag = 4;
+    
     
     UIButton *subscribeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [subscribeButton setTitle:@"SUBSCRIBE" forState:UIControlStateNormal];
     [subscribeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     subscribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
-    subscribeButton.frame = CGRectMake(10, level90.frame.origin.y+level90.bounds.size.height+30, alertOptionsView.bounds.size.width-20, 40);
+    subscribeButton.frame = CGRectMake(10, locationField.frame.origin.y+locationField.bounds.size.height+20, alertOptionsView.bounds.size.width-20, 30);
     [subscribeButton setBackgroundColor:RGB(68, 78, 98)];
     [subscribeButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:subscribeButton];
@@ -246,7 +353,7 @@
     [subscribeToSMSButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     subscribeToSMSButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
     subscribeToSMSButton.tag = 6;
-    subscribeToSMSButton.frame = CGRectMake(10, subscribeButton.frame.origin.y+subscribeButton.bounds.size.height+10, alertOptionsView.bounds.size.width-20, 40);
+    subscribeToSMSButton.frame = CGRectMake(10, subscribeButton.frame.origin.y+subscribeButton.bounds.size.height+10, alertOptionsView.bounds.size.width-20, 30);
     [subscribeToSMSButton addTarget:self action:@selector(moveToSMSSubscriptionView) forControlEvents:UIControlEventTouchUpInside];
     [subscribeToSMSButton setBackgroundColor:RGB(83, 83, 83)];
     [alertOptionsView addSubview:subscribeToSMSButton];
@@ -597,14 +704,78 @@
     
     //    [cctvListingTable reloadData];
     
+    
+    [self createTopMenu];
+    
+    
+    cancelBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(dismissDropdownPicker)];
+    flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+    doneBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(selectPickerValue)];
+    
+    
+    dropDownBg = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, 184)];
+    dropDownBg.backgroundColor = [UIColor whiteColor];
+    dropDownBg.userInteractionEnabled = YES;
+    [self.view addSubview:dropDownBg];
+    [self.view bringSubviewToFront:dropDownBg];
+    
+    
+    dropDownToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, dropDownBg.bounds.size.width, 44)];
+    [dropDownToolbar setItems:[NSArray arrayWithObjects:cancelBarButton,flexibleSpace,doneBarButton, nil] animated:NO];
+    [dropDownBg addSubview:dropDownToolbar];
+    
+    dropDownPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 44, dropDownBg.bounds.size.width, 100)];
+    dropDownPicker.delegate = self;
+    dropDownPicker.dataSource = self;
+    dropDownPicker.backgroundColor = [UIColor whiteColor];
+    [dropDownBg addSubview:dropDownPicker];
+    dropDownPicker.showsSelectionIndicator = YES;
+    
+    
     dimmedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     [dimmedImageView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
     [self.view addSubview:dimmedImageView];
     dimmedImageView.hidden = YES;
-    
-    [self createTopMenu];
+
     
 }
+
+
+# pragma mark - UIPickerViewDataSource Methods
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    
+    return 1;
+}
+
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    
+    return appDelegate.WLS_LISTING_ARRAY.count;
+}
+
+
+# pragma mark - UIPickerViewDelegate Methods
+
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(nullable UIView *)view {
+    
+    UILabel *sitesLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 25)];
+    sitesLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:17.0];
+    sitesLabel.backgroundColor = [UIColor clearColor];
+    sitesLabel.textAlignment = NSTextAlignmentCenter;
+    sitesLabel.text = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:row] objectForKey:@"name"];
+    sitesLabel.textColor = [UIColor blackColor];
+    
+    return sitesLabel;
+}
+
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
+    pickerSelectedIndex = row;
+}
+
+
 
 
 # pragma mark - ASIHTTPRequestDelegate Methods
@@ -616,14 +787,32 @@
     DebugLog(@"%@",responseString);
     [appDelegate.hud hide:YES];
     
-    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+    if (isSubscribingForAlert) {
         
-        [notifiyButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
-        isSubscribed = YES;
-        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+            
+            [notifiyButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
+            isSubscribed = YES;
+            [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        }
+        else {
+            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        }
     }
     else {
-        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        
+        if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+            //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
+            
+            [appDelegate.WLS_LISTING_ARRAY removeAllObjects];
+            
+            NSArray *tempArray = [[responseString JSONValue] objectForKey:WLS_LISTING_RESPONSE_NAME];
+            [appDelegate.WLS_LISTING_ARRAY setArray:tempArray];
+            
+            [locationField becomeFirstResponder];
+        }
+        
+        [appDelegate.hud hide:YES];
     }
 }
 
@@ -652,6 +841,21 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
+    return YES;
+}
+
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    if (textField==locationField) {
+        if (appDelegate.WLS_LISTING_ARRAY.count==0) {
+            [self fetchWLSListing];
+        }
+        else {
+            [self animateOptionsPicker];
+        }
+        return NO;
+    }
     return YES;
 }
 

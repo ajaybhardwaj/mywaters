@@ -27,6 +27,7 @@
 #import "CCTVListingController.h"
 #import "WLSListingViewController.h"
 #import "LoginViewController.h"
+#import "TipsListingViewController.h"
 
 typedef enum {
   
@@ -42,6 +43,7 @@ typedef enum {
     WLS_CONTROLLER,
     BOOKING_CONTROLLER,
     FEEDBACK_CONTROLLER,
+    TIPS_CONTROLLER,
     SETTINGS_CONTROLLER,
     ABOUT_PUB_CONTROLLER,
     SIGN_IN_CONTROLLER,
@@ -69,7 +71,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger currentDeckIndex;
 
 
-@property (nonatomic, retain) UINavigationController *homeNavController,*notificationsNavController,*whatsupNavController,*floodmapNavController,*abcwatersNavController,*eventsNavController,*cctvNavController,*wlsController,*bookingNavController,*feedbackNavController,*settingsNavController,*profileNavController,*favouritesNavController,*signInController,*aboutPUBController;
+@property (nonatomic, retain) UINavigationController *homeNavController,*notificationsNavController,*whatsupNavController,*floodmapNavController,*abcwatersNavController,*eventsNavController,*cctvNavController,*wlsController,*bookingNavController,*feedbackNavController,*settingsNavController,*profileNavController,*favouritesNavController,*signInController,*aboutPUBController,*tipsNavController;
 
 - (void) clear_All_ControllersInThisNavigationCntrl:(UINavigationController*)navControl;
 - (void) clearAllThe_Controllers;
@@ -90,6 +92,7 @@ typedef enum {
 - (UINavigationController*) getWlsController;
 - (UINavigationController*) getBookingController;
 - (UINavigationController*) getFeedbackController;
+- (UINavigationController*) getTipsController;
 - (UINavigationController*) getSettingsController;
 - (UINavigationController*) getProfileController;
 - (UINavigationController*) getFavouritesController;

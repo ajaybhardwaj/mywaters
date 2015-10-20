@@ -69,8 +69,8 @@
             _currentRoute = [response.routes firstObject];
             [self plotRouteOnMap:_currentRoute];
             
-            self.navigationItem.rightBarButtonItem = routesButton;
-            [stepsTableView reloadData];
+//            self.navigationItem.rightBarButtonItem = routesButton;
+//            [stepsTableView reloadData];
             [appDelegate.hud hide:YES];
 
 //            for (MKRoute *route in [response routes]) {
@@ -262,8 +262,8 @@
     self.view.backgroundColor = RGB(242, 242, 242);
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
-    routesButton = [[UIBarButtonItem alloc] initWithTitle:@"Steps" style:UIBarButtonItemStyleDone target:self action:@selector(animateRouteStepsTable)];
-    self.navigationItem.rightBarButtonItem = nil;
+//    routesButton = [[UIBarButtonItem alloc] initWithTitle:@"Steps" style:UIBarButtonItemStyleDone target:self action:@selector(animateRouteStepsTable)];
+//    self.navigationItem.rightBarButtonItem = nil;
 
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
@@ -275,12 +275,12 @@
     [self.view  addSubview:directionMapView];
     
     
-    stepsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height/2) style:UITableViewStylePlain];
-    stepsTableView.dataSource = self;
-    stepsTableView.delegate = self;
-    stepsTableView.backgroundColor = [UIColor clearColor];
-    stepsTableView.backgroundView = nil;
-    [self.view addSubview:stepsTableView];
+//    stepsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height/2) style:UITableViewStylePlain];
+//    stepsTableView.dataSource = self;
+//    stepsTableView.delegate = self;
+//    stepsTableView.backgroundColor = [UIColor clearColor];
+//    stepsTableView.backgroundView = nil;
+//    [self.view addSubview:stepsTableView];
     
     [self sendRouteRequest];
 }

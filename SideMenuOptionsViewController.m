@@ -80,9 +80,12 @@
         [[ViewControllerHelper viewControllerHelper] enableThisController:FEEDBACK_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
     else if (appDelegate.SELECTED_MENU_ID==12) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:SETTINGS_CONTROLLER onCenter:TRUE withAnimate:NO];
+        [[ViewControllerHelper viewControllerHelper] enableThisController:TIPS_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
     else if (appDelegate.SELECTED_MENU_ID==13) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:SETTINGS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==14) {
         [[ViewControllerHelper viewControllerHelper] enableThisController:ABOUT_PUB_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
 }
@@ -145,6 +148,8 @@
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Booking",CELL__MAIN_TXT,@"icn_booking",CELL__IMG, nil],
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Feedback",CELL__MAIN_TXT,@"icn_feedback",CELL__IMG, nil],
+                                                                                                           
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Tips",CELL__MAIN_TXT,@"icn_tips",CELL__IMG, nil],
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Settings",CELL__MAIN_TXT,@"icn_settings",CELL__IMG, nil],
                                                                                                            
@@ -325,6 +330,15 @@
                     [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
                     appDelegate.left_deck_width = self.view.bounds.size.width-180;
                     [[ViewControllerHelper viewControllerHelper] enableThisController:FEEDBACK_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
+                case TIPS_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:TIPS_CONTROLLER onCenter:TRUE withAnimate:NO];
                     
                 }
                     break;

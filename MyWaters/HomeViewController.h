@@ -52,12 +52,14 @@
     NSDictionary *twelveHourForecastDictionary;
     BOOL isShowingWeatherModule;
     
-    NSMutableArray *eventsDataArray,*feedsDataArray,*wlsDataArray,*cctvDataArray,*floodsDataArray;
+    NSMutableArray *eventsDataArray,*feedsDataArray,*wlsDataArray,*cctvDataArray,*floodsDataArray,*tipsDataArray;
     
     BOOL isExpandingMenu;
     
     //*************** Demo App UI Variables
     UIButton *quickMapButton,*whatsUpButton,*cctvButton,*reportButton;
+    
+    UIWebView *tipsWebView;
 }
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, assign) MKCoordinateRegion region;

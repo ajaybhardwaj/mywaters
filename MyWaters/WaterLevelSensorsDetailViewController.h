@@ -14,7 +14,7 @@
 #import "DirectionViewController.h"
 #import "SMSSubscriptionViewController.h"
 
-@interface WaterLevelSensorsDetailViewController : UIViewController <MKMapViewDelegate,UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
+@interface WaterLevelSensorsDetailViewController : UIViewController <MKMapViewDelegate,UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -49,9 +49,16 @@
     
     UIImageView *dimmedImageView;
     
-    BOOL isAlreadyFav;
+    BOOL isAlreadyFav,isSubscribingForAlert;
     NSMutableArray *tempNearByArray;
 
+    UITextField *locationField;
+    
+    UIToolbar *dropDownToolbar;
+    UIPickerView *dropDownPicker;
+    UIBarButtonItem *cancelBarButton,*doneBarButton,*flexibleSpace;
+    UIView *dropDownBg;
+    NSInteger pickerSelectedIndex;
 }
 
 @property (nonatomic, assign) NSInteger drainDepthType;

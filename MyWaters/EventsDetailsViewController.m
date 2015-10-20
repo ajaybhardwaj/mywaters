@@ -572,9 +572,9 @@
     addToFavlabel.textAlignment = NSTextAlignmentCenter;
     addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     if (isAlreadyFav)
-        addToFavlabel.text = @"Favourite";
-    else
         addToFavlabel.text = @"Favourited";
+    else
+        addToFavlabel.text = @"Favourite";
     addToFavlabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:addToFavlabel];
     

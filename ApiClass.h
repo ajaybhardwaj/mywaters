@@ -56,6 +56,8 @@
 #define USER_BADGES_RESPONSE_NAME @"ListBadge"
 #define REWARDS_RESPONSE_NAME @"ListReward"
 #define USER_ACTION_HISTORY_RESPONSE_NAME @"ListActionHistory"
+#define USER_FLOOD_SUBMISSION_RESPONSE_NAME @"ListFloodUserSubmission"
+#define PUB_FLOOD_SUBMISSION_RESPONSE_NAME @"ListFloodPUBSubmission"
 
 
 #define DASHBOARD_API_CCTV_RESPONSE_NAME @"ListCCTV"
@@ -63,6 +65,7 @@
 #define DASHBOARD_API_EVENTS_RESPONSE_NAME @"ListEvents"
 #define DASHBOARD_API_FEEDS_RESPONSE_NAME @"ListMediaFeed"
 #define DASHBOARD_API_FLOODS_RESPONSE_NAME @"ListFloodPUBSubmission"
+#define DASHBOARD_API_TIPS_RESPONSE_NAME @"ListMediaFeed"
 
 
 # pragma mark - BASE URLS
