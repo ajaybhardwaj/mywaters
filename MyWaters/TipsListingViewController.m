@@ -30,16 +30,21 @@
 
 - (void) fetchTipsListing {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
-    
-    
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"MediaFeedMode",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"12",@"3",@"1.0", nil];
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
-    
-    [self pullToRefreshTable];
+    if ([CommonFunctions hasConnectivity]) {
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+        
+        
+        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"MediaFeedMode",@"version", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"12",@"3",@"1.0", nil];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+        
+        [self pullToRefreshTable];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
 }
 
 
@@ -59,7 +64,7 @@
         NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
                                                                     forKey:NSForegroundColorAttributeName];
         NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
-        self.refreshControl.attributedTitle = attributedTitle;
+        //        self.refreshControl.attributedTitle = attributedTitle;
         
         [self.refreshControl endRefreshing];
     }
@@ -161,29 +166,29 @@
     
     cell.backgroundColor = RGB(247, 247, 247);
     
-//    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 80, 80)];
-//    
-//    NSString *imageURLString = [NSString stringWithFormat:@"%@",[[appDelegate.TIPS_VIDEOS_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ImageURL"]];
-//    [cell.contentView addSubview:cellImage];
-//    
-//    
-//    
-//    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-//    activityIndicator.center = CGPointMake(cellImage.bounds.size.width/2, cellImage.bounds.size.height/2);
-//    [cellImage addSubview:activityIndicator];
-//    [activityIndicator startAnimating];
-//    
-//    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
-//        if (succeeded) {
-//            
-//            cellImage.image = image;
-//        }
-//        else {
-//            DebugLog(@"Image Loading Failed..!!");
-//            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
-//        }
-//        [activityIndicator stopAnimating];
-//    }];
+    //    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 80, 80)];
+    //
+    //    NSString *imageURLString = [NSString stringWithFormat:@"%@",[[appDelegate.TIPS_VIDEOS_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ImageURL"]];
+    //    [cell.contentView addSubview:cellImage];
+    //
+    //
+    //
+    //    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    //    activityIndicator.center = CGPointMake(cellImage.bounds.size.width/2, cellImage.bounds.size.height/2);
+    //    [cellImage addSubview:activityIndicator];
+    //    [activityIndicator startAnimating];
+    //
+    //    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+    //        if (succeeded) {
+    //
+    //            cellImage.image = image;
+    //        }
+    //        else {
+    //            DebugLog(@"Image Loading Failed..!!");
+    //            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    //        }
+    //        [activityIndicator stopAnimating];
+    //    }];
     
     
     UIWebView *localVideoWebview = [[UIWebView alloc] initWithFrame:CGRectMake(-10, -10, self.view.bounds.size.width+10, 150)];
@@ -210,7 +215,7 @@
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.numberOfLines = 0;
     [cell.contentView addSubview:titleLabel];
-        
+    
     UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 189.5, tipsListingTableView.bounds.size.width, 0.5)];
     [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:seperatorImage];
@@ -232,8 +237,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeStarted:) name:@"UIMoviePlayerControllerDidEnterFullscreenNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeFinished:) name:@"UIMoviePlayerControllerDidExitFullscreenNotification" object:nil];
-
-
+    
+    
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     tipsListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
@@ -285,7 +290,7 @@
         [self fetchTipsListing];
         noDataLabel.hidden = YES;
         tipsListingTableView.hidden = NO;
-
+        
     }
     else {
         noDataLabel.hidden = NO;

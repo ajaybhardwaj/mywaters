@@ -426,23 +426,26 @@
             
             NSString *imageName,*imageURLString;
             
+            NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+            NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+            NSString *destinationPath;//=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
+
+            
             imageName = [[badgesDataSource objectAtIndex:i] objectForKey:@"Image"];
-//            imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
             
             if ([[badgesDataSource objectAtIndex:i] objectForKey:@"UnlockedAt"] == (id)[NSNull null]) {
                 imageURLString = [NSString stringWithFormat:@"%@grey/%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
+                destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges/Grey"]];
 
             }
             else {
+                destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
                 imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
             }
             
             DebugLog(@"%@",imageURLString);
             
             
-            NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
-            NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
-            NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
             
             NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
             
@@ -477,7 +480,7 @@
                             }
                         }
                         
-                        NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                        NSData *data = UIImagePNGRepresentation(image);
                         [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
                     }
                     else {
@@ -500,23 +503,24 @@
             
             
             NSString *imageName,*imageURLString;
+            NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+            NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+            NSString *destinationPath;//=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
 
             imageName = [[badgesDataSource objectAtIndex:i] objectForKey:@"Image"];
-//            imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
             
             if ([[badgesDataSource objectAtIndex:i] objectForKey:@"UnlockedAt"] == (id)[NSNull null]) {
+                destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges/Grey"]];
                 imageURLString = [NSString stringWithFormat:@"%@grey/%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
                 
             }
             else {
+                destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
                 imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
             }
             
             DebugLog(@"%@",imageURLString);
             
-            NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
-            NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
-            NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
             
             NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
             
@@ -551,7 +555,7 @@
                             }
                         }
                         
-                        NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                        NSData *data = UIImagePNGRepresentation(image);
                         [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
                     }
                     else {

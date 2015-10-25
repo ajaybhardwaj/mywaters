@@ -17,7 +17,7 @@
 @implementation FeedbackViewController
 @synthesize isNotFeedbackController;
 @synthesize tempLocationString,tempCommentString,tempNameString,tempPhoneString,tempEmailString;
-
+@synthesize isReportingForChatter,chatterID,chatterText;
 
 //*************** Method To Show UIActionSheet
 
@@ -96,11 +96,13 @@
 - (void) submitUserFeedback {
     
     if ([CommonFunctions hasConnectivity]) {
-        if ([locationField.text length] == 0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
-            return;
-        }
         
+        if (!isReportingForChatter) {
+            if ([locationField.text length] == 0) {
+                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
+                return;
+            }
+        }
         if ([commentField.text length] == 0) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
             return;
@@ -153,29 +155,42 @@
         [parameters addObject:@"Feedback.comment"];
         [values addObject:commentField.text];
         
-        [parameters addObject:@"Feedback.locationName"];
-        [values addObject:locationField.text];
-        
-        [parameters addObject:@"Feedback.locationLatitude"];
-        [values addObject:[NSString stringWithFormat:@"%f",currentLocation.latitude]];
-        
-        [parameters addObject:@"Feedback.locationLongitude"];
-        [values addObject:[NSString stringWithFormat:@"%f",currentLocation.longitude]];
-        
-        
-        if (isFeedbackImageAvailable) {
+        if (!isReportingForChatter) {
             
-            NSData* data = UIImageJPEGRepresentation(picUploadImageView.image, 0.5f);
-            NSString *base64ImageString = [Base64 encode:data];
+            [parameters addObject:@"Feedback.locationName"];
+            [values addObject:locationField.text];
             
-            [parameters addObject:@"Feedback.images[0]"];
-            [values addObject:base64ImageString];
             
+            [parameters addObject:@"Feedback.locationLatitude"];
+            [values addObject:[NSString stringWithFormat:@"%f",currentLocation.latitude]];
+            
+            [parameters addObject:@"Feedback.locationLongitude"];
+            [values addObject:[NSString stringWithFormat:@"%f",currentLocation.longitude]];
+            
+            if (isFeedbackImageAvailable) {
+                
+                NSData* data = UIImageJPEGRepresentation(picUploadImageView.image, 0.5f);
+                NSString *base64ImageString = [Base64 encode:data];
+                
+                [parameters addObject:@"Feedback.images[0]"];
+                [values addObject:base64ImageString];
+                
+            }
+            else {
+                [CommonFunctions showAlertView:nil title:nil msg:@"Please provide image." cancel:@"OK" otherButton:nil];
+                return;
+            }
         }
         
-        
-        //    NSArray *parameters = [[NSArray alloc] initWithObjects:@"Feedback", nil];
-        //    NSArray *values = [[NSArray alloc] initWithObjects:feedbackDictionary, nil];
+        if (isReportingForChatter) {
+            
+            [parameters addObject:@"UserID"];
+            [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userID"]];
+
+            [parameters addObject:@"MediaFeedID"];
+            [values addObject:chatterID];
+
+        }
         
         DebugLog(@"%@---%@",parameters,values);
         
@@ -316,7 +331,9 @@
         commentField.text = @"";
         emailField.text = @"";
         phoneField.text = @"";
+        nameField.text = @"";
         
+        isReportingForChatter = NO;
         appDelegate.IS_USER_LOCATION_SELECTED_BY_LONG_PRESS = NO;
         appDelegate.LONG_PRESS_USER_LOCATION_LAT = 0.0;
         appDelegate.LONG_PRESS_USER_LOCATION_LONG = 0.0;
@@ -502,10 +519,16 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row==1) {
-        return 120.0f;
+    if (isReportingForChatter) {
+        if (indexPath.row==0) {
+            return 120.0f;
+        }
     }
-    
+    else {
+        if (indexPath.row==1) {
+            return 120.0f;
+        }
+    }
     return 45.0f;
 }
 
@@ -528,178 +551,230 @@
     cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.numberOfLines = 0;
     
-    
-    //    if (indexPath.row==0) {
-    //
-    //        feedbackTypeField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-    //        feedbackTypeField.textColor = RGB(35, 35, 35);
-    //        feedbackTypeField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-    //        feedbackTypeField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-    //        feedbackTypeField.leftViewMode = UITextFieldViewModeAlways;
-    //        feedbackTypeField.borderStyle = UITextBorderStyleNone;
-    //        feedbackTypeField.textAlignment=NSTextAlignmentLeft;
-    //        [feedbackTypeField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    //        feedbackTypeField.placeholder=@"Select Feedback Type *";
-    //        feedbackTypeField.text = [feedbackTypeArray objectAtIndex:selectedPickerIndex];
-    //        [cell.contentView addSubview:feedbackTypeField];
-    //        feedbackTypeField.backgroundColor = [UIColor clearColor];
-    //        feedbackTypeField.delegate = self;
-    //        [feedbackTypeField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-    //        feedbackTypeField.tag = 1;
-    //
-    //        UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-    //        [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    //        cell.accessoryView = dropDownButton;
-    //    }
-    if (indexPath.row==0) {
+    if (isReportingForChatter) {
         
-        locationField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-        locationField.textColor = RGB(35, 35, 35);
-        locationField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-        locationField.leftViewMode = UITextFieldViewModeAlways;
-        locationField.borderStyle = UITextBorderStyleNone;
-        locationField.textAlignment=NSTextAlignmentLeft;
-        [locationField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        locationField.placeholder=@"Location *";
-        [cell.contentView addSubview:locationField];
-        locationField.backgroundColor = [UIColor clearColor];
-        locationField.delegate = self;
-        [locationField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-        locationField.tag = 2;
-        locationField.userInteractionEnabled = NO;
-        
-        
-        UIButton *locationButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        locationButton.frame = CGRectMake(0, 0, 20, 20);
-        [locationButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        [locationButton addTarget:self action:@selector(moveToLongPressUserLocationView) forControlEvents:UIControlEventTouchUpInside];
-        cell.accessoryView = locationButton;
-        
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, locationField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
-        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
-        [cell.contentView addSubview:cellSeperator];
-        
-        
+        if (indexPath.row==0) {
+            
+            commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, 120)];
+            commentField.returnKeyType = UIReturnKeyDone;
+            commentField.delegate = self;
+            commentField.text = @" Comments *";
+            commentField.textColor = [UIColor lightGrayColor];
+            commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            commentField.backgroundColor = [UIColor clearColor];
+            [cell.contentView addSubview:commentField];
+            if ([chatterText length]!=0) {
+                commentField.text = chatterText;
+                commentField.textColor = [UIColor blackColor];
+            }
+            
+            UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, commentField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
+            [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+            [cell.contentView addSubview:cellSeperator];
+            
+            
+        }
+        else if (indexPath.row==1) {
+            
+            nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            nameField.textColor = RGB(35, 35, 35);
+            nameField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+            nameField.leftViewMode = UITextFieldViewModeAlways;
+            nameField.borderStyle = UITextBorderStyleNone;
+            nameField.textAlignment=NSTextAlignmentLeft;
+            [nameField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            nameField.placeholder=@"Name *";
+            [cell.contentView addSubview:nameField];
+            nameField.clearButtonMode = UITextFieldViewModeWhileEditing;
+            nameField.backgroundColor = [UIColor clearColor];
+            nameField.delegate = self;
+            [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+            nameField.tag = 4;
+            nameField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
+            
+            UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, nameField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
+            [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+            [cell.contentView addSubview:cellSeperator];
+            
+            
+        }
+        else if (indexPath.row==2) {
+            
+            phoneField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            phoneField.textColor = RGB(35, 35, 35);
+            phoneField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            phoneField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+            phoneField.leftViewMode = UITextFieldViewModeAlways;
+            phoneField.borderStyle = UITextBorderStyleNone;
+            phoneField.textAlignment=NSTextAlignmentLeft;
+            [phoneField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            phoneField.placeholder=@"Contact No.";
+            [cell.contentView addSubview:phoneField];
+            phoneField.clearButtonMode = UITextFieldViewModeWhileEditing;
+            phoneField.backgroundColor = [UIColor clearColor];
+            phoneField.delegate = self;
+            phoneField.keyboardType = UIKeyboardTypeNumberPad;
+            [phoneField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+            phoneField.tag = 5;
+            
+            UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, phoneField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
+            [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+            [cell.contentView addSubview:cellSeperator];
+            
+        }
+        else if (indexPath.row==3) {
+            
+            emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            emailField.textColor = RGB(35, 35, 35);
+            emailField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+            emailField.leftViewMode = UITextFieldViewModeAlways;
+            emailField.borderStyle = UITextBorderStyleNone;
+            emailField.textAlignment=NSTextAlignmentLeft;
+            [emailField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            emailField.placeholder=@"Email";
+            [cell.contentView addSubview:emailField];
+            emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
+            emailField.backgroundColor = [UIColor clearColor];
+            emailField.delegate = self;
+            [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+            emailField.tag = 5;
+            emailField.keyboardType = UIKeyboardTypeEmailAddress;
+            emailField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
+            
+            UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, emailField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
+            [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+            [cell.contentView addSubview:cellSeperator];
+            
+            
+        }
     }
-    else if (indexPath.row==1) {
+    else {
         
-        //        commentField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-        //        commentField.textColor = RGB(35, 35, 35);
-        //        commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        //        commentField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-        //        commentField.leftViewMode = UITextFieldViewModeAlways;
-        //        commentField.borderStyle = UITextBorderStyleNone;
-        //        commentField.textAlignment=NSTextAlignmentLeft;
-        //        [commentField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        //        if (isFloodSubmission) {
-        //            commentField.placeholder=@"Severity Type *";
-        //        }
-        //        else {
-        //            commentField.placeholder=@"Comments *";
-        //        }
-        //        [cell.contentView addSubview:commentField];
-        //        commentField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        //        commentField.backgroundColor = [UIColor clearColor];
-        //        commentField.delegate = self;
-        //        [commentField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-        //        commentField.tag = 3;
-        //
-        //        if (isFloodSubmission) {
-        //            UIImageView *dropDownButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-        //            [dropDownButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_down.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        //            cell.accessoryView = dropDownButton;
-        //        }
-        
-        commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, 120)];
-        commentField.returnKeyType = UIReturnKeyDone;
-        commentField.delegate = self;
-        commentField.text = @" Comments *";
-        commentField.textColor = [UIColor lightGrayColor];
-        commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        commentField.backgroundColor = [UIColor clearColor];
-        [cell.contentView addSubview:commentField];
-        
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, commentField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
-        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
-        [cell.contentView addSubview:cellSeperator];
-        
-        
-    }
-    else if (indexPath.row==2) {
-        
-        nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-        nameField.textColor = RGB(35, 35, 35);
-        nameField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-        nameField.leftViewMode = UITextFieldViewModeAlways;
-        nameField.borderStyle = UITextBorderStyleNone;
-        nameField.textAlignment=NSTextAlignmentLeft;
-        [nameField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        nameField.placeholder=@"Name *";
-        [cell.contentView addSubview:nameField];
-        nameField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        nameField.backgroundColor = [UIColor clearColor];
-        nameField.delegate = self;
-        [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-        nameField.tag = 4;
-        nameField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
-        
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, nameField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
-        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
-        [cell.contentView addSubview:cellSeperator];
-        
-        
-    }
-    else if (indexPath.row==3) {
-        
-        phoneField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-        phoneField.textColor = RGB(35, 35, 35);
-        phoneField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        phoneField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-        phoneField.leftViewMode = UITextFieldViewModeAlways;
-        phoneField.borderStyle = UITextBorderStyleNone;
-        phoneField.textAlignment=NSTextAlignmentLeft;
-        [phoneField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        phoneField.placeholder=@"Contact No.";
-        [cell.contentView addSubview:phoneField];
-        phoneField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        phoneField.backgroundColor = [UIColor clearColor];
-        phoneField.delegate = self;
-        phoneField.keyboardType = UIKeyboardTypeNumberPad;
-        [phoneField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-        phoneField.tag = 5;
-        
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, phoneField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
-        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
-        [cell.contentView addSubview:cellSeperator];
-        
-    }
-    else if (indexPath.row==4) {
-        
-        emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
-        emailField.textColor = RGB(35, 35, 35);
-        emailField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-        emailField.leftViewMode = UITextFieldViewModeAlways;
-        emailField.borderStyle = UITextBorderStyleNone;
-        emailField.textAlignment=NSTextAlignmentLeft;
-        [emailField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-        emailField.placeholder=@"Email";
-        [cell.contentView addSubview:emailField];
-        emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        emailField.backgroundColor = [UIColor clearColor];
-        emailField.delegate = self;
-        [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-        emailField.tag = 5;
-        emailField.keyboardType = UIKeyboardTypeEmailAddress;
-        emailField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
-        
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, emailField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
-        [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
-        [cell.contentView addSubview:cellSeperator];
-        
-        
+        if (indexPath.row==0) {
+            
+            locationField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            locationField.textColor = RGB(35, 35, 35);
+            locationField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+            locationField.leftViewMode = UITextFieldViewModeAlways;
+            locationField.borderStyle = UITextBorderStyleNone;
+            locationField.textAlignment=NSTextAlignmentLeft;
+            [locationField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            locationField.placeholder=@"Location *";
+            [cell.contentView addSubview:locationField];
+            locationField.backgroundColor = [UIColor clearColor];
+            locationField.delegate = self;
+            [locationField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+            locationField.tag = 2;
+            locationField.userInteractionEnabled = NO;
+            
+            
+            UIButton *locationButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            locationButton.frame = CGRectMake(0, 0, 20, 20);
+            [locationButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            [locationButton addTarget:self action:@selector(moveToLongPressUserLocationView) forControlEvents:UIControlEventTouchUpInside];
+            cell.accessoryView = locationButton;
+            
+            UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, locationField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
+            [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+            [cell.contentView addSubview:cellSeperator];
+            
+            
+        }
+        else if (indexPath.row==1) {
+            
+            commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, 120)];
+            commentField.returnKeyType = UIReturnKeyDone;
+            commentField.delegate = self;
+            commentField.text = @" Comments *";
+            commentField.textColor = [UIColor lightGrayColor];
+            commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            commentField.backgroundColor = [UIColor clearColor];
+            [cell.contentView addSubview:commentField];
+            
+            UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, commentField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
+            [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+            [cell.contentView addSubview:cellSeperator];
+            
+            
+        }
+        else if (indexPath.row==2) {
+            
+            nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            nameField.textColor = RGB(35, 35, 35);
+            nameField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+            nameField.leftViewMode = UITextFieldViewModeAlways;
+            nameField.borderStyle = UITextBorderStyleNone;
+            nameField.textAlignment=NSTextAlignmentLeft;
+            [nameField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            nameField.placeholder=@"Name *";
+            [cell.contentView addSubview:nameField];
+            nameField.clearButtonMode = UITextFieldViewModeWhileEditing;
+            nameField.backgroundColor = [UIColor clearColor];
+            nameField.delegate = self;
+            [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+            nameField.tag = 4;
+            nameField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
+            
+            UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, nameField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
+            [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+            [cell.contentView addSubview:cellSeperator];
+            
+            
+        }
+        else if (indexPath.row==3) {
+            
+            phoneField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            phoneField.textColor = RGB(35, 35, 35);
+            phoneField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            phoneField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+            phoneField.leftViewMode = UITextFieldViewModeAlways;
+            phoneField.borderStyle = UITextBorderStyleNone;
+            phoneField.textAlignment=NSTextAlignmentLeft;
+            [phoneField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            phoneField.placeholder=@"Contact No.";
+            [cell.contentView addSubview:phoneField];
+            phoneField.clearButtonMode = UITextFieldViewModeWhileEditing;
+            phoneField.backgroundColor = [UIColor clearColor];
+            phoneField.delegate = self;
+            phoneField.keyboardType = UIKeyboardTypeNumberPad;
+            [phoneField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+            phoneField.tag = 5;
+            
+            UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, phoneField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
+            [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+            [cell.contentView addSubview:cellSeperator];
+            
+        }
+        else if (indexPath.row==4) {
+            
+            emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            emailField.textColor = RGB(35, 35, 35);
+            emailField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+            emailField.leftViewMode = UITextFieldViewModeAlways;
+            emailField.borderStyle = UITextBorderStyleNone;
+            emailField.textAlignment=NSTextAlignmentLeft;
+            [emailField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            emailField.placeholder=@"Email";
+            [cell.contentView addSubview:emailField];
+            emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
+            emailField.backgroundColor = [UIColor clearColor];
+            emailField.delegate = self;
+            [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+            emailField.tag = 5;
+            emailField.keyboardType = UIKeyboardTypeEmailAddress;
+            emailField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
+            
+            UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, emailField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
+            [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
+            [cell.contentView addSubview:cellSeperator];
+            
+            
+        }
     }
     
     return cell;
@@ -708,6 +783,9 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
+    if (isReportingForChatter) {
+        return 4;
+    }
     return 5;
 }
 
@@ -899,8 +977,12 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(callPUBHelpdesk) withIconName:@"icn_call"]];
+    if (!isReportingForChatter)
+        [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(callPUBHelpdesk) withIconName:@"icn_call"]];
     
+    if (isReportingForChatter) {
+        self.title = @"Report/Feedback";
+    }
     
     fieldIndex = 1;
     
@@ -927,7 +1009,8 @@
     [submitButton addTarget:self action:@selector(submitUserFeedback) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:submitButton];
     
-    [self createFeedbackTableHeader];
+    if (!isReportingForChatter)
+        [self createFeedbackTableHeader];
     
     
     pickerbackground = [[UIView alloc]initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, 220)];
@@ -951,10 +1034,6 @@
     
     [pickerbackground addSubview:feedbackPickerView];
     [appDelegate.window addSubview:pickerbackground];
-    
-    
-    
-    
     
 }
 

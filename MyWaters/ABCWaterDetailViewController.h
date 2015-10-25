@@ -16,8 +16,9 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
 #import "QuickMapViewController.h"
+#import "FGalleryViewController.h"
 
-@interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,FBSDKSharingDelegate> {
+@interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,FBSDKSharingDelegate,FGalleryViewControllerDelegate> {
     
     AppDelegate *appDelegate;
     BOOL isControlMaximize;
@@ -49,6 +50,9 @@
     
     NSMutableArray *abcGalleryImages;
     BOOL isFetchingGalleryImages;
+    
+    FGalleryViewController *networkGallery;
+//    NSArray *networkImages;
 }
 
 @property (nonatomic, strong) NSString *abcSiteId,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*imageName;

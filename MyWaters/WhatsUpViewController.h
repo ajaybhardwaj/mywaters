@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "FeedbackViewController.h"
 
 @interface WhatsUpViewController : UIViewController <UITableViewDelegate,UITableViewDataSource> {
     

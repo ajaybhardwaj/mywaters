@@ -87,12 +87,18 @@
     NSURL *nsurl=[NSURL URLWithString:bookingUrl];
     
     NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
-    [bookingWebView loadRequest:nsrequest];
+    if ([CommonFunctions hasConnectivity]) {
+        loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        loadingIndicator.hidesWhenStopped = YES;
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loadingIndicator];
+
+        [bookingWebView loadRequest:nsrequest];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
     [self.view addSubview:bookingWebView];
     
-    loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    loadingIndicator.hidesWhenStopped = YES;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loadingIndicator];
 }
 
 

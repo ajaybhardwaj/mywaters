@@ -45,7 +45,7 @@
         NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
                                                                     forKey:NSForegroundColorAttributeName];
         NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
-        self.refreshControl.attributedTitle = attributedTitle;
+        //        self.refreshControl.attributedTitle = attributedTitle;
         
         [self.refreshControl endRefreshing];
     }
@@ -100,15 +100,20 @@
 
 - (void) fetchNotificationListing {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
-    
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"pushtoken",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"7",@"12345",@"1.0", nil];
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
-    
-    [self pullToRefreshTable];
+    if ([CommonFunctions hasConnectivity]) {
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+        
+        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"pushtoken",@"version", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"7",@"12345",@"1.0", nil];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+        
+        [self pullToRefreshTable];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
 }
 
 
@@ -410,7 +415,6 @@
     //    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
     
     
-    
     UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
     [btnfilter setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_filter.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
@@ -472,17 +476,16 @@
     self.navigationController.navigationBar.alpha = 1.0;
     
     [self fetchNotificationListing];
-    
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-    
-    [self.view addGestureRecognizer:swipeGesture];
+    //    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    //    swipeGesture.numberOfTouchesRequired = 1;
+    //    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    //
+    //    [self.view addGestureRecognizer:swipeGesture];
     
 }
 

@@ -183,6 +183,7 @@
     NSArray *values = [[NSArray alloc] initWithObjects:abcSiteId, nil];
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,ABC_WATERS_POI]];
+    
 }
 
 
@@ -440,15 +441,18 @@
                 
                 for (int i=0; i<tempArray.count; i++) {
                     NSString *galleryImageName = [[tempArray objectAtIndex:i] objectForKey:@"Image"];
-                    [abcGalleryImages addObject:galleryImageName];
+                    [abcGalleryImages addObject:[NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,galleryImageName]];
                 }
                 
-                GalleryViewController *viewObj = [[GalleryViewController alloc] init];
-                viewObj.isABCGallery = YES;
-                viewObj.isUserGallery = NO;
-                viewObj.isPOIGallery = NO;
-                viewObj.galleryImages = abcGalleryImages;
-                [self.navigationController pushViewController:viewObj animated:YES];
+                
+                networkGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
+                [self.navigationController pushViewController:networkGallery animated:YES];
+//                GalleryViewController *viewObj = [[GalleryViewController alloc] init];
+//                viewObj.isABCGallery = YES;
+//                viewObj.isUserGallery = NO;
+//                viewObj.isPOIGallery = NO;
+//                viewObj.galleryImages = abcGalleryImages;
+//                [self.navigationController pushViewController:viewObj animated:YES];
                 
             }
             else {
@@ -595,6 +599,72 @@
     
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }
+
+
+
+#pragma mark - FGalleryViewControllerDelegate Methods
+
+
+- (int)numberOfPhotosForPhotoGallery:(FGalleryViewController *)gallery
+{
+    int num;
+//    if( gallery == localGallery ) {
+//        num = [localImages count];
+//    }
+//    else if( gallery == networkGallery ) {
+    if( gallery == networkGallery ) {
+        num = (int)[abcGalleryImages count];
+    }
+    return num;
+}
+
+
+- (FGalleryPhotoSourceType)photoGallery:(FGalleryViewController *)gallery sourceTypeForPhotoAtIndex:(NSUInteger)index
+{
+//    if( gallery == localGallery ) {
+//        return FGalleryPhotoSourceTypeLocal;
+//    }
+//    else
+        return FGalleryPhotoSourceTypeNetwork;
+}
+
+
+- (NSString*)photoGallery:(FGalleryViewController *)gallery captionForPhotoAtIndex:(NSUInteger)index
+{
+//    NSString *caption;
+//    if( gallery == localGallery ) {
+//        caption = [localCaptions objectAtIndex:index];
+//    }
+//    else if( gallery == networkGallery ) {
+//        caption = [networkCaptions objectAtIndex:index];
+//    }
+//    return caption;
+    return nil;
+}
+
+
+- (NSString*)photoGallery:(FGalleryViewController*)gallery filePathForPhotoSize:(FGalleryPhotoSize)size atIndex:(NSUInteger)index {
+//    return [localImages objectAtIndex:index];
+    return nil;
+}
+
+- (NSString*)photoGallery:(FGalleryViewController *)gallery urlForPhotoSize:(FGalleryPhotoSize)size atIndex:(NSUInteger)index {
+    return [abcGalleryImages objectAtIndex:index];
+}
+
+- (void)handleTrashButtonTouch:(id)sender {
+    // here we could remove images from our local array storage and tell the gallery to remove that image
+    // ex:
+    //[localGallery removeImageAtIndex:[localGallery currentIndex]];
+}
+
+
+- (void)handleEditCaptionButtonTouch:(id)sender {
+    // here we could implement some code to change the caption for a stored image
+}
+
+
+
 
 
 # pragma mark - View Lifecycle Methods
@@ -760,6 +830,9 @@
     shareLabel.text = @"Share";
     shareLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:shareLabel];
+    
+    
+//    networkImages = [[NSArray alloc] initWithObjects:@"http://farm6.static.flickr.com/5042/5323996646_9c11e1b2f6_b.jpg", @"http://farm6.static.flickr.com/5007/5311573633_3cae940638.jpg",nil];
     
 }
 

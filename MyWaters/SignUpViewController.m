@@ -217,6 +217,7 @@
 
 - (void) validateSignUpParameters {
     
+    if ([CommonFunctions hasConnectivity]) {
     if ([emailField.text length]==0) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
         return;
@@ -305,7 +306,10 @@
     }
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,SIGNUP_API_URL]];
-    
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
 }
 
 

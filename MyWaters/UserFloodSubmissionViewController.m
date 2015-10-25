@@ -48,7 +48,7 @@
 
 - (void) submitUserFloodSubmissionFeedback {
     
-    
+    if ([CommonFunctions hasConnectivity]) {
     if ([locationField.text length] == 0) {
         [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
         return;
@@ -98,7 +98,10 @@
     DebugLog(@"%@---%@",parameters,values);
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_FLOOD_SUBMISSION]];
-    
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
     
 }
 

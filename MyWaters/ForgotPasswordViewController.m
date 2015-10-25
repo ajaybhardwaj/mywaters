@@ -38,28 +38,32 @@
     
     [emailField resignFirstResponder];
     
-    
-    if ([emailField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
-    }
-    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+    if ([CommonFunctions hasConnectivity]) {
+        if ([emailField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
+        }
+        else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+        }
+        else {
+            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+            appDelegate.hud.labelText = @"Loading...";
+            
+            NSMutableArray *parameters = [[NSMutableArray alloc] init];
+            NSMutableArray *values = [[NSMutableArray alloc] init];
+            
+            [parameters addObject:@"VerificationMode"];
+            [values addObject:@"4"];
+            
+            [parameters addObject:@"Email"];
+            [values addObject:emailField.text];
+            
+            [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,VERIFICATION_API_URL]];
+        }
     }
     else {
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
-        
-        NSMutableArray *parameters = [[NSMutableArray alloc] init];
-        NSMutableArray *values = [[NSMutableArray alloc] init];
-        
-        [parameters addObject:@"VerificationMode"];
-        [values addObject:@"4"];
-        
-        [parameters addObject:@"Email"];
-        [values addObject:emailField.text];
-        
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,VERIFICATION_API_URL]];
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet Connectivity." cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -133,7 +137,7 @@
     }
     [bgView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_background.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [self.view addSubview:bgView];
-
+    
     
     emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, 40, self.view.bounds.size.width-20, 40)];
     emailField.textColor = RGB(61, 71, 94);

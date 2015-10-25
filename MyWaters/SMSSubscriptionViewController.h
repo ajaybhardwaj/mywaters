@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "WebViewUrlViewController.h"
 
 @interface SMSSubscriptionViewController : UIViewController <UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate> {
     
@@ -28,6 +29,7 @@
     UIView *uiBackgroundView;
     
     BOOL isShowingIDType,isShwoingLocations;
+    UILabel *termsOfUseLabel;
 }
 
 @property (nonatomic, strong) NSString *wlsID;

@@ -91,30 +91,35 @@
 
 - (void) requestNewOTPCode {
     
-    isVerifyingEmail = NO;
-    isResendingOTP = YES;
-    
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
-    
-    NSMutableArray *parameters = [[NSMutableArray alloc] init];
-    NSMutableArray *values = [[NSMutableArray alloc] init];
-    
-    if (isValidatingEmail) {
-        [parameters addObject:@"VerificationMode"];
-        [values addObject:@"3"];
+    if ([CommonFunctions hasConnectivity]) {
+        isVerifyingEmail = NO;
+        isResendingOTP = YES;
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+        
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        NSMutableArray *values = [[NSMutableArray alloc] init];
+        
+        if (isValidatingEmail) {
+            [parameters addObject:@"VerificationMode"];
+            [values addObject:@"3"];
+        }
+        else if (isResettingPassword) {
+            [parameters addObject:@"VerificationMode"];
+            [values addObject:@"4"];
+        }
+        
+        
+        [parameters addObject:@"Email"];
+        [values addObject:emailStringForVerification];
+        
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,VERIFICATION_API_URL]];
     }
-    else if (isResettingPassword) {
-        [parameters addObject:@"VerificationMode"];
-        [values addObject:@"4"];
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
     }
-    
-    
-    [parameters addObject:@"Email"];
-    [values addObject:emailStringForVerification];
-    
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,VERIFICATION_API_URL]];
 }
 
 
@@ -298,7 +303,7 @@
                 
                 [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
                 [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
-
+                
                 [CommonFunctions showAlertView:self title:nil msg:@"Account successfully created." cancel:@"OK" otherButton:nil];
             }
             else if (isResettingPassword) {

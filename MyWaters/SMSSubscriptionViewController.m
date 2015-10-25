@@ -23,6 +23,17 @@
 }
 
 
+//*************** Method To Show Terms Of Use For SMS Alert
+
+- (void) movetoTermsView {
+    
+    WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+    viewObj.headerTitle = @"Terms of Use";
+    viewObj.webUrl = @"http://www.pub.gov.sg/managingflashfloods/WLS/Pages/TermsUseSMSAlert.aspx";
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
 //*************** Method For Animating Dropdown Picker
 
 - (void) animateOptionsPicker {
@@ -257,7 +268,7 @@
     [UIView beginAnimations:@"topMenu" context:NULL];
     [UIView setAnimationDuration:0.5];
     CGPoint pos = uiBackgroundView.center;
-    pos.y = 239;
+    pos.y = 284;
     uiBackgroundView.center = pos;
     [UIView commitAnimations];
     
@@ -306,6 +317,7 @@
     [nameField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
     [nameField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     nameField.tag = 1;
+    nameField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
     
     idTypeField = [[UITextField alloc] initWithFrame:CGRectMake(10, nameField.frame.origin.y+nameField.bounds.size.height+1, self.view.bounds.size.width-20, 40)];
     idTypeField.textColor = RGB(0, 0, 0);
@@ -378,6 +390,7 @@
     [emailField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
     [emailField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     emailField.tag = 5;
+    emailField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
     
     mobileField = [[UITextField alloc] initWithFrame:CGRectMake(10, emailField.frame.origin.y+emailField.bounds.size.height+1, self.view.bounds.size.width-20, 40)];
     mobileField.textColor = RGB(0, 0, 0);
@@ -414,6 +427,23 @@
     [postalCodeField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
     [postalCodeField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     postalCodeField.tag = 7;
+    
+    
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"By clicking on the 'SUBSCRIBE' button, you agree that you have read and understood the Terms of Use set out here and agree to be bound by the same."];
+    [string addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor] range:NSMakeRange(86,13)];
+    
+    termsOfUseLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, postalCodeField.frame.origin.y+postalCodeField.bounds.size.height+10, uiBackgroundView.bounds.size.width-20, 80)];
+    termsOfUseLabel.backgroundColor = [UIColor clearColor];
+    termsOfUseLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
+    [termsOfUseLabel setAttributedText:string];
+    termsOfUseLabel.numberOfLines = 0;
+    [uiBackgroundView addSubview:termsOfUseLabel];
+    termsOfUseLabel.userInteractionEnabled = YES;
+    
+    UIButton *termsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    termsButton.frame = CGRectMake(0, 42, 90, 15);
+    [termsButton addTarget:self action:@selector(movetoTermsView) forControlEvents:UIControlEventTouchUpInside];
+    [termsOfUseLabel addSubview:termsButton];
     
     subscribreButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [subscribreButton setTitle:@"SUBSCRIBE" forState:UIControlStateNormal];
@@ -566,12 +596,12 @@
         [mobileField resignFirstResponder];
         [postalCodeField resignFirstResponder];
         
-        [UIView beginAnimations:@"topMenu" context:NULL];
-        [UIView setAnimationDuration:0.5];
-        CGPoint pos = uiBackgroundView.center;
-        pos.y = 239;
-        uiBackgroundView.center = pos;
-        [UIView commitAnimations];
+//        [UIView beginAnimations:@"topMenu" context:NULL];
+//        [UIView setAnimationDuration:0.5];
+//        CGPoint pos = uiBackgroundView.center;
+//        pos.y = 239;
+//        uiBackgroundView.center = pos;
+//        [UIView commitAnimations];
         
         [self animateOptionsPicker];
         
@@ -588,12 +618,12 @@
         [mobileField resignFirstResponder];
         [postalCodeField resignFirstResponder];
         
-        [UIView beginAnimations:@"topMenu" context:NULL];
-        [UIView setAnimationDuration:0.5];
-        CGPoint pos = uiBackgroundView.center;
-        pos.y = 239;
-        uiBackgroundView.center = pos;
-        [UIView commitAnimations];
+//        [UIView beginAnimations:@"topMenu" context:NULL];
+//        [UIView setAnimationDuration:0.5];
+//        CGPoint pos = uiBackgroundView.center;
+//        pos.y = 239;
+//        uiBackgroundView.center = pos;
+//        [UIView commitAnimations];
         
         if (appDelegate.WLS_LISTING_ARRAY.count==0) {
             [self fetchWLSListing];
@@ -611,7 +641,8 @@
         [UIView beginAnimations:@"topMenu" context:NULL];
         [UIView setAnimationDuration:0.5];
         CGPoint pos = uiBackgroundView.center;
-        pos.y = 80;
+//        if (IS_IPHONE_4_OR_LESS)
+            pos.y = 110;
         uiBackgroundView.center = pos;
         [UIView commitAnimations];
         
@@ -624,7 +655,8 @@
         [UIView beginAnimations:@"topMenu" context:NULL];
         [UIView setAnimationDuration:0.5];
         CGPoint pos = uiBackgroundView.center;
-        pos.y = 239;
+        if (IS_IPHONE_4_OR_LESS)
+            pos.y = 239;
         uiBackgroundView.center = pos;
         [UIView commitAnimations];
     }

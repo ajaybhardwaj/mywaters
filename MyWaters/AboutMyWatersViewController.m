@@ -49,11 +49,11 @@
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, aboutTableView.bounds.size.width, 380)];
     
-//    UILabel *aboutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, aboutTableView.bounds.size.width-20, 20)];
-//    aboutLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:15];
-//    aboutLabel.text = @"About MyWaters";
-//    aboutLabel.backgroundColor = [UIColor clearColor];
-//    [headerView addSubview:aboutLabel];
+    //    UILabel *aboutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, aboutTableView.bounds.size.width-20, 20)];
+    //    aboutLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:15];
+    //    aboutLabel.text = @"About MyWaters";
+    //    aboutLabel.backgroundColor = [UIColor clearColor];
+    //    [headerView addSubview:aboutLabel];
     
     
     UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, aboutTableView.bounds.size.width-20, 380)];
@@ -76,11 +76,11 @@
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     appDelegate.hud.labelText = @"Loading...";
-
-    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"AccessToken"]];
-
     
-
+    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"AccessToken"]];
+    
+    
+    
 }
 
 
@@ -153,7 +153,7 @@
             appDelegate.APP_CONFIG_DATA_ARRAY = [[responseString JSONValue] objectForKey:APP_CONFIG_DATA_RESPONSE_NAME];
         }
         else {
-
+            
             [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
             
             if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userIsFriendOfWater"] intValue] == 1) {
@@ -242,88 +242,92 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-
-    if (indexPath.row==0) {
-
-        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
-
-        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
-            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"WebsiteURL"]) {
-                viewObj.headerTitle = @"About PUB";
-                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
-                break;
+    if ([CommonFunctions hasConnectivity]) {
+        if (indexPath.row==0) {
+            
+            WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+            
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"WebsiteURL"]) {
+                    viewObj.headerTitle = @"About PUB";
+                    viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
             }
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+        }
+        else if (indexPath.row==1) {
+            
+            WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+            
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"FacebookURL"]) {
+                    viewObj.headerTitle = @"Facebook";
+                    viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+            
+        }
+        else if (indexPath.row==2) {
+            
+            WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+            
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"TwitterURL"]) {
+                    viewObj.headerTitle = @"Twitter";
+                    viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+            
+        }
+        else if (indexPath.row==3) {
+            
+            WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+            
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"InstagramURL"]) {
+                    viewObj.headerTitle = @"Instagram";
+                    viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+            
+        }
+        else if (indexPath.row==4) {
+            
+            WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+            
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"YoutubeURL"]) {
+                    viewObj.headerTitle = @"YouTube";
+                    viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+            
+        }
+        else if (indexPath.row==5) {
+            [self shareSiteOnSocialNetwork];
         }
         
-        [self.navigationController pushViewController:viewObj animated:YES];
-    }
-    else if (indexPath.row==1) {
-        
-        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
-
-        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
-            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"FacebookURL"]) {
-                viewObj.headerTitle = @"Facebook";
-                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
-                break;
-            }
+        else if (indexPath.row==6) {
+            
+            [CommonFunctions showAlertView:self title:nil msg:@"By tapping on OK, you will be subscribed to Friends of Water." cancel:nil otherButton:@"OK",@"Cancel",nil];
         }
-        
-        [self.navigationController pushViewController:viewObj animated:YES];
-
     }
-    else if (indexPath.row==2) {
-        
-        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
-
-        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
-            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"TwitterURL"]) {
-                viewObj.headerTitle = @"Twitter";
-                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
-                break;
-            }
-        }
-        
-        [self.navigationController pushViewController:viewObj animated:YES];
-
-    }
-    else if (indexPath.row==3) {
-        
-        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
-
-        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
-            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"InstagramURL"]) {
-                viewObj.headerTitle = @"Instagram";
-                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
-                break;
-            }
-        }
-        
-        [self.navigationController pushViewController:viewObj animated:YES];
-
-    }
-    else if (indexPath.row==4) {
-        
-        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
-
-        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
-            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"YoutubeURL"]) {
-                viewObj.headerTitle = @"YouTube";
-                viewObj.webUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
-                break;
-            }
-        }
-        
-        [self.navigationController pushViewController:viewObj animated:YES];
-
-    }
-    else if (indexPath.row==5) {
-        [self shareSiteOnSocialNetwork];
-    }
-    
-    else if (indexPath.row==6) {
-        
-        [CommonFunctions showAlertView:self title:nil msg:@"By tapping on OK, you will be subscribed to Friends of Water." cancel:nil otherButton:@"OK",@"Cancel",nil];
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -338,9 +342,9 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     self.title = @"About PUB";
-//    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    //    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-
+    
     if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userIsFriendOfWater"] intValue] == 1) {
         tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App", nil];
     }
@@ -369,8 +373,8 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-
-
+    
+    
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -390,13 +394,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

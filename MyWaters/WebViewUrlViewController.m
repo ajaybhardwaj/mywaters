@@ -43,7 +43,7 @@
     [loadingIndicator stopAnimating];
     defaultWebview.contentMode = UIViewContentModeScaleAspectFill;
     defaultWebview.scalesPageToFit = YES;
-
+    
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -77,19 +77,31 @@
     defaultWebview.delegate = self;
     defaultWebview.backgroundColor = [UIColor clearColor];
     defaultWebview.opaque = NO;
-
+    
     NSURL *nsurl=[NSURL URLWithString:webUrl];
     
-    if (isShowingTermsAndConditions) {
-        isShowingTermsAndConditions = NO;
-        [defaultWebview loadHTMLString:termsConditionsHTML baseURL:nil];
+    
+    if ([CommonFunctions hasConnectivity]) {
+        
+        loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        loadingIndicator.hidesWhenStopped = YES;
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loadingIndicator];
+        
+        if (isShowingTermsAndConditions) {
+            isShowingTermsAndConditions = NO;
+            [defaultWebview loadHTMLString:termsConditionsHTML baseURL:nil];
+        }
+        else {
+            defaultWebview.contentMode = UIViewContentModeScaleAspectFill;
+            defaultWebview.scalesPageToFit = YES;
+            
+            NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
+            [defaultWebview loadRequest:nsrequest];
+        }
+        
     }
     else {
-        defaultWebview.contentMode = UIViewContentModeScaleAspectFill;
-        defaultWebview.scalesPageToFit = YES;
-
-        NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
-        [defaultWebview loadRequest:nsrequest];
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
     }
     [self.view addSubview:defaultWebview];
     
@@ -98,9 +110,7 @@
     [sv zoomToRect:CGRectMake(0, 0, sv.contentSize.width, sv.contentSize.height+100) animated:YES];
     [sv setZoomScale:50];
     
-    loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    loadingIndicator.hidesWhenStopped = YES;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loadingIndicator];
+    
 }
 
 
@@ -116,13 +126,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

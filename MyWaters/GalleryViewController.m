@@ -167,7 +167,7 @@
     currentIndex_ = inIndex;
     
     if([galleryImages_ count] > 0){
-        [self.prevImgView setImage:[self imageAtIndex:[self relativeIndex:-1]]];
+//        [self.prevImgView setImage:[self imageAtIndex:[self relativeIndex:-1]]];
         [self.centerImgView setImage:[self imageAtIndex:[self relativeIndex: 0]]];
         [self.nextImgView setImage:[self imageAtIndex:[self relativeIndex: 1]]];
     }

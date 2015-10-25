@@ -29,7 +29,7 @@
     UIScrollView *abcWatersScrollView;
     
     UISearchBar *listinSearchBar;
-    BOOL isShowingFilter,isShowingSearchBar,isFiltered;
+    BOOL isShowingFilter,isShowingSearchBar,isFiltered,isShowingGrid,isShowingTable;
     NSInteger selectedFilterIndex;
     
     NSMutableArray *filteredDataSource;

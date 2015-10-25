@@ -20,34 +20,39 @@
 
 - (void) validateResetPasswordParameters {
     
-    if ([newPassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a new password." cancel:@"OK" otherButton:nil];
-    }
-    else if ([confirmPassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please confirm your new password." cancel:@"OK" otherButton:nil];
-    }
-    else if (![confirmPassField.text isEqualToString:newPassField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password and confirm password are not same." cancel:@"OK" otherButton:nil];
+    if ([CommonFunctions hasConnectivity]) {
+        if ([newPassField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a new password." cancel:@"OK" otherButton:nil];
+        }
+        else if ([confirmPassField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please confirm your new password." cancel:@"OK" otherButton:nil];
+        }
+        else if (![confirmPassField.text isEqualToString:newPassField.text]) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password and confirm password are not same." cancel:@"OK" otherButton:nil];
+        }
+        else {
+            
+            [newPassField resignFirstResponder];
+            [confirmPassField resignFirstResponder];
+            
+            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+            appDelegate.hud.labelText = @"Loading...";
+            
+            NSMutableArray *parameters = [[NSMutableArray alloc] init];
+            NSMutableArray *values = [[NSMutableArray alloc] init];
+            
+            [parameters addObject:@"NewPassword"];
+            [values addObject:newPassField.text];
+            
+            [parameters addObject:@"Email"];
+            [values addObject:emailString];
+            
+            [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,PROFILE_API_URL]];
+        }
     }
     else {
-        
-        [newPassField resignFirstResponder];
-        [confirmPassField resignFirstResponder];
-        
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
-        
-        NSMutableArray *parameters = [[NSMutableArray alloc] init];
-        NSMutableArray *values = [[NSMutableArray alloc] init];
-        
-        [parameters addObject:@"NewPassword"];
-        [values addObject:newPassField.text];
-        
-        [parameters addObject:@"Email"];
-        [values addObject:emailString];
-        
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,PROFILE_API_URL]];
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -178,13 +183,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

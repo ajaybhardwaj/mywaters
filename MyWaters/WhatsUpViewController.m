@@ -63,15 +63,21 @@
 
 - (void) fetchFeedsAndChatterListing {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
-    
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"12",@"1.0", nil];
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
-    
-    [self pullToRefreshTable];
+    if ([CommonFunctions hasConnectivity]) {
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+        
+        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"12",@"1.0", nil];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+        
+        [self pullToRefreshTable];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
 }
 
 
@@ -89,7 +95,7 @@
     NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
                                                                 forKey:NSForegroundColorAttributeName];
     NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
-
+    
     
     // End the refreshing
     if (self.refreshControlFeeds) {
@@ -208,10 +214,10 @@
             subtractComponent = subtractComponent + 30;
         }
         
-//        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null]) {
-//            subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:exploreTableView.bounds.size.width];
-//            subtractComponent = subtractComponent + 30;
-//        }
+        //        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null]) {
+        //            subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:exploreTableView.bounds.size.width];
+        //            subtractComponent = subtractComponent + 30;
+        //        }
         
         if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"] != (id)[NSNull null]) {
             dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:exploreTableView.bounds.size.width];
@@ -241,18 +247,22 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return YES if you want the specified item to be editable.
-//    if (tableView==exploreTableView)
-//        return YES;
-//    else
-//        return NO;
+        if (tableView==exploreTableView)
+            return YES;
+        else
+            return NO;
     
-    return NO;
 }
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         //add code here for when you hit delete
+        FeedbackViewController *viewObj = [[FeedbackViewController alloc] init];
+        viewObj.isReportingForChatter = YES;
+        viewObj.chatterText = [[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"];
+        viewObj.chatterID = [NSString stringWithFormat:@"%d",[[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] intValue]];
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
 
@@ -300,19 +310,19 @@
         [titleLabel sizeToFit];
         
         
-//        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, exploreTableView.bounds.size.width-20, 15)];
-//        subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
-//        subtitleLabel.backgroundColor = [UIColor clearColor];
-//        subtitleLabel.textColor = [UIColor darkGrayColor];
-//        subtitleLabel.numberOfLines = 0;
-//        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null])
-//            subtitleLabel.text = [[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"];
-//        
-//        CGRect newSubTitleLabelLabelFrame = subtitleLabel.frame;
-//        newSubTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:subtitleLabel.font withinWidth:exploreTableView.bounds.size.width];//expectedDescriptionLabelSize.height;
-//        subtitleLabel.frame = newSubTitleLabelLabelFrame;
-//        [cell.contentView addSubview:subtitleLabel];
-//        [subtitleLabel sizeToFit];
+        //        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, exploreTableView.bounds.size.width-20, 15)];
+        //        subtitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
+        //        subtitleLabel.backgroundColor = [UIColor clearColor];
+        //        subtitleLabel.textColor = [UIColor darkGrayColor];
+        //        subtitleLabel.numberOfLines = 0;
+        //        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null])
+        //            subtitleLabel.text = [[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"];
+        //
+        //        CGRect newSubTitleLabelLabelFrame = subtitleLabel.frame;
+        //        newSubTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:subtitleLabel.font withinWidth:exploreTableView.bounds.size.width];//expectedDescriptionLabelSize.height;
+        //        subtitleLabel.frame = newSubTitleLabelLabelFrame;
+        //        [cell.contentView addSubview:subtitleLabel];
+        //        [subtitleLabel sizeToFit];
         
         
         UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, exploreTableView.bounds.size.width-20, 15)];
@@ -570,16 +580,16 @@
     self.refreshControlFeeds.backgroundColor = [UIColor whiteColor];
     self.refreshControlFeeds.tintColor = [UIColor blackColor];
     [self.refreshControlFeeds addTarget:self
-                            action:@selector(fetchFeedsAndChatterListing)
-                  forControlEvents:UIControlEventValueChanged];
+                                 action:@selector(fetchFeedsAndChatterListing)
+                       forControlEvents:UIControlEventValueChanged];
     [feedTableView addSubview:self.refreshControlFeeds];
     
     self.refreshControlChatter = [[UIRefreshControl alloc] init];
     self.refreshControlChatter.backgroundColor = [UIColor whiteColor];
     self.refreshControlChatter.tintColor = [UIColor blackColor];
     [self.refreshControlChatter addTarget:self
-                            action:@selector(fetchFeedsAndChatterListing)
-                  forControlEvents:UIControlEventValueChanged];
+                                   action:@selector(fetchFeedsAndChatterListing)
+                         forControlEvents:UIControlEventValueChanged];
     [exploreTableView addSubview:self.refreshControlChatter];
     
 }
@@ -592,7 +602,7 @@
     
     
     if (appDelegate.IS_COMING_FROM_DASHBOARD) {
-
+        
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
         
         appDelegate.IS_COMING_FROM_DASHBOARD = NO;

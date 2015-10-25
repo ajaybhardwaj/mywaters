@@ -929,6 +929,9 @@
     
     [self getConfigData];
     // Override point for customization after application launch.
+    
+    self.window.backgroundColor = RGB(247, 247, 247);;
+    
     return YES;
 }
 
