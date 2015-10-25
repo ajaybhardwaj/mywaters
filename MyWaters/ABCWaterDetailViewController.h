@@ -15,7 +15,7 @@
 #import "GalleryViewController.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
-
+#import "QuickMapViewController.h"
 
 @interface ABCWaterDetailViewController : UIViewController <UINavigationControllerDelegate,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,FBSDKSharingDelegate> {
     
@@ -30,8 +30,8 @@
     UIView *topMenu;
     
     BOOL isShowingTopMenu;
-    UIButton *addPhotoButton,*galleryButton,*shareButton;
-    UILabel *addPhotoLabel,*galleryLabel,*shareLabel;
+    UIButton *addPhotoButton,*favouritesButton,*shareButton;
+    UILabel *addPhotoLabel,*favouriteLabel,*shareLabel;
     
     NSDictionary *dataDict;
     
@@ -53,6 +53,6 @@
 
 @property (nonatomic, strong) NSString *abcSiteId,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*imageName;
 @property (nonatomic, assign) double latValue,longValue;
-@property (nonatomic, assign) BOOL isCertified;
+@property (nonatomic, assign) BOOL isCertified,isAlreadyFav,isHavingPOI;
 
 @end

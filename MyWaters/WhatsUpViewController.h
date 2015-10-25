@@ -24,5 +24,8 @@
 }
 
 @property (nonatomic, assign) BOOL isNotWhatsUpController,isDashboardChatter;
+@property (nonatomic, strong) UIRefreshControl *refreshControlFeeds;
+@property (nonatomic, strong) UIRefreshControl *refreshControlChatter;
+
 
 @end

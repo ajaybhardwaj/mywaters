@@ -25,5 +25,7 @@
 
     NSInteger cctvPageCount;
 }
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
+
 
 @end

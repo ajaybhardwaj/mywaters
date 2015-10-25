@@ -13,7 +13,7 @@
 @end
 
 @implementation WebViewUrlViewController
-@synthesize webUrl,headerTitle;
+@synthesize webUrl,headerTitle,isShowingTermsAndConditions,termsConditionsHTML;
 
 
 //*************** Method To Pop View Controller To Parent Controller
@@ -41,6 +41,9 @@
     // finished loading, hide the activity indicator in the status bar
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     [loadingIndicator stopAnimating];
+    defaultWebview.contentMode = UIViewContentModeScaleAspectFill;
+    defaultWebview.scalesPageToFit = YES;
+
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -74,11 +77,26 @@
     defaultWebview.delegate = self;
     defaultWebview.backgroundColor = [UIColor clearColor];
     defaultWebview.opaque = NO;
+
     NSURL *nsurl=[NSURL URLWithString:webUrl];
     
-    NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
-    [defaultWebview loadRequest:nsrequest];
+    if (isShowingTermsAndConditions) {
+        isShowingTermsAndConditions = NO;
+        [defaultWebview loadHTMLString:termsConditionsHTML baseURL:nil];
+    }
+    else {
+        defaultWebview.contentMode = UIViewContentModeScaleAspectFill;
+        defaultWebview.scalesPageToFit = YES;
+
+        NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
+        [defaultWebview loadRequest:nsrequest];
+    }
     [self.view addSubview:defaultWebview];
+    
+    
+    UIScrollView *sv = [[defaultWebview subviews] objectAtIndex:0];
+    [sv zoomToRect:CGRectMake(0, 0, sv.contentSize.width, sv.contentSize.height+100) animated:YES];
+    [sv setZoomScale:50];
     
     loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     loadingIndicator.hidesWhenStopped = YES;

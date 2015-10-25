@@ -85,7 +85,8 @@
         [self animateTopMenu];
     }
     
-    DirectionViewController *viewObj = [[DirectionViewController alloc] init];
+    QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
+    viewObj.isShowingRoute = YES;
     viewObj.destinationLat = latValue;
     viewObj.destinationLong = longValue;
     [self.navigationController pushViewController:viewObj animated:YES];
@@ -135,7 +136,7 @@
     [parametersDict setValue:titleString forKey:@"name"];
     [parametersDict setValue:imageName forKey:@"image"];
     [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"lat"];
-    [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"long"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",longValue] forKey:@"long"];
     
     if (addressString != (id)[NSNull null] && [addressString length] !=0)
         [parametersDict setValue:addressString forKey:@"address"];
@@ -208,10 +209,16 @@
     
     if (isSubscribed) {
         
+        isUnsubscribing = YES;
+        isSubscribing = NO;
+        
         parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"EventID", nil];
         values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"3", @"2", eventID, nil];
     }
     else {
+        
+        isUnsubscribing = NO;
+        isSubscribing = YES;
         
         parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"EventID", nil];
         values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"3", @"1", eventID, nil];
@@ -302,6 +309,25 @@
     [directionButton addSubview:directionIcon];
     
     
+    //----- Change Current Location With Either Current Location Value or Default Location Value
+    
+    CLLocationCoordinate2D currentLocation;
+    CLLocationCoordinate2D desinationLocation;
+    
+    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+    
+    desinationLocation.latitude = latValue;
+    desinationLocation.longitude = longValue;
+    
+    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
+    distanceLabel.backgroundColor = [UIColor clearColor];
+    distanceLabel.textAlignment = NSTextAlignmentRight;
+    distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
+    distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+    [directionButton addSubview:distanceLabel];
+    
+    
     eventTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, directionButton.bounds.size.width-140, 40)];
     eventTitle.backgroundColor = [UIColor whiteColor];
     eventTitle.textAlignment = NSTextAlignmentLeft;
@@ -344,7 +370,7 @@
     descriptionLabel.backgroundColor = [UIColor clearColor];
     descriptionLabel.text = [NSString stringWithFormat:@"%@",descriptionString];
     descriptionLabel.textColor = [UIColor darkGrayColor];
-    descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     descriptionLabel.numberOfLines = 0;
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
@@ -352,17 +378,18 @@
     newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width-40];//expectedDescriptionLabelSize.height;
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
+    [descriptionLabel sizeToFit];
     
     UILabel *startDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, descriptionLabel.frame.origin.y+descriptionLabel.bounds.size.height+20, bgScrollView.bounds.size.width-80, 15)];
     startDateLabel.textColor = [UIColor darkGrayColor];
-    startDateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    startDateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     startDateLabel.backgroundColor = [UIColor clearColor];
     startDateLabel.text = @"Start Date:";
     [bgScrollView addSubview:startDateLabel];
     
     UILabel *startDateValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, startDateLabel.frame.origin.y+startDateLabel.bounds.size.height+5, bgScrollView.bounds.size.width-80, 15)];
     startDateValueLabel.textColor = [UIColor darkGrayColor];
-    startDateValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    startDateValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     startDateValueLabel.backgroundColor = [UIColor clearColor];
     startDateValueLabel.text = startDateString;
     [bgScrollView addSubview:startDateValueLabel];
@@ -370,14 +397,14 @@
     
     UILabel *endDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, startDateValueLabel.frame.origin.y+startDateValueLabel.bounds.size.height+20, bgScrollView.bounds.size.width-80, 15)];
     endDateLabel.textColor = [UIColor darkGrayColor];
-    endDateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    endDateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     endDateLabel.backgroundColor = [UIColor clearColor];
     endDateLabel.text = @"End Date:";
     [bgScrollView addSubview:endDateLabel];
     
     UILabel *endDateValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, endDateLabel.frame.origin.y+endDateLabel.bounds.size.height+5, bgScrollView.bounds.size.width-80, 15)];
     endDateValueLabel.textColor = [UIColor darkGrayColor];
-    endDateValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    endDateValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     endDateValueLabel.backgroundColor = [UIColor clearColor];
     endDateValueLabel.text = endDateString;
     [bgScrollView addSubview:endDateValueLabel];
@@ -385,7 +412,7 @@
     
     UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, endDateValueLabel.frame.origin.y+endDateValueLabel.bounds.size.height+20, bgScrollView.bounds.size.width-80, 15)];
     locationLabel.textColor = [UIColor darkGrayColor];
-    locationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    locationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     locationLabel.backgroundColor = [UIColor clearColor];
     locationLabel.text = @"Location:";
     [bgScrollView addSubview:locationLabel];
@@ -394,7 +421,7 @@
     locationValueLabel.backgroundColor = [UIColor whiteColor];
     locationValueLabel.text = [NSString stringWithFormat:@"%@",addressString];
     locationValueLabel.textColor = [UIColor darkGrayColor];
-    locationValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    locationValueLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     locationValueLabel.numberOfLines = 0;
     locationValueLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
@@ -402,7 +429,7 @@
     newLocationLabelFrame.size.height = [CommonFunctions heightForText:addressString font:locationValueLabel.font withinWidth:bgScrollView.bounds.size.width-40];//expectedDescriptionLabelSize.height;
     locationValueLabel.frame = newLocationLabelFrame;
     [bgScrollView addSubview:locationValueLabel];
-//    [locationValueLabel sizeToFit];
+    [locationValueLabel sizeToFit];
     
     bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+startDateLabel.bounds.size.height+startDateValueLabel.bounds.size.height+endDateLabel.bounds.size.height+endDateValueLabel.bounds.size.height+locationLabel.bounds.size.height+locationValueLabel.bounds.size.height+100);
     
@@ -459,8 +486,14 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
-        notifyLabel.text = @"Unsubscribe Me";
-        isSubscribed = YES;
+        if (isSubscribing) {
+            notifyLabel.text = @"Unsubscribe Me";
+            isSubscribed = YES;
+        }
+        else if (isUnsubscribing) {
+            notifyLabel.text = @"Notify Me";
+            isSubscribed = NO;
+        }
         [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
     else {
@@ -496,14 +529,6 @@
     
     //    [self createDemoAppControls];
     
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
-    [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
-    
-    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
-    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
-    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
-    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-
     
     
     bgScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
@@ -545,7 +570,8 @@
     if (isAlreadyFav)
         [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     else
-        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];    [favouritesButton addTarget:self action:@selector(addEventsToFavourites) forControlEvents:UIControlEventTouchUpInside];
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [favouritesButton addTarget:self action:@selector(addEventsToFavourites) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:favouritesButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -585,7 +611,45 @@
     shareLabel.text = @"Share";
     shareLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:shareLabel];
+    
+    
+    UIButton *addNotifyOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addNotifyOverlayButton.frame = CGRectMake(0, 0, topMenu.bounds.size.width/3, 45);
+    [addNotifyOverlayButton addTarget:self action:@selector(registerForEventNotification) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addNotifyOverlayButton];
+    
+    UIButton *addFavOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addFavOverlayButton.frame = CGRectMake(topMenu.bounds.size.width/3, 0, topMenu.bounds.size.width/3, 45);
+    [addFavOverlayButton addTarget:self action:@selector(addEventsToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addFavOverlayButton];
+    
+    UIButton *addShareOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addShareOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)*2, 0, topMenu.bounds.size.width/3, 45);
+    [addShareOverlayButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addShareOverlayButton];
+    
+    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
+//    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)-1, 0, 0.5, 45)];
+//    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
+//    [topMenu addSubview:seperatorOne];
+//    
+//    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2-1, 0, 0.5, 45)];
+//    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
+//    [topMenu addSubview:seperatorTwo];
 }
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+    [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+
+}
+
 
 - (void) viewDidAppear:(BOOL)animated {
     

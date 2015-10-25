@@ -26,6 +26,16 @@
 
 
 
+//*************** Method To Share Site
+
+- (void) shareSiteOnSocialNetwork {
+    
+    [self animateTopMenu];
+    
+    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Share on" msg:nil cancel:nil tag:2 destructive:nil otherButton:@"Facebook",@"Twitter",@"Cancel",nil];
+}
+
+
 
 //*************** Method For Animating Dropdown Picker
 
@@ -65,7 +75,7 @@
     
     [UIView commitAnimations];
     alertOptionsView.alpha = 1.0;
-
+    
 }
 
 
@@ -132,12 +142,7 @@
 
 - (void) registerForWLSALerts {
     
-    if (selectedAlertType!=-1) {
-        
-        if ([locationField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Please select WLS location." cancel:@"Ok" otherButton:nil];
-            return;
-        }
+    if (selectedAlertType==2 || selectedAlertType==3) {
         
         isSubscribingForAlert = YES;
         
@@ -148,22 +153,34 @@
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         NSArray *parameters,*values;
         
-        if (isSubscribed) {
-            parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
-            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"2", @"3", [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:pickerSelectedIndex] objectForKey:@"id"], nil];
-        }
-        else {
-            
-            [self hideAlertOptionsView];
-            
-            parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
-            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
-        }
+        isSubscribed = YES;
+        [self hideAlertOptionsView];
+        
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
         
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
     }
+    else if (selectedAlertType==5) {
+        
+        isSubscribingForAlert = YES;
+        
+        isSubscribed = NO;
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+        
+        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+        NSArray *parameters,*values;
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSID", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"2", wlsID, nil];
+        
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
+        
+    }
     else {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Please select alert option." cancel:@"Ok" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Please select alert option." cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -175,10 +192,9 @@
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     appDelegate.hud.labelText = @"Loading...";
-
+    
     
     isSubscribingForAlert = NO;
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
     //    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
     //    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
@@ -247,7 +263,7 @@
     
     notifiyButton.userInteractionEnabled = NO;
     
-    alertOptionsView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-100, self.view.bounds.size.height/2-140, 200, 280)];
+    alertOptionsView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-100, self.view.bounds.size.height/2-150, 200, 300)];
     alertOptionsView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:alertOptionsView];
     
@@ -257,10 +273,11 @@
     [closeButton addTarget:self action:@selector(hideAlertOptionsView) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:closeButton];
     
-    UILabel *headingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 20, alertOptionsView.bounds.size.width-30, 20)];
+    UILabel *headingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 30, alertOptionsView.bounds.size.width-30, 20)];
     headingLabel.text = @"Subscribe To iAlerts";
     headingLabel.backgroundColor = [UIColor clearColor];
     headingLabel.textColor = RGB(52,158,240);
+    headingLabel.textAlignment = NSTextAlignmentCenter;
     headingLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:15.0];
     [alertOptionsView addSubview:headingLabel];
     
@@ -279,13 +296,13 @@
     //    [alertOptionsView addSubview:level50];
     
     level75Button = [UIButton buttonWithType:UIButtonTypeCustom];
-    level75Button.frame = CGRectMake(20, headingLabel.frame.origin.y+headingLabel.bounds.size.height+20, 25, 25);
+    level75Button.frame = CGRectMake(20, headingLabel.frame.origin.y+headingLabel.bounds.size.height+30, 25, 25);
     [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     level75Button.tag = 2;
     [level75Button addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:level75Button];
     
-    UILabel *level75 = [[UILabel alloc] initWithFrame:CGRectMake(60, headingLabel.frame.origin.y+headingLabel.bounds.size.height+20, alertOptionsView.bounds.size.width-70, 20)];
+    UILabel *level75 = [[UILabel alloc] initWithFrame:CGRectMake(60, headingLabel.frame.origin.y+headingLabel.bounds.size.height+30, alertOptionsView.bounds.size.width-70, 20)];
     level75.text = @"Water Level >= 75%";
     level75.backgroundColor = [UIColor clearColor];
     level75.textColor = RGB(0,0,0);
@@ -320,30 +337,30 @@
     //    level100.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
     //    [alertOptionsView addSubview:level100];
     
-    locationField = [[UITextField alloc] initWithFrame:CGRectMake(10, level90.frame.origin.y+level90.bounds.size.height+20, alertOptionsView.bounds.size.width-20, 40)];
-    locationField.textColor = RGB(0, 0, 0);
-    locationField.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
-    locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-    locationField.leftViewMode = UITextFieldViewModeAlways;
-    locationField.borderStyle = UITextBorderStyleNone;
-    locationField.textAlignment=NSTextAlignmentLeft;
-    [locationField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    locationField.placeholder=@"Select Location *";
-    [alertOptionsView addSubview:locationField];
-    locationField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    locationField.delegate = self;
-    locationField.keyboardType = UIKeyboardTypeEmailAddress;
-    locationField.returnKeyType = UIReturnKeyNext;
-    [locationField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
-    [locationField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    locationField.tag = 4;
+    //    locationField = [[UITextField alloc] initWithFrame:CGRectMake(10, level90.frame.origin.y+level90.bounds.size.height+20, alertOptionsView.bounds.size.width-20, 40)];
+    //    locationField.textColor = RGB(0, 0, 0);
+    //    locationField.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
+    //    locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    //    locationField.leftViewMode = UITextFieldViewModeAlways;
+    //    locationField.borderStyle = UITextBorderStyleNone;
+    //    locationField.textAlignment=NSTextAlignmentLeft;
+    //    [locationField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    //    locationField.placeholder=@"Select Location *";
+    //    [alertOptionsView addSubview:locationField];
+    //    locationField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    //    locationField.delegate = self;
+    //    locationField.keyboardType = UIKeyboardTypeEmailAddress;
+    //    locationField.returnKeyType = UIReturnKeyNext;
+    //    [locationField setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
+    //    [locationField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    //    locationField.tag = 4;
     
     
     UIButton *subscribeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [subscribeButton setTitle:@"SUBSCRIBE" forState:UIControlStateNormal];
     [subscribeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     subscribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
-    subscribeButton.frame = CGRectMake(10, locationField.frame.origin.y+locationField.bounds.size.height+20, alertOptionsView.bounds.size.width-20, 30);
+    subscribeButton.frame = CGRectMake(10, level90.frame.origin.y+level90.bounds.size.height+50, alertOptionsView.bounds.size.width-20, 30);
     [subscribeButton setBackgroundColor:RGB(68, 78, 98)];
     [subscribeButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:subscribeButton];
@@ -353,7 +370,7 @@
     [subscribeToSMSButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     subscribeToSMSButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
     subscribeToSMSButton.tag = 6;
-    subscribeToSMSButton.frame = CGRectMake(10, subscribeButton.frame.origin.y+subscribeButton.bounds.size.height+10, alertOptionsView.bounds.size.width-20, 30);
+    subscribeToSMSButton.frame = CGRectMake(10, subscribeButton.frame.origin.y+subscribeButton.bounds.size.height+20, alertOptionsView.bounds.size.width-20, 30);
     [subscribeToSMSButton addTarget:self action:@selector(moveToSMSSubscriptionView) forControlEvents:UIControlEventTouchUpInside];
     [subscribeToSMSButton setBackgroundColor:RGB(83, 83, 83)];
     [alertOptionsView addSubview:subscribeToSMSButton];
@@ -385,6 +402,10 @@
         topMenuPos.y = -140;
         topMenu.center = topMenuPos;
         [UIView commitAnimations];
+        
+        searchTableView.hidden = YES;
+        dimmedImageView.hidden = YES;
+        
     }
     else {
         
@@ -396,6 +417,10 @@
         topMenuPos.y = 22;
         topMenu.center = topMenuPos;
         [UIView commitAnimations];
+        
+        searchTableView.frame = CGRectMake(0, topMenu.frame.origin.y+topMenu.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-topMenu.bounds.size.height-10);
+        searchTableView.hidden = NO;
+        
     }
 }
 
@@ -409,7 +434,8 @@
         [self animateTopMenu];
     }
     
-    DirectionViewController *viewObj = [[DirectionViewController alloc] init];
+    QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
+    viewObj.isShowingRoute = YES;
     viewObj.destinationLat = latValue;
     viewObj.destinationLong = longValue;
     [self.navigationController pushViewController:viewObj animated:YES];
@@ -430,7 +456,7 @@
     [parametersDict setValue:wlsName forKey:@"name"];
     [parametersDict setValue:@"NA" forKey:@"image"];
     [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"lat"];
-    [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"long"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",longValue] forKey:@"long"];
     [parametersDict setValue:@"NA" forKey:@"address"];
     [parametersDict setValue:@"NA" forKey:@"phoneno"];
     [parametersDict setValue:@"NA" forKey:@"description"];
@@ -491,25 +517,51 @@
     [self.view addSubview:topMenu];
     
     
-    //    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2)-10, 35)];
-    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2)+30, 35)];
-    searchField.textColor = RGB(35, 35, 35);
-    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-    searchField.leftViewMode = UITextFieldViewModeAlways;
-    searchField.borderStyle = UITextBorderStyleNone;
-    searchField.textAlignment=NSTextAlignmentLeft;
-    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    searchField.placeholder = @"Search...";
-    searchField.layer.borderWidth = 0.5;
-    searchField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-    [topMenu addSubview:searchField];
-    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    searchField.delegate = self;
-    searchField.keyboardType = UIKeyboardTypeEmailAddress;
-    searchField.backgroundColor = [UIColor whiteColor];
-    searchField.returnKeyType = UIReturnKeyNext;
-    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+//    //    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2)-10, 35)];
+//    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2)+30, 35)];
+//    searchField.textColor = RGB(35, 35, 35);
+//    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+//    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+//    searchField.leftViewMode = UITextFieldViewModeAlways;
+//    searchField.borderStyle = UITextBorderStyleNone;
+//    searchField.textAlignment=NSTextAlignmentLeft;
+//    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+//    searchField.placeholder = @"Search...";
+//    searchField.layer.borderWidth = 0.5;
+//    searchField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+//    [topMenu addSubview:searchField];
+//    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
+//    searchField.delegate = self;
+//    searchField.keyboardType = UIKeyboardTypeEmailAddress;
+//    searchField.backgroundColor = [UIColor whiteColor];
+//    searchField.returnKeyType = UIReturnKeyNext;
+//    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    
+    
+    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2), 35)];
+    listinSearchBar.delegate = self;
+    listinSearchBar.placeholder = @"Search...";
+    [listinSearchBar setBackgroundImage:[[UIImage alloc] init]];
+    listinSearchBar.backgroundColor = [UIColor whiteColor];
+    [topMenu addSubview:listinSearchBar];
+    
+    for (id object in [listinSearchBar subviews]) {
+        
+        if ([object isKindOfClass:[UITextField class]]) {
+            
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setFont:[UIFont fontWithName:ROBOTO_REGULAR size:14]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftViewMode:UITextFieldViewModeAlways];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBorderStyle:UITextBorderStyleNone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextAlignment:NSTextAlignmentLeft];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setPlaceholder:@"Search..."];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setClearButtonMode:UITextFieldViewModeWhileEditing];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setReturnKeyType:UIReturnKeyDone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDelegate:self];
+        }
+    }
     
     
     //    //    iAlertLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+10, 40, (topMenu.bounds.size.width/2)/3, 10)];
@@ -530,7 +582,7 @@
     
     
     //    addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)-1.5, 40, (topMenu.bounds.size.width/2)/3, 10)];
-    addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/2)/3, 32, (topMenu.bounds.size.width/2)/3, 10)];
+    addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)+50, 30, topMenu.bounds.size.width/3, 10)];
     addToFavLabel.backgroundColor = [UIColor clearColor];
     addToFavLabel.textAlignment = NSTextAlignmentCenter;
     addToFavLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
@@ -543,7 +595,7 @@
     
     addToFavButton = [UIButton buttonWithType:UIButtonTypeCustom];
     //    addToFavButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)+15, 10, 25, 25);
-    addToFavButton.frame = CGRectMake((topMenu.bounds.size.width/2)/3/2 - 10 + (topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/2)/3, 5, 20, 20);
+    addToFavButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (50), 5, 20, 20);
     if (isAlreadyFav)
         [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     else
@@ -552,20 +604,36 @@
     
     
     //    refreshLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)*2+2, 40, (topMenu.bounds.size.width/2)/3, 10)];
-    refreshLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/2)/3+(topMenu.bounds.size.width/2)/3, 32, (topMenu.bounds.size.width/2)/3, 10)];
+    refreshLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2+10, 30, topMenu.bounds.size.width/3, 10)];
     refreshLabel.backgroundColor = [UIColor clearColor];
     refreshLabel.textAlignment = NSTextAlignmentCenter;
     refreshLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    refreshLabel.text = @"Refresh";
+    refreshLabel.text = @"Share";
     refreshLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:refreshLabel];
     
     refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
     //    refreshButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)*2+18, 10, 25, 25);
-    refreshButton.frame = CGRectMake((topMenu.bounds.size.width/2)/3/2 - 10 + (topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/2)/3+(topMenu.bounds.size.width/2)/3, 5, 20, 20);
-    [refreshButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_refresh_cctv.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [refreshButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
+    refreshButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (10), 5, 20, 20);
+    [refreshButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [refreshButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:refreshButton];
+    
+    
+    UIButton *addFavOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addFavOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)+50, 0, topMenu.bounds.size.width/3, 45);
+    [addFavOverlayButton addTarget:self action:@selector(addWLSToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addFavOverlayButton];
+    
+    UIButton *addRefreshOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addRefreshOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)*2+10, 0, topMenu.bounds.size.width/3, 45);
+    [addRefreshOverlayButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addRefreshOverlayButton];
+    
+    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
+    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)+35+topMenu.bounds.size.width/3 - 1, 0, 0.5, 45)];
+    //    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
+    //    [topMenu addSubview:seperatorOne];
     
 }
 
@@ -583,16 +651,32 @@
     notifiyButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, 40);
     [notifiyButton setBackgroundColor:[UIColor lightGrayColor]];
     [notifiyButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    if (isSubscribed) {
-        [notifiyButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
-        [notifiyButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
-    }
-    else {
-        [notifiyButton setTitle:@"NOTIFY ME" forState:UIControlStateNormal];
-        [notifiyButton addTarget:self action:@selector(createAlertOptions) forControlEvents:UIControlEventTouchUpInside];
-    }
+    [notifiyButton setTitle:@"NOTIFY ME" forState:UIControlStateNormal];
+    [notifiyButton addTarget:self action:@selector(createAlertOptions) forControlEvents:UIControlEventTouchUpInside];
     notifiyButton.titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
     [self.view addSubview:notifiyButton];
+    
+    unsubscribeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    unsubscribeButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, 40);
+    [unsubscribeButton setBackgroundColor:[UIColor lightGrayColor]];
+    [unsubscribeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [unsubscribeButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
+    [unsubscribeButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
+    unsubscribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
+    [self.view addSubview:unsubscribeButton];
+    
+    if (isSubscribed) {
+        
+        // selectedAlertType = 5 to unsubscribe only
+        selectedAlertType = 5;
+        notifiyButton.hidden = YES;
+        unsubscribeButton.hidden = NO;
+    }
+    else {
+        selectedAlertType = -1;
+        notifiyButton.hidden = NO;
+        unsubscribeButton.hidden = YES;
+    }
     
     topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-100, notifiyButton.frame.origin.y+notifiyButton.bounds.size.height+30, 80, 80)];
     [self.view addSubview:topImageView];
@@ -694,7 +778,7 @@
     [directionButton addSubview:arrowIcon];
     
     
-    wlsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+64))];
+    wlsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+55))];
     wlsListingTable.delegate = self;
     wlsListingTable.dataSource = self;
     [self.view addSubview:wlsListingTable];
@@ -736,8 +820,81 @@
     [dimmedImageView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
     [self.view addSubview:dimmedImageView];
     dimmedImageView.hidden = YES;
-
     
+    
+    searchTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, topMenu.frame.origin.y+topMenu.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-topMenu.bounds.size.height-10)];
+    searchTableView.delegate = self;
+    searchTableView.dataSource = self;
+    [self.view addSubview:searchTableView];
+    searchTableView.backgroundColor = [UIColor clearColor];
+    searchTableView.backgroundView = nil;
+    searchTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    searchTableView.hidden = YES;
+    
+}
+
+
+
+# pragma mark - UISearchBarDelegate Methods
+
+-(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)text {
+    
+    if(text.length == 0)
+    {
+        isFiltered = NO;
+        searchTableView.hidden = YES;
+        dimmedImageView.hidden = YES;
+    }
+    else
+    {
+        searchTableView.hidden = NO;
+        dimmedImageView.hidden = NO;
+        isFiltered = YES;
+        [filterDataSource removeAllObjects];
+        
+        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
+            
+            NSRange nameRange = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            if(nameRange.location != NSNotFound)
+            {
+                [filterDataSource addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+            }
+        }
+    }
+    
+    [searchTableView reloadData];
+}
+
+
+
+# pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag==2) {
+        
+        if (buttonIndex==0) {
+            
+            NSString *appUrl;
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSShareURL"]) {
+                    appUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            [CommonFunctions sharePostOnFacebook:@"http://a3.mzstatic.com/us/r30/Purple3/v4/97/4b/af/974baf1a-c8fd-6ce6-cab3-5182aeb08fb7/icon175x175.jpeg" appUrl:appUrl title:wlsName desc:nil view:self];
+        }
+        else if (buttonIndex==1) {
+            NSString *appUrl;
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSShareURL"]) {
+                    appUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            [CommonFunctions sharePostOnTwitter:appUrl title:wlsName view:self];
+        }
+    }
 }
 
 
@@ -791,12 +948,19 @@
         
         if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
             
-            [notifiyButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
-            isSubscribed = YES;
+            if (isSubscribed) {
+                selectedAlertType = 5;
+                notifiyButton.hidden = YES;
+                unsubscribeButton.hidden = NO;
+                
+            }
+            else {
+                selectedAlertType = -1;
+                notifiyButton.hidden = NO;
+                unsubscribeButton.hidden = YES;
+            }
+            
             [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
-        }
-        else {
-            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
         }
     }
     else {
@@ -809,7 +973,44 @@
             NSArray *tempArray = [[responseString JSONValue] objectForKey:WLS_LISTING_RESPONSE_NAME];
             [appDelegate.WLS_LISTING_ARRAY setArray:tempArray];
             
-            [locationField becomeFirstResponder];
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
+            
+            
+            tempNearByArray = appDelegate.WLS_LISTING_ARRAY;
+            
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            //            [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+            if (!tempNearByArray) {
+                tempNearByArray = [[NSMutableArray alloc] init];
+            }
+            
+            int count = 0;
+            [tempNearByArray removeAllObjects];
+            for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
+                if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != wlsID) {
+                    if (count!=3) {
+                        [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+                        count++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            [wlsListingTable reloadData];
+            //            [locationField becomeFirstResponder];
+            
         }
         
         [appDelegate.hud hide:YES];
@@ -831,7 +1032,7 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    [self.navigationController popViewControllerAnimated:YES];
+    //    [self.navigationController popViewControllerAnimated:YES];
 }
 
 
@@ -852,6 +1053,9 @@
             [self fetchWLSListing];
         }
         else {
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
+            
             [self animateOptionsPicker];
         }
         return NO;
@@ -866,30 +1070,34 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     
+    if (tableView==searchTableView) {
+        return 0.0f;
+    }
     return 30.0f;
 }
 
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
-    if (section==0) {
-        
-        UILabel *sectionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 30)];
-        sectionLabel.text = @"    Nearby";
-        sectionLabel.textColor = RGB(51, 149, 255);
-        sectionLabel.backgroundColor = RGB(234, 234, 234);
-        sectionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-        
-        return sectionLabel;
+    if (tableView==wlsListingTable) {
+        if (section==0) {
+            
+            UILabel *sectionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 30)];
+            sectionLabel.text = @"    Nearby";
+            sectionLabel.textColor = RGB(51, 149, 255);
+            sectionLabel.backgroundColor = RGB(234, 234, 234);
+            sectionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+            
+            return sectionLabel;
+        }
     }
-    
     return nil;
 }
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 60.0f;
+    return 80.0f;
 }
 
 
@@ -901,20 +1109,80 @@
         [self animateTopMenu];
     }
     
+    if (isFiltered) {
+        
+        wlsID = [[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"id"];
+        wlsName = [[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"name"];
+        drainDepthType = [[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue];
+        latValue = [[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"latitude"] doubleValue];
+        longValue = [[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"longitude"] doubleValue];
+        observedTime = [CommonFunctions dateTimeFromString:[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"observationTime"]];
+        waterLevelValue = [NSString stringWithFormat:@"%d",[[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"waterLevel"] intValue]];
+        waterLevelPercentageValue = [NSString stringWithFormat:@"%d",[[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"waterLevelPercentage"] intValue]];
+        waterLevelTypeValue = [NSString stringWithFormat:@"%d",[[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue]];
+        drainDepthValue = [NSString stringWithFormat:@"%d",[[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"drainDepth"] intValue]];
+        isSubscribed = [[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+        
+        int count = 0;
+        [tempNearByArray removeAllObjects];
+        
+        if (!tempNearByArray) {
+            tempNearByArray = [[NSMutableArray alloc] init];
+        }
+        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
+            if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != wlsID) {
+                if (count!=3) {
+                    [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+                    count++;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        
+        dimmedImageView.hidden = YES;
+        searchTableView.hidden = YES;
+        listinSearchBar.text = @"";
+        [filterDataSource removeAllObjects];
+    }
+    else {
+        
+        wlsID = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"id"];
+        wlsName = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"name"];
+        drainDepthType = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue];
+        latValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"latitude"] doubleValue];
+        longValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"longitude"] doubleValue];
+        observedTime = [CommonFunctions dateTimeFromString:[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"observationTime"]];
+        waterLevelValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevel"] intValue]];
+        waterLevelPercentageValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelPercentage"] intValue]];
+        waterLevelTypeValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue]];
+        drainDepthValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"drainDepth"] intValue]];
+        isSubscribed = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+        
+        
+        if (!tempNearByArray) {
+            tempNearByArray = [[NSMutableArray alloc] init];
+        }
+        
+        int count = 0;
+        [tempNearByArray removeAllObjects];
+        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
+            if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != wlsID) {
+                if (count!=3) {
+                    [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+                    count++;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    }
     
-    wlsID = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"id"];
-    wlsName = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"name"];
-    drainDepthType = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue];
-    latValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"latitude"] doubleValue];
-    longValue = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"longitude"] doubleValue];
-    observedTime = [CommonFunctions dateTimeFromString:[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"observationTime"]];
-    waterLevelValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevel"] intValue]];
-    waterLevelPercentageValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelPercentage"] intValue]];
-    waterLevelTypeValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue]];
-    drainDepthValue = [NSString stringWithFormat:@"%d",[[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"drainDepth"] intValue]];
-    isSubscribed = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
     
     [self createUI];
+    [wlsListingTable reloadData];
 }
 
 
@@ -922,8 +1190,12 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
-        return 3;
+    if (tableView==wlsListingTable) {
+        if (tempNearByArray.count!=0)
+            return 3;
+    }
+    else if (tableView==searchTableView) {
+        return filterDataSource.count;
     }
     
     return 0;
@@ -937,31 +1209,66 @@
     
     cell.backgroundColor = RGB(247, 247, 247);
     
-    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
-    if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 1) {
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 50, 50)];
+    
+    if (tableView==wlsListingTable) {
+        
+        if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 1) {
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        else if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 2) {
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        else if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 3) {
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        else if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 4){
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
     }
-    else if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 2) {
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    if (tableView==searchTableView) {
+        
+        if ([[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 1) {
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        else if ([[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 2) {
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        else if ([[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 3) {
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
+        else if ([[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 4){
+            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        }
     }
-    else if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 3) {
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
-    }
-    else if ([[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 4){
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]];
-    }
+    
     [cell.contentView addSubview:cellImage];
     
     
     UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 5, wlsListingTable.bounds.size.width-90, 50)];
-    cellTitleLabel.text = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"name"];
+    if (tableView==wlsListingTable)
+        cellTitleLabel.text = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"name"];
+    if (tableView==searchTableView)
+        cellTitleLabel.text = [[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"name"];
     cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     cellTitleLabel.backgroundColor = [UIColor clearColor];
     cellTitleLabel.numberOfLines = 0;
     [cell.contentView addSubview:cellTitleLabel];
     
+    UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, wlsListingTable.bounds.size.width-100, 20)];
+    subTitleLabel.textColor = [UIColor lightGrayColor];
+    if (tableView==wlsListingTable)
+        subTitleLabel.text = [NSString stringWithFormat:@"%@ KM",[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+    if (tableView==searchTableView)
+        subTitleLabel.text = [NSString stringWithFormat:@"%@ KM",[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+    subTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    subTitleLabel.backgroundColor = [UIColor clearColor];
+    subTitleLabel.numberOfLines = 0;
+    subTitleLabel.textAlignment = NSTextAlignmentRight;
+    [cell.contentView addSubview:subTitleLabel];
     
-    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 59.5, wlsListingTable.bounds.size.width, 0.5)];
+    
+    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, wlsListingTable.bounds.size.width, 0.5)];
     [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:seperatorImage];
     
@@ -1050,32 +1357,37 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     isAlreadyFav = [appDelegate checkItemForFavourite:@"4" idValue:wlsID];
     
+    filterDataSource = [[NSMutableArray alloc] init];
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots.png"]];
     
-    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
-    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
-    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
-    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-    
     
     if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
-        tempNearByArray = appDelegate.WLS_LISTING_ARRAY;
         
-        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-            float v1 = [left floatValue];
-            float v2 = [right floatValue];
-            if (v1 < v2)
-                return NSOrderedAscending;
-            else if (v1 > v2)
-                return NSOrderedDescending;
-            else
-                return NSOrderedSame;
-        }];
+        if (!tempNearByArray) {
+            tempNearByArray = [[NSMutableArray alloc] init];
+        }
         
-        [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        int count = 0;
+        [tempNearByArray removeAllObjects];
+        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
+            if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != wlsID) {
+                if (count!=3) {
+                    [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+                    count++;
+                }
+                else {
+                    break;
+                }
+            }
+        }
     }
+    else {
+        [self fetchWLSListing];
+    }
+    
+    
     [self createUI];
     
 }
@@ -1088,6 +1400,11 @@
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
 }
 

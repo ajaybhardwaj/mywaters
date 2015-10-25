@@ -23,6 +23,6 @@
     
 }
 @property (strong, nonatomic) NSMutableData *responseData;
-
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end

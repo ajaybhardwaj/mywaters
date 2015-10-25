@@ -59,7 +59,7 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    self.navigationController.navigationBar.hidden = YES;
+    [self.navigationController setNavigationBarHidden:YES];
 
     UIImageView *bgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     [bgView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/welcome_background.png",appDelegate.RESOURCE_FOLDER_PATH]]];
@@ -100,7 +100,7 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
-    self.navigationController.navigationBar.hidden = YES;
+    [self.navigationController setNavigationBarHidden:YES];
     [self performSelector:@selector(moveToLoginView) withObject:nil afterDelay:2.0];
 }
 

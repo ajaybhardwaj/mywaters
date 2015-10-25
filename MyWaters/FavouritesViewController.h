@@ -21,13 +21,15 @@
     NSArray *favouritesDataSource,*filtersArray;
     
     BOOL isShowingFilter,isEditingTable;
-    NSInteger selectedFilterIndex;
+    NSInteger selectedFilterIndex,favouritesTypeIndex;
 
     UILabel *noFavFoundLabel;
+    
     
     //*************** Demo App Variables
     UIImageView *bgImageView;
     UIButton *favouritesDetailButton;
 }
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end

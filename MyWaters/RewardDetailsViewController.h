@@ -29,7 +29,7 @@
     UIImageView *bgImageView;
 }
 
-@property (nonatomic, strong) NSString *rewardID,*descriptionString,*titleString,*validFromDateString,*validTillDateString,*locationValueString,*pointsValueString,*imageName,*imageUrl;
+@property (nonatomic, strong) NSString *rewardID,*descriptionString,*titleString,*validFromDateString,*validTillDateString,*locationValueString,*pointsValueString,*imageName,*imageUrl,*currentPointsString;
 @property (nonatomic, assign) double latValue,longValue;
 
 @end

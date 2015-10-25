@@ -17,8 +17,7 @@
           zoomScale:(MKZoomScale)zoomScale
           inContext:(CGContextRef)ctx
 {
-//    image = [APP_DEL imageForRadar];
-    
+
     image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@RainArea/rain.zo.png",IMAGE_BASE_URL]]]];//[UIImage imageNamed:@"201509281910.rain.zo.png"];;
             
     MKMapRect theMapRect = [self.overlay boundingMapRect];

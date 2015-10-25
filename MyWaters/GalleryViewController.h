@@ -23,7 +23,7 @@
 
 @property(nonatomic, strong)UIScrollView *imageHostScrollView; //UIScrollview to hold the images
 @property (nonatomic, strong) NSArray *galleryImages;
-@property (nonatomic, assign) BOOL isABCGallery,isUserGallery;
+@property (nonatomic, assign) BOOL isABCGallery,isUserGallery,isPOIGallery;
 
 @property (nonatomic, assign) NSInteger currentIndex;
 

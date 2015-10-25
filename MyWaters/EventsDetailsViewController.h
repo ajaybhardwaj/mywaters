@@ -11,6 +11,7 @@
 #import "UILabel + Extension.h"
 #import "AsyncImageView.h"
 #import "DirectionViewController.h"
+#import "QuickMapViewController.h"
 
 @interface EventsDetailsViewController : UIViewController {
     
@@ -35,7 +36,7 @@
     
     UILabel___Extension *descriptionLabel;
     
-    BOOL isAlreadyFav;
+    BOOL isAlreadyFav,isSubscribing,isUnsubscribing;
 }
 
 @property (nonatomic, strong) NSString *eventID,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*startDateString,*endDateString,*websiteString,*imageName;

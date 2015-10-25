@@ -30,6 +30,7 @@
     UIButton *eventDetailButton;
 }
 @property (nonatomic, assign) BOOL isNotEventController;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 
 @end

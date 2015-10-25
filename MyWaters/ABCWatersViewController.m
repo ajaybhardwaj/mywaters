@@ -27,6 +27,39 @@
 }
 
 
+
+//*************** Method For Saving ABC Water Sites Data
+
+- (void) saveABCWaterData {
+    
+    [appDelegate insertABCWatersData:appDelegate.ABC_WATERS_LISTING_ARRAY];
+}
+
+
+
+//*************** Method For Pull To Refresh
+
+- (void) pullToRefreshTable {
+    
+    // Reload table data
+    [listTabeView reloadData];
+    
+    // End the refreshing
+    if (self.refreshControl) {
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm a"];
+        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+                                                                    forKey:NSForegroundColorAttributeName];
+        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        self.refreshControl.attributedTitle = attributedTitle;
+        
+        [self.refreshControl endRefreshing];
+    }
+}
+
+
 //*************** Method To Call ABCWaterSites API
 
 - (void) fetchABCWaterSites {
@@ -49,6 +82,7 @@
 //    }
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+    [self pullToRefreshTable];
 }
 
 
@@ -257,6 +291,13 @@
             [abcWatersScrollView addSubview:gridImage];
             gridImage.userInteractionEnabled = YES;
             
+            UIImageView *certifiedLogo = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 29.5, 12.5)];
+            [certifiedLogo setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwater_certified_logo.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+            [gridImage addSubview:certifiedLogo];
+            if (![[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"isCertified"] intValue]) {
+                certifiedLogo.hidden = YES;
+            }
+            
             UIButton *gridButton = [UIButton buttonWithType:UIButtonTypeCustom];
             gridButton.frame = CGRectMake(0, 0, gridImage.bounds.size.width, gridImage.bounds.size.height);
             gridButton.tag = i;
@@ -316,8 +357,8 @@
                     [appDelegate.ABC_WATERS_LISTING_ARRAY removeAllObjects];
             
                 [appDelegate.ABC_WATERS_LISTING_ARRAY setArray:tempArray];
-                
-                
+            
+            
                 CLLocationCoordinate2D currentLocation;
                 currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
                 currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
@@ -355,7 +396,10 @@
                 }];
                 
                 [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
-                
+            
+            if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0)
+                [self performSelectorInBackground:@selector(saveABCWaterData) withObject:nil];
+
 //            }
 //            else {
 //                if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0) {
@@ -368,7 +412,7 @@
         
         [appDelegate.hud hide:YES];
         [self createGridView];
-        
+        [self.refreshControl endRefreshing];
     }
     
 }
@@ -524,7 +568,10 @@
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
                 viewObj.isCertified = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
-            
+
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] != (id)[NSNull null])
+                viewObj.isHavingPOI = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] intValue];
+
         }
         else {
 
@@ -556,6 +603,10 @@
             
             if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
                 viewObj.isCertified = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] != (id)[NSNull null])
+                viewObj.isHavingPOI = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] intValue];
+
         }
         
         [self.navigationController pushViewController:viewObj animated:YES];
@@ -739,14 +790,8 @@
     self.view.backgroundColor = RGB(247, 247, 247);
     
     
-    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
-    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
-    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
-    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-    
-    
     segmentedControlBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50)];
-    segmentedControlBackground.backgroundColor = RGB(52, 156, 249);
+    segmentedControlBackground.backgroundColor = RGB(52, 156, 249);//RGB(229,0,87);//RGB(52, 156, 249);
     [self.view addSubview:segmentedControlBackground];
     
     NSArray *itemArray = [NSArray arrayWithObjects: @"GRID", @"LIST", nil];
@@ -803,6 +848,8 @@
     filterTableView.backgroundView = nil;
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     filterTableView.alpha = 0.8;
+    filterTableView.scrollEnabled = NO;
+    filterTableView.alwaysBounceVertical = NO;
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
     filteredDataSource = [[NSMutableArray alloc] init];
@@ -841,6 +888,15 @@
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     appDelegate.hud.labelText = @"Loading...";
     
+    // Initialize the refresh control.
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor whiteColor];
+    self.refreshControl.tintColor = [UIColor blackColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(fetchABCWaterSites)
+                  forControlEvents:UIControlEventValueChanged];
+    [listTabeView addSubview:self.refreshControl];
+    
     [self fetchABCWaterSites];
 }
 
@@ -849,7 +905,16 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-    self.navigationController.navigationBar.hidden = NO;
+    [self.navigationController setNavigationBarHidden:NO];
+    
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,156,249) frame:CGRectMake(0, 0, 1, 1)];
+    [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+
 }
 
 

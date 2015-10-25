@@ -18,7 +18,9 @@
     AppDelegate *appDelegate;
     
     UITableView *aboutTableView;
-    NSArray *tableTitleDataSource;
+    NSMutableArray *tableTitleDataSource;
+    
+    BOOL isGettingAppConfigData;
 }
 
 @end

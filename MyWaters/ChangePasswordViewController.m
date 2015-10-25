@@ -62,7 +62,7 @@
         [values addObject:newPassField.text];
         
         [parameters addObject:@"Email"];
-        [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Email"]];
+        [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"]];
         
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,PROFILE_API_URL]];
     }
@@ -80,9 +80,7 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
-        [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
-        
-        appDelegate.USER_PROFILE_DICTIONARY = [responseString JSONValue];
+        [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
         
 //        OTPViewController *viewObj = [[OTPViewController alloc] init];
 //        viewObj.emailStringForVerification = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
@@ -92,6 +90,10 @@
         
     }
     else {
+        currentPassField.text = @"";
+        newPassField.text = @"";
+        confirmPassField.text = @"";
+        
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
 }

@@ -64,7 +64,7 @@
     // Do any additional setup after loading the view.
     
     self.title = @"Booking";
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
 
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
@@ -72,7 +72,19 @@
     bookingWebView.delegate = self;
     bookingWebView.backgroundColor = [UIColor clearColor];
     bookingWebView.opaque = NO;
-    NSURL *nsurl=[NSURL URLWithString:@"http://www.pub.gov.sg/E-Services/Booking/Pages/default.aspx"];
+    bookingWebView.contentMode = UIViewContentModeScaleAspectFill;
+    bookingWebView.scalesPageToFit = YES;
+    
+    NSString *bookingUrl;
+    
+    for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+        if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"BookingURL"]) {
+            bookingUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+            break;
+        }
+    }
+    
+    NSURL *nsurl=[NSURL URLWithString:bookingUrl];
     
     NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
     [bookingWebView loadRequest:nsrequest];

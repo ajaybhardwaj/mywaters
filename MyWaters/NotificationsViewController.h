@@ -10,22 +10,24 @@
 #import "AppDelegate.h"
 #import <AVFoundation/AVFoundation.h>
 
-@interface NotificationsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
+@interface NotificationsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,AVAudioPlayerDelegate> {
     
     AppDelegate *appDelegate;
     
     UITableView *notificationsTable,*filterTableView;
-    NSArray *tableDataSource;
+    NSMutableArray *tableDataSource;
     
     NSArray *filtersArray;
     
-    BOOL isShowingFilter,canReadNotifications;
+    BOOL isShowingFilter,canReadNotifications,isPlayingNotification;
     UIButton *btnSpeaker;
-    NSInteger selectedFilterIndex;
+    NSInteger selectedFilterIndex,previousIndex,currentIndex;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;
     UIButton *detailButton;
 }
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (nonatomic, strong) AVAudioPlayer *player;
 
 @end

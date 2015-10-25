@@ -58,6 +58,7 @@
 #define USER_ACTION_HISTORY_RESPONSE_NAME @"ListActionHistory"
 #define USER_FLOOD_SUBMISSION_RESPONSE_NAME @"ListFloodUserSubmission"
 #define PUB_FLOOD_SUBMISSION_RESPONSE_NAME @"ListFloodPUBSubmission"
+#define PUSH_NOTIFICATIONS_RESPONSE_NAME @"ListPushNotification"
 
 
 #define DASHBOARD_API_CCTV_RESPONSE_NAME @"ListCCTV"
@@ -84,7 +85,8 @@
 #define ABC_WATERS_UPLOAD_USER_IMAGE @"ABCPOIImage/"
 #define APP_CONFIG_DATA @"ConfigData/"
 #define USER_PROFILE_OTHERS_DATA @"ProfileDetail/"
-
+#define USER_PROFILE_ACTIONS @"ProfileAction/"
+#define USER_FLOOD_SUBMISSION @"FloodSubmission/"
 
 //#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"
 #define IMAGE_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/uploads/"

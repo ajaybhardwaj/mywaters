@@ -23,5 +23,6 @@
     
     NSString *facebookIDString;
 }
+@property (assign) bool isUsingFacebookForSignIn;
 
 @end

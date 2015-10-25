@@ -25,6 +25,7 @@
     viewObj.galleryImages = photosDataSource;
     viewObj.isABCGallery = NO;
     viewObj.isUserGallery = YES;
+    viewObj.isPOIGallery = NO;
     [self.navigationController pushViewController:viewObj animated:YES];
 }
 
@@ -87,7 +88,9 @@
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     appDelegate.hud.labelText = @"Loading...";
     
-    [CommonFunctions grabGetRequest:USER_PROFILE_OTHERS_DATA delegate:self isNSData:NO accessToken:[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"AccessToken"]];
+    [CommonFunctions grabGetRequest:USER_PROFILE_OTHERS_DATA delegate:self isNSData:NO accessToken:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"AccessToken"]];
+    
+    
 }
 
 
@@ -265,7 +268,7 @@
             [badgeImageView addSubview:tapButton];
             
             NSString *imageName = [photosDataSource objectAtIndex:i];
-            imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
+//            imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
             NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[photosDataSource objectAtIndex:i]];
             
             
@@ -334,7 +337,7 @@
             [badgeImageView addSubview:tapButton];
             
             NSString *imageName = [photosDataSource objectAtIndex:i];
-            imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
+//            imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
             NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[photosDataSource objectAtIndex:i]];
             
             
@@ -408,7 +411,7 @@
     float xAxis = 20;
     float yAxis = 5;
     
-    for (int i=0; i<6; i++) {
+    for (int i=0; i<badgesDataSource.count; i++) {
         
         if (counter==3) {
             
@@ -417,13 +420,14 @@
             
             UIImageView *badgeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, (badgesScrollView.bounds.size.width-75)/4, (badgesScrollView.bounds.size.width-75)/4)];
             badgeImageView.tag = i+1;
-            badgeImageView.backgroundColor = [UIColor clearColor];
+            [badgeImageView setBackgroundColor:[UIColor clearColor]];
+            badgeImageView.opaque = NO;
             [badgesScrollView addSubview:badgeImageView];
             
             NSString *imageName,*imageURLString;
             
             imageName = [[badgesDataSource objectAtIndex:i] objectForKey:@"Image"];
-            imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
+//            imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
             
             if ([[badgesDataSource objectAtIndex:i] objectForKey:@"UnlockedAt"] == (id)[NSNull null]) {
                 imageURLString = [NSString stringWithFormat:@"%@grey/%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
@@ -483,21 +487,22 @@
                 }];
             }
             
-            yAxis = yAxis + (badgesScrollView.bounds.size.width-100)/4;
+            yAxis = yAxis + (badgesScrollView.bounds.size.width-100)/4 +20;
             xAxis = 20;
         }
         else {
             
             UIImageView *badgeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, (badgesScrollView.bounds.size.width-75)/4, (badgesScrollView.bounds.size.width-75)/4)];
             badgeImageView.tag = i+1;
-            badgeImageView.backgroundColor = [UIColor clearColor];
+            [badgeImageView setBackgroundColor:[UIColor clearColor]];
+            badgeImageView.opaque = NO;
             [badgesScrollView addSubview:badgeImageView];
             
             
             NSString *imageName,*imageURLString;
 
             imageName = [[badgesDataSource objectAtIndex:i] objectForKey:@"Image"];
-            imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
+//            imageName = [imageName stringByReplacingOccurrencesOfString:@".png" withString:@""];
             
             if ([[badgesDataSource objectAtIndex:i] objectForKey:@"UnlockedAt"] == (id)[NSNull null]) {
                 imageURLString = [NSString stringWithFormat:@"%@grey/%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
@@ -562,10 +567,48 @@
         
     }
     
-    badgesScrollView.contentSize = CGSizeMake(badgesScrollView.bounds.size.width, (heightCounter*(badgesScrollView.bounds.size.width)/4)+40);
+    badgesScrollView.contentSize = CGSizeMake(badgesScrollView.bounds.size.width, (heightCounter*(badgesScrollView.bounds.size.width)/4)+80);
 }
 
 
+
+//*************** Method To Show Badges Tool Tip
+
+- (void) showBadgesToolTip:(UIButton *)sender {
+    
+    UIImageView *toolTipView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
+    toolTipView.backgroundColor = [UIColor whiteColor];
+    
+    CGRect frameValue = sender.frame;
+    frameValue.origin.y = frameValue.origin.y + 180;
+    
+    AKETooltip *tooltip = [[AKETooltip alloc] initWithContentView:toolTipView sourceRect:frameValue parentWindow:self.view.window];
+    
+    tooltip.hideShadow = NO;
+    tooltip.arrowColor = RGB(85,49,118);
+    tooltip.borderColor = [UIColor whiteColor];//RGB(85,49,118);
+    tooltip.layer.cornerRadius = 10.0;
+    [tooltip show];
+
+    
+    NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
+    
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityIndicator.center = CGPointMake(toolTipView.bounds.size.width/2, toolTipView.bounds.size.height/2);
+    [toolTipView addSubview:activityIndicator];
+    [activityIndicator startAnimating];
+    
+    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+        if (succeeded) {
+            
+            toolTipView.image = image;
+            
+        }
+        [activityIndicator stopAnimating];
+    }];
+    
+    
+}
 
 
 # pragma mark - ASIHTTPRequestDelegate Methods
@@ -582,6 +625,8 @@
         [badgesDataSource removeAllObjects];
         [rewardsDataSource removeAllObjects];
         [pointsDataSource removeAllObjects];
+        
+        pointsValue = [NSString stringWithFormat:@"%d",[[[[responseString JSONValue] objectForKey:@"UserProfile"] objectForKey:@"CurrentRewardPoints"] intValue]];
         
         [photosDataSource setArray:[[responseString JSONValue] objectForKey:USER_UPLOADED_IMAGES_RESPONSE_NAME]];
         [badgesDataSource setArray:[[responseString JSONValue] objectForKey:USER_BADGES_RESPONSE_NAME]];
@@ -663,7 +708,7 @@
         pointsValueLabel.backgroundColor = [UIColor clearColor];
         pointsValueLabel.textColor = RGB(82, 82, 82);
         pointsValueLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:28.0];
-        pointsValueLabel.text = @"150";
+        pointsValueLabel.text = pointsValue;
         pointsValueLabel.textAlignment = NSTextAlignmentCenter;
         [sectionHeaderView addSubview:pointsValueLabel];
         
@@ -681,6 +726,8 @@
     if (tableView==rewardsListingTableView) {
         
         RewardDetailsViewController *viewObj = [[RewardDetailsViewController alloc] init];
+        
+        viewObj.currentPointsString = pointsValue;
         
         if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] != (id)[NSNull null])
             viewObj.rewardID = [NSString stringWithFormat:@"%d",[[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] intValue]];
@@ -876,16 +923,30 @@
 
 
 
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex==0) {
+        appDelegate.IS_SKIPPING_USER_LOGIN = NO;
+        [[ViewControllerHelper viewControllerHelper] signOut];
+    }
+}
 
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    // Do any additional setup after loading the view.  
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     self.view.backgroundColor = RGB(247, 247, 247);
+    
+    if (appDelegate.IS_SKIPPING_USER_LOGIN) {
+        [CommonFunctions showAlertView:self title:nil msg:@"To access profile, Please login." cancel:nil otherButton:@"OK",nil];
+        return;
+    }
     
     photosDataSource = [[NSMutableArray alloc] init];
     badgesDataSource = [[NSMutableArray alloc] init];
@@ -896,198 +957,6 @@
     UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(moveToEditProfile)];
     self.navigationItem.rightBarButtonItem = editButton;
     editButton.tintColor = [UIColor whiteColor];
-    
-    //    bgContentScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
-    //    bgContentScrollView.showsHorizontalScrollIndicator = NO;
-    //    bgContentScrollView.showsVerticalScrollIndicator = NO;
-    //    [self.view addSubview:bgContentScrollView];
-    //
-    //    profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 80, 80)];
-    //    profileImageView.layer.cornerRadius = 35;
-    //    profileImageView.layer.masksToBounds = YES;
-    //    [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_avatar_image.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    //    [bgContentScrollView addSubview:profileImageView];
-    //
-    //
-    //    userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 20, self.view.bounds.size.width-120, 70)];
-    //    userNameLabel.text = @"George Tan";
-    //    userNameLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
-    //    userNameLabel.textColor = RGB(85,49,118);
-    //    userNameLabel.backgroundColor = [UIColor clearColor];
-    //    userNameLabel.numberOfLines = 0;
-    //    [bgContentScrollView addSubview:userNameLabel];
-    //
-    //
-    //    myBadgesLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, profileImageView.frame.origin.y+profileImageView.bounds.size.height+30, 70, 20)];
-    //    myBadgesLabel.text = @"My Badges";
-    //    myBadgesLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    //    myBadgesLabel.textColor = [UIColor blackColor];
-    //    myBadgesLabel.backgroundColor = [UIColor clearColor];
-    //    myBadgesLabel.numberOfLines = 0;
-    //    [bgContentScrollView addSubview:myBadgesLabel];
-    //
-    //
-    //    infoIconButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    infoIconButton.frame = CGRectMake(myBadgesLabel.frame.origin.x+myBadgesLabel.bounds.size.width+10, profileImageView.frame.origin.y+profileImageView.bounds.size.height+33, 16, 16);
-    //    [infoIconButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    //    [bgContentScrollView addSubview:infoIconButton];
-    //
-    //    badgesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, myBadgesLabel.frame.origin.y+myBadgesLabel.bounds.size.height+5, self.view.bounds.size.width, 100)];
-    //    badgesScrollView.showsHorizontalScrollIndicator = NO;
-    //    badgesScrollView.showsVerticalScrollIndicator = NO;
-    //    [bgContentScrollView addSubview:badgesScrollView];
-    //    badgesScrollView.backgroundColor = [UIColor clearColor];
-    //    badgesScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 100);
-    //
-    //    myPointsLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, badgesScrollView.frame.origin.y+badgesScrollView.bounds.size.height+30, 120, 20)];
-    //    myPointsLabel.text = @"My Points";
-    //    myPointsLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    //    myPointsLabel.textColor = [UIColor blackColor];
-    //    myPointsLabel.backgroundColor = [UIColor clearColor];
-    //    myPointsLabel.numberOfLines = 0;
-    //    [bgContentScrollView addSubview:myPointsLabel];
-    //
-    //    myPointsValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, myPointsLabel.frame.origin.y+myPointsLabel.bounds.size.height+5, self.view.bounds.size.width-40, 20)];
-    //    myPointsValueLabel.text = @"150";
-    //    myPointsValueLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    //    myPointsValueLabel.textColor = [UIColor darkGrayColor];
-    //    myPointsValueLabel.backgroundColor = [UIColor clearColor];
-    //    myPointsValueLabel.numberOfLines = 0;
-    //    [bgContentScrollView addSubview:myPointsValueLabel];
-    //
-    //
-    //    myPhotosLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, myPointsValueLabel.frame.origin.y+myPointsValueLabel.bounds.size.height+30, 120, 20)];
-    //    myPhotosLabel.text = @"My Photos";
-    //    myPhotosLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    //    myPhotosLabel.textColor = [UIColor blackColor];
-    //    myPhotosLabel.backgroundColor = [UIColor clearColor];
-    //    myPhotosLabel.numberOfLines = 0;
-    //    [bgContentScrollView addSubview:myPhotosLabel];
-    //
-    //    photosScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, myPhotosLabel.frame.origin.y+myPhotosLabel.bounds.size.height+5, self.view.bounds.size.width, 80)];
-    //    photosScrollView.showsHorizontalScrollIndicator = NO;
-    //    photosScrollView.showsVerticalScrollIndicator = NO;
-    //    [bgContentScrollView addSubview:photosScrollView];
-    //
-    //
-    ////    joinFriendOfWatersButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    ////    joinFriendOfWatersButton.frame = CGRectMake(0, photosScrollView.frame.origin.y+photosScrollView.bounds.size.height+30, self.view.bounds.size.width, 30);
-    ////    [joinFriendOfWatersButton sxetTitleColor:RGB(20, 46, 74) forState:UIControlStateNormal];
-    ////    NSMutableAttributedString *buttonTitle = [[NSMutableAttributedString alloc] initWithString:@"JOIN FRIEND OF WATER"];
-    ////    [buttonTitle addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:NSMakeRange(0, [buttonTitle length])];
-    ////    [joinFriendOfWatersButton setAttributedTitle:buttonTitle forState:UIControlStateNormal];
-    ////    joinFriendOfWatersButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    ////    [bgContentScrollView addSubview:joinFriendOfWatersButton];
-    //
-    //
-    //    rewardsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    //    rewardsButton.frame = CGRectMake(0, photosScrollView.frame.origin.y+photosScrollView.bounds.size.height+30, self.view.bounds.size.width, 50);
-    //    rewardsButton.backgroundColor = RGB(85,49,118);
-    //    [rewardsButton setTitle:@"REWARDS" forState:UIControlStateNormal];
-    //    [rewardsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    //    rewardsButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-    //    [rewardsButton addTarget:self action:@selector(handleDemoControls:) forControlEvents:UIControlEventTouchUpInside];
-    //    [bgContentScrollView addSubview:rewardsButton];
-    //
-    //
-    //
-    //    bgContentScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 20+profileImageView.bounds.size.height+20+myBadgesLabel.bounds.size.height+10+badgesScrollView.bounds.size.height+10+myPointsLabel.bounds.size.height+10+myPointsValueLabel.bounds.size.height+10+myPhotosLabel.bounds.size.height+10+photosScrollView.bounds.size.height+30+joinFriendOfWatersButton.bounds.size.height+30+rewardsButton.bounds.size.height+100);
-    //
-    //
-    //    float bgContentScrollViewHeight = 20+profileImageView.bounds.size.height+20+myBadgesLabel.bounds.size.height+10+badgesScrollView.bounds.size.height+10+myPointsLabel.bounds.size.height+10+myPointsValueLabel.bounds.size.height+10+myPhotosLabel.bounds.size.height+10+photosScrollView.bounds.size.height+30+joinFriendOfWatersButton.bounds.size.height+30+rewardsButton.bounds.size.height+100;
-    //
-    //    DebugLog(@"%f-----%f",bgContentScrollViewHeight,bgContentScrollView.bounds.size.height);
-    //
-    //    if (bgContentScrollViewHeight < bgContentScrollView.bounds.size.height) {
-    //        rewardsButton.frame = CGRectMake(0, bgContentScrollView.bounds.size.height-114, self.view.bounds.size.width, 50);
-    //    }
-    
-    
-    
-    
-    //----- Temp Dummy Image For Prototype
-    //    bgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
-    //    [bgImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/profile_badges.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    //    [self.view addSubview:bgImageView];
-    //    bgImageView.userInteractionEnabled = YES;
-    //
-    //
-    //    UIButton *profileButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    profileButton.tag = 1;
-    //    profileButton.frame = CGRectMake(0, self.view.bounds.size.height-114, self.view.bounds.size.width/4, 50);
-    //    [profileButton addTarget:self action:@selector(handleDemoAction:) forControlEvents:UIControlEventTouchUpInside];
-    //    [self.view addSubview:profileButton];
-    //
-    //    UIButton *pointsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    pointsButton.tag = 2;
-    //    pointsButton.frame = CGRectMake(self.view.bounds.size.width/4, self.view.bounds.size.height-114, self.view.bounds.size.width/4, 50);
-    //    [pointsButton addTarget:self action:@selector(handleDemoAction:) forControlEvents:UIControlEventTouchUpInside];
-    //    [self.view addSubview:pointsButton];
-    //
-    //    UIButton *rewardsLocalButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    rewardsLocalButton.tag = 3;
-    //    rewardsLocalButton.frame = CGRectMake((self.view.bounds.size.width/4)*2 , self.view.bounds.size.height-114, self.view.bounds.size.width/4, 50);
-    //    [rewardsLocalButton addTarget:self action:@selector(handleDemoAction:) forControlEvents:UIControlEventTouchUpInside];
-    //    [self.view addSubview:rewardsLocalButton];
-    //
-    //    UIButton *photosButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    photosButton.tag = 4;
-    //    photosButton.frame = CGRectMake((self.view.bounds.size.width/4)*3, self.view.bounds.size.height-114, self.view.bounds.size.width/4, 50);
-    //    [photosButton addTarget:self action:@selector(handleDemoAction:) forControlEvents:UIControlEventTouchUpInside];
-    //    [self.view addSubview:photosButton];
-    //
-    //
-    //
-    //    rewardsDetailButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    rewardsDetailButton.tag = 5;
-    //    rewardsDetailButton.frame = CGRectMake(0, 100, self.view.bounds.size.width, self.view.bounds.size.height-214);
-    //    [rewardsDetailButton addTarget:self action:@selector(handleDemoAction:) forControlEvents:UIControlEventTouchUpInside];
-    //    [self.view addSubview:rewardsDetailButton];
-    //    rewardsDetailButton.hidden = YES;
-    
-    //    tabBarController = [[UITabBarController alloc] init];
-    //
-    //    BadgesViewController *badges = [[BadgesViewController alloc] init];
-    //    badges.title=@"Badges";
-    //    badges.tabBarItem.image = [UIImage imageNamed:@"icn_award_purple.png"];
-    //    UINavigationController *nav1=[[UINavigationController alloc]initWithRootViewController:badges];
-    //    nav1.navigationBar.tintColor = [UIColor colorWithRed:240.0/256.0 green:240.0/256.0 blue:240.0/256.0 alpha:1.0];
-    //    nav1.navigationBar.hidden = YES;
-    //
-    //    PointsViewController *points = [[PointsViewController alloc] init];
-    //    points.title=@"Points";
-    //    points.tabBarItem.image = [UIImage imageNamed:@"icn_money_purple.png"];
-    //    UINavigationController *nav2=[[UINavigationController alloc]initWithRootViewController:points];
-    //    nav2.navigationBar.tintColor = [UIColor colorWithRed:240.0/256.0 green:240.0/256.0 blue:240.0/256.0 alpha:1.0];
-    //    nav2.navigationBar.hidden = YES;
-    //
-    //    RewardsListingViewController *rewards = [[RewardsListingViewController alloc] init];
-    //    rewards.title=@"Rewards";
-    //    rewards.tabBarItem.image = [UIImage imageNamed:@"icn_gift_purple.png"];
-    //    UINavigationController *nav3=[[UINavigationController alloc]initWithRootViewController:rewards];
-    //    nav3.navigationBar.tintColor = [UIColor colorWithRed:240.0/256.0 green:240.0/256.0 blue:240.0/256.0 alpha:1.0];
-    //    nav3.navigationBar.hidden = YES;
-    //
-    //    PhotosViewController *photos = [[PhotosViewController alloc] init];
-    //    photos.title=@"Photos";
-    //    photos.tabBarItem.image = [UIImage imageNamed:@"icn_poloroid_purple.png"];
-    //    UINavigationController *nav4=[[UINavigationController alloc]initWithRootViewController:photos];
-    //    nav4.navigationBar.tintColor = [UIColor colorWithRed:240.0/256.0 green:240.0/256.0 blue:240.0/256.0 alpha:1.0];
-    //    nav4.navigationBar.hidden = YES;
-    //
-    //    [tabBarController setViewControllers:[NSArray arrayWithObjects:nav1,nav2,nav3,nav4,nil]];	//set all navigationControllers to tabbarcontroller
-    //    tabBarController.view.frame = CGRectMake(0, 110, self.view.bounds.size.width, self.view.bounds.size.height-110);
-    //    [self.view addSubview:tabBarController.view];
-    //
-    //
-    //    UITabBar *tabBar = [tabBarController tabBar];
-    //    if ([tabBar respondsToSelector:@selector(setBackgroundImage:)])
-    //    {
-    //        // ios 5 code here
-    //        [tabBar setBackgroundImage:[UIImage imageNamed:@"tabbar_bg.png"]];
-    //
-    //    }
-    
     
     
     //===== Top Profile View
@@ -1236,6 +1105,7 @@
     infoIconButton = [UIButton buttonWithType:UIButtonTypeCustom];
     infoIconButton.frame = CGRectMake(myBadgesLabel.frame.origin.x+myBadgesLabel.bounds.size.width, 13, 16, 16);
     [infoIconButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [infoIconButton addTarget:self action:@selector(showBadgesToolTip:) forControlEvents:UIControlEventTouchUpInside];
     [badgesBackgroundView addSubview:infoIconButton];
     
     badgesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, infoIconButton.frame.origin.y+infoIconButton.bounds.size.height+5, badgesBackgroundView.bounds.size.width, badgesBackgroundView.bounds.size.height)];
@@ -1310,11 +1180,12 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     
-    userNameLabel.text = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"];
+    userNameLabel.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
     
-    if ([[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"] != (id)[NSNull null] || [[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"] length] !=0) {
+    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"] length] !=0) {
+    
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"]];
         
-        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"]];
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         activityIndicator.center = CGPointMake(profileImageView.bounds.size.width/2, profileImageView.bounds.size.height/2);
         [profileImageView addSubview:activityIndicator];
@@ -1330,8 +1201,12 @@
             [activityIndicator stopAnimating];
         }];
     }
+    else {
+        [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
     
-    [self getOtherProfileData];
+    if (!appDelegate.IS_SKIPPING_USER_LOGIN)
+        [self getOtherProfileData];
     
     //    self.hidesBottomBarWhenPushed = NO;
 }

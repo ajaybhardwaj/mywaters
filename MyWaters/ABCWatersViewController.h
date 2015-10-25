@@ -34,5 +34,6 @@
     
     NSMutableArray *filteredDataSource;
 }
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end

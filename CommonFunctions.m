@@ -95,7 +95,7 @@
     {
         SLComposeViewController *tweetSheet = [SLComposeViewController
                                                composeViewControllerForServiceType:SLServiceTypeTwitter];
-        [tweetSheet setInitialText:[NSString stringWithFormat:@"MyWater Site: %@\n%@",postTitle,[NSURL URLWithString:appStoreUrl]]];
+        [tweetSheet setInitialText:[NSString stringWithFormat:@"%@\n%@",postTitle,[NSURL URLWithString:appStoreUrl]]];
         [viewObj presentViewController:tweetSheet animated:YES completion:nil];
     }
 }
@@ -303,7 +303,7 @@
     
     CLLocationDistance dist = [userloc distanceFromLocation:dest]/1000;
     
-    //NSLog(@"%f",dist);
+    NSLog(@"%f",dist);
     NSString *distance = [NSString stringWithFormat:@"%.2f",dist];
     
     return distance;

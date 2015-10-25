@@ -504,6 +504,8 @@
     [optionsTableView.layer setOpaque:NO];
     [optionsTableView setOpaque:NO];
     
+    
+    
     [self setCurrentIndex:_currentIndex];
     [optionsTableView reloadData];
 }
@@ -511,6 +513,7 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
+
     //Getting indexpath for highlighened cell, to rehighlight
     NSIndexPath *selectedIndex = [optionsTableView indexPathForSelectedRow];
     [optionsTableView selectRowAtIndexPath:selectedIndex animated:NO scrollPosition:UITableViewScrollPositionNone];

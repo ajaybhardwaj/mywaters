@@ -41,6 +41,8 @@
     }
     else {
         
+        [self removeKeypad];
+        
         isVerifyingEmail = YES;
         isResendingOTP = NO;
         
@@ -120,14 +122,14 @@
 
 - (void) createUI {
     
-    instructionLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 50, self.view.bounds.size.width-20, 30)];
+    instructionLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 50, self.view.bounds.size.width-20, 20)];
     instructionLabel.text = @"Kindly key in the OTP sent to your email.";
     instructionLabel.textColor = RGB(22, 25, 62);
     instructionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
     instructionLabel.backgroundColor = [UIColor clearColor];
     [self.view addSubview:instructionLabel];
     
-    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+20, self.view.bounds.size.width/6-8, 40)];
+    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
     otpField1.textColor = RGB(61, 71, 94);
     otpField1.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     otpField1.leftViewMode = UITextFieldViewModeAlways;
@@ -143,7 +145,7 @@
     [[otpField1 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
     
     
-    otpField2 = [[UITextField alloc] initWithFrame:CGRectMake(otpField1.frame.origin.x+otpField1.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+20, self.view.bounds.size.width/6-8, 40)];
+    otpField2 = [[UITextField alloc] initWithFrame:CGRectMake(otpField1.frame.origin.x+otpField1.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
     otpField2.textColor = RGB(61, 71, 94);
     otpField2.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     otpField2.leftViewMode = UITextFieldViewModeAlways;
@@ -160,7 +162,7 @@
     
     
     
-    otpField3 = [[UITextField alloc] initWithFrame:CGRectMake(otpField2.frame.origin.x+otpField2.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+20, self.view.bounds.size.width/6-8, 40)];
+    otpField3 = [[UITextField alloc] initWithFrame:CGRectMake(otpField2.frame.origin.x+otpField2.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
     otpField3.textColor = RGB(61, 71, 94);
     otpField3.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     otpField3.leftViewMode = UITextFieldViewModeAlways;
@@ -176,7 +178,7 @@
     [[otpField3 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
     
     
-    otpField4 = [[UITextField alloc] initWithFrame:CGRectMake(otpField3.frame.origin.x+otpField3.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+20, self.view.bounds.size.width/6-8, 40)];
+    otpField4 = [[UITextField alloc] initWithFrame:CGRectMake(otpField3.frame.origin.x+otpField3.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
     otpField4.textColor = RGB(61, 71, 94);
     otpField4.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     otpField4.leftViewMode = UITextFieldViewModeAlways;
@@ -192,7 +194,7 @@
     [[otpField4 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
     
     
-    otpField5 = [[UITextField alloc] initWithFrame:CGRectMake(otpField4.frame.origin.x+otpField4.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+20, self.view.bounds.size.width/6-8, 40)];
+    otpField5 = [[UITextField alloc] initWithFrame:CGRectMake(otpField4.frame.origin.x+otpField4.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
     otpField5.textColor = RGB(61, 71, 94);
     otpField5.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     otpField5.leftViewMode = UITextFieldViewModeAlways;
@@ -208,7 +210,7 @@
     [[otpField5 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
     
     
-    otpField6 = [[UITextField alloc] initWithFrame:CGRectMake(otpField5.frame.origin.x+otpField5.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+20, self.view.bounds.size.width/6-8, 40)];
+    otpField6 = [[UITextField alloc] initWithFrame:CGRectMake(otpField5.frame.origin.x+otpField5.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
     otpField6.textColor = RGB(61, 71, 94);
     otpField6.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     otpField6.leftViewMode = UITextFieldViewModeAlways;
@@ -228,7 +230,7 @@
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
-    submitButton.frame = CGRectMake(10, otpField6.frame.origin.y+otpField6.bounds.size.height+30, self.view.bounds.size.width-20, 40);
+    submitButton.frame = CGRectMake(10, otpField6.frame.origin.y+otpField6.bounds.size.height+20, self.view.bounds.size.width-20, 40);
     [submitButton setBackgroundColor:RGB(68, 78, 98)];
     [submitButton addTarget:self action:@selector(submitOTPCode) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:submitButton];
@@ -238,7 +240,7 @@
     [backButton setTitle:@"BACK" forState:UIControlStateNormal];
     [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
-    backButton.frame = CGRectMake(10, submitButton.frame.origin.y+submitButton.bounds.size.height+15, self.view.bounds.size.width-20, 40);
+    backButton.frame = CGRectMake(10, submitButton.frame.origin.y+submitButton.bounds.size.height+10, self.view.bounds.size.width-20, 40);
     [backButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
     [backButton setBackgroundColor:RGB(83, 83, 83)];
     [self.view addSubview:backButton];
@@ -247,7 +249,7 @@
     [resendOTPButton setTitle:@"Re-send OTP" forState:UIControlStateNormal];
     [resendOTPButton setTitleColor:RGB(22, 25, 62) forState:UIControlStateNormal];
     resendOTPButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:15];
-    resendOTPButton.frame = CGRectMake(0, backButton.frame.origin.y+backButton.bounds.size.height+15, self.view.bounds.size.width, 30);
+    resendOTPButton.frame = CGRectMake(0, backButton.frame.origin.y+backButton.bounds.size.height+10, self.view.bounds.size.width, 30);
     [resendOTPButton addTarget:self action:@selector(requestNewOTPCode) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:resendOTPButton];
     
@@ -259,6 +261,22 @@
     [self.view addSubview:resignKeyPadButton];
     [self.view sendSubviewToBack:resignKeyPadButton];
 }
+
+
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex==0) {
+        
+        [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+        
+        appDelegate.IS_COMING_AFTER_LOGIN = YES;
+    }
+}
+
 
 
 # pragma mark - ASIHTTPRequestDelegate Methods
@@ -279,10 +297,9 @@
             if (isValidatingEmail) {
                 
                 [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
-                [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
-                [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
-                
-                appDelegate.IS_COMING_AFTER_LOGIN = YES;
+                [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
+
+                [CommonFunctions showAlertView:self title:nil msg:@"Account successfully created." cancel:@"OK" otherButton:nil];
             }
             else if (isResettingPassword) {
                 

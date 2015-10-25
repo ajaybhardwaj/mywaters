@@ -15,7 +15,7 @@
 
 @implementation ABCWaterDetailViewController
 @synthesize abcSiteId,imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,imageName,isCertified;
-
+@synthesize isAlreadyFav,isHavingPOI;
 
 //*************** Demo App UI
 
@@ -50,6 +50,66 @@
 }
 
 
+
+//*************** Method To Add CCTV To Favourites
+
+- (void) addABCWaterToFavourites {
+    
+    [self animateTopMenu];
+    
+    NSMutableDictionary *parametersDict = [[NSMutableDictionary alloc] init];
+    
+    [parametersDict setValue:abcSiteId forKey:@"fav_id"];
+    [parametersDict setValue:@"3" forKey:@"fav_type"];
+    [parametersDict setValue:titleString forKey:@"name"];
+    [parametersDict setValue:imageName forKey:@"image"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",latValue] forKey:@"lat"];
+    [parametersDict setValue:[NSString stringWithFormat:@"%f",longValue] forKey:@"long"];
+    
+    if (addressString != (id)[NSNull null] && [addressString length] !=0)
+        [parametersDict setValue:addressString forKey:@"address"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"address"];
+    
+    if (phoneNoString != (id)[NSNull null] && [phoneNoString length] !=0)
+        [parametersDict setValue:phoneNoString forKey:@"phoneno"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"phoneno"];
+    
+    if (descriptionString != (id)[NSNull null] && [descriptionString length] !=0)
+        [parametersDict setValue:descriptionString forKey:@"description"];
+    else
+        [parametersDict setValue:@"NA" forKey:@"description"];
+    
+    
+    [parametersDict setValue:@"NA" forKey:@"website_event"];
+    [parametersDict setValue:@"NA" forKey:@"end_date_event"];
+    [parametersDict setValue:@"NA" forKey:@"start_date_event"];
+    [parametersDict setValue:@"NA" forKey:@"isCertified_ABC"];
+    [parametersDict setValue:@"NA" forKey:@"water_level_wls"];
+    [parametersDict setValue:@"NA" forKey:@"drain_depth_wls"];
+    [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
+    [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
+    [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
+    
+    
+    [appDelegate insertFavouriteItems:parametersDict];
+    
+    isAlreadyFav = [appDelegate checkItemForFavourite:@"3" idValue:abcSiteId];
+    
+    if (isAlreadyFav) {
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        favouriteLabel.text = @"Favourited";
+    }
+    else {
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        favouriteLabel.text = @"Favourite";
+    }
+}
+
+
+
+
 //*************** Method To Move To Map Direction View
 
 - (void) moveToDirectionView {
@@ -59,7 +119,8 @@
         [self animateTopMenu];
     }
     
-    DirectionViewController *viewObj = [[DirectionViewController alloc] init];
+    QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
+    viewObj.isShowingRoute = YES;
     viewObj.destinationLat = latValue;
     viewObj.destinationLong = longValue;
     [self.navigationController pushViewController:viewObj animated:YES];
@@ -93,13 +154,12 @@
         [self animateTopMenu];
     }
     
-    DebugLog(@"%ld",[phoneNoString length]);
+    phoneNoString = [phoneNoString stringByReplacingOccurrencesOfString:@" " withString:@""];
     if ([phoneNoString length] != 0) {
-        
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@", phoneNoString]]];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No contact available for this site." cancel:@"Ok" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No contact available for this site." cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -325,7 +385,7 @@
     descriptionLabel.backgroundColor = [UIColor whiteColor];
     descriptionLabel.text = [NSString stringWithFormat:@"%@",descriptionString];
     descriptionLabel.textColor = [UIColor darkGrayColor];
-    descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+    descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     descriptionLabel.numberOfLines = 0;
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
@@ -386,6 +446,7 @@
                 GalleryViewController *viewObj = [[GalleryViewController alloc] init];
                 viewObj.isABCGallery = YES;
                 viewObj.isUserGallery = NO;
+                viewObj.isPOIGallery = NO;
                 viewObj.galleryImages = abcGalleryImages;
                 [self.navigationController pushViewController:viewObj animated:YES];
                 
@@ -521,10 +582,10 @@
     [values addObject:abcSiteId];
     
     [parameters addObject:@"ABCPOIImage.UserProfileID"];
-    [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ID"]];
+    [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userID"]];
     
     [parameters addObject:@"ABCPOIImage.UserProfileName"];
-    [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"]];
+    [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"]];
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,ABC_WATERS_UPLOAD_USER_IMAGE]];
 }
@@ -544,6 +605,7 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    isAlreadyFav = [appDelegate checkItemForFavourite:@"3" idValue:abcSiteId];
     
     self.view.backgroundColor = RGB(242, 242, 242);
     self.title = @"ABC Waters Info";
@@ -581,10 +643,16 @@
     arViewLabel.text = @"AR View";
     [self.view addSubview:arViewLabel];
     
+    if (!isHavingPOI) {
+        arViewButton.alpha = 0.4;
+        arViewLabel.alpha = 0.4;
+        arViewButton.enabled = NO;
+    }
+    
     
     bookingFormButton = [UIButton buttonWithType:UIButtonTypeCustom];
     bookingFormButton.frame = CGRectMake(((self.view.bounds.size.width/3)+(self.view.bounds.size.width/3-30)/2), bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+10, 30, 30);
-    [bookingFormButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_bookingform.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [bookingFormButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_abc_gallery.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [bookingFormButton addTarget:self action:@selector(moveToGalleryView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:bookingFormButton];
     
@@ -608,6 +676,11 @@
     contactUsLabel.text = @"Contact Us";
     [self.view addSubview:contactUsLabel];
     
+    if ([phoneNoString length]==0) {
+        contactUsButton.alpha = 0.4;
+        contactUsLabel.alpha = 0.4;
+        contactUsButton.enabled = NO;
+    }
     
     //Top Menu Item
     
@@ -616,25 +689,29 @@
     [self.view addSubview:topMenu];
     
     addPhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
-    addPhotoButton.frame = CGRectMake(topMenu.bounds.size.width/4-10, 5, 20, 20);
+    addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
+//    addPhotoButton.frame = CGRectMake(topMenu.bounds.size.width/4-10, 5, 20, 20);
     [addPhotoButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_camera.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [addPhotoButton addTarget:self action:@selector(addPhotoToSite) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addPhotoButton];
     
-//    galleryButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    galleryButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
-//    [galleryButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_gallery.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//    [galleryButton addTarget:self action:@selector(moveToGalleryView) forControlEvents:UIControlEventTouchUpInside];
-//    [topMenu addSubview:galleryButton];
+    favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
+    if (isAlreadyFav)
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [favouritesButton addTarget:self action:@selector(addABCWaterToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:favouritesButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    shareButton.frame = CGRectMake((topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/4)-10, 5, 20, 20);
+//    shareButton.frame = CGRectMake((topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/4)-10, 5, 20, 20);
+    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [shareButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:shareButton];
     
-    addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/2, 10)];
+    addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/3, 10)];
     addPhotoLabel.backgroundColor = [UIColor clearColor];
     addPhotoLabel.textAlignment = NSTextAlignmentCenter;
     addPhotoLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
@@ -642,27 +719,41 @@
     addPhotoLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:addPhotoLabel];
     
+    
+    UIButton *addPhotoOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addPhotoOverlayButton.frame = CGRectMake(0, 0, topMenu.bounds.size.width/3, 45);
+    [addPhotoOverlayButton addTarget:self action:@selector(addPhotoToSite) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addPhotoOverlayButton];
+    
+    UIButton *addFavOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addFavOverlayButton.frame = CGRectMake(topMenu.bounds.size.width/3, 0, topMenu.bounds.size.width/3, 45);
+    [addFavOverlayButton addTarget:self action:@selector(addABCWaterToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addFavOverlayButton];
+    
+    UIButton *addShareOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addShareOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)*2, 0, topMenu.bounds.size.width/3, 45);
+    [addShareOverlayButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addShareOverlayButton];
+    
 //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
-    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2-1, 0, 0.5, 45)];
-    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
-    [topMenu addSubview:seperatorOne];
+//    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2-1, 0, 0.5, 45)];
+//    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
+//    [topMenu addSubview:seperatorOne];
     
     
-//    galleryLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
-//    galleryLabel.backgroundColor = [UIColor clearColor];
-//    galleryLabel.textAlignment = NSTextAlignmentCenter;
-//    galleryLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-//    galleryLabel.text = @"Gallery";
-//    galleryLabel.textColor = [UIColor whiteColor];
-//    [topMenu addSubview:galleryLabel];
+    favouriteLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
+    favouriteLabel.backgroundColor = [UIColor clearColor];
+    favouriteLabel.textAlignment = NSTextAlignmentCenter;
+    favouriteLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    if (isAlreadyFav)
+        favouriteLabel.text = @"Favourited";
+    else
+        favouriteLabel.text = @"Favourite";
+    favouriteLabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:favouriteLabel];
     
-//    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake(galleryLabel.frame.origin.x+galleryLabel.bounds.size.width-1, 0, 0.5, 45)];
-//    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
-//    [topMenu addSubview:seperatorTwo];
-    
-    
-//    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
-    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2, 32, topMenu.bounds.size.width/2, 10)];
+    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
+//    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2, 32, topMenu.bounds.size.width/2, 10)];
     shareLabel.backgroundColor = [UIColor clearColor];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
@@ -675,9 +766,17 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,156,249) frame:CGRectMake(0, 0, 1, 1)];
+    [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+    
     appDelegate.IS_ARVIEW_CUSTOM_LABEL = NO;
     [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
-    self.navigationController.navigationBar.hidden = NO;
+    [self.navigationController setNavigationBarHidden:NO];
     
     // Enable iOS 7 back gesture
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
@@ -689,11 +788,11 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-    
-    [self.view addGestureRecognizer:swipeGesture];
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+//    swipeGesture.numberOfTouchesRequired = 1;
+//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+//    
+//    [self.view addGestureRecognizer:swipeGesture];
     
     //    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
     

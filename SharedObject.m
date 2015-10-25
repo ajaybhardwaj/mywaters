@@ -54,6 +54,72 @@ static SharedObject *sharedInstance_ = nil;  // -- shared instacne class object
 }
 
 
+# pragma mark - User Defaults For PUB App
+
+- (void) savePUBUserData:(NSDictionary*) dict {
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"ID"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"ID"] forKey:@"userID"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"Name"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"Name"] forKey:@"userName"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"Email"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"Email"] forKey:@"userEmail"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"Password"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"Password"] forKey:@"userPassword"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"FacebookID"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"FacebookID"] forKey:@"userFacebookID"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"ImageName"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"ImageName"] forKey:@"userProfileImageName"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"ImageBase64"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"ImageBase64"] forKey:@"userProfileImageBase64"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"IsFriendofWater"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"IsFriendofWater"] forKey:@"userIsFriendOfWater"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"IsEmailVerified"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"IsEmailVerified"] forKey:@"isEmailVerified"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"IsAllowChangePassword"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"IsAllowChangePassword"] forKey:@"isAllowChangePassword"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"Status"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"Status"] forKey:@"userStatus"];
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"CurrentRewardPoints"] != (id)[NSNull null])
+        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"CurrentRewardPoints"] forKey:@"userRewardPoints"];
+    if ([dict valueForKey:@"AccessToken"] != (id)[NSNull null])
+        [prefs setValue:[dict valueForKey:@"AccessToken"] forKey:@"AccessToken"];
+
+    [prefs synchronize];
+    
+}
+
+
+- (void) clearPUBUserSavedData {
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    [prefs removeObjectForKey:@"userID"];
+    [prefs removeObjectForKey:@"userName"];
+    [prefs removeObjectForKey:@"userEmail"];
+    [prefs removeObjectForKey:@"userPassword"];
+    [prefs removeObjectForKey:@"userFacebookID"];
+    [prefs removeObjectForKey:@"userProfileImageName"];
+    [prefs removeObjectForKey:@"userProfileImageBase64"];
+    [prefs removeObjectForKey:@"userIsFriendOfWater"];
+    [prefs removeObjectForKey:@"isEmailVerified"];
+    [prefs removeObjectForKey:@"isAllowChangePassword"];
+    [prefs removeObjectForKey:@"userStatus"];
+    [prefs removeObjectForKey:@"userRewardPoints"];
+    [prefs removeObjectForKey:@"AccessToken"];
+    [prefs synchronize];
+}
+
+
+- (NSString*) getPUBUserSavedDataValue:(NSString*) keyName {
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    return [prefs objectForKey:keyName];
+}
+
+
+
 #pragma mark - FB USER ID AND AUTHENTICATION
 -(void)saveFBID:(NSString*)fbId{
     NSUserDefaults *deflts = [NSUserDefaults standardUserDefaults];
@@ -145,6 +211,7 @@ static SharedObject *sharedInstance_ = nil;  // -- shared instacne class object
     [defaults synchronize];
 }
 
+
 -(void)save_SUPER_SPORTS_CLUB_DeviceToken:(NSString*)deviceTok andAccID:(NSString*)accID{
     NSUserDefaults *defaults =  [NSUserDefaults standardUserDefaults];
     [defaults setObject:deviceTok forKey:DEVICE_TOKEN];
@@ -168,6 +235,7 @@ static SharedObject *sharedInstance_ = nil;  // -- shared instacne class object
     return NO;
   }
 }
+
 
 #pragma mark - 
 -(NSString*)getPhysicalABuseDeviceToken{
@@ -574,6 +642,7 @@ static SharedObject *sharedInstance_ = nil;  // -- shared instacne class object
         [self save_SUPER_SPORTS_CLUB_AccessToken:access_token];
         
     }
+    
 }
 
 #pragma mark utils

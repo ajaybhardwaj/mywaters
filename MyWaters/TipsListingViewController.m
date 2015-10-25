@@ -38,6 +38,31 @@
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"MediaFeedMode",@"version", nil];
     NSArray *values = [[NSArray alloc] initWithObjects:@"12",@"3",@"1.0", nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+    
+    [self pullToRefreshTable];
+}
+
+
+//*************** Method For Pull To Refresh
+
+- (void) pullToRefreshTable {
+    
+    // Reload table data
+    [tipsListingTableView reloadData];
+    
+    // End the refreshing
+    if (self.refreshControl) {
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm a"];
+        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+                                                                    forKey:NSForegroundColorAttributeName];
+        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        self.refreshControl.attributedTitle = attributedTitle;
+        
+        [self.refreshControl endRefreshing];
+    }
 }
 
 
@@ -57,15 +82,19 @@
         NSArray *tempArray = [[responseString JSONValue] objectForKey:FEEDS_CHATTER_LISTING_RESPONSE_NAME];
         
         if (tempArray.count==0) {
-            
+            noDataLabel.hidden = NO;
+            noDataLabel.text = @"No tips data available.";
+            tipsListingTableView.hidden = YES;
         }
         else {
             [appDelegate.TIPS_VIDEOS_ARRAY removeAllObjects];
             [appDelegate.TIPS_VIDEOS_ARRAY setArray:tempArray];
+            tipsListingTableView.hidden = NO;
+            noDataLabel.hidden = YES;
         }
         
         [tipsListingTableView reloadData];
-        
+        [self.refreshControl endRefreshing];
     }
     
 }
@@ -157,7 +186,7 @@
 //    }];
     
     
-    UIWebView *localVideoWebview = [[UIWebView alloc] initWithFrame:CGRectMake(-10, 0, self.view.bounds.size.width+10, 150)];
+    UIWebView *localVideoWebview = [[UIWebView alloc] initWithFrame:CGRectMake(-10, -10, self.view.bounds.size.width+10, 150)];
     localVideoWebview.backgroundColor = [UIColor colorWithRed:28.0/256.0 green:27.0/256.0 blue:28.0/256.0 alpha:1.0];
     [cell.contentView addSubview:localVideoWebview];
     localVideoWebview.scrollView.scrollEnabled = NO;
@@ -167,10 +196,10 @@
     NSString *url = [[appDelegate.TIPS_VIDEOS_ARRAY objectAtIndex:indexPath.row] objectForKey:@"EmbedURL"];//@"https://www.youtube.com/embed/5fDrVA2_nbg";
     url = [NSString stringWithFormat:@"%@?rel=0&showinfo=0&controls=0",url];
     NSString* embedHTML = [NSString stringWithFormat:@"\
-                           <iframe width=\"330\" height=\"150\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
-                           ",url];
+                           <iframe width=\"%f\" height=\"150\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
+                           ",tipsListingTableView.bounds.size.width+10,url];
     
-    NSString* html = [NSString stringWithFormat:embedHTML, url, self.view.bounds.size.width+10, 150];
+    NSString* html = [NSString stringWithFormat:embedHTML, url, tipsListingTableView.bounds.size.width+10, 150];
     [localVideoWebview loadHTMLString:html baseURL:nil];
     
     
@@ -214,6 +243,24 @@
     tipsListingTableView.backgroundColor = [UIColor clearColor];
     tipsListingTableView.backgroundView = nil;
     tipsListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    // Initialize the refresh control.
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor whiteColor];
+    self.refreshControl.tintColor = [UIColor blackColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(fetchTipsListing)
+                  forControlEvents:UIControlEventValueChanged];
+    [tipsListingTableView addSubview:self.refreshControl];
+    
+    
+    noDataLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height/2 - 40, self.view.bounds.size.width-20, 20)];
+    noDataLabel.text = @"No tips found.";
+    noDataLabel.textAlignment = NSTextAlignmentCenter;
+    noDataLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+    noDataLabel.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:noDataLabel];
+    noDataLabel.hidden = YES;
 }
 
 
@@ -226,7 +273,7 @@
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(113, 75, 51) frame:CGRectMake(0, 0, 1, 1)];
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(229,0,87) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
@@ -234,8 +281,17 @@
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
-    [self fetchTipsListing];
-    
+    if ([CommonFunctions hasConnectivity]) {
+        [self fetchTipsListing];
+        noDataLabel.hidden = YES;
+        tipsListingTableView.hidden = NO;
+
+    }
+    else {
+        noDataLabel.hidden = NO;
+        noDataLabel.text = @"No internet connection.";
+        tipsListingTableView.hidden = YES;
+    }
 }
 
 - (void)didReceiveMemoryWarning {

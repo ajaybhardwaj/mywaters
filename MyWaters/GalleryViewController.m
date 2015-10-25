@@ -14,7 +14,7 @@
 
 @implementation GalleryViewController
 
-@synthesize isABCGallery,isUserGallery;
+@synthesize isABCGallery,isUserGallery,isPOIGallery;
 @synthesize galleryImages = galleryImages_;
 @synthesize imageHostScrollView = imageHostScrollView_;
 @synthesize currentIndex = currentIndex_;
@@ -53,8 +53,12 @@
 
 -(UIImage *)imageAtIndex:(NSInteger)inImageIndex {
     
+    // limit the input to the current number of images, using modulo math
+    inImageIndex = safeModulo(inImageIndex, [self totalImages]);
+    
     __block UIImage *storedImage = nil;
     
+    if (storedImage==nil) {
     NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
     NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
     NSString *destinationPath;// = [doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"UserProfileUpload"]];
@@ -63,6 +67,9 @@
     }
     else if (isABCGallery) {
         destinationPath = [doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"UserProfileUpload"]];
+    }
+    else if (isPOIGallery) {
+        destinationPath = [doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"POIGallery"]];
     }
 
     NSString *imageName = [self.galleryImages objectAtIndex:inImageIndex];
@@ -84,7 +91,7 @@
         
         NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,imageName];
         
-        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         activityIndicator.center = CGPointMake(self.centerImgView.bounds.size.width/2, self.centerImgView.bounds.size.height/2);
         [self.centerImgView addSubview:activityIndicator];
         [activityIndicator startAnimating];
@@ -116,10 +123,7 @@
 
         }];
     }
-    
-    
-    // limit the input to the current number of images, using modulo math
-    inImageIndex = safeModulo(inImageIndex, [self totalImages]);
+    }
     
 //    NSString *filePath = [self.galleryImages objectAtIndex:inImageIndex];
 //    

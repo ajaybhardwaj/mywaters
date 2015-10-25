@@ -85,6 +85,13 @@
     
     int xAxis = 20;
     
+    NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
+    NSString *destinationPath = [doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"POIGallery"]];
+    
+    UIImage *storedImage = nil;
+    
+    
     for (int i=0; i<pictureDataSource.count; i++) {
         
         UIImageView *galleryImage = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, 5, 70, 70)];
@@ -92,24 +99,60 @@
         galleryImage.tag = i;
         [picturesScrollView addSubview:galleryImage];
         
+        NSString *imageName = [[pictureDataSource objectAtIndex:i] objectForKey:@"Image"];
+//        imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
+        //        DebugLog(@"Image name %@",[[pictureDataSource objectAtIndex:i] objectForKey:@"Image"]);
+        //        DebugLog(@"Image path %@",[destinationPath stringByAppendingPathComponent:[[pictureDataSource objectAtIndex:i] objectForKey:@"Image"]]);
         
-        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[pictureDataSource objectAtIndex:i] objectForKey:@"Image"]];
+        NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
         
-        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        activityIndicator.center = CGPointMake(galleryImage.bounds.size.width/2, galleryImage.bounds.size.height/2);
-        [galleryImage addSubview:activityIndicator];
-        [activityIndicator startAnimating];
+        DebugLog(@"%@",localFile);
         
-        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
-            if (succeeded) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
+            if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
+                storedImage = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+            
+        }
+        else {
+            
+            NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[pictureDataSource objectAtIndex:i] objectForKey:@"Image"]];
+            
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            activityIndicator.center = CGPointMake(galleryImage.bounds.size.width/2, galleryImage.bounds.size.height/2);
+            [galleryImage addSubview:activityIndicator];
+            [activityIndicator startAnimating];
+            
+            
+            
+            [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                if (succeeded) {
+                    
+                    galleryImage.image = image;
+                    
+                    NSFileManager *fileManger=[NSFileManager defaultManager];
+                    NSError* error;
+                    
+                    if (![fileManger fileExistsAtPath:destinationPath]){
+                        
+                        if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
+                            ;// success
+                        else
+                        {
+                            DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
+                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                        }
+                    }
+                    
+                    NSData *data = UIImageJPEGRepresentation(image, 0.8);
+                    [data writeToFile:[destinationPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",imageName]] atomically:YES];
+                }
+                [activityIndicator stopAnimating];
                 
-                galleryImage.image = image;
-            }
-            [activityIndicator stopAnimating];
-        }];
-        
-        
-        xAxis = xAxis + 90;
+            }];
+            
+            xAxis = xAxis + 90;
+        }
+
     }
     
     UIButton *addPictureButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -120,9 +163,9 @@
     
     picturesScrollView.contentSize = CGSizeMake((pictureDataSource.count*70 + pictureDataSource.count*20 + 100), 80);
     overlayScrollview.contentSize = CGSizeMake(self.view.bounds.size.height, 10+titleLabel.bounds.size.height+10+seperatorImageView.bounds.size.height+10+descriptionLabel.bounds.size.height+10+picturesScrollView.bounds.size.height+30);
+
+    
 }
-
-
 
 //*************** Method To Call ABCWaterSites API
 
@@ -264,7 +307,7 @@
     isFetchingImages = NO;
     isFetchingPOI = NO;
     isUploadingImage = YES;
-
+    
     
     appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
@@ -278,17 +321,17 @@
     
     [parameters addObject:@"ABCPOIImage.ABCPOIID"];
     [values addObject:[NSString stringWithFormat:@"%ld",poiID]];
-
+    
     
     [parameters addObject:@"ABCPOIImage.Type"];
     [values addObject:[NSString stringWithFormat:@"%ld",poiType]];
-
+    
     [parameters addObject:@"ABCPOIImage.UserProfileID"];
-    [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ID"]];
-
+    [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userID"]];
+    
     [parameters addObject:@"ABCPOIImage.UserProfileName"];
-    [values addObject:[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"]];
-
+    [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"]];
+    
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,ABC_WATERS_UPLOAD_USER_IMAGE]];
 }
 
@@ -648,8 +691,6 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     appDelegate.IS_ARVIEW_CUSTOM_LABEL = YES;
     
-    // Temp data set
-    pictureDataSource = [[NSArray alloc] initWithObjects:@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10", nil];
     
     _locations = [[NSArray alloc] init];
     
@@ -718,7 +759,7 @@
     [self.view addSubview:imageUploadOptionsTable];
     
     imageUploadOptionsTable.transform = rotationTransform;
-
+    
     
     [self fetchABCWaterSitePOI];
 }
@@ -732,7 +773,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     //    [self generateGeoLocations];
-    self.navigationController.navigationBar.hidden = YES;
+    [self.navigationController setNavigationBarHidden:YES];
     
     // Disable iOS 7 back gesture
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {

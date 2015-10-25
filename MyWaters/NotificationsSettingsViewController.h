@@ -20,8 +20,8 @@
     
     
     BOOL isGeneralNotification,isFloodAlerts,isSystemNotifications;
-    BOOL isFloodAlertsTurningOn,isFloodAlertsTurningOff;
-    BOOL isFloodAlertOff;
+    BOOL isFloodAlertsTurningOn,isFloodAlertsTurningOff,isGeneralNotificationsTurningOff,isGeneralNotificationsTurningOn;
+    BOOL isFloodAlertOff,isGeneralNotificationOff;
 }
 @property (nonatomic, strong) UISwitch *generalNotificationSwitch,*floodAlertsSwitch,*systemNotificationSwitch;
 

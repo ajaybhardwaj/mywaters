@@ -57,6 +57,35 @@
 }
 
 
+
+//*************** Method To Register User For Flood Alerts
+
+- (void) registerForGeneralNotifications:(id) sender {
+    
+    isGeneralNotification = YES;
+    isSystemNotifications = NO;
+    isFloodAlerts = NO;
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    NSArray *parameters,*values;
+    if (isGeneralNotificationOff) {
+        isGeneralNotificationsTurningOff = YES;
+        isGeneralNotificationsTurningOn = NO;
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"4", @"2", nil];
+    }
+    else {
+        isGeneralNotificationsTurningOff = NO;
+        isGeneralNotificationsTurningOn = YES;
+        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
+        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"4", @"1", nil];
+    }
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
+}
+
+
+
 # pragma mark - ASIHTTPRequestDelegate Methods
 
 - (void) requestFinished:(ASIHTTPRequest *)request {
@@ -79,6 +108,16 @@
                 [prefs setValue:@"YES" forKey:@"floodAlert"];
             }
         }
+        else if (isGeneralNotification) {
+            if (isGeneralNotificationsTurningOff) {
+                isGeneralNotification = NO;
+                [prefs setValue:@"NO" forKey:@"generalNotifications"];
+            }
+            else if (isGeneralNotificationsTurningOn) {
+                isGeneralNotificationOff = YES;
+                [prefs setValue:@"YES" forKey:@"generalNotifications"];
+            }
+        }
         
         [prefs synchronize];
         [notificationSettingsTable reloadData];
@@ -86,6 +125,9 @@
     else {
         if (isFloodAlerts) {
             [floodAlertsSwitch setOn:NO];
+        }
+        if (isGeneralNotification) {
+            [generalNotificationSwitch setOn:NO];
         }
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
@@ -149,16 +191,24 @@
     if (indexPath.row==0) {
         
         generalNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
-        [generalNotificationSwitch addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
+        generalNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"generalNotifications"] isEqualToString:@"YES"]) {
+            [generalNotificationSwitch setOn:YES];
+            isGeneralNotificationOff = YES;
+        }
+        else {
+            [generalNotificationSwitch setOn:NO];
+            isGeneralNotificationOff = NO;
+        }
+        [generalNotificationSwitch addTarget:self action:@selector(registerForGeneralNotifications:) forControlEvents:UIControlEventValueChanged];
         cell.accessoryView = generalNotificationSwitch;
         
         cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
     else if (indexPath.row==1) {
         
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         floodAlertsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
-        if ([[prefs stringForKey:@"floodAlert"] isEqualToString:@"YES"]) {
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"floodAlert"] isEqualToString:@"YES"]) {
             [floodAlertsSwitch setOn:YES];
             isFloodAlertOff = YES;
         }

@@ -15,6 +15,7 @@
 #import "PointsViewController.h"
 #import "PhotosViewController.h"
 #import "GalleryViewController.h"
+#import "AKETooltip.h"
 
 @interface ProfileViewController : UIViewController <UITabBarControllerDelegate,UITableViewDataSource,UITableViewDelegate> {
     
@@ -46,6 +47,8 @@
     //===== Points Controls
     UITableView *pointsTableView;
     NSMutableArray *pointsDataSource;
+    
+    NSString *pointsValue;
     
     //===== Photos Controls
     UIView *photosBackgroundView;

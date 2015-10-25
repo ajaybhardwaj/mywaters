@@ -13,6 +13,7 @@
 #import "QuickMapAnnotations.h"
 #import "DirectionViewController.h"
 #import "SMSSubscriptionViewController.h"
+#import "QuickMapViewController.h"
 
 @interface WaterLevelSensorsDetailViewController : UIViewController <MKMapViewDelegate,UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate> {
     
@@ -39,7 +40,7 @@
     
     UITableView *wlsListingTable;
     
-    UIButton *notifiyButton;
+    UIButton *notifiyButton,*unsubscribeButton;
     
     QuickMapAnnotations *annotation1;
     
@@ -59,6 +60,11 @@
     UIBarButtonItem *cancelBarButton,*doneBarButton,*flexibleSpace;
     UIView *dropDownBg;
     NSInteger pickerSelectedIndex;
+    
+    UITableView *searchTableView;
+    NSMutableArray *filterDataSource;
+    BOOL isFiltered;
+    UISearchBar *listinSearchBar;
 }
 
 @property (nonatomic, assign) NSInteger drainDepthType;

@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.iapps.pubenterprise</string>
+	<string>com.iapps.pubdevelopment</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -116,7 +116,6 @@
 	</dict>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>fbauth2</string>
 		<string>fbapi</string>
 		<string>fbapi20140410</string>
 		<string>fbapi20140116</string>
@@ -125,6 +124,8 @@
 		<string>fbapi20130702</string>
 		<string>fbapi20130410</string>
 		<string>fbshareextension</string>
+		<string>fbauth</string>
+		<string>fbauth2</string>
 	</array>
 </dict>
 </plist>

@@ -16,6 +16,7 @@
     
     UIActivityIndicatorView *loadingIndicator;
 }
-@property (nonatomic, strong) NSString *webUrl,*headerTitle;
+@property (nonatomic, strong) NSString *webUrl,*headerTitle,*termsConditionsHTML;
+@property (nonatomic, assign) BOOL isShowingTermsAndConditions;
 
 @end

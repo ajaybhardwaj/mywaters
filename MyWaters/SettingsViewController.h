@@ -11,6 +11,7 @@
 #import "DashboardSettingsViewController.h"
 #import "NotificationsSettingsViewController.h"
 #import "AboutMyWatersViewController.h"
+#import "WebViewUrlViewController.h"
 
 @interface SettingsViewController : UIViewController <UITableViewDelegate,UITableViewDataSource> {
     

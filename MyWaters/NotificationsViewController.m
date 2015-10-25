@@ -15,7 +15,7 @@
 @end
 
 @implementation NotificationsViewController
-
+@synthesize player;
 
 
 //*************** Method To Open Side Menu
@@ -27,6 +27,29 @@
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
 }
 
+
+
+//*************** Method For Pull To Refresh
+
+- (void) pullToRefreshTable {
+    
+    // Reload table data
+    [notificationsTable reloadData];
+    
+    // End the refreshing
+    if (self.refreshControl) {
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm a"];
+        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+                                                                    forKey:NSForegroundColorAttributeName];
+        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        self.refreshControl.attributedTitle = attributedTitle;
+        
+        [self.refreshControl endRefreshing];
+    }
+}
 
 
 //*************** Method To Toggle Notifications Reading
@@ -73,6 +96,61 @@
 }
 
 
+//*************** Method To Call ABCWaterSites API
+
+- (void) fetchNotificationListing {
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"pushtoken",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"7",@"12345",@"1.0", nil];
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+    
+    [self pullToRefreshTable];
+}
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    DebugLog(@"%@",responseString);
+    
+    selectedFilterIndex = -1;
+    [filterTableView reloadData];
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        NSArray *tempArray = [[responseString JSONValue] objectForKey:PUSH_NOTIFICATIONS_RESPONSE_NAME];
+        
+        if (tempArray.count==0) {
+            
+        }
+        else {
+            
+            [appDelegate.PUSH_NOTIFICATION_ARRAY removeAllObjects];
+            [appDelegate.PUSH_NOTIFICATION_ARRAY setArray:tempArray];
+            [tableDataSource setArray:tempArray];
+        }
+        
+        [appDelegate.hud hide:YES];
+        [notificationsTable reloadData];
+        [self.refreshControl endRefreshing];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    DebugLog(@"%@",[error description]);
+    
+    [appDelegate.hud hide:YES];
+}
+
 # pragma mark - UITableViewDelegate Methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -81,7 +159,28 @@
         return 40.0f;
     }
     else if (tableView==notificationsTable) {
-        return 80.0f;
+        
+        float titleHeight = 0.0;
+        float dateHeight = 0.0;
+        int subtractComponent = 0;
+        
+        
+        if ([[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"] != (id)[NSNull null]) {
+            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:notificationsTable.bounds.size.width-80];
+            subtractComponent = subtractComponent + 30;
+        }
+        
+        if ([[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"] != (id)[NSNull null]) {
+            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:notificationsTable.bounds.size.width-80];
+            subtractComponent = subtractComponent + 30;
+        }
+        
+        if ((titleHeight+dateHeight) < 80) {
+            return 80.0f;
+        }
+        
+        return titleHeight+dateHeight-subtractComponent;
+        
     }
     
     return 0;
@@ -93,20 +192,84 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (tableView==filterTableView) {
+        
         selectedFilterIndex = indexPath.row;
+        
+        if (indexPath.row==0) {
+            
+            [tableDataSource removeAllObjects];
+            for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
+                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 2) {
+                    [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
+                }
+            }
+        }
+        else if (indexPath.row==1) {
+            
+            [tableDataSource removeAllObjects];
+            for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
+                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 3) {
+                    [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
+                }
+            }
+        }
+        else if (indexPath.row==2) {
+            
+            [tableDataSource removeAllObjects];
+            for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
+                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 4) {
+                    [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
+                }
+            }
+        }
+        else if (indexPath.row==3) {
+            
+            [tableDataSource removeAllObjects];
+            for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
+                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 5) {
+                    [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
+                }
+            }
+        }
+        
         [filterTableView reloadData];
         [self animateFilterTable];
+        
+        [notificationsTable reloadData];
+        
     }
     else {
         if (canReadNotifications) {
             
-            DebugLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
+            currentIndex = indexPath.row;
             
-            //    if (self.synthesizer.speaking == NO) {
-            AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:[tableDataSource objectAtIndex:indexPath.row]];
-            utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
-            AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
-            [synth speakUtterance:utterance];
+            //            DebugLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
+            //
+            //            //    if (self.synthesizer.speaking == NO) {
+            //            AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Message"]];
+            //            utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
+            //            AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
+            //            [synth speakUtterance:utterance];
+            
+            DebugLog(@"%@",[NSString stringWithFormat:@"%@FloodVoice/%d.mp3",IMAGE_BASE_URL,[[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] intValue]]);
+            
+            NSData *fetchedData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@FloodVoice/%d.mp3",IMAGE_BASE_URL,[[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"] intValue]]]];
+            
+            if (currentIndex!=previousIndex) {
+                
+                previousIndex = currentIndex;
+                
+                player = [[AVAudioPlayer alloc] initWithData:fetchedData error:nil];
+                player.delegate = self;
+                [player prepareToPlay];
+                [player play];
+                
+            }
+            else {
+                [player pause];
+                player = nil;
+                
+            }
         }
     }
 }
@@ -155,45 +318,70 @@
     }
     else if (tableView==notificationsTable) {
         
-        UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 50, 50)];
+        float height = [self tableView:tableView heightForRowAtIndexPath:indexPath];
+        
+        UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
         // ***** Temp Code For DEmo Only
-        if (indexPath.row==0) {
+        if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Type"] intValue]==1) {
             [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_announcements_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         }
-        else if (indexPath.row==1) {
+        else if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Type"] intValue]==2) {
+            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_events_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        }
+        else if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Type"] intValue]==3) {
+            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_heavyrain_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        }
+        else if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Type"] intValue]==4) {
             [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         }
-        else if (indexPath.row==2) {
-            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_heavyrain_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        else if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Type"] intValue]==5) {
+            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_iAlerts_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         }
         [cell.contentView addSubview:cellImageView];
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, notificationsTable.bounds.size.width-80, 40)];
-        //        titleLabel.text = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationTitle"];
-        titleLabel.text = [tableDataSource objectAtIndex:indexPath.row];
+        titleLabel.text = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.numberOfLines = 0;
+        
+        CGRect newTitleLabelLabelFrame = titleLabel.frame;
+        newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"]] font:titleLabel.font withinWidth:notificationsTable.bounds.size.width-80];//expectedDescriptionLabelSize.height;
+        titleLabel.frame = newTitleLabelLabelFrame;
         [cell.contentView addSubview:titleLabel];
+        [titleLabel sizeToFit];
         
         
         UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 60, notificationsTable.bounds.size.width-80, 20)];
-        //        dateLabel = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"];
-        dateLabel.text = @"Monday, 27 March 2015 @ 8:13 AM";
+        dateLabel.text = [CommonFunctions dateTimeFromString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"]];
         dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         dateLabel.backgroundColor = [UIColor clearColor];
         dateLabel.textColor = [UIColor lightGrayColor];
         dateLabel.numberOfLines = 0;
         dateLabel.textAlignment = NSTextAlignmentRight;
+        
+        CGRect newDateLabelLabelFrame = dateLabel.frame;
+        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[CommonFunctions dateTimeFromString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"]] font:dateLabel.font withinWidth:notificationsTable.bounds.size.width-80];//expectedDescriptionLabelSize.height;
+        dateLabel.frame = newDateLabelLabelFrame;
         [cell.contentView addSubview:dateLabel];
+        [dateLabel sizeToFit];
         
-        
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, notificationsTable.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, height-1, notificationsTable.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
     }
     
     return cell;
+}
+
+
+# pragma mark - AVAudioPlayerDelegate Methods
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
+    
+    if (flag) {
+        previousIndex = -1;
+    }
 }
 
 
@@ -207,7 +395,10 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     self.view.backgroundColor = RGB(247, 247, 247);
     
+    selectedFilterIndex = -1;
     canReadNotifications = YES;
+    currentIndex = 0;
+    previousIndex = -1;
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
@@ -246,7 +437,7 @@
     notificationsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
-    tableDataSource = [[NSArray alloc] initWithObjects:@"Sg Pandan Kechil (West Coast Highway): Water level falls below 75%. Moderate Flood Risk.",@"Sg Pandan Kechil (West Coast Highway): Water level rises above 75%. Moderate Flood Risk.",@"N E A: Moderate to heavy thundery showers & gusty winds expected over north, east & central SG btwn 14:30 to 15:30 hrs. Issued 13:48hrs.", nil];
+    tableDataSource = [[NSMutableArray alloc] init];
     
     
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -456, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
@@ -257,16 +448,30 @@
     filterTableView.backgroundView = nil;
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     filterTableView.alpha = 0.8;
+    filterTableView.scrollEnabled = NO;
+    filterTableView.alwaysBounceVertical = NO;
+    
     
     //    filtersArray = [[NSArray alloc] initWithObjects:@"Announcements",@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
-    filtersArray = [[NSArray alloc] initWithObjects:@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
+    filtersArray = [[NSArray alloc] initWithObjects:@"Events",@"Heavy Rain",@"Flood",@"iAlerts", nil];
     
+    
+    // Initialize the refresh control.
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor whiteColor];
+    self.refreshControl.tintColor = [UIColor blackColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(fetchNotificationListing)
+                  forControlEvents:UIControlEventValueChanged];
+    [notificationsTable addSubview:self.refreshControl];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
+    
+    [self fetchNotificationListing];
     
 }
 

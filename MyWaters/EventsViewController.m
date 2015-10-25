@@ -18,6 +18,40 @@
 @synthesize isNotEventController;
 
 
+
+
+//*************** Method For Pull To Refresh
+
+- (void) pullToRefreshTable {
+    
+    // Reload table data
+    [eventsListingTableView reloadData];
+    
+    // End the refreshing
+    if (self.refreshControl) {
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm a"];
+        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+                                                                    forKey:NSForegroundColorAttributeName];
+        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        self.refreshControl.attributedTitle = attributedTitle;
+        
+        [self.refreshControl endRefreshing];
+    }
+}
+
+
+//*************** Method For Saving ABC Water Sites Data
+
+- (void) saveEventsData {
+    
+    [appDelegate insertEventsData:appDelegate.EVENTS_LISTING_ARRAY];
+}
+
+
+
 //*************** Method To Animate Search Bar
 
 - (void) animateSearchBar {
@@ -105,9 +139,18 @@
 
 - (void) fetchEventsListing {
     
-        NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
-        NSArray *values = [[NSArray alloc] initWithObjects:@"3",[NSString stringWithFormat:@"%ld",eventsSortOrder],@"1.0", nil];
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"3",[prefs stringForKey:@"device_token"],@"1.0", nil];
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+    
+    [self pullToRefreshTable];
 }
 
 
@@ -225,57 +268,60 @@
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         NSArray *tempArray = [[responseString JSONValue] objectForKey:EVENTS_RESPONSE_NAME];
-//        eventsTotalCount = [[[responseString JSONValue] objectForKey:EVENTS_TOTAL_COUNT] intValue];
+        //        eventsTotalCount = [[[responseString JSONValue] objectForKey:EVENTS_TOTAL_COUNT] intValue];
         
-            if (tempArray.count==0) {
-//                eventsPageCount = 0;
+        if (tempArray.count==0) {
+            //                eventsPageCount = 0;
+        }
+        else {
+            //                eventsPageCount = eventsPageCount + 1;
+            
+            if (appDelegate.EVENTS_LISTING_ARRAY.count!=0)
+                [appDelegate.EVENTS_LISTING_ARRAY removeAllObjects];
+            
+            [appDelegate.EVENTS_LISTING_ARRAY setArray:tempArray];
+            
+            CLLocationCoordinate2D currentLocation;
+            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+            
+            
+            for (int idx = 0; idx<[appDelegate.EVENTS_LISTING_ARRAY count];idx++) {
+                
+                NSMutableDictionary *dict = [appDelegate.EVENTS_LISTING_ARRAY[idx] mutableCopy];
+                
+                CLLocationCoordinate2D desinationLocation;
+                desinationLocation.latitude = [dict[@"locationLatitude"] doubleValue];
+                desinationLocation.longitude = [dict[@"locationLongitude"] doubleValue];
+                
+                
+                dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                appDelegate.EVENTS_LISTING_ARRAY[idx] = dict;
+                
             }
-            else {
-//                eventsPageCount = eventsPageCount + 1;
+            
+            
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,sortByName,sortByDistance,nil]];
+            if (appDelegate.EVENTS_LISTING_ARRAY.count!=0)
+                [self performSelectorInBackground:@selector(saveEventsData) withObject:nil];
 
-                if (appDelegate.EVENTS_LISTING_ARRAY.count!=0)
-                    [appDelegate.EVENTS_LISTING_ARRAY removeAllObjects];
-                
-                    [appDelegate.EVENTS_LISTING_ARRAY setArray:tempArray];
-                
-                CLLocationCoordinate2D currentLocation;
-                currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
-                currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
-                
-                
-                for (int idx = 0; idx<[appDelegate.EVENTS_LISTING_ARRAY count];idx++) {
-                    
-                    NSMutableDictionary *dict = [appDelegate.EVENTS_LISTING_ARRAY[idx] mutableCopy];
-                    
-                    CLLocationCoordinate2D desinationLocation;
-                    desinationLocation.latitude = [dict[@"locationLatitude"] doubleValue];
-                    desinationLocation.longitude = [dict[@"locationLongitude"] doubleValue];
-                    
-                    
-                    dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
-                    appDelegate.EVENTS_LISTING_ARRAY[idx] = dict;
-                    
-                }
-                
-                
-                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-                NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
-                NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-                    float v1 = [left floatValue];
-                    float v2 = [right floatValue];
-                    if (v1 < v2)
-                        return NSOrderedAscending;
-                    else if (v1 > v2)
-                        return NSOrderedDescending;
-                    else
-                        return NSOrderedSame;
-                }];
-                
-                [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,sortByName,sortByDistance,nil]];
-                
-        
-        [appDelegate.hud hide:YES];
-        [eventsListingTableView reloadData];
+            
+            [appDelegate.hud hide:YES];
+            [eventsListingTableView reloadData];
+            [self.refreshControl endRefreshing];
 
         }
     }
@@ -288,7 +334,7 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-//    eventsPageCount = -1;
+    //    eventsPageCount = -1;
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
     [appDelegate.hud hide:YES];
 }
@@ -310,7 +356,7 @@
 
 
 //-(void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-//    
+//
 //    if ([indexPath row] == appDelegate.EVENTS_LISTING_ARRAY.count - 1) {
 //        if (appDelegate.EVENTS_LISTING_ARRAY.count!=eventsTotalCount) {
 //
@@ -323,10 +369,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    if (isShowingSearchBar) {
-//        [self animateSearchBar];
-//        return;
-//    }
+    //    if (isShowingSearchBar) {
+    //        [self animateSearchBar];
+    //        return;
+    //    }
     
     if (tableView==filterTableView) {
         
@@ -387,7 +433,7 @@
         [filterTableView reloadData];
         [eventsListingTableView reloadData];
         [eventsListingTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
-
+        
     }
     else if (tableView==eventsListingTableView) {
         
@@ -405,10 +451,10 @@
                 viewObj.eventID = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"id"];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
-            viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"];
+                viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
-            viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
+                viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
                 viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
@@ -417,10 +463,10 @@
                 viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
-            viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+                viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
-            viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"location"];
+                viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"location"];
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
                 viewObj.startDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"];
@@ -436,30 +482,34 @@
                 viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
                 viewObj.imageName = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"];
             }
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
+                viewObj.isSubscribed = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+
         }
         else {
-
+            
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
                 viewObj.eventID = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"];
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
-            viewObj.titleString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"];
+                viewObj.titleString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"];
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
-            viewObj.descriptionString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
+                viewObj.descriptionString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-            viewObj.latValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+                viewObj.latValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-            viewObj.longValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+                viewObj.longValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
-            viewObj.phoneNoString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+                viewObj.phoneNoString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
-            viewObj.addressString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"];
-
+                viewObj.addressString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"];
+            
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
                 viewObj.startDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"];
                 viewObj.startDateString = [CommonFunctions dateTimeFromString:viewObj.startDateString];
@@ -474,6 +524,10 @@
                 viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
                 viewObj.imageName = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
             }
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
+                viewObj.isSubscribed = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+
         }
         
         [self.navigationController pushViewController:viewObj animated:YES];
@@ -504,15 +558,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-//    UITableViewCell *cell;
+    //    UITableViewCell *cell;
     
     if (tableView==filterTableView) {
-    
-//        cell = [tableView dequeueReusableCellWithIdentifier:@"filterCells"];
-//        
-//        if (cell==nil) {
-//            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"filterCells"];
-//        }
+        
+        //        cell = [tableView dequeueReusableCellWithIdentifier:@"filterCells"];
+        //
+        //        if (cell==nil) {
+        //            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"filterCells"];
+        //        }
         
         cell.backgroundColor = [UIColor blackColor];//RGB(247, 247, 247);
         
@@ -534,11 +588,11 @@
     }
     else if (tableView==eventsListingTableView) {
         
-//        cell = [tableView dequeueReusableCellWithIdentifier:@"eventCells"];
-//        
-//        if (cell==nil) {
-//            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"eventCells"];
-//        }
+        //        cell = [tableView dequeueReusableCellWithIdentifier:@"eventCells"];
+        //
+        //        if (cell==nil) {
+        //            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"eventCells"];
+        //        }
         
         UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 80, 80)];
         
@@ -562,7 +616,7 @@
         
         if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
             if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
-            cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
         }
         
         else {
@@ -603,7 +657,7 @@
                 [activityIndicator stopAnimating];
             }];
         }
-
+        
         
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, eventsListingTableView.bounds.size.width-100, 40)];
@@ -639,7 +693,7 @@
         startDateLabel.textColor = [UIColor darkGrayColor];
         [cell.contentView addSubview:startDateLabel];
         [startDateLabel sizeToFit];
-
+        
         
         UILabel *endDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 70, eventsListingTableView.bounds.size.width-100, 20)];
         endDateLabel.text = [NSString stringWithFormat:@"End: %@",endDateString];
@@ -649,7 +703,7 @@
         endDateLabel.textAlignment = NSTextAlignmentLeft;
         [cell.contentView addSubview:endDateLabel];
         [endDateLabel sizeToFit];
-
+        
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
@@ -721,6 +775,9 @@
     filterTableView.backgroundView = nil;
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     filterTableView.alpha = 0.8;
+    filterTableView.scrollEnabled = NO;
+    filterTableView.alwaysBounceVertical = NO;
+
     
     filtersArray = [[NSArray alloc] initWithObjects:@"Date",@"Name",@"Distance", nil];
     filteredDataSource = [[NSMutableArray alloc] init];
@@ -751,11 +808,15 @@
     }
     
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
-
-    [self fetchEventsListing];
+    // Initialize the refresh control.
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor whiteColor];
+    self.refreshControl.tintColor = [UIColor blackColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(fetchEventsListing)
+                  forControlEvents:UIControlEventValueChanged];
+    [eventsListingTableView addSubview:self.refreshControl];
+    
 }
 
 
@@ -783,6 +844,8 @@
     //        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     //
     //    }
+    [self fetchEventsListing];
+
 }
 
 

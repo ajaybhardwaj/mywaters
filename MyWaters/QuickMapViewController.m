@@ -10,7 +10,11 @@
 #import "ViewControllerHelper.h"
 
 
-@interface QuickMapViewController ()
+@interface QuickMapViewController () {
+
+    MKPolyline *_routeOverlay;
+    MKRoute *_currentRoute;
+}
 
 @end
 
@@ -19,7 +23,48 @@
 @synthesize mapOverlay = _mapOverlay;
 @synthesize mapOverlayView = _mapOverlayView;
 
+@synthesize quickMap;
+@synthesize destinationLat,destinationLong,isShowingRoute;
 
+
+
+
+//*************** Method For Saving ABC Water Sites Data
+
+- (void) saveWLSData {
+    
+    [appDelegate insertWLSData:appDelegate.WLS_LISTING_ARRAY];
+}
+
+
+//*************** Method For Saving ABC Water Sites Data
+
+- (void) saveCCTVData {
+    
+    [appDelegate insertCCTVData:appDelegate.CCTV_LISTING_ARRAY];
+}
+
+//*************** Method To Handle Long Press Gesture For Default Location PIN
+
+- (void) handleLongPress:(UIGestureRecognizer *)gestureRecognizer {
+    
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
+        return;
+    
+    CGPoint touchPoint = [gestureRecognizer locationInView:quickMap];
+    CLLocationCoordinate2D touchMapCoordinate = [quickMap convertPoint:touchPoint toCoordinateFromView:quickMap];
+    
+    longPressLocationAnnotation = [[QuickMapAnnotations alloc] init];
+    longPressLocationAnnotation.coordinate = touchMapCoordinate;
+    
+    [quickMap addAnnotation:longPressLocationAnnotation];
+    [quickMap selectAnnotation:longPressLocationAnnotation animated:YES];
+    
+    UserFloodSubmissionViewController *viewObj = [[UserFloodSubmissionViewController alloc] init];
+    viewObj.floodSubmissionLat = longPressLocationAnnotation.coordinate.latitude;
+    viewObj.floodSubmissionLon = longPressLocationAnnotation.coordinate.longitude;
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
 
 
 //*************** Method For Zooming In To User Location
@@ -898,6 +943,67 @@
 }
 
 
+
+#pragma mark - Utility Methods
+- (void)plotRouteOnMap:(MKRoute *)route
+{
+    if(_routeOverlay) {
+        [quickMap removeOverlay:_routeOverlay];
+    }
+    
+    // Update the ivar
+    _routeOverlay = route.polyline;
+    
+    // Add it to the map
+    [quickMap addOverlay:_routeOverlay];
+    
+}
+
+
+//*************** Method To Request Apple Server For Route
+
+- (void) sendRouteRequest {
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+    
+    CLLocationCoordinate2D destinationCoords = CLLocationCoordinate2DMake(destinationLat,destinationLong);
+    MKPlacemark *destinationPlacemark = [[MKPlacemark alloc] initWithCoordinate:destinationCoords addressDictionary:nil];
+    MKMapItem *destination = [[MKMapItem alloc] initWithPlacemark:destinationPlacemark];
+    
+    MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
+    [request setSource:[MKMapItem mapItemForCurrentLocation]];
+    [request setDestination:destination];
+    [request setTransportType:MKDirectionsTransportTypeAny]; // This can be limited to automobile and walking directions.
+    [request setRequestsAlternateRoutes:YES]; // Gives you several route options.
+    
+    MKDirections *directions = [[MKDirections alloc] initWithRequest:request];
+    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+        if (!error) {
+            
+            _currentRoute = [response.routes firstObject];
+            [self plotRouteOnMap:_currentRoute];
+            
+            //            self.navigationItem.rightBarButtonItem = routesButton;
+            //            [stepsTableView reloadData];
+            [appDelegate.hud hide:YES];
+            
+            //            for (MKRoute *route in [response routes]) {
+            //                [directionMapView addOverlay:[route polyline] level:MKOverlayLevelAboveRoads]; // Draws the route above roads, but below labels.
+            //                // You can also get turn-by-turn steps, distance, advisory notices, ETA, etc by accessing various route properties.
+            //
+            //                [appDelegate.hud hide:YES];
+            //            }
+        }
+    }];
+    
+}
+
+
+
+
+
 # pragma mark - ASIHTTPRequestDelegate Methods
 
 - (void) requestFinished:(ASIHTTPRequest *)request {
@@ -914,7 +1020,52 @@
             if (tempArray.count!=0) {
                 [appDelegate.CCTV_LISTING_ARRAY removeAllObjects];
                 [appDelegate.CCTV_LISTING_ARRAY setArray:tempArray];
+                
+                CLLocationCoordinate2D currentLocation;
+                currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+                currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+                
+                DebugLog(@"%f---%f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
+                DebugLog(@"%f---%f",currentLocation.latitude,currentLocation.longitude);
+                
+                for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY count];idx++) {
+                    
+                    NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY[idx] mutableCopy];
+                    
+                    CLLocationCoordinate2D desinationLocation;
+                    desinationLocation.latitude = [dict[@"Lat"] doubleValue];
+                    desinationLocation.longitude = [dict[@"Lon"] doubleValue];
+                    
+                    DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+                    
+                    dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                    appDelegate.CCTV_LISTING_ARRAY[idx] = dict;
+                    
+                }
+                
+                DebugLog(@"%@",appDelegate.CCTV_LISTING_ARRAY);
+                
+                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
+                NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                    float v1 = [left floatValue];
+                    float v2 = [right floatValue];
+                    if (v1 < v2)
+                        return NSOrderedAscending;
+                    else if (v1 > v2)
+                        return NSOrderedDescending;
+                    else
+                        return NSOrderedSame;
+                }];
+                
+                [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+                
                 [self generateCCTVAnnotations];
+                if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
+                    [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
+
+            }
+            else {
+                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -924,7 +1075,53 @@
             if (tempArray.count!=0) {
                 [appDelegate.WLS_LISTING_ARRAY removeAllObjects];
                 [appDelegate.WLS_LISTING_ARRAY setArray:tempArray];
+                
+                CLLocationCoordinate2D currentLocation;
+                currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+                currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+                
+                DebugLog(@"%f---%f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
+                DebugLog(@"%f---%f",currentLocation.latitude,currentLocation.longitude);
+                
+                for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY count];idx++) {
+                    
+                    NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY[idx] mutableCopy];
+                    
+                    CLLocationCoordinate2D desinationLocation;
+                    desinationLocation.latitude = [dict[@"latitude"] doubleValue];
+                    desinationLocation.longitude = [dict[@"longitude"] doubleValue];
+                    
+                    DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+                    
+                    dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                    appDelegate.WLS_LISTING_ARRAY[idx] = dict;
+                    
+                }
+                
+                DebugLog(@"%@",appDelegate.WLS_LISTING_ARRAY);
+                
+                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+                NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                    float v1 = [left floatValue];
+                    float v2 = [right floatValue];
+                    if (v1 < v2)
+                        return NSOrderedAscending;
+                    else if (v1 > v2)
+                        return NSOrderedDescending;
+                    else
+                        return NSOrderedSame;
+                }];
+                
+                [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+                
                 [self generateWLSAnnotations];
+                
+                if (appDelegate.WLS_LISTING_ARRAY.count!=0)
+                    [self performSelectorInBackground:@selector(saveWLSData) withObject:nil];
+
+            }
+            else {
+                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -935,6 +1132,17 @@
                 [appDelegate.USER_FLOOD_SUBMISSION_ARRAY removeAllObjects];
                 [appDelegate.USER_FLOOD_SUBMISSION_ARRAY setArray:tempArray];
                 [self generateUserFloodSubmissionAnnotations];
+
+                if (!appDelegate.IS_SKIPPING_USER_LOGIN)
+                    [CommonFunctions showAlertView:nil title:nil msg:@"To submit flood information, long press on map to drop pin." cancel:@"OK" otherButton:nil];
+
+            }
+            else {
+                if (!appDelegate.IS_SKIPPING_USER_LOGIN)
+                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No data available.\nTo submit flood information, long press on map to drop pin."] cancel:@"OK" otherButton:nil];
+                else
+                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No data available."] cancel:@"OK" otherButton:nil];
+//                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -945,6 +1153,9 @@
                 [appDelegate.PUB_FLOOD_SUBMISSION_ARRAY removeAllObjects];
                 [appDelegate.PUB_FLOOD_SUBMISSION_ARRAY setArray:tempArray];
                 [self generatePUBFloodSubmissionAnnotations];
+            }
+            else {
+                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -1038,36 +1249,39 @@
 
 
 
+
 # pragma mark - MKMapViewDelegate Methods
 
 
-//- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
-//
-//    [quickMap setRegion:MKCoordinateRegionMake(userLocation.coordinate, MKCoordinateSpanMake(0.1f, 0.1f)) animated:YES];
-//}
+# pragma mark - MKMapViewDelegate Methods
 
-//- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
-//
-//    MapOverlay *mapOverlay = (MapOverlay*)overlay;
-//    MapOverlayView *mapOverlayView = [[MapOverlayView alloc] initWithOverlay:mapOverlay];
-//
-//    return mapOverlayView;
-//
-////    MapOverlayView *mapOverlayView;
-////    if([overlay isKindOfClass:[MapOverlay class]]) {
-////        MapOverlay *mapOverlay = overlay;
-////        if(!mapOverlayView) {
-////            mapOverlayView = [[MapOverlayView alloc] initWithOverlay:mapOverlay];
-////            UIImageView *imgV =[[UIImageView alloc] init];
-////            [imgV setContentMode:UIViewContentModeCenter];
-////            [imgV setFrame:CGRectMake(0, 0, mapOverlayView.frame.size.width, mapOverlayView.frame.size.height)];
-////            [imgV setCenter:mapOverlayView.center];
-////            [mapOverlayView addSubview:imgV];
-////        }
-////    }
-////    return mapOverlayView;
-//
-//}
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
+    
+    if ([overlay isKindOfClass:[MKPolyline class]]) {
+        
+        MKPolylineRenderer *renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
+        [renderer setStrokeColor:[UIColor blueColor]];
+        [renderer setLineWidth:5.0];
+        return renderer;
+    }
+    
+    else if([overlay isKindOfClass:[MapOverlay class]]) {
+        
+        MapOverlay *mapOverlay = overlay;
+        
+        if(!self.mapOverlayView) {
+            self.mapOverlayView = [[MapOverlayView alloc] initWithOverlay:mapOverlay];
+            UIImageView *imgV =[[UIImageView alloc] init];
+            [imgV setContentMode:UIViewContentModeCenter];
+            [imgV setFrame:CGRectMake(0, 0, self.mapOverlayView.frame.size.width, self.mapOverlayView.frame.size.height)];
+            [imgV setCenter:self.mapOverlayView.center];
+            [self.mapOverlayView addSubview:imgV];
+        }
+        return self.mapOverlayView;
+    }
+    
+    return nil;
+}
 
 
 -(MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id)overlay {
@@ -1084,8 +1298,10 @@
             [imgV setCenter:self.mapOverlayView.center];
             [self.mapOverlayView addSubview:imgV];
         }
+        return self.mapOverlayView;
     }
-    return self.mapOverlayView;
+    
+    return nil;
 }
 
 
@@ -1093,6 +1309,18 @@
 -(MKAnnotationView *)mapView:(MKMapView *)mV viewForAnnotation:(id <MKAnnotation>)annotation {
     
     MKAnnotationView *pinView = nil;
+    
+    if (annotation==longPressLocationAnnotation) {
+        
+        pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:@"FEEDBACK"];
+        if ( pinView == nil )
+            pinView = [[MKAnnotationView alloc]
+                       initWithAnnotation:annotation reuseIdentifier:@"FEEDBACK"];
+        
+        
+        pinView.image = [UIImage imageNamed:@"icn_floodinfo_userfeedback_submission_small.png"];
+        return pinView;
+    }
     
     if(annotation != quickMap.userLocation) {
         
@@ -1164,14 +1392,10 @@
         
         pinView.tag = selectedAnnotationButton;
     }
+    
     else {
         
         return nil;
-        //        MKPinAnnotationView *userLocationPin = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinView"];
-        //        userLocationPin.pinColor = MKPinAnnotationColorRed;
-        //        userLocationPin.annotation = annotation;
-        //        userLocationPin.canShowCallout = YES;
-        //        [quickMap.userLocation setTitle:@"You are here..!!"];
     }
     return pinView;
 }
@@ -1179,6 +1403,14 @@
 
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    
+    if ([view.annotation isKindOfClass:[MKUserLocation class]]) {
+        
+        MKAnnotationView *av = [mapView viewForAnnotation:mapView.userLocation];
+        av.enabled = NO;
+        return;
+    }
+        
     
     QuickMapAnnotations *temp = (QuickMapAnnotations*)view.annotation;
     
@@ -1255,10 +1487,7 @@
         calloutView.layer.cornerRadius = 10.0f;
         calloutView.userInteractionEnabled = YES;
         
-        //        UIImageView *locationNameImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 20, 20)];
-        //        [locationNameImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_location_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        //        [calloutView addSubview:locationNameImageView];
-        
+
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 130, 50)];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.text = temp.annotationTitle;
@@ -1267,10 +1496,7 @@
         [calloutView addSubview:titleLabel];
         [titleLabel sizeToFit];
         
-        //        UIImageView *distanceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(7, titleLabel.frame.origin.y+titleLabel.bounds.size.height + 5, 20, 20)];
-        //        [distanceImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_distance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        //        [calloutView addSubview:distanceImageView];
-        
+
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 130, 40)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
         subTitleLabel.text = temp.annotationSubtitle;
@@ -1314,10 +1540,7 @@
         calloutView.layer.cornerRadius = 10.0f;
         calloutView.userInteractionEnabled = YES;
         
-        //        UIImageView *locationNameImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 20, 20)];
-        //        [locationNameImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_location_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        //        [calloutView addSubview:locationNameImageView];
-        
+
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 130, 50)];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.text = temp.annotationTitle;
@@ -1326,10 +1549,7 @@
         [calloutView addSubview:titleLabel];
         [titleLabel sizeToFit];
         
-        //        UIImageView *distanceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(7, titleLabel.frame.origin.y+titleLabel.bounds.size.height + 5, 20, 20)];
-        //        [distanceImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_distance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        //        [calloutView addSubview:distanceImageView];
-        
+
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 130, 40)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
         subTitleLabel.text = temp.annotationSubtitle;
@@ -1349,13 +1569,6 @@
                                   calloutView.frame.size.height);
         
         calloutView.frame = frame;
-        
-        
-        //        UIButton *overlayButon = [UIButton buttonWithType:UIButtonTypeCustom];
-        //        overlayButon.frame = CGRectMake(0, 0, calloutView.bounds.size.width, calloutView.bounds.size.height);
-        //        overlayButon.tag = temp.annotationTag;
-        //        [overlayButon addTarget:self action:@selector(handleWLSCalloutTap:) forControlEvents:UIControlEventTouchUpInside];
-        //        [calloutView addSubview:overlayButon];
         
         [quickMap addSubview:calloutView];
     }
@@ -1405,10 +1618,6 @@
         [calloutView addSubview:titleLabel];
         [titleLabel sizeToFit];
         
-        //        UIImageView *distanceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(7, titleLabel.frame.origin.y+titleLabel.bounds.size.height + 5, 20, 20)];
-        //        [distanceImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_distance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        //        [calloutView addSubview:distanceImageView];
-        
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 160, 40)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
         subTitleLabel.text = temp.annotationSubtitle;
@@ -1429,14 +1638,10 @@
         
         calloutView.frame = frame;
         
-        
-        //        UIButton *overlayButon = [UIButton buttonWithType:UIButtonTypeCustom];
-        //        overlayButon.frame = CGRectMake(0, 0, calloutView.bounds.size.width, calloutView.bounds.size.height);
-        //        overlayButon.tag = temp.annotationTag;
-        //        [overlayButon addTarget:self action:@selector(handleWLSCalloutTap:) forControlEvents:UIControlEventTouchUpInside];
-        //        [calloutView addSubview:overlayButon];
-        
         [quickMap addSubview:calloutView];
+    }
+    else {
+        
     }
 }
 
@@ -1457,50 +1662,6 @@
         [calloutView removeFromSuperview];
     }
 }
-
-
-//- (void) mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
-//
-//    NSInteger indexOfTheObject = [quickMap.annotations indexOfObject:view.annotation];
-//    DebugLog(@"Annotation Index %ld",indexOfTheObject);
-//
-//    CGSize  calloutSize = CGSizeMake(150.0, 80.0);
-//    UIView *calloutView = [[UIView alloc] initWithFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y-calloutSize.height, calloutSize.width, calloutSize.height)];
-//    calloutView.backgroundColor = [UIColor whiteColor];
-//
-//
-//    if (selectedAnnotationButton==1) {
-//
-//        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, calloutView.bounds.size.width-20, 36)];
-//        locationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
-//        locationLabel.backgroundColor = [UIColor clearColor];
-//        locationLabel.text = [floodTempArray objectAtIndex:(indexOfTheObject*3)];
-//        locationLabel.numberOfLines = 0;
-//        [calloutView addSubview:locationLabel];
-//
-//        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, locationLabel.frame.origin.y+locationLabel.bounds.size.height+3, calloutView.bounds.size.width-20, 30)];
-//        messageLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
-//        messageLabel.backgroundColor = [UIColor clearColor];
-//        messageLabel.text = [floodTempArray objectAtIndex:(indexOfTheObject*3)+1];
-//        messageLabel.numberOfLines = 0;
-//        [calloutView addSubview:messageLabel];
-//
-//        UILabel *timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, messageLabel.frame.origin.y+messageLabel.bounds.size.height+3, calloutView.bounds.size.width-20, 10)];
-//        timestampLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-//        timestampLabel.backgroundColor = [UIColor clearColor];
-//        timestampLabel.text = [NSString stringWithFormat:@"@ %@",[floodTempArray objectAtIndex:(indexOfTheObject*3)+2]];
-//        timestampLabel.numberOfLines = 0;
-//        [calloutView addSubview:timestampLabel];
-//    }
-//
-////    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-////    button.frame = CGRectMake(5.0, 5.0, calloutSize.width - 10.0, calloutSize.height - 10.0);
-////    [button setTitle:@"OK" forState:UIControlStateNormal];
-////    [button addTarget:self action:@selector(checkin) forControlEvents:UIControlEventTouchUpInside];
-////    [calloutView addSubview:button];
-//
-//    [view.superview addSubview:calloutView];
-//}
 
 
 # pragma mark - UPStackMenuDelegate Methods
@@ -1703,12 +1864,6 @@
             MKMapRect mapRect = MKMapRectMake(lowerLeft.x, upperRight.y, upperRight.x - lowerLeft.x, lowerLeft.y - upperRight.y);
             [quickMap setVisibleMapRect:mapRect animated:YES];
             
-            //            //Set Default location to zoom
-            //            CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(1.270414, 103.815994); //Create the CLLocation from user cordinates
-            //            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 2, 2); //Set zooming level
-            //            MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
-            //            [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
-            
             
             [rainMapStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
             
@@ -1755,6 +1910,11 @@
     //    [quickMap setBackgroundColor:[[UIColor clearColor] colorWithAlphaComponent:0.5]];
     //    quickMap.alpha = 0.5;
     
+    if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
+        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+        lpgr.minimumPressDuration = 1.0; //user needs to press for 2 seconds
+        [quickMap addGestureRecognizer:lpgr];
+    }
     
     isShowingFlood = NO;
     isShowingUserFeedback = NO;
@@ -1762,66 +1922,12 @@
     isShowingCamera = NO;
     isShowingDrain = NO;
     
-    //    //Set Default location to zoom
-    //    CLLocationCoordinate2D noLocation = CLLocationCoordinate2DMake(51.900708, -2.083160); //Create the CLLocation from user cordinates
-    //    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(noLocation, 50000, 50000); //Set zooming level
-    //    MKCoordinateRegion adjustedRegion = [quickMap regionThatFits:viewRegion]; //add location to map
-    //    [quickMap setRegion:adjustedRegion animated:YES]; // create animation zooming
-    //
-    //    MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
-    //    annotationRegion.center.latitude = 51.100708;
-    //    annotationRegion.center.longitude = -2.083160;
-    //    annotationRegion.span.latitudeDelta = 0.02f;
-    //    annotationRegion.span.longitudeDelta = 0.02f;
-    //
-    //    // Place Annotation Point
-    //    annotation1 = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
-    //    annotation1.coordinate = annotationRegion.center;
-    ////    [annotation1 setTitleString:@"Test Annotation 1"];
-    ////    [annotation1 setSubtitleString:@"Subtitle For Annotation 1"];
-    //    annotation1.title = @"Test Annotation 1";
-    //    annotation1.subtitle = @"Subtitle For Annotation 1";
-    //    [quickMap addAnnotation:annotation1];
-    
-    
-    
-    //    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(quickMap.userLocation.coordinate, 50, 50);
-    //    viewRegion.span.longitudeDelta  = 0.005;
-    //    viewRegion.span.latitudeDelta  = 0.005;
-    //    [quickMap setRegion:viewRegion animated:YES];
-    
-    //    MKUserLocation *userLocation = quickMap.userLocation;
-    //    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance (userLocation.location.coordinate, 50, 50);
-    //    [quickMap setRegion:region animated:YES];
-    
     
     currentLocationButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [currentLocationButton addTarget:self action:@selector(zoomInUserLocation) forControlEvents:UIControlEventTouchUpInside];
     [currentLocationButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_quick_map.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-60, 40, 40);
     [quickMap addSubview:currentLocationButton];
-    
-    //    maximizeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    //    [maximizeButton addTarget:self action:@selector(handleExpandingControls) forControlEvents:UIControlEventTouchUpInside];
-    //    [maximizeButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_expand.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    //
-    //    if (IS_IPHONE_4_OR_LESS) {
-    //        maximizeButton.frame = CGRectMake(quickMap.bounds.size.width-55, quickMap.bounds.size.height-60, 40, 40);
-    //        currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-60, 40, 40);
-    //    }
-    //    else if (IS_IPHONE_5) {
-    //        maximizeButton.frame = CGRectMake(quickMap.bounds.size.width-55, quickMap.bounds.size.height-65, 40, 40);
-    //        currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-65, 40, 40);
-    //    }
-    //    else if (IS_IPHONE_6) {
-    //        maximizeButton.frame = CGRectMake(quickMap.bounds.size.width-65, quickMap.bounds.size.height-75, 45, 45);
-    //        currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-75, 40, 40);
-    //    }
-    //    else if (IS_IPHONE_6P) {
-    //        maximizeButton.frame = CGRectMake(quickMap.bounds.size.width-75, quickMap.bounds.size.height-85, 50, 50);
-    //        currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-85, 40, 40);
-    //    }
-    //    [quickMap addSubview:maximizeButton];
     
     
     
@@ -1855,17 +1961,17 @@
     stack = [[UPStackMenu alloc] initWithContentView:menuContentView];
     [stack setDelegate:self];
     
-    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Floods" font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0]];
-    wlsStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"WLS" font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0]];
-    cctvStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"CCTV" font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0]];
-    userFeedbackStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Feedback" font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0]];
-    rainMapStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Rain Map" font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0]];
+    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by PUB" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    wlsStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Water Level Sensor" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    cctvStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"CCTV" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    userFeedbackStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by Users" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    rainMapStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Rain Area" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
     
     
     
     NSMutableArray *items = [[NSMutableArray alloc] initWithObjects:rainMapStackItem, userFeedbackStackItem, cctvStackItem, wlsStackItem, floodStackItem, nil];
     [items enumerateObjectsUsingBlock:^(UPStackMenuItem *item, NSUInteger idx, BOOL *stop) {
-        [item setTitleColor:[UIColor blackColor]];
+        [item setTitleColor:[UIColor whiteColor]];
         
     }];
     
@@ -1881,67 +1987,7 @@
     
     [stack addItems:items];
     [quickMap addSubview:stack];
-    
-    //    [self setStackIconClosed:YES];
-    
-    
-    //    optionsView = [[UIView alloc] init];
-    //    optionsView.backgroundColor = [UIColor clearColor];
-    //    if (IS_IPHONE_4_OR_LESS) {
-    //        optionsView.frame = CGRectMake(quickMap.bounds.size.width-55, maximizeButton.frame.origin.y-300, 40, 300);
-    //    }
-    //    else if (IS_IPHONE_5) {
-    //        optionsView.frame = CGRectMake(quickMap.bounds.size.width-55, maximizeButton.frame.origin.y-300, 40, 300);
-    //    }
-    //    else if (IS_IPHONE_6) {
-    //        optionsView.frame = CGRectMake(quickMap.bounds.size.width-65, maximizeButton.frame.origin.y-325, 45, 325);
-    //    }
-    //    else if (IS_IPHONE_6P) {
-    //        optionsView.frame = CGRectMake(quickMap.bounds.size.width-75, maximizeButton.frame.origin.y-350, 50, 350);
-    //    }
-    //    [quickMap addSubview:optionsView];
-    //    optionsView.hidden = YES;
-    //
-    //
-    //    carButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    carButton.frame = CGRectMake(0, 10, optionsView.bounds.size.width, optionsView.bounds.size.width);
-    //    [carButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    //    carButton.tag = 1;
-    //    [carButton addTarget:self action:@selector(handleMapOptions:) forControlEvents:UIControlEventTouchUpInside];
-    //    [optionsView addSubview:carButton];
-    //
-    //    dropButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    dropButton.frame = CGRectMake(0, carButton.frame.origin.y+carButton.bounds.size.height+18, optionsView.bounds.size.width, optionsView.bounds.size.width);
-    //    [dropButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    //    dropButton.tag = 5;
-    //    [dropButton addTarget:self action:@selector(handleMapOptions:) forControlEvents:UIControlEventTouchUpInside];
-    //    [optionsView addSubview:dropButton];
-    //
-    //    cameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    cameraButton.frame = CGRectMake(0, dropButton.frame.origin.y+dropButton.bounds.size.height+18, optionsView.bounds.size.width, optionsView.bounds.size.width);
-    //    [cameraButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    //    cameraButton.tag = 4;
-    //    [cameraButton addTarget:self action:@selector(handleMapOptions:) forControlEvents:UIControlEventTouchUpInside];
-    //    [optionsView addSubview:cameraButton];
-    //
-    //    chatButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    chatButton.frame = CGRectMake(0, cameraButton.frame.origin.y+cameraButton.bounds.size.height+18, optionsView.bounds.size.width, optionsView.bounds.size.width);
-    //    [chatButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    //    chatButton.tag = 2;
-    //    [chatButton addTarget:self action:@selector(handleMapOptions:) forControlEvents:UIControlEventTouchUpInside];
-    //    [optionsView addSubview:chatButton];
-    //
-    //    cloudButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    cloudButton.frame = CGRectMake(0, chatButton.frame.origin.y+chatButton.bounds.size.height+18, optionsView.bounds.size.width, optionsView.bounds.size.width);
-    //    [cloudButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    //    cloudButton.tag = 3;
-    //    [cloudButton addTarget:self action:@selector(handleMapOptions:) forControlEvents:UIControlEventTouchUpInside];
-    //    [optionsView addSubview:cloudButton];
-    
-    
-    
-    
-    
+    [self setStackIconClosed:NO];
     
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -270, self.view.bounds.size.width, 180) style:UITableViewStylePlain];
     filterTableView.delegate = self;
@@ -1951,10 +1997,11 @@
     filterTableView.backgroundView = nil;
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     filterTableView.alpha = 0.8;
+    filterTableView.scrollEnabled = NO;
+    filterTableView.alwaysBounceVertical = NO;
+
     
     filterDataSource = [[NSArray alloc] initWithObjects:@"Drain 0-75% Full",@"Drain 75%-90% Full",@"Drain 90%-100 Full",@"Station under maintenance", nil];
-    
-    floodTempArray = [[NSArray alloc] initWithObjects:@"226H Ang Mo Kio Street 22",@"Low Flood",@"03:15 PM",@"225 Ang Mo Kio Avenue 1",@"Moderate Flood",@"8:25 PM",@"226H Ang Mo Kio Street 22",@"High Flood",@"9:15 AM", nil];
 }
 
 
@@ -1984,16 +2031,32 @@
     //        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
     //    }
+    
+    
+    if (longPressLocationAnnotation) {
+        [quickMap removeAnnotation:longPressLocationAnnotation];
+    }
+    
+    if (isShowingRoute) {
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+        isShowingRoute = NO;
+        [self sendRouteRequest];
+    }
+    else {
+        if(_routeOverlay) {
+            [quickMap removeOverlay:_routeOverlay];
+        }
+    }
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-    
-    [self.view addGestureRecognizer:swipeGesture];
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+//    swipeGesture.numberOfTouchesRequired = 1;
+//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+//    
+//    [self.view addGestureRecognizer:swipeGesture];
     
 }
 

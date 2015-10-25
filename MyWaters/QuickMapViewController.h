@@ -17,13 +17,13 @@
 #import "MapOverlay.h"
 #import "MapOverlayView.h"
 #import "WaterLevelSensorsDetailViewController.h"
+#import "UserFloodSubmissionViewController.h"
 
 @interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UPStackMenuDelegate> {
     
     AppDelegate *appDelegate;
     BOOL isControlMaximize,isShowingFilter;
     
-    MKMapView *quickMap;
     UIButton *maximizeButton,*carButton,*chatButton,*cloudButton,*cameraButton,*dropButton,*currentLocationButton;
     BOOL isShowingFlood,isShowingUserFeedback,isShowingRain,isShowingCamera,isShowingDrain;
 
@@ -35,7 +35,7 @@
     NSDictionary *locationsDict;
     
     // Place Annotation Point
-    QuickMapAnnotations *cctvAnnotation,*wlsAnnotation,*userFloodAnnotation,*pubFloodAnnotation;
+    QuickMapAnnotations *cctvAnnotation,*wlsAnnotation,*userFloodAnnotation,*pubFloodAnnotation,*longPressLocationAnnotation;
     UIView *calloutView;
     BOOL isShowingCallout;
     UITapGestureRecognizer *cctvTapGesture;
@@ -60,8 +60,13 @@
     NSMutableArray *cctvAnnotationsArray,*wlsAnnotationsArray,*userFeedbackAnnotationsArray,*pubFloodAnnotationsArray;
 }
 
-@property (nonatomic, assign) BOOL isNotQuickMapController;
+@property (nonatomic, assign) BOOL isNotQuickMapController,isShowingRoute;
 @property (nonatomic, strong) MapOverlay *mapOverlay;
 @property (nonatomic, strong) MapOverlayView *mapOverlayView;
+@property (nonatomic, strong) MKMapView *quickMap;
+
+
+@property (nonatomic, assign) double destinationLat,destinationLong;
+
 
 @end

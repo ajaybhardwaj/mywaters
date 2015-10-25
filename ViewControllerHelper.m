@@ -77,7 +77,10 @@ static ViewControllerHelper *sharedViewHelper = nil;
     
     // -- remove the user data and enable landing page
 //    [[SharedObject sharedClass] removeSaved_SUPER_SPORTS_CLUB_User];
+    [[SharedObject sharedClass] clearPUBUserSavedData];
     _currentDeckIndex = -1;
+    
+    
     
     
     [[appDelegate rootDeckController] closeLeftView];
@@ -139,7 +142,6 @@ static ViewControllerHelper *sharedViewHelper = nil;
 -(UINavigationController*)getSignInController{
     
     if (!_signInController) {
-        
         
 //        WelcomeViewController *signin = [[WelcomeViewController alloc] init];
         LoginViewController *signin = [[LoginViewController alloc] init];
@@ -459,7 +461,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
         [[[feedback navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
         //        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(140,164,0) frame:CGRectMake(0, 0, 1, 1)];
         //        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(113, 75, 51) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(229,0,87) frame:CGRectMake(0, 0, 1, 1)];
         [[[feedback navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_tipsNavController.view setAutoresizesSubviews:TRUE];
@@ -947,6 +949,9 @@ static ViewControllerHelper *sharedViewHelper = nil;
     // -- Nav Controller
 //    [self clear_All_ControllersInThisNavigationCntrl:[self signInController]];
 //    [self setSignInController:nil];
+
+    [self clear_All_ControllersInThisNavigationCntrl:[self signInController]];
+    [self setSignInController:nil];
     
     [self clear_All_ControllersInThisNavigationCntrl:[self homeNavController]];
     [self setHomeNavController:nil];
@@ -967,10 +972,10 @@ static ViewControllerHelper *sharedViewHelper = nil;
     [self setEventsNavController:nil];
 
     [self clear_All_ControllersInThisNavigationCntrl:[self cctvNavController]];
-    [self setEventsNavController:nil];
+    [self setCctvNavController:nil];
 
     [self clear_All_ControllersInThisNavigationCntrl:[self wlsController]];
-    [self setEventsNavController:nil];
+    [self setWlsController:nil];
 
     [self clear_All_ControllersInThisNavigationCntrl:[self bookingNavController]];
     [self setBookingNavController:nil];
@@ -979,7 +984,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     [self setFeedbackNavController:nil];
     
     [self clear_All_ControllersInThisNavigationCntrl:[self tipsNavController]];
-    [self setAbcwatersNavController:nil];
+    [self setTipsNavController:nil];
     
     [self clear_All_ControllersInThisNavigationCntrl:[self settingsNavController]];
     [self setSettingsNavController:nil];
@@ -991,7 +996,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     [self setFavouritesNavController:nil];
     
     [self clear_All_ControllersInThisNavigationCntrl:[self aboutPUBController]];
-    [self setAbcwatersNavController:nil];
+    [self setAboutPUBController:nil];
     
 }
 

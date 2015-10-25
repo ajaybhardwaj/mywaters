@@ -13,6 +13,10 @@
     
     AppDelegate *appDelegate;
     UITableView *tipsListingTableView;
+    
+    UILabel *noDataLabel;
 }
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
+
 
 @end

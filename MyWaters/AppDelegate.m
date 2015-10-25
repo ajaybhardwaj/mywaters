@@ -14,17 +14,16 @@
 
 @implementation AppDelegate
 @synthesize RESOURCE_FOLDER_PATH,database;
-@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY,EVENTS_LISTING_ARRAY,WLS_LISTING_ARRAY,CCTV_LISTING_ARRAY,USER_FAVOURITES_ARRAY,APP_CONFIG_DATA_ARRAY,TIPS_VIDEOS_ARRAY,USER_FLOOD_SUBMISSION_ARRAY,PUB_FLOOD_SUBMISSION_ARRAY;
+@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY,EVENTS_LISTING_ARRAY,WLS_LISTING_ARRAY,CCTV_LISTING_ARRAY,USER_FAVOURITES_ARRAY,APP_CONFIG_DATA_ARRAY,TIPS_VIDEOS_ARRAY,USER_FLOOD_SUBMISSION_ARRAY,PUB_FLOOD_SUBMISSION_ARRAY,PUSH_NOTIFICATION_ARRAY;
 @synthesize screen_width,left_deck_width;
 @synthesize IS_COMING_AFTER_LOGIN;
 @synthesize SELECTED_MENU_ID;
 @synthesize IS_ARVIEW_CUSTOM_LABEL;
-@synthesize IS_MOVING_TO_WLS_FROM_DASHBOARD,IS_MOVING_TO_CCTV_FROM_DASHBOARD;
+@synthesize IS_MOVING_TO_WLS_FROM_DASHBOARD,IS_MOVING_TO_CCTV_FROM_DASHBOARD,IS_SKIPPING_USER_LOGIN;
 @synthesize hud;
-@synthesize USER_PROFILE_DICTIONARY;
-@synthesize CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG,USER_CURRENT_LOCATION_COORDINATE;
-@synthesize IS_COMING_FROM_DASHBOARD;
-@synthesize DASHBOARD_PREFERENCES_CHANGED;
+@synthesize CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG,USER_CURRENT_LOCATION_COORDINATE,LONG_PRESS_USER_LOCATION_LAT,LONG_PRESS_USER_LOCATION_LONG,LONG_PRESS_USER_LOCATION_COORDINATE;
+@synthesize IS_COMING_FROM_DASHBOARD,IS_RELAUNCHING_APP;
+@synthesize DASHBOARD_PREFERENCES_CHANGED,IS_USER_LOCATION_SELECTED_BY_LONG_PRESS;
 
 
 //*************** Method To Register Device Toke For Push Notifications
@@ -44,7 +43,7 @@
 
 - (void) getConfigData {
     
-    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[USER_PROFILE_DICTIONARY objectForKey:@"AccessToken"]];
+    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[[SharedObject sharedClass] getPhysicalABuseAccessToken]];
 }
 
 
@@ -420,6 +419,244 @@
 
 
 
+//*************** Method To Insert ABC Site Data In Sqlite
+
+- (void) insertABCWatersData:(NSMutableArray*) parametersArray {
+
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        NSString *truncateTableSQL = [NSString stringWithFormat: @"DELETE FROM abcwatersites"];
+        const char *truncate_stmt = [truncateTableSQL UTF8String];
+        
+        sqlite3_prepare_v2(database, truncate_stmt, -1, &statement, NULL);
+        if (sqlite3_step(statement) == SQLITE_DONE)
+        {
+            DebugLog(@"Table Truncated");
+            
+            for (int i=0; i<ABC_WATERS_LISTING_ARRAY.count; i++) {
+                
+                NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO abcwatersites (abcSiteId, siteTitle, siteDescription, siteLat, siteLong, sitePhone, siteAddress, siteMainImage, isCertified) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", [NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"siteName"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"description"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLatitude"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLongitude"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"phoneNo"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"address"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"isCertified"]]];
+                const char *insert_stmt = [insertSQL UTF8String];
+                
+                DebugLog(@"Insert query %@",insertSQL);
+                
+                sqlite3_prepare_v2(database, insert_stmt, -1, &statement, NULL);
+                if (sqlite3_step(statement) == SQLITE_DONE)
+                {
+                    DebugLog(@"Row inserted");
+                }
+                
+                else {
+                    DebugLog(@"Failed to insert row");
+                }
+            }
+        }
+        
+        else {
+            DebugLog(@"Failed to truncate table");
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+}
+
+
+
+//*************** Method To Insert CCTV Site Data In Sqlite
+
+- (void) insertCCTVData:(NSMutableArray*) parametersArray {
+    
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        NSString *truncateTableSQL = [NSString stringWithFormat: @"DELETE FROM cctvSites"];
+        const char *truncate_stmt = [truncateTableSQL UTF8String];
+        
+        sqlite3_prepare_v2(database, truncate_stmt, -1, &statement, NULL);
+        if (sqlite3_step(statement) == SQLITE_DONE)
+        {
+            DebugLog(@"Table Truncated");
+            
+            for (int i=0; i<CCTV_LISTING_ARRAY.count; i++) {
+                
+                NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO cctvSites (cctvId, cctvName, cctvImageUrl, cctvLat, cctvLong) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", [NSString stringWithFormat:@"%@",[[CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"ID"]],[NSString stringWithFormat:@"%@",[[CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Name"]],[NSString stringWithFormat:@"%@",[[CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"CCTVImageURL"]],[NSString stringWithFormat:@"%@",[[CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Lat"]],[NSString stringWithFormat:@"%@",[[CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Lon"]]];
+                const char *insert_stmt = [insertSQL UTF8String];
+                
+                DebugLog(@"Insert query %@",insertSQL);
+                
+                sqlite3_prepare_v2(database, insert_stmt, -1, &statement, NULL);
+                if (sqlite3_step(statement) == SQLITE_DONE)
+                {
+                    DebugLog(@"Row inserted");
+                }
+                
+                else {
+                    DebugLog(@"Failed to insert row");
+                }
+            }
+        }
+        
+        else {
+            DebugLog(@"Failed to truncate table");
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+}
+
+
+//*************** Method To Insert WLS Site Data In Sqlite
+
+- (void) insertWLSData:(NSMutableArray*) parametersArray {
+    
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        NSString *truncateTableSQL = [NSString stringWithFormat: @"DELETE FROM wlsSites"];
+        const char *truncate_stmt = [truncateTableSQL UTF8String];
+        
+        sqlite3_prepare_v2(database, truncate_stmt, -1, &statement, NULL);
+        if (sqlite3_step(statement) == SQLITE_DONE)
+        {
+            DebugLog(@"Table Truncated");
+            
+            for (int i=0; i<WLS_LISTING_ARRAY.count; i++) {
+                
+                NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO wlsSites (wlsId, wlsName, wlsDrainDepth, wlsLat, wlsLong, wlsObservedTime, wlsWaterLevelValue, wlsWaterLevelPercentage, wlsWaterLevelTypeValue, wlsDrainDepthValue, isSubscribed) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", [NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevelType"]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"latitude"]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"longitude" ]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"observationTime"]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevel"]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevelPercentage"]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevelType"]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"drainDepth"]],[NSString stringWithFormat:@"%@",[[WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"isSubscribed"]]];
+                const char *insert_stmt = [insertSQL UTF8String];
+                
+                DebugLog(@"Insert query %@",insertSQL);
+                
+                sqlite3_prepare_v2(database, insert_stmt, -1, &statement, NULL);
+                if (sqlite3_step(statement) == SQLITE_DONE)
+                {
+                    DebugLog(@"Row inserted");
+                }
+                
+                else {
+                    DebugLog(@"Failed to insert row");
+                }
+            }
+        }
+        
+        else {
+            DebugLog(@"Failed to truncate table");
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+}
+
+
+//*************** Method To Insert WLS Site Data In Sqlite
+
+- (void) insertEventsData:(NSMutableArray*) parametersArray {
+    
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        NSString *truncateTableSQL = [NSString stringWithFormat: @"DELETE FROM events"];
+        const char *truncate_stmt = [truncateTableSQL UTF8String];
+        
+        sqlite3_prepare_v2(database, truncate_stmt, -1, &statement, NULL);
+        if (sqlite3_step(statement) == SQLITE_DONE)
+        {
+            DebugLog(@"Table Truncated");
+            
+            for (int i=0; i<EVENTS_LISTING_ARRAY.count; i++) {
+                
+                
+                NSString *eventID,*titleString,*descriptionString,*latValue,*longValue,*phoneNoString,*addressString,*startDateString,*endDateString,*imageName;
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != (id)[NSNull null])
+                    eventID = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"];
+                
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"title"] != (id)[NSNull null])
+                    titleString = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"title"];
+                
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"description"] != (id)[NSNull null])
+                    descriptionString = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"description"];
+                
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+                    latValue = [NSString stringWithFormat:@"%@",[[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLatitude"]];
+                
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+                    longValue = [NSString stringWithFormat:@"%@",[[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLongitude"]];
+                
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"phoneNo"] != (id)[NSNull null])
+                    phoneNoString = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"phoneNo"];
+                
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"location"] != (id)[NSNull null])
+                    addressString = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"location"];
+                
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"startDate"] != (id)[NSNull null])
+                    startDateString = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"startDate"];
+                
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"endDate"] != (id)[NSNull null])
+                    endDateString = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"endDate"];
+                
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"] != (id)[NSNull null])
+                    imageName = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"];
+            
+                NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO events (eventId, eventTitle, eventDescription, eventLat, eventlong, eventPhone, eventAddress, eventStartDate, eventEndDate, eventImageName) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", eventID,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,imageName];
+                const char *insert_stmt = [insertSQL UTF8String];
+                
+                DebugLog(@"Insert query %@",insertSQL);
+                
+                sqlite3_prepare_v2(database, insert_stmt, -1, &statement, NULL);
+                if (sqlite3_step(statement) == SQLITE_DONE)
+                {
+                    DebugLog(@"Row inserted");
+                }
+                
+                else {
+                    DebugLog(@"Failed to insert row");
+                }
+            }
+        }
+        
+        else {
+            DebugLog(@"Failed to truncate table");
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+}
+
+
+
 //*************** Method To Retrieve Favourites
 
 - (void) retrieveFavouriteItems:(NSInteger) favouriteType {
@@ -489,10 +726,19 @@
                 [USER_FAVOURITES_ARRAY addObject:observationTime];
                 [USER_FAVOURITES_ARRAY addObject:favType];
                 [USER_FAVOURITES_ARRAY addObject:favId];
+                
+                CLLocationCoordinate2D currentLocation;
+                currentLocation.latitude = CURRENT_LOCATION_LAT;
+                currentLocation.longitude = CURRENT_LOCATION_LONG;
+                
+                CLLocationCoordinate2D desinationLocation;
+                desinationLocation.latitude = [lat floatValue];
+                desinationLocation.longitude = [lon floatValue];
+                
+                NSString *distanceValue = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                [USER_FAVOURITES_ARRAY addObject:distanceValue];
             }
         }
-        
-        //sqlite3_finalize(statement);
         sqlite3_close(database);
     }
 }
@@ -608,21 +854,29 @@
     
     [self chkAndCreateDatbase];
     
+    [FBLoginView class];
+    [FBProfilePictureView class];
+    
     DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
     ABC_WATERS_LISTING_ARRAY = [[NSMutableArray alloc] init];
     EVENTS_LISTING_ARRAY = [[NSMutableArray alloc] init];
     WLS_LISTING_ARRAY = [[NSMutableArray alloc] init];
     CCTV_LISTING_ARRAY = [[NSMutableArray alloc] init];
     POI_ARRAY = [[NSMutableArray alloc] init];
-    USER_PROFILE_DICTIONARY = [[NSDictionary alloc] init];
     USER_FAVOURITES_ARRAY = [[NSMutableArray alloc] init];
     APP_CONFIG_DATA_ARRAY = [[NSMutableArray alloc] init];
     TIPS_VIDEOS_ARRAY = [[NSMutableArray alloc] init];
     USER_FLOOD_SUBMISSION_ARRAY = [[NSMutableArray alloc] init];
     PUB_FLOOD_SUBMISSION_ARRAY = [[NSMutableArray alloc] init];
+    PUSH_NOTIFICATION_ARRAY = [[NSMutableArray alloc] init];
+    
+    LONG_PRESS_USER_LOCATION_LAT = 0.0;
+    LONG_PRESS_USER_LOCATION_LONG = 0.0;
+    IS_USER_LOCATION_SELECTED_BY_LONG_PRESS = NO;
     
     SELECTED_MENU_ID = 0;
     
+    IS_RELAUNCHING_APP = YES;
     
     [self retrieveDashboardPreferences];
     
@@ -630,6 +884,9 @@
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     if ([prefs stringForKey:@"floodAlert"] == (id)[NSNull null] || [[prefs stringForKey:@"floodAlert"] length] == 0) {
         [prefs setValue:@"NO" forKey:@"floodAlert"];
+    }
+    if ([prefs stringForKey:@"generalNotifications"] == (id)[NSNull null] || [[prefs stringForKey:@"generalNotifications"] length] == 0) {
+        [prefs setValue:@"YES" forKey:@"generalNotifications"];
     }
     [prefs synchronize];
     
@@ -681,6 +938,11 @@
                                                           openURL:url
                                                 sourceApplication:sourceApplication
                                                        annotation:annotation];
+    
+//    return [FBSession.activeSession handleOpenURL:url];
+    
+//    return [FBAppCall handleOpenURL:url
+//                  sourceApplication:sourceApplication];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -695,13 +957,16 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    
+    application.applicationIconBadgeNumber = 0;
+
     // Register Device Token
     [self registerDeviceToken];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    [FBSession.activeSession handleDidBecomeActive];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

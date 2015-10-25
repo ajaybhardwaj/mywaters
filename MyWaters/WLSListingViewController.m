@@ -25,6 +25,14 @@
 }
 
 
+//*************** Method For Saving ABC Water Sites Data
+
+- (void) saveWLSData {
+    
+    [appDelegate insertWLSData:appDelegate.WLS_LISTING_ARRAY];
+}
+
+
 
 //*************** Method To Get WLS Listing
 
@@ -35,13 +43,34 @@
     appDelegate.hud.labelText = @"Loading...";
 
     
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    
-//    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
-//    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"1"],@"1.0", nil];
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],@"1.0", nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+    
+    [self pullToRefreshTable];
+}
+
+
+//*************** Method For Pull To Refresh
+
+- (void) pullToRefreshTable {
+    
+    // Reload table data
+    [wlsListingtable reloadData];
+    
+    // End the refreshing
+    if (self.refreshControl) {
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm a"];
+        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+                                                                    forKey:NSForegroundColorAttributeName];
+        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        self.refreshControl.attributedTitle = attributedTitle;
+        
+        [self.refreshControl endRefreshing];
+    }
 }
 
 
@@ -71,18 +100,53 @@
                 
                 [appDelegate.WLS_LISTING_ARRAY setArray:tempArray];
             
-//            else {
-//                if (appDelegate.WLS_LISTING_ARRAY.count!=0) {
-//                    for (int i=0; i<tempArray.count; i++) {
-//                        [appDelegate.WLS_LISTING_ARRAY addObject:[tempArray objectAtIndex:i]];
-//                    }
-//                }
-//            }
+            CLLocationCoordinate2D currentLocation;
+            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+            
+            DebugLog(@"%f---%f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
+            DebugLog(@"%f---%f",currentLocation.latitude,currentLocation.longitude);
+            
+            for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY count];idx++) {
+                
+                NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY[idx] mutableCopy];
+                
+                CLLocationCoordinate2D desinationLocation;
+                desinationLocation.latitude = [dict[@"latitude"] doubleValue];
+                desinationLocation.longitude = [dict[@"longitude"] doubleValue];
+                
+                DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+                
+                dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                appDelegate.WLS_LISTING_ARRAY[idx] = dict;
+                
+            }
+            
+            DebugLog(@"%@",appDelegate.WLS_LISTING_ARRAY);
+            
+            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                float v1 = [left floatValue];
+                float v2 = [right floatValue];
+                if (v1 < v2)
+                    return NSOrderedAscending;
+                else if (v1 > v2)
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedSame;
+            }];
+            
+            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+            
+            
+            if (appDelegate.WLS_LISTING_ARRAY.count!=0)
+                [self performSelectorInBackground:@selector(saveWLSData) withObject:nil];
+
         }
         
         [appDelegate.hud hide:YES];
         [wlsListingtable reloadData];
-        
+        [self.refreshControl endRefreshing];
     }
     
 }
@@ -101,7 +165,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 60.0f;
+    return 80.0f;
 }
 
 
@@ -165,7 +229,7 @@
     
     cell.backgroundColor = RGB(247, 247, 247);
     
-    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
+    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 50, 50)];
     if ([[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"waterLevelType"] intValue] == 1) {
         cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
@@ -188,8 +252,18 @@
     titleLabel.numberOfLines = 0;
     [cell.contentView addSubview:titleLabel];
     
+    UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, wlsListingtable.bounds.size.width-100, 20)];
+    subTitleLabel.textColor = [UIColor lightGrayColor];
+        subTitleLabel.text = [NSString stringWithFormat:@"%@ KM",[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+    subTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    subTitleLabel.backgroundColor = [UIColor clearColor];
+    subTitleLabel.numberOfLines = 0;
+    subTitleLabel.textAlignment = NSTextAlignmentRight;
+    [cell.contentView addSubview:subTitleLabel];
     
-    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 59.5, wlsListingtable.bounds.size.width, 0.5)];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
+    UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, wlsListingtable.bounds.size.width, 0.5)];
     [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:seperatorImage];
     
@@ -209,11 +283,6 @@
     self.view.backgroundColor = RGB(247, 247, 247);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
-    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
-    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
-    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-    
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
@@ -230,6 +299,14 @@
     
     wlsPageCount = 0;
     
+    // Initialize the refresh control.
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor whiteColor];
+    self.refreshControl.tintColor = [UIColor blackColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(fetchWLSListing)
+                  forControlEvents:UIControlEventValueChanged];
+    [wlsListingtable addSubview:self.refreshControl];
 }
 
 
@@ -240,6 +317,12 @@
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+
     
     [self fetchWLSListing];
 }

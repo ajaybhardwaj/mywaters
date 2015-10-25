@@ -70,6 +70,11 @@
 
 - (void) handleSingleTapGesture: (UITapGestureRecognizer*) sender {
     
+    [nameField resignFirstResponder];
+    [emailField resignFirstResponder];
+    [passField resignFirstResponder];
+    [retypePassField resignFirstResponder];
+    
     if (sender==profileImageTap) {
         [CommonFunctions showActionSheet:self containerView:self.view title:@"Profile Picture" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Camera",@"Photo Library",@"Cancel",nil];
     }
@@ -315,9 +320,6 @@
     [appDelegate.hud hide:YES];
 
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
-        
-        
-        appDelegate.USER_PROFILE_DICTIONARY = [responseString JSONValue];
 
         OTPViewController *viewObj = [[OTPViewController alloc] init];
         viewObj.emailStringForVerification = emailField.text;
@@ -662,13 +664,6 @@
     [retypePassField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     retypePassField.tag = 4;
     
-    checkboxButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [checkboxButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
-    checkboxButton.tag = 2;
-    checkboxButton.frame = CGRectMake(15, retypePassField.frame.origin.y+retypePassField.bounds.size.height+20, 20, 20);
-    [checkboxButton addTarget:self action:@selector(changeTermsAgreeStatus) forControlEvents:UIControlEventTouchUpInside];
-    [checkboxButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/checkbox.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [backgroundScrollView addSubview:checkboxButton];
     
     termsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [termsButton setTitle:@"I would like to sign up as a Friend of Water.  (?)" forState:UIControlStateNormal];
@@ -680,6 +675,15 @@
     termsButton.frame = CGRectMake(0, retypePassField.frame.origin.y+retypePassField.bounds.size.height+20, self.view.bounds.size.width, 20);
     [termsButton addTarget:self action:@selector(moveToFowWebView) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:termsButton];
+    
+    
+    checkboxButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [checkboxButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
+    checkboxButton.tag = 2;
+    checkboxButton.frame = CGRectMake(15, retypePassField.frame.origin.y+retypePassField.bounds.size.height+20, 20, 20);
+    [checkboxButton addTarget:self action:@selector(changeTermsAgreeStatus) forControlEvents:UIControlEventTouchUpInside];
+    [checkboxButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/checkbox.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [backgroundScrollView addSubview:checkboxButton];
     
     signUpButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [signUpButton setTitle:@"SIGN UP" forState:UIControlStateNormal];
@@ -694,7 +698,7 @@
     backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setTitle:@"BACK" forState:UIControlStateNormal];
     [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    backButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
     backButton.tag = 5;
     backButton.frame = CGRectMake(10, signUpButton.frame.origin.y+signUpButton.bounds.size.height+15, self.view.bounds.size.width-20, 40);
     [backButton addTarget:self action:@selector(pop2Dismiss:) forControlEvents:UIControlEventTouchUpInside];
@@ -723,7 +727,7 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
-    self.navigationController.navigationBar.hidden = YES;
+    [self.navigationController setNavigationBarHidden:YES];
 }
 
 

@@ -56,12 +56,16 @@ const static UPStackMenuItemLabelPosition_e kStackMenuItemDefaultLabelPosition  
                                           MAX(_image.size.height, _highlightedImage.size.height))];
         
         _label = [[UILabel alloc] initWithFrame:CGRectZero];
+        _label.backgroundColor = [UIColor blackColor];
+        _label.textColor = [UIColor whiteColor];
+        _label.layer.cornerRadius = 2.0;
+        _label.textAlignment = NSTextAlignmentCenter;
         [_label setLineBreakMode:NSLineBreakByClipping];
         [_label setText:_title];
         if(font)
             [_label setFont:font];
         CGSize labelSize = [_title sizeWithAttributes:@{NSFontAttributeName : _label.font}];
-        [_label setFrame:CGRectMake(0, 0, labelSize.width, labelSize.height)];
+        [_label setFrame:CGRectMake(0, 0, labelSize.width+20, labelSize.height+4)];
         
         _labelContainer = [[UIView alloc] initWithFrame:_label.frame];
         [_labelContainer setClipsToBounds:YES];

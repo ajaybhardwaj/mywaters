@@ -23,6 +23,11 @@
 
 +(SharedObject*)sharedClass;
 
+# pragma mark - Methods For PUB App
+- (void) savePUBUserData:(NSDictionary*) dict;
+- (void) clearPUBUserSavedData;
+- (NSString*) getPUBUserSavedDataValue:(NSString*) keyName;
+
 #pragma mark - FB USER ID AND AUTHENTICATION
 
 #pragma mark - Authentication

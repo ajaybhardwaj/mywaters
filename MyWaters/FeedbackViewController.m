@@ -27,11 +27,36 @@
 }
 
 
+//*************** Method To PUB HelpDesk
+
+- (void) callPUBHelpdesk {
+    
+    NSString *pubHelpdesk;
+    for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+        if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"PUBTelpNo"]) {
+            pubHelpdesk = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+            break;
+        }
+    }
+    
+    if ([pubHelpdesk length] != 0) {
+        
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@", pubHelpdesk]]];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No contact available." cancel:@"Ok" otherButton:nil];
+    }
+}
+
+
 //*************** Method For Converting Lat & Long To Location Name
 
 - (void) getAddressFromLatLon:(CLLocation *)bestLocation {
     
     DebugLog(@"%f %f", bestLocation.coordinate.latitude, bestLocation.coordinate.longitude);
+    
+    currentLocation.latitude = bestLocation.coordinate.latitude;
+    currentLocation.longitude = bestLocation.coordinate.longitude;
     
     CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
     [geocoder reverseGeocodeLocation:bestLocation
@@ -56,96 +81,109 @@
 }
 
 
+//*************** Method For Moving To Long Press User Location View
+
+- (void) moveToLongPressUserLocationView {
+    
+    LongPressUserLocationViewController *viewObj = [[LongPressUserLocationViewController alloc] init];
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
+
 //*************** Method For Submitting Feedback
 
 - (void) submitUserFeedback {
     
-    
-    if ([locationField.text length] == 0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([commentField.text length] == 0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([nameField.text length] == 0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([CommonFunctions characterSet1Found:nameField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([phoneField.text length] !=0) {
-        if ([CommonFunctions characterSet2Found:phoneField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid phone number." cancel:@"OK" otherButton:nil];
+    if ([CommonFunctions hasConnectivity]) {
+        if ([locationField.text length] == 0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
-    }
-    
-    if ([emailField.text length] !=0) {
-        if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+        
+        if ([commentField.text length] == 0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
-    }
-    
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
-    
-    NSMutableArray *parameters = [[NSMutableArray alloc] init];
-    NSMutableArray *values = [[NSMutableArray alloc] init];
-    
-    if ([nameField.text length] != 0) {
-        [parameters addObject:@"Feedback.name"];
-        [values addObject:nameField.text];
-    }
-    if ([emailField.text length] !=0) {
-        [parameters addObject:@"Feedback.email"];
-        [values addObject:emailField.text];
-    }
-    if ([phoneField.text length] !=0) {
-        [parameters addObject:@"Feedback.contactNo"];
-        [values addObject:phoneField.text];
-    }
-    
-    [parameters addObject:@"Feedback.comment"];
-    [values addObject:commentField.text];
-    
-    [parameters addObject:@"Feedback.locationName"];
-    [values addObject:locationField.text];
-
-    [parameters addObject:@"Feedback.locationLatitude"];
-    [values addObject:[NSString stringWithFormat:@"%f",currentLocation.latitude]];
-
-    [parameters addObject:@"Feedback.locationLongitude"];
-    [values addObject:[NSString stringWithFormat:@"%f",currentLocation.longitude]];
-
-
-    if (isFeedbackImageAvailable) {
-
-        NSData* data = UIImageJPEGRepresentation(picUploadImageView.image, 0.5f);
-        NSString *base64ImageString = [Base64 encode:data];
         
-        [parameters addObject:@"Feedback.images[0]"];
-        [values addObject:base64ImageString];
+        if ([nameField.text length] == 0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+            return;
+        }
         
+        if ([CommonFunctions characterSet1Found:nameField.text]) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+            return;
+        }
+        
+        if ([phoneField.text length] !=0) {
+            if ([CommonFunctions characterSet2Found:phoneField.text]) {
+                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid phone number." cancel:@"OK" otherButton:nil];
+                return;
+            }
+        }
+        
+        if ([emailField.text length] !=0) {
+            if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+                return;
+            }
+        }
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+        
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        NSMutableArray *values = [[NSMutableArray alloc] init];
+        
+        if ([nameField.text length] != 0) {
+            [parameters addObject:@"Feedback.name"];
+            [values addObject:nameField.text];
+        }
+        if ([emailField.text length] !=0) {
+            [parameters addObject:@"Feedback.email"];
+            [values addObject:emailField.text];
+        }
+        if ([phoneField.text length] !=0) {
+            [parameters addObject:@"Feedback.contactNo"];
+            [values addObject:phoneField.text];
+        }
+        
+        [parameters addObject:@"Feedback.comment"];
+        [values addObject:commentField.text];
+        
+        [parameters addObject:@"Feedback.locationName"];
+        [values addObject:locationField.text];
+        
+        [parameters addObject:@"Feedback.locationLatitude"];
+        [values addObject:[NSString stringWithFormat:@"%f",currentLocation.latitude]];
+        
+        [parameters addObject:@"Feedback.locationLongitude"];
+        [values addObject:[NSString stringWithFormat:@"%f",currentLocation.longitude]];
+        
+        
+        if (isFeedbackImageAvailable) {
+            
+            NSData* data = UIImageJPEGRepresentation(picUploadImageView.image, 0.5f);
+            NSString *base64ImageString = [Base64 encode:data];
+            
+            [parameters addObject:@"Feedback.images[0]"];
+            [values addObject:base64ImageString];
+            
+        }
+        
+        
+        //    NSArray *parameters = [[NSArray alloc] initWithObjects:@"Feedback", nil];
+        //    NSArray *values = [[NSArray alloc] initWithObjects:feedbackDictionary, nil];
+        
+        DebugLog(@"%@---%@",parameters,values);
+        
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,FEEDBACK_API_URL]];
     }
-    
-    
-//    NSArray *parameters = [[NSArray alloc] initWithObjects:@"Feedback", nil];
-//    NSArray *values = [[NSArray alloc] initWithObjects:feedbackDictionary, nil];
-    
-    DebugLog(@"%@---%@",parameters,values);
-    
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,FEEDBACK_API_URL]];
-    
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
     
 }
 
@@ -229,6 +267,11 @@
 
 - (void) openDeckMenu:(id) sender {
     
+    [nameField resignFirstResponder];
+    [emailField resignFirstResponder];
+    [commentField resignFirstResponder];
+    [phoneField resignFirstResponder];
+    
     self.view.alpha = 0.5;
     self.navigationController.navigationBar.alpha = 0.5;
     [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
@@ -244,7 +287,7 @@
     [headerView setBackgroundColor:RGB(247, 247, 247)];
     
     
-    picUploadImageView =[[UIImageView alloc] initWithFrame:CGRectMake((headerView.bounds.size.width/2)-40, 20, 80, 80)];
+    picUploadImageView =[[UIImageView alloc] initWithFrame:CGRectMake((headerView.bounds.size.width/2)-40, 20, 100, 100)];
     [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [headerView addSubview:picUploadImageView];
     picUploadImageView.userInteractionEnabled = YES;
@@ -273,6 +316,10 @@
         commentField.text = @"";
         emailField.text = @"";
         phoneField.text = @"";
+        
+        appDelegate.IS_USER_LOCATION_SELECTED_BY_LONG_PRESS = NO;
+        appDelegate.LONG_PRESS_USER_LOCATION_LAT = 0.0;
+        appDelegate.LONG_PRESS_USER_LOCATION_LONG = 0.0;
         
         [appDelegate.hud hide:YES];
     }
@@ -520,12 +567,16 @@
         locationField.delegate = self;
         [locationField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         locationField.tag = 2;
+        locationField.userInteractionEnabled = NO;
         
-        UIImageView *locationButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-        [locationButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        
+        UIButton *locationButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        locationButton.frame = CGRectMake(0, 0, 20, 20);
+        [locationButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [locationButton addTarget:self action:@selector(moveToLongPressUserLocationView) forControlEvents:UIControlEventTouchUpInside];
         cell.accessoryView = locationButton;
         
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, locationField.bounds.size.height-0.5, locationField.bounds.size.width, 0.5)];
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, locationField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:cellSeperator];
         
@@ -569,7 +620,7 @@
         commentField.backgroundColor = [UIColor clearColor];
         [cell.contentView addSubview:commentField];
         
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, commentField.bounds.size.height-0.5, commentField.bounds.size.width, 0.5)];
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, commentField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:cellSeperator];
         
@@ -592,10 +643,9 @@
         nameField.delegate = self;
         [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         nameField.tag = 4;
-        nameField.text = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"];
-
+        nameField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
         
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, nameField.bounds.size.height-0.5, nameField.bounds.size.width, 0.5)];
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, nameField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:cellSeperator];
         
@@ -620,7 +670,7 @@
         [phoneField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         phoneField.tag = 5;
         
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, phoneField.bounds.size.height-0.5, phoneField.bounds.size.width, 0.5)];
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, phoneField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:cellSeperator];
         
@@ -643,9 +693,9 @@
         [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
         emailField.tag = 5;
         emailField.keyboardType = UIKeyboardTypeEmailAddress;
-        emailField.text = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Email"];
+        emailField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
         
-        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, emailField.bounds.size.height-0.5, emailField.bounds.size.width, 0.5)];
+        UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, emailField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
         [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:cellSeperator];
         
@@ -670,7 +720,7 @@
     [commentField resignFirstResponder];
     if ([commentField.text length]!=0) {
         if (!tempCommentString)
-            tempCommentString = [[NSString alloc] initWithFormat:@"%@",phoneField.text];
+            tempCommentString = [[NSString alloc] initWithFormat:@"%@",commentField.text];
         else
             tempCommentString = commentField.text;
     }
@@ -701,6 +751,15 @@
         commentField.textColor = RGB(35, 35, 35);
     }
     
+    CGPoint origin = textView.frame.origin;
+    CGPoint point = [textView.superview convertPoint:origin toView:self.view];
+    float navBarHeight = self.navigationController.navigationBar.frame.size.height;
+    CGPoint offset = feedbackTableView.contentOffset;
+    
+    // Adjust the below value as you need
+    offset.y += (point.y - navBarHeight -50);
+    [feedbackTableView setContentOffset:offset animated:YES];
+    
     return YES;
 }
 
@@ -716,9 +775,14 @@
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
     
+    CGPoint offset;
+    offset.x = 0.0;
+    offset.y = 0.0;
+    [feedbackTableView setContentOffset:offset animated:YES];
+    
     if ([commentField.text length]!=0) {
         if (!tempCommentString)
-            tempCommentString = [[NSString alloc] initWithFormat:@"%@",phoneField.text];
+            tempCommentString = [[NSString alloc] initWithFormat:@"%@",commentField.text];
         else
             tempCommentString = commentField.text;
     }
@@ -757,7 +821,7 @@
         }
     }
     
-    if (locationField==nameField) {
+    if (textField==locationField) {
         if ([locationField.text length]!=0) {
             if (!tempLocationString)
                 tempLocationString = [[NSString alloc] initWithFormat:@"%@",locationField.text];
@@ -835,7 +899,7 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:nil withIconName:@"icn_call"]];
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(callPUBHelpdesk) withIconName:@"icn_call"]];
     
     
     fieldIndex = 1;
@@ -844,7 +908,7 @@
     feedbackTypeArray = [[NSArray alloc] initWithObjects:@"Dirty/Choked Drain",@"Flood Area Submission",@"Water Leak",@"Poor Water Pressure Quality",@"Reports Feeds",@"Sewer Choke/Overflow/Smell",@"Others", nil];
     severityTypeArray = [[NSArray alloc] initWithObjects:@"Light",@"Heavy",@"Severe", nil];
     
-    feedbackTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
+    feedbackTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-110) style:UITableViewStylePlain];
     feedbackTableView.delegate = self;
     feedbackTableView.dataSource = self;
     [self.view addSubview:feedbackTableView];
@@ -919,13 +983,23 @@
         
     }
     
-    tempNameString = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"];
-    tempEmailString = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Email"];
+    tempNameString = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
+    tempEmailString = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
     
-//    if (([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) || ![CLLocationManager locationServicesEnabled]) {
-//        [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
-//        return;
-//    }
+    //    if (([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) || ![CLLocationManager locationServicesEnabled]) {
+    //        [CommonFunctions checkForLocationSerives:@"Location Serives Disabled" message:@"Location is mandatory for feedback. Please turn on location serives from settings." view:self];
+    //        return;
+    //    }
+    
+    if (appDelegate.IS_USER_LOCATION_SELECTED_BY_LONG_PRESS) {
+        
+        CLLocation *location = [[CLLocation alloc] initWithLatitude:appDelegate.LONG_PRESS_USER_LOCATION_LAT longitude:appDelegate.LONG_PRESS_USER_LOCATION_LONG];
+        [self getAddressFromLatLon:location];
+    }
+    else {
+        CLLocation *location = [[CLLocation alloc] initWithLatitude:appDelegate.CURRENT_LOCATION_LAT longitude:appDelegate.CURRENT_LOCATION_LONG];
+        [self getAddressFromLatLon:location];
+    }
     
 }
 
@@ -938,15 +1012,13 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    //    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    //    swipeGesture.numberOfTouchesRequired = 1;
+    //    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    //
+    //    [self.view addGestureRecognizer:swipeGesture];
     
-    [self.view addGestureRecognizer:swipeGesture];
     
-    CLLocationCoordinate2D coordinate = [CommonFunctions getUserCurrentLocation];
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
-    [self getAddressFromLatLon:location];
 }
 
 

@@ -25,6 +25,16 @@
 }
 
 
+
+//*************** Method To Share App
+
+- (void) shareSiteOnSocialNetwork {
+    
+    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Share on" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Facebook",@"Twitter",@"Cancel",nil];
+}
+
+
+
 //*************** Method To Pop View Controller To Parent Controller
 
 - (void) pop2Dismiss:(id) sender {
@@ -67,7 +77,62 @@
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     appDelegate.hud.labelText = @"Loading...";
 
-    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"AccessToken"]];
+    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"AccessToken"]];
+
+    
+
+}
+
+
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex==0) {
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+        
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        NSMutableArray *values = [[NSMutableArray alloc] init];
+        
+        [parameters addObject:@"IsFriendOfWater"];
+        [values addObject:@"True"];
+        
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,PROFILE_API_URL]];
+    }
+}
+
+
+# pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag==1) {
+        if (buttonIndex==0) {
+            NSString *appUrl;
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSShareURL"]) {
+                    appUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            [CommonFunctions sharePostOnFacebook:@"http://52.74.251.44/PUB.MyWater.Api.New/uploads/info/Icon_180.png" appUrl:appUrl title:@"MyWaters" desc:@"Download app from app store." view:self];
+        }
+        else if (buttonIndex==1) {
+            
+            NSString *appUrl;
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSShareURL"]) {
+                    appUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            [CommonFunctions sharePostOnTwitter:appUrl title:@"Download MyWaters app from app store." view:self];
+        }
+    }
 }
 
 
@@ -82,9 +147,25 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
-        [appDelegate.APP_CONFIG_DATA_ARRAY removeAllObjects];
-        appDelegate.APP_CONFIG_DATA_ARRAY = [[responseString JSONValue] objectForKey:APP_CONFIG_DATA_RESPONSE_NAME];
-        
+        if (isGettingAppConfigData) {
+            isGettingAppConfigData = NO;
+            [appDelegate.APP_CONFIG_DATA_ARRAY removeAllObjects];
+            appDelegate.APP_CONFIG_DATA_ARRAY = [[responseString JSONValue] objectForKey:APP_CONFIG_DATA_RESPONSE_NAME];
+        }
+        else {
+
+            [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
+            
+            if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userIsFriendOfWater"] intValue] == 1) {
+                tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App", nil];
+            }
+            else {
+                tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App",@"Join Friends of Water", nil];
+            }
+            
+            [aboutTableView reloadData];
+            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        }
     }
     else {
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
@@ -124,7 +205,8 @@
     cell.textLabel.textColor = RGB(35, 35, 35);
     cell.textLabel.numberOfLines = 0;
     
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    if (indexPath.row!=6)
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (indexPath.row==0) {
         cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_web_settings.png",appDelegate.RESOURCE_FOLDER_PATH]];
@@ -139,7 +221,10 @@
         cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_settings.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
     else if (indexPath.row==4) {
-        cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_youtube_settings.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_youtube-1.png",appDelegate.RESOURCE_FOLDER_PATH]];
+    }
+    else if (indexPath.row==5) {
+        cell.imageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share_new.png",appDelegate.RESOURCE_FOLDER_PATH]];
     }
     
     
@@ -157,10 +242,11 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
 
     if (indexPath.row==0) {
-        
+
+        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+
         for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
             if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"WebsiteURL"]) {
                 viewObj.headerTitle = @"About PUB";
@@ -168,9 +254,13 @@
                 break;
             }
         }
+        
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (indexPath.row==1) {
         
+        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+
         for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
             if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"FacebookURL"]) {
                 viewObj.headerTitle = @"Facebook";
@@ -178,9 +268,14 @@
                 break;
             }
         }
+        
+        [self.navigationController pushViewController:viewObj animated:YES];
+
     }
     else if (indexPath.row==2) {
         
+        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+
         for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
             if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"TwitterURL"]) {
                 viewObj.headerTitle = @"Twitter";
@@ -188,9 +283,14 @@
                 break;
             }
         }
+        
+        [self.navigationController pushViewController:viewObj animated:YES];
+
     }
     else if (indexPath.row==3) {
         
+        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+
         for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
             if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"InstagramURL"]) {
                 viewObj.headerTitle = @"Instagram";
@@ -198,9 +298,14 @@
                 break;
             }
         }
+        
+        [self.navigationController pushViewController:viewObj animated:YES];
+
     }
     else if (indexPath.row==4) {
         
+        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+
         for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
             if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"YoutubeURL"]) {
                 viewObj.headerTitle = @"YouTube";
@@ -208,15 +313,18 @@
                 break;
             }
         }
+        
+        [self.navigationController pushViewController:viewObj animated:YES];
+
     }
     else if (indexPath.row==5) {
-        
+        [self shareSiteOnSocialNetwork];
     }
     
-    DebugLog(@"%@---%@",viewObj.headerTitle,viewObj.webUrl);
-    
-    [self.navigationController pushViewController:viewObj animated:YES];
-
+    else if (indexPath.row==6) {
+        
+        [CommonFunctions showAlertView:self title:nil msg:@"By tapping on OK, you will be subscribed to Friends of Water." cancel:nil otherButton:@"OK",@"Cancel",nil];
+    }
 }
 
 
@@ -233,11 +341,11 @@
 //    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
 
-    if ([[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"IsFriendOfWater"] intValue] == 1) {
-        tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube", nil];
+    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userIsFriendOfWater"] intValue] == 1) {
+        tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App", nil];
     }
     else {
-        tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Join Friends of Water", nil];
+        tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App",@"Join Friends of Water", nil];
     }
     
     aboutTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
@@ -251,8 +359,10 @@
     
     [self createTableHeader];
     
-    if (appDelegate.APP_CONFIG_DATA_ARRAY.count==0)
+    if (appDelegate.APP_CONFIG_DATA_ARRAY.count==0) {
+        isGettingAppConfigData = YES;
         [self getConfigData];
+    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {

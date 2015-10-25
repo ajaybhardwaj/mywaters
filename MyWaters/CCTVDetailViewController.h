@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "DirectionViewController.h"
+#import "QuickMapViewController.h"
 
-@interface CCTVDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate> {
+@interface CCTVDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UISearchBarDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -29,6 +30,17 @@
     BOOL isAlreadyFav;
     
     NSMutableArray *tempNearByArray;
+    
+    UIImageView *zoomedImageView;
+    UIPinchGestureRecognizer *twoFingerPinch;
+    UIScrollView *fullImageScrollView;
+    UIButton *closeButton;
+    
+    UITableView *searchTableView;
+    NSMutableArray *filterDataSource;
+    BOOL isFiltered;
+    UISearchBar *listinSearchBar;
+    UIImageView *dimmedImageView;
 }
 
 @property (nonatomic, strong) NSString *imageUrl,*titleString,*cctvID;

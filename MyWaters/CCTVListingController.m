@@ -23,6 +23,36 @@
 }
 
 
+//*************** Method For Saving ABC Water Sites Data
+
+- (void) saveCCTVData {
+    
+    [appDelegate insertCCTVData:appDelegate.CCTV_LISTING_ARRAY];
+}
+
+
+//*************** Method For Pull To Refresh
+
+- (void) pullToRefreshTable {
+    
+    // Reload table data
+    [cctvListingTable reloadData];
+    
+    // End the refreshing
+    if (self.refreshControl) {
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm a"];
+        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+                                                                    forKey:NSForegroundColorAttributeName];
+        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        self.refreshControl.attributedTitle = attributedTitle;
+        
+        [self.refreshControl endRefreshing];
+    }
+}
+
 
 //*************** Method To Get WLS Listing
 
@@ -32,9 +62,11 @@
     appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     appDelegate.hud.labelText = @"Loading...";
     
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"1",@"1.0", nil];
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],@"1.0", nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+    
+    [self pullToRefreshTable];
 }
 
 
@@ -210,6 +242,10 @@
             }];
             
             [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+            
+            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
+                [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
+
             //            }
             //            else {
             //                if (appDelegate.CCTV_LISTING_ARRAY.count!=0) {
@@ -222,6 +258,7 @@
         
         [appDelegate.hud hide:YES];
         [cctvListingTable reloadData];
+        [self.refreshControl endRefreshing];
     }
     else {
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"Ok" otherButton:nil];
@@ -388,7 +425,8 @@
     else {
         
         UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 50, 50)];
-        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-2.png",appDelegate.RESOURCE_FOLDER_PATH]];
+//        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-2.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
         [cell.contentView addSubview:cellImage];
         
         
@@ -450,11 +488,6 @@
     filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
     filteredDataSource = [[NSMutableArray alloc] init];
     
-    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
-    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
-    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
-    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-    
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
@@ -467,18 +500,19 @@
     UIButton *btnSearch =  [UIButton buttonWithType:UIButtonTypeCustom];
     [btnSearch setImage:[UIImage imageNamed:@"icn_search"] forState:UIControlStateNormal];
     [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
-    [btnSearch setFrame:CGRectMake(36, 0, 32, 32)];
+    [btnSearch setFrame:CGRectMake(44, 0, 32, 32)];
     
-    UIButton *btnLocation =  [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnLocation setImage:[UIImage imageNamed:@"icn_location_top"] forState:UIControlStateNormal];
-    //    [btnLocation addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
-    [btnLocation setFrame:CGRectMake(72, 0, 32, 32)];
+//    UIButton *btnLocation =  [UIButton buttonWithType:UIButtonTypeCustom];
+//    [btnLocation setImage:[UIImage imageNamed:@"icn_location_top"] forState:UIControlStateNormal];
+//    //    [btnLocation addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
+//    [btnLocation setFrame:CGRectMake(72, 0, 32, 32)];
     
     
-    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 32)];
+//    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 32)];
+    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
     [rightBarButtonItems addSubview:btnfilter];
     [rightBarButtonItems addSubview:btnSearch];
-    [rightBarButtonItems addSubview:btnLocation];
+//    [rightBarButtonItems addSubview:btnLocation];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
     
@@ -499,7 +533,9 @@
     filterTableView.backgroundView = nil;
     filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     filterTableView.alpha = 0.8;
-    
+    filterTableView.scrollEnabled = NO;
+    filterTableView.alwaysBounceVertical = NO;
+
     
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;
@@ -527,8 +563,15 @@
         }
     }
     
+    // Initialize the refresh control.
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor whiteColor];
+    self.refreshControl.tintColor = [UIColor blackColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(fetchCCTVListing)
+                  forControlEvents:UIControlEventValueChanged];
+    [cctvListingTable addSubview:self.refreshControl];
     
-    [self fetchCCTVListing];
 }
 
 
@@ -540,7 +583,14 @@
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
-    
+ 
+    NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
+    [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
+    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
+
+    [self fetchCCTVListing];
+
 }
 
 

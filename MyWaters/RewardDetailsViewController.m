@@ -9,7 +9,7 @@
 #import "RewardDetailsViewController.h"
 
 @implementation RewardDetailsViewController
-@synthesize rewardID,descriptionString,titleString,validFromDateString,validTillDateString,locationValueString,pointsValueString,imageName,imageUrl;
+@synthesize rewardID,descriptionString,titleString,validFromDateString,validTillDateString,locationValueString,pointsValueString,imageName,imageUrl,currentPointsString;
 @synthesize latValue,longValue;
 
 //*************** Demo App UI
@@ -43,20 +43,24 @@
 }
 
 
+//*************** Method To Redeem Reward
+
+- (void) redeemReward {
+    
+    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    appDelegate.hud.labelText = @"Loading...";
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"8",rewardID,@"2",@"1.0", nil];
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+}
+
 
 //*************** Method To Create Detail Page UI
 
 - (void) createUI {
-    
-//    float h2 = 0;
-//    
-//    if ([dataDict objectForKey:@"image_size"] !=(id)[NSNull null]) {
-//        NSArray *tempArray = [[dataDict objectForKey:@"image_size"] componentsSeparatedByString: @","];
-//        
-//        float w1 = [[tempArray objectAtIndex:0] floatValue];
-//        float h1 = [[tempArray objectAtIndex:1] floatValue];
-//        h2 = (h1*self.view.bounds.size.width)/w1;
-//    }
     
     rewardImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
     [bgScrollView addSubview:rewardImageView];
@@ -252,6 +256,35 @@
 
 
 
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    [appDelegate.hud hide:YES];
+
+    DebugLog(@"%@",responseString);
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+    
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+    [appDelegate.hud hide:YES];
+}
+
+
+
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
@@ -280,20 +313,23 @@
     [redeemNowButton setTitle:@"REDEEM NOW" forState:UIControlStateNormal];
     [redeemNowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     redeemNowButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
-    [redeemNowButton addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    [redeemNowButton addTarget:self action:@selector(redeemReward) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:redeemNowButton];
     
-    //[self createDemoAppControls];
+    if ([pointsValueString intValue] > [currentPointsString intValue]) {
+        redeemNowButton.userInteractionEnabled = NO;
+    }
+    
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-    
-    [self.view addGestureRecognizer:swipeGesture];
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedScreen:)];
+//    swipeGesture.numberOfTouchesRequired = 1;
+//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+//    
+//    [self.view addGestureRecognizer:swipeGesture];
     
 }
 

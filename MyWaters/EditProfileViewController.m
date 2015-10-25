@@ -158,7 +158,32 @@
     }
     else {
         [textField resignFirstResponder];
+        [UIView beginAnimations:@"topMenu" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint pos = self.view.center;
+        if (IS_IPHONE_4_OR_LESS)
+            pos.y = 269;
+        else
+            pos.y = 315;
+        self.view.center = pos;
+        [UIView commitAnimations];
     }
+    
+    
+    
+    return YES;
+}
+
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    [UIView beginAnimations:@"topMenu" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = self.view.center;
+    pos.y = 200;
+    self.view.center = pos;
+    [UIView commitAnimations];
+    
     return YES;
 }
 
@@ -175,9 +200,7 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
-        [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
-        
-        appDelegate.USER_PROFILE_DICTIONARY = [responseString JSONValue];
+        //        [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
         
         //        OTPViewController *viewObj = [[OTPViewController alloc] init];
         //        viewObj.emailStringForVerification = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
@@ -245,11 +268,11 @@
     uploadAvatarLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
     [self.view addSubview:uploadAvatarLabel];
     
-    if ([[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"] != (id)[NSNull null] || [[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"] length] !=0) {
-        
+    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"] length] !=0) {
+    
         uploadAvatarLabel.text = @"Tap To Change Avatar";
         
-        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"ImageName"]];
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"]];
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         activityIndicator.center = CGPointMake(profileImageView.bounds.size.width/2, profileImageView.bounds.size.height/2);
         [profileImageView addSubview:activityIndicator];
@@ -288,7 +311,7 @@
     nameField.returnKeyType = UIReturnKeyNext;
     [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     nameField.tag = 1;
-    nameField.text = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Name"];
+    nameField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
     
     emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, nameField.frame.origin.y+nameField.bounds.size.height+10, self.view.bounds.size.width-20, 40)];
     emailField.textColor = RGB(61, 71, 94);
@@ -307,7 +330,7 @@
     emailField.returnKeyType = UIReturnKeyDefault;
     [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
     emailField.tag = 2;
-    emailField.text = [[appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"UserProfile"] objectForKey:@"Email"];
+    emailField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
     
     updateButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [updateButton setTitle:@"UPDATE" forState:UIControlStateNormal];

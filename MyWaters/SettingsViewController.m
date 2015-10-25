@@ -31,6 +31,9 @@
 
 - (void) moveToLoginView {
     
+//    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+//    [prefs setObject:NULL forKey:@"userPassword"];
+//    [prefs synchronize];
     [[ViewControllerHelper viewControllerHelper] signOut];
 }
 
@@ -95,10 +98,19 @@
         NotificationsSettingsViewController *viewObj = [[NotificationsSettingsViewController alloc] init];
         [self.navigationController pushViewController:viewObj animated:YES];
     }
-//    else if (indexPath.row==3) {
-//        AboutMyWatersViewController *viewObj = [[AboutMyWatersViewController alloc] init];
-//        [self.navigationController pushViewController:viewObj animated:YES];
-//    }
+    else if (indexPath.row==3) {
+        
+        WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
+        for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+            if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"TermsAndConditions"]) {
+                viewObj.headerTitle = @"Terms & Conditions";
+                viewObj.termsConditionsHTML = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                break;
+            }
+        }
+        viewObj.isShowingTermsAndConditions = YES;
+        [self.navigationController pushViewController:viewObj animated:YES];
+    }
 }
 
 
@@ -115,7 +127,8 @@
     
     
     tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Hints",@"Dashboard",@"Notifications",@"Terms and Conditions", nil];
-    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"App will remember where you last left off",@"",@"",@"",@"", nil];
+//    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"App will remember where you last left off",@"",@"",@"",@"", nil];
+    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"",@"",@"",@"", nil];
     
     settingsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
     settingsTableView.delegate = self;
