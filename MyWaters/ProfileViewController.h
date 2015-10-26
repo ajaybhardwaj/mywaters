@@ -16,8 +16,11 @@
 #import "PhotosViewController.h"
 #import "GalleryViewController.h"
 #import "AKETooltip.h"
+#import "FGalleryViewController.h"
+#import "CustomIOSAlertView.h"
 
-@interface ProfileViewController : UIViewController <UITabBarControllerDelegate,UITableViewDataSource,UITableViewDelegate> {
+
+@interface ProfileViewController : UIViewController <UITabBarControllerDelegate,UITableViewDataSource,UITableViewDelegate,FGalleryViewControllerDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -52,11 +55,13 @@
     
     //===== Photos Controls
     UIView *photosBackgroundView;
-    NSMutableArray *photosDataSource;
+    NSMutableArray *photosDataSource,*photoDataSourceForGallery;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;
     UIButton *rewardsDetailButton;
+    
+    FGalleryViewController *networkGallery;
 }
 //@property (nonatomic, strong) UITabBarController *tabBarController;
 

@@ -89,25 +89,25 @@
     [feedTableView reloadData];
     [exploreTableView reloadData];
     
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"MMM d, h:mm a"];
-    NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
-    NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
-                                                                forKey:NSForegroundColorAttributeName];
-    NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//    [formatter setDateFormat:@"MMM d, h:mm a"];
+//    NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+//    NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+//                                                                forKey:NSForegroundColorAttributeName];
+//    NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
     
     
     // End the refreshing
     if (self.refreshControlFeeds) {
         
-        self.refreshControlFeeds.attributedTitle = attributedTitle;
+//        self.refreshControlFeeds.attributedTitle = attributedTitle;
         [self.refreshControlFeeds endRefreshing];
     }
     
     // End the refreshing
     if (self.refreshControlChatter) {
         
-        self.refreshControlChatter.attributedTitle = attributedTitle;
+//        self.refreshControlChatter.attributedTitle = attributedTitle;
         [self.refreshControlChatter endRefreshing];
     }
 }
@@ -645,14 +645,23 @@
 }
 
 
-- (void) viewDidAppear:(BOOL)animated {
+//- (void) viewDidAppear:(BOOL)animated {
+//    
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+//    swipeGesture.numberOfTouchesRequired = 1;
+//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+//    
+//    [self.view addGestureRecognizer:swipeGesture];
+//    
+//}
+
+- (void) viewWillDisappear:(BOOL)animated {
     
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-    
-    [self.view addGestureRecognizer:swipeGesture];
-    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
 }
 
 

@@ -52,12 +52,12 @@
     // End the refreshing
     if (self.refreshControl) {
         
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"MMM d, h:mm a"];
-        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
-        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
-                                                                    forKey:NSForegroundColorAttributeName];
-        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//        [formatter setDateFormat:@"MMM d, h:mm a"];
+//        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+//        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+//                                                                    forKey:NSForegroundColorAttributeName];
+//        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
 //        self.refreshControl.attributedTitle = attributedTitle;
         
         [self.refreshControl endRefreshing];
@@ -306,6 +306,8 @@
         
         if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+17] isEqualToString:@"1"]) {
             
+            cellImage.frame = CGRectMake(15, 15, 50, 50);
+
             cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
         }
         else if ([[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+17] isEqualToString:@"2"]) {
@@ -368,6 +370,11 @@
         subTitleLabel.numberOfLines = 0;
         subTitleLabel.textAlignment = NSTextAlignmentRight;
         [cell.contentView addSubview:subTitleLabel];
+        
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            
+            subTitleLabel.text = @"";
+        }
         
         UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, favouritesListingTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
@@ -434,7 +441,7 @@
 
     
     favouritesDataSource = [[NSArray alloc] initWithObjects:@"Sembawang Park - ABC Waters",@"Boon Lay Way - CCTV",@"Boon Keng Road/Bendemeer Road - CCTV", nil];
-    filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTVs",@"Event",@"Water Level Sensor",@"Distance", nil];
+    filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTVs",@"Event",@"ABC Water Sites",@"Water Level Sensor",@"Distance", nil];
     
     selectedFilterIndex = 0;
     

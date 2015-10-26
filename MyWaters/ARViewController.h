@@ -14,8 +14,9 @@
 #import "Place.h"
 #import "ARGeoCoordinate.h"
 #import "UILabel + Extension.h"
+#import "FGalleryViewController.h"
 
-@interface ARViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate, ARLocationDelegate, ARDelegate, ARMarkerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate> {
+@interface ARViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate, ARLocationDelegate, ARDelegate, ARMarkerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate,FGalleryViewControllerDelegate> {
     
     AppDelegate *appDelegate;
     UIScrollView *overlayScrollview;
@@ -31,6 +32,9 @@
     UITableView *imageUploadOptionsTable;
     
     NSInteger poiID,poiType;
+    
+    FGalleryViewController *networkGallery;
+    NSMutableArray *pictureDataSourceForGallery;
 }
 
 @property (weak, nonatomic) MKMapView *mapView;

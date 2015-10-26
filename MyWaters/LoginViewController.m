@@ -111,8 +111,11 @@
             [emailField resignFirstResponder];
             [passField resignFirstResponder];
             
-            if (!IS_IPHONE_4_OR_LESS) {
+            if (IS_IPHONE_4_OR_LESS || IS_IPHONE_6P) {
                 
+                
+            }
+            else {
                 [UIView beginAnimations:@"emailField" context:NULL];
                 [UIView setAnimationDuration:0.5];
                 CGPoint viewPOS = self.view.center;

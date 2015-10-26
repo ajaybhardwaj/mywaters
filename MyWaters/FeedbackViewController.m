@@ -184,10 +184,10 @@
         
         if (isReportingForChatter) {
             
-            [parameters addObject:@"UserID"];
+            [parameters addObject:@"Feedback.UserID"];
             [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userID"]];
 
-            [parameters addObject:@"MediaFeedID"];
+            [parameters addObject:@"Feedback.MediaFeedID"];
             [values addObject:chatterID];
 
         }
@@ -314,6 +314,18 @@
 }
 
 
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (isReportingForChatter) {
+        isReportingForChatter = NO;
+        if (buttonIndex==0) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
+}
+
 
 # pragma mark - ASIHTTPRequestDelegate Methods
 
@@ -333,7 +345,6 @@
         phoneField.text = @"";
         nameField.text = @"";
         
-        isReportingForChatter = NO;
         appDelegate.IS_USER_LOCATION_SELECTED_BY_LONG_PRESS = NO;
         appDelegate.LONG_PRESS_USER_LOCATION_LAT = 0.0;
         appDelegate.LONG_PRESS_USER_LOCATION_LONG = 0.0;
@@ -555,8 +566,8 @@
         
         if (indexPath.row==0) {
             
-            commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, 120)];
-            commentField.returnKeyType = UIReturnKeyDone;
+            commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, 120)];
+            commentField.returnKeyType = UIReturnKeyDefault;
             commentField.delegate = self;
             commentField.text = @" Comments *";
             commentField.textColor = [UIColor lightGrayColor];
@@ -576,7 +587,7 @@
         }
         else if (indexPath.row==1) {
             
-            nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, cell.bounds.size.height-0.5)];
             nameField.textColor = RGB(35, 35, 35);
             nameField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
             nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -601,7 +612,7 @@
         }
         else if (indexPath.row==2) {
             
-            phoneField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            phoneField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, cell.bounds.size.height-0.5)];
             phoneField.textColor = RGB(35, 35, 35);
             phoneField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
             phoneField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -625,7 +636,7 @@
         }
         else if (indexPath.row==3) {
             
-            emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, cell.bounds.size.height-0.5)];
             emailField.textColor = RGB(35, 35, 35);
             emailField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
             emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -654,7 +665,7 @@
         
         if (indexPath.row==0) {
             
-            locationField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            locationField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, cell.bounds.size.height-0.5)];
             locationField.textColor = RGB(35, 35, 35);
             locationField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
             locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -685,7 +696,7 @@
         }
         else if (indexPath.row==1) {
             
-            commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, 120)];
+            commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, 120)];
             commentField.returnKeyType = UIReturnKeyDone;
             commentField.delegate = self;
             commentField.text = @" Comments *";
@@ -702,7 +713,7 @@
         }
         else if (indexPath.row==2) {
             
-            nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            nameField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, cell.bounds.size.height-0.5)];
             nameField.textColor = RGB(35, 35, 35);
             nameField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
             nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -727,7 +738,7 @@
         }
         else if (indexPath.row==3) {
             
-            phoneField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            phoneField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, cell.bounds.size.height-0.5)];
             phoneField.textColor = RGB(35, 35, 35);
             phoneField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
             phoneField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -751,7 +762,7 @@
         }
         else if (indexPath.row==4) {
             
-            emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+            emailField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, cell.bounds.size.height-0.5)];
             emailField.textColor = RGB(35, 35, 35);
             emailField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
             emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -795,7 +806,7 @@
 
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView{
     
-    [commentField resignFirstResponder];
+//    [commentField resignFirstResponder];
     if ([commentField.text length]!=0) {
         if (!tempCommentString)
             tempCommentString = [[NSString alloc] initWithFormat:@"%@",commentField.text];
@@ -809,11 +820,14 @@
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     
     if([text isEqualToString:@"\n"]) {
-        [commentField resignFirstResponder];
+//        [commentField resignFirstResponder];
         if(commentField.text.length == 0){
             commentField.textColor = [UIColor lightGrayColor];
-            commentField.text = @"Comments";
-            [commentField resignFirstResponder];
+//            commentField.text = @"Comments";
+//            [commentField resignFirstResponder];
+        }
+        else {
+            commentField.text = [NSString stringWithFormat:@"%@\n",commentField.text];
         }
         return NO;
     }
@@ -845,7 +859,7 @@
 {
     if(commentField.text.length == 0){
         commentField.textColor = [UIColor lightGrayColor];
-        commentField.text = @"Comments";
+//        commentField.text = @"Comments";
         [commentField resignFirstResponder];
     }
 }
@@ -912,6 +926,7 @@
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
     fieldIndex = textField.tag;
+    [commentField resignFirstResponder];
     
     CGPoint origin = textField.frame.origin;
     CGPoint point = [textField.superview convertPoint:origin toView:self.view];
@@ -946,6 +961,8 @@
             return YES;
         }
     }
+    
+    
 }
 
 
@@ -1062,6 +1079,11 @@
         
     }
     
+    if (isReportingForChatter) {
+        tempCommentString = chatterText;
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    }
+    
     tempNameString = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
     tempEmailString = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
     
@@ -1084,6 +1106,12 @@
 
 
 - (void) viewWillDisappear:(BOOL)animated {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
     
     [self cancelPickerView];
 }

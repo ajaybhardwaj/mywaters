@@ -80,7 +80,7 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
-        [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
+//        [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
         
 //        OTPViewController *viewObj = [[OTPViewController alloc] init];
 //        viewObj.emailStringForVerification = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
@@ -216,6 +216,17 @@
     [self.view addSubview:submitButton];
     
 }
+
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

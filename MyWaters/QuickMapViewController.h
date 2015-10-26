@@ -18,8 +18,9 @@
 #import "MapOverlayView.h"
 #import "WaterLevelSensorsDetailViewController.h"
 #import "UserFloodSubmissionViewController.h"
+#import "CMPopTipView.h"
 
-@interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UPStackMenuDelegate> {
+@interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UPStackMenuDelegate,CMPopTipViewDelegate> {
     
     AppDelegate *appDelegate;
     BOOL isControlMaximize,isShowingFilter;
@@ -58,7 +59,14 @@
     BOOL isLoadingFloods,isLoadingWLS,isLoadingCCTV,isLoadingFeedback,isLoadingRainMap;
     
     NSMutableArray *cctvAnnotationsArray,*wlsAnnotationsArray,*userFeedbackAnnotationsArray,*pubFloodAnnotationsArray;
+    
+    
+    //*************** Quick Map Hints Variables
+    CMPopTipView *currentLocationPopUp,*menuPopUp,*mapCenterPopUp;
+    UIButton *mapCenterHiddenButon;
 }
+@property (nonatomic, strong) id currentPopTipViewTarget;
+@property (nonatomic, strong) NSMutableArray	*visiblePopTipViews;
 
 @property (nonatomic, assign) BOOL isNotQuickMapController,isShowingRoute;
 @property (nonatomic, strong) MapOverlay *mapOverlay;

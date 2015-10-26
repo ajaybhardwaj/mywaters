@@ -38,6 +38,26 @@
 }
 
 
+
+//*************** Method To Register User For Flood Alerts
+
+- (void) registerForHints:(id) sender {
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    if (isHintsOn) {
+        isHintsOn = NO;
+        [hintsSwitch setOn:NO animated:YES];
+        [prefs setValue:@"NO" forKey:@"quickMapHints"];
+    }
+    else {
+        isHintsOn = YES;
+        [hintsSwitch setOn:YES animated:YES];
+        [prefs setValue:@"YES" forKey:@"quickMapHints"];
+    }
+    [prefs synchronize];
+}
+
+
 # pragma mark - UITableViewDataSource Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -71,9 +91,19 @@
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     else {
+        NSString *hintStatus = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"quickMapHints"];
         hintsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
-        [hintsSwitch addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
+        [hintsSwitch addTarget:self action:@selector(registerForHints:) forControlEvents:UIControlEventValueChanged];
         cell.accessoryView = hintsSwitch;
+        
+        if ([hintStatus isEqualToString:@"YES"]) {
+            isHintsOn = YES;
+            [hintsSwitch setOn:YES];
+        }
+        else {
+            isHintsOn = NO;
+            [hintsSwitch setOn:NO];
+        }
     }
     
     UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, settingsTableView.bounds.size.width, 0.5)];

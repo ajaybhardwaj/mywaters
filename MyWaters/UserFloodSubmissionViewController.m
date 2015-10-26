@@ -307,7 +307,7 @@
     
     if (indexPath.row==0) {
         
-        locationField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height-0.5)];
+        locationField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, floodSubmissionTableView.bounds.size.width, cell.bounds.size.height-0.5)];
         locationField.textColor = RGB(35, 35, 35);
         locationField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
         locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -331,8 +331,8 @@
     }
     else if (indexPath.row==1) {
         
-        commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, cell.bounds.size.width, 120)];
-        commentField.returnKeyType = UIReturnKeyDone;
+        commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, floodSubmissionTableView.bounds.size.width, 120)];
+        commentField.returnKeyType = UIReturnKeyDefault;
         commentField.delegate = self;
         commentField.text = @" Comments *";
         commentField.textColor = [UIColor lightGrayColor];
@@ -362,7 +362,7 @@
 
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView{
     
-    [commentField resignFirstResponder];
+//    [commentField resignFirstResponder];
     if ([commentField.text length]!=0) {
         if (!tempCommentString)
             tempCommentString = [[NSString alloc] initWithFormat:@"%@",commentField.text];
@@ -376,11 +376,14 @@
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     
     if([text isEqualToString:@"\n"]) {
-        [commentField resignFirstResponder];
+//        [commentField resignFirstResponder];
         if(commentField.text.length == 0){
             commentField.textColor = [UIColor lightGrayColor];
-            commentField.text = @"Comments";
-            [commentField resignFirstResponder];
+//            commentField.text = @"Comments";
+//            [commentField resignFirstResponder];
+        }
+        else {
+            commentField.text = [NSString stringWithFormat:@"%@\n",commentField.text];
         }
         return NO;
     }
@@ -412,7 +415,7 @@
 {
     if(commentField.text.length == 0){
         commentField.textColor = [UIColor lightGrayColor];
-        commentField.text = @"Comments";
+//        commentField.text = @"Comments";
         [commentField resignFirstResponder];
     }
 }
@@ -450,6 +453,8 @@
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    [commentField resignFirstResponder];
     
     CGPoint origin = textField.frame.origin;
     CGPoint point = [textField.superview convertPoint:origin toView:self.view];
@@ -513,6 +518,16 @@
     CLLocation *location = [[CLLocation alloc] initWithLatitude:floodSubmissionLat longitude:floodSubmissionLon];
     [self getAddressFromLatLon:location];
 
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

@@ -228,6 +228,22 @@
 
 //*************** Method For Converting Date String To NSDate
 
++ (NSDate *)dateValueFromString:(NSString *)dateTimeString {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    
+    NSDate *result = [dateFormatter dateFromString:dateTimeString];
+//    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy @ HH:mm a"];
+//    
+//    NSString *resultStrig = [dateFormatter stringFromDate:result];
+    return result;
+}
+
+
+
+//*************** Method For Converting Date String To NSDate
+
 + (NSString *)dateFromString:(NSString *)dateString {
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -266,7 +282,7 @@
     }
     
     
-    NSString *access_token = [[SharedObject sharedClass] getPhysicalABuseAccessToken];
+    NSString *access_token = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"AccessToken"];
     if (access_token)
         [request setPostValue:access_token forKey:ACCOUNT_ACCESS_TOKEN];
     

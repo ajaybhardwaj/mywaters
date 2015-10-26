@@ -511,8 +511,8 @@
     NSString *url = urlString;//@"https://www.youtube.com/embed/5fDrVA2_nbg";
     url = [NSString stringWithFormat:@"%@?rel=0&showinfo=0&controls=0",url];
     NSString* embedHTML = [NSString stringWithFormat:@"\
-                           <iframe width=\"150\" height=\"150\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
-                           ",url];
+                           <iframe width=\"%f\" height=\"150\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
+                           ",self.view.bounds.size.width/2-20,url];
     
     NSString* html = [NSString stringWithFormat:embedHTML, url, self.view.bounds.size.width+10, 150];
     [tipsWebView loadHTMLString:html baseURL:nil];
@@ -1360,13 +1360,15 @@
 }
 
 
-# pragma mark - CLLocationManegerDelegate Methods
+# pragma mark - CLLocationManagerDelegate Methods
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
     
     appDelegate.CURRENT_LOCATION_LAT = newLocation.coordinate.latitude;
     appDelegate.CURRENT_LOCATION_LONG = newLocation.coordinate.longitude;
+    
+    DebugLog(@"%f---%f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
     
     appDelegate.USER_CURRENT_LOCATION_COORDINATE = [newLocation coordinate];
     
@@ -1392,6 +1394,14 @@
     
     
 }
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
+    
+    DebugLog(@"%@",error.description);
+    appDelegate.CURRENT_LOCATION_LAT = 0.0;
+    appDelegate.CURRENT_LOCATION_LONG = 0.0;
+}
+
 
 
 # pragma mark - UITableViewDelegate Methods
@@ -1660,6 +1670,16 @@
     
     [self.view addGestureRecognizer:swipeGesture];
     
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
 }
 
 

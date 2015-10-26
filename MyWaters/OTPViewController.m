@@ -301,7 +301,7 @@
             
             if (isValidatingEmail) {
                 
-                [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
+//                [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
                 [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
                 
                 [CommonFunctions showAlertView:self title:nil msg:@"Account successfully created." cancel:@"OK" otherButton:nil];

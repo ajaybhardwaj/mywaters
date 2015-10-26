@@ -23,6 +23,25 @@
 @implementation ARViewController
 @synthesize abcWaterSiteID;
 
+
+//*************** Method To Move To Photo Gallery
+
+- (void) tapToMoveToPhotoGallery:(id) sender {
+    
+    
+    if (pictureDataSourceForGallery.count!=0) {
+        networkGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
+        [self.navigationController pushViewController:networkGallery animated:YES];
+    }
+    
+    //    GalleryViewController *viewObj = [[GalleryViewController alloc] init];
+    //    viewObj.galleryImages = photosDataSource;
+    //    viewObj.isABCGallery = NO;
+    //    viewObj.isUserGallery = YES;
+    //    viewObj.isPOIGallery = NO;
+    //    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
 //*************** Method To Pop View Controller To Parent Controller
 
 - (void) pop2Dismiss:(id) sender {
@@ -41,12 +60,12 @@
     
     if (isShowingPictureOptions) {
         isShowingPictureOptions = NO;
-        pos.x = -270;
+        pos.y = self.view.bounds.size.width;
         
     }
     else {
         isShowingPictureOptions = YES;
-        pos.x = 100;
+        pos.y = self.view.bounds.size.width-340;
         
     }
     imageUploadOptionsTable.center = pos;
@@ -89,8 +108,8 @@
     NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
     NSString *destinationPath = [doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"POIGallery"]];
     
-    UIImage *storedImage = nil;
     
+    DebugLog(@"Pictures Data %@",pictureDataSource);
     
     for (int i=0; i<pictureDataSource.count; i++) {
         
@@ -98,20 +117,24 @@
         [galleryImage setBackgroundColor:[UIColor whiteColor]];
         galleryImage.tag = i;
         [picturesScrollView addSubview:galleryImage];
+        galleryImage.userInteractionEnabled = YES;
+        
+        UIButton *tapButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        tapButton.frame = CGRectMake(0, 0, galleryImage.bounds.size.width, galleryImage.bounds.size.height);
+        tapButton.tag = i;
+        [tapButton addTarget:self action:@selector(tapToMoveToPhotoGallery:) forControlEvents:UIControlEventTouchUpInside];
+        [galleryImage addSubview:tapButton];
         
         NSString *imageName = [[pictureDataSource objectAtIndex:i] objectForKey:@"Image"];
-//        imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
-        //        DebugLog(@"Image name %@",[[pictureDataSource objectAtIndex:i] objectForKey:@"Image"]);
-        //        DebugLog(@"Image path %@",[destinationPath stringByAppendingPathComponent:[[pictureDataSource objectAtIndex:i] objectForKey:@"Image"]]);
         
         NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
         
-        DebugLog(@"%@",localFile);
+        xAxis = xAxis + 90;
+
         
         if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
             if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
-                storedImage = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
-            
+                galleryImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
         }
         else {
             
@@ -150,7 +173,6 @@
                 
             }];
             
-            xAxis = xAxis + 90;
         }
 
     }
@@ -224,7 +246,7 @@
             ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Name"]];
             //            ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"name"]];
             [coordinate calibrateUsingOrigin:[_userLocation location]];
-            MarkerView *markerView = [[MarkerView alloc] initWithCoordinate:coordinate delegate:self];
+            MarkerView *markerView = [[MarkerView alloc] initWithCoordinate:coordinate delegate:self image:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"MainImage"]];
             DebugLog(@"Marker view %@", markerView);
             markerView.tag = i; //[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"ID"] intValue];
             
@@ -233,25 +255,6 @@
             [_geoLocations addObject:coordinate];
         }
     }
-    
-    //        [self setGeoLocations:[NSMutableArray arrayWithCapacity:[_locations count]]];
-    //
-    //        DebugLog(@"%lu",(unsigned long)[_locations count]);
-    //
-    //        for(Place *place in _locations) {
-    //            ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:[place location] locationTitle:[place placeName]];
-    //
-    //            DebugLog(@"%@---%@",[place location],[place placeName]);
-    //
-    //            [coordinate calibrateUsingOrigin:[_userLocation location]];
-    //            MarkerView *markerView = [[MarkerView alloc] initWithCoordinate:coordinate delegate:self];
-    //            DebugLog(@"Marker view %@", markerView);
-    //
-    //            [coordinate setDisplayView:markerView];
-    //            [_arController addCoordinate:coordinate];
-    //            [_geoLocations addObject:coordinate];
-    //        }
-    
 }
 
 
@@ -383,6 +386,9 @@
         else if (isFetchingImages) {
             
             pictureDataSource = [[responseString JSONValue] objectForKey:ABC_WATER_SITES_POI_IMAGES];
+            for (int i=0; i<pictureDataSource.count; i++) {
+                [pictureDataSourceForGallery addObject:[NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[pictureDataSource objectAtIndex:i] objectForKey:@"Image"]]];
+            }
             [self createPhotosScrollView];
             
         }
@@ -446,7 +452,7 @@
     
     overlayScrollview.hidden = NO;
     
-    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 50, self.view.bounds.size.height-120, 25)];
+    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 50, self.view.bounds.size.width-20, 25)];
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:18.0];
@@ -458,40 +464,37 @@
     [coordinate calibrateUsingOrigin:[_userLocation location]];
     
     
-    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.height-100, 50, 70, 25)];
+    CLLocationCoordinate2D currentLocation;
+    CLLocationCoordinate2D desinationLocation;
+    
+    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+    
+    desinationLocation.latitude = [[[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"Lat"] doubleValue];
+    desinationLocation.longitude = [[[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"Lon"] doubleValue];
+    
+    
+    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-100, 50, 70, 25)];
     distanceLabel.textColor = [UIColor whiteColor];
     distanceLabel.backgroundColor = [UIColor clearColor];
     distanceLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:18.0];
-    distanceLabel.text = [NSString stringWithFormat:@"%.2f km", [coordinate distanceFromOrigin] / 1000.0f];
+//    distanceLabel.text = [NSString stringWithFormat:@"%.2f km", [coordinate distanceFromOrigin] / 1000.0f];
+    distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
     distanceLabel.textAlignment = NSTextAlignmentRight;
     [overlayScrollview addSubview:distanceLabel];
     
-    seperatorImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 80, self.view.bounds.size.height-40, 2)];
+    seperatorImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 80, self.view.bounds.size.width-40, 2)];
     seperatorImageView.backgroundColor = [UIColor whiteColor];
     [overlayScrollview addSubview:seperatorImageView];
     
     
-    descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(20, seperatorImageView.frame.origin.y+seperatorImageView.bounds.size.height+10, self.view.bounds.size.height-40, 40)];
+    descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(20, seperatorImageView.frame.origin.y+seperatorImageView.bounds.size.height+10, self.view.bounds.size.width-40, 40)];
     descriptionLabel.backgroundColor = [UIColor clearColor];
     descriptionLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"Description"]];
     descriptionLabel.textColor = [UIColor whiteColor];
     descriptionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     descriptionLabel.numberOfLines = 0;
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    //    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"%@",[dataDict objectForKey:@"description"]] sizeWithFont:descriptionLabel.font
-    //                                                                                                              constrainedToSize:descriptionLabel.frame.size
-    //                                                                                                                  lineBreakMode:NSLineBreakByWordWrapping];
-    //    CGSize expectedDescriptionLabelSize = [[NSString stringWithFormat:@"Dummy Description Text. Dummy Description Text. Dummy Description Text.\nDummy Description Text. Dummy Description Text. Dummy Description Text\nDummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text. Dummy Description Text\n Dummy Description Text. Dummy Description Text. Dummy Description Text"]
-    //                                           sizeWithFont:descriptionLabel.font
-    //                                           constrainedToSize:descriptionLabel.frame.size
-    //                                           lineBreakMode:NSLineBreakByWordWrapping];
-    //
-    //
-    //    CGRect newDescriptionLabelFrame = descriptionLabel.frame;
-    //    newDescriptionLabelFrame.size.height = expectedDescriptionLabelSize.height;
-    //    descriptionLabel.frame = newDescriptionLabelFrame;
-    //    [overlayScrollview addSubview:descriptionLabel];
-    //    [descriptionLabel sizeToFit];
     
     CGRect newDescriptionLabelFrame = descriptionLabel.frame;
     newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:[[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"Description"] font:descriptionLabel.font withinWidth:overlayScrollview.bounds.size.width];
@@ -499,7 +502,7 @@
     [overlayScrollview addSubview:descriptionLabel];
     
     
-    picturesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, descriptionLabel.frame.origin.y+descriptionLabel.bounds.size.height+10, self.view.bounds.size.height, 80)];
+    picturesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, descriptionLabel.frame.origin.y+descriptionLabel.bounds.size.height+10, self.view.bounds.size.width, 80)];
     picturesScrollView.showsHorizontalScrollIndicator = NO;
     picturesScrollView.showsVerticalScrollIndicator = NO;
     [overlayScrollview addSubview:picturesScrollView];
@@ -517,17 +520,7 @@
     [self fetchABCWaterPOIImage:markerView.tag];
 }
 
-//- (void)showInfoViewForPlace:(Place *)place {
-//    CGRect frame = [[self view] frame];
-//    UITextView *infoView = [[UITextView alloc] initWithFrame:CGRectMake(50.0f, 50.0f, frame.size.width - 100.0f, frame.size.height - 100.0f)];
-//    [infoView setCenter:[[self view] center]];
-//    [infoView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
-//    [infoView setText:[place infoText]];
-//    [infoView setTag:kInfoViewTag];
-//    [infoView setEditable:NO];
-//    [[self view] addSubview:infoView];
-//}
-//
+
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     //    UIView *infoView = [[self view] viewWithTag:kInfoViewTag];
@@ -637,12 +630,12 @@
     
     if (isShowingPictureOptions) {
         isShowingPictureOptions = NO;
-        pos.x = -270;
+        pos.y = self.view.bounds.size.width;
         
     }
     else {
         isShowingPictureOptions = YES;
-        pos.x = 100;
+        pos.y = self.view.bounds.size.width-340;
         
     }
     imageUploadOptionsTable.center = pos;
@@ -680,6 +673,69 @@
 }
 
 
+#pragma mark - FGalleryViewControllerDelegate Methods
+
+
+- (int)numberOfPhotosForPhotoGallery:(FGalleryViewController *)gallery
+{
+    int num;
+    //    if( gallery == localGallery ) {
+    //        num = [localImages count];
+    //    }
+    //    else if( gallery == networkGallery ) {
+    if( gallery == networkGallery ) {
+        num = (int)[pictureDataSourceForGallery count];
+    }
+    return num;
+}
+
+
+- (FGalleryPhotoSourceType)photoGallery:(FGalleryViewController *)gallery sourceTypeForPhotoAtIndex:(NSUInteger)index
+{
+    //    if( gallery == localGallery ) {
+    //        return FGalleryPhotoSourceTypeLocal;
+    //    }
+    //    else
+    return FGalleryPhotoSourceTypeNetwork;
+}
+
+
+- (NSString*)photoGallery:(FGalleryViewController *)gallery captionForPhotoAtIndex:(NSUInteger)index
+{
+    //    NSString *caption;
+    //    if( gallery == localGallery ) {
+    //        caption = [localCaptions objectAtIndex:index];
+    //    }
+    //    else if( gallery == networkGallery ) {
+    //        caption = [networkCaptions objectAtIndex:index];
+    //    }
+    //    return caption;
+    return nil;
+}
+
+
+- (NSString*)photoGallery:(FGalleryViewController*)gallery filePathForPhotoSize:(FGalleryPhotoSize)size atIndex:(NSUInteger)index {
+    //    return [localImages objectAtIndex:index];
+    return nil;
+}
+
+- (NSString*)photoGallery:(FGalleryViewController *)gallery urlForPhotoSize:(FGalleryPhotoSize)size atIndex:(NSUInteger)index {
+    return [pictureDataSourceForGallery objectAtIndex:index];
+}
+
+- (void)handleTrashButtonTouch:(id)sender {
+    // here we could remove images from our local array storage and tell the gallery to remove that image
+    // ex:
+    //[localGallery removeImageAtIndex:[localGallery currentIndex]];
+}
+
+
+- (void)handleEditCaptionButtonTouch:(id)sender {
+    // here we could implement some code to change the caption for a stored image
+}
+
+
+
 
 # pragma mark - View Lifecycle Methods
 
@@ -691,6 +747,7 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     appDelegate.IS_ARVIEW_CUSTOM_LABEL = YES;
     
+    pictureDataSourceForGallery = [[NSMutableArray alloc] init];
     
     _locations = [[NSArray alloc] init];
     
@@ -703,7 +760,7 @@
     [_locationManager startMonitoringSignificantLocationChanges];
     [_locationManager startUpdatingLocation];
     
-    
+    self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
     if(!_arController) {
         _arController = [[AugmentedRealityController alloc] initWithView:[self view] parentViewController:self withDelgate:self];
     }
@@ -714,18 +771,32 @@
     [_arController setDebugMode:NO];
     
     
+//    UIToolbar *toolBar = [[UIToolbar alloc]init];
+//    if (IS_IPHONE_4_OR_LESS) {
+//        toolBar.frame = CGRectMake(60, 218, self.view.bounds.size.height, 44);
+//    }
+//    else if (IS_IPHONE_5) {
+//        toolBar.frame = CGRectMake(15, 262, self.view.bounds.size.height, 44);
+//    }
+//    else if (IS_IPHONE_6) {
+//        toolBar.frame = CGRectMake(20, 312, self.view.bounds.size.height, 44);
+//    }
+//    else if (IS_IPHONE_6P) {
+//        toolBar.frame = CGRectMake(25, 347, self.view.bounds.size.height, 44);
+//    }
+    
     UIToolbar *toolBar = [[UIToolbar alloc]init];
     if (IS_IPHONE_4_OR_LESS) {
-        toolBar.frame = CGRectMake(60, 218, self.view.bounds.size.height, 44);
+        toolBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, 44);
     }
     else if (IS_IPHONE_5) {
-        toolBar.frame = CGRectMake(15, 262, self.view.bounds.size.height, 44);
+        toolBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, 44);
     }
     else if (IS_IPHONE_6) {
-        toolBar.frame = CGRectMake(20, 312, self.view.bounds.size.height, 44);
+        toolBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, 44);
     }
     else if (IS_IPHONE_6P) {
-        toolBar.frame = CGRectMake(25, 347, self.view.bounds.size.height, 44);
+        toolBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, 44);
     }
     
     toolBar.barStyle = UIBarStyleBlackOpaque;
@@ -740,9 +811,9 @@
     
     CGAffineTransform rotationTransform = CGAffineTransformIdentity;
     rotationTransform = CGAffineTransformRotate(rotationTransform, degreesToRadians(90));
-    toolBar.transform = rotationTransform;
+//    toolBar.transform = rotationTransform;
     
-    overlayScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(-125, 125, self.view.bounds.size.height, self.view.bounds.size.width)];
+    overlayScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     overlayScrollview.backgroundColor = [UIColor blackColor];
     overlayScrollview.showsHorizontalScrollIndicator = NO;
     overlayScrollview.showsVerticalScrollIndicator = NO;
@@ -750,15 +821,18 @@
     [self.view addSubview:overlayScrollview];
     overlayScrollview.hidden = YES;
     
-    overlayScrollview.transform = rotationTransform;
+//    overlayScrollview.transform = rotationTransform;
     
     
-    imageUploadOptionsTable = [[UITableView alloc] initWithFrame:CGRectMake(-390, 185, self.view.bounds.size.height, 200) style:UITableViewStyleGrouped];
+    imageUploadOptionsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, 200) style:UITableViewStyleGrouped];
     imageUploadOptionsTable.delegate = self;
     imageUploadOptionsTable.dataSource = self;
     [self.view addSubview:imageUploadOptionsTable];
+    imageUploadOptionsTable.scrollEnabled = NO;
+    imageUploadOptionsTable.alwaysBounceVertical = NO;
+
     
-    imageUploadOptionsTable.transform = rotationTransform;
+//    imageUploadOptionsTable.transform = rotationTransform;
     
     
     [self fetchABCWaterSitePOI];
@@ -774,6 +848,11 @@
     
     //    [self generateGeoLocations];
     [self.navigationController setNavigationBarHidden:YES];
+    self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
+
+    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
+    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+
     
     // Disable iOS 7 back gesture
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
@@ -783,6 +862,23 @@
     
     
 }
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+    
+    [self.navigationController setNavigationBarHidden:NO];
+    self.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    
+    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationPortrait];
+    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+}
+
+
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
@@ -812,6 +908,7 @@
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
     if ([[segue identifier] isEqualToString:@"showAlternate"]) {
         [[segue destinationViewController] setDelegate:self];
         [[segue destinationViewController] setLocations:_locations];
@@ -819,11 +916,6 @@
     }
 }
 
-
--(NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
-}
 
 
 

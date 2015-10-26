@@ -22,6 +22,8 @@
     
     UISwitch *hintsSwitch;
     UIButton *signoutButton;
+    
+    BOOL isHintsOn;
 }
 
 @end

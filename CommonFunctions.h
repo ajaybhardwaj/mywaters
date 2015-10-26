@@ -38,6 +38,7 @@
 + (NSString *)dateForRFC3339DateTimeString:(NSString *)rfc3339DateTimeString;
 + (NSString *)dateTimeFromString:(NSString *)dateTimeString;
 + (NSString *)dateFromString:(NSString *)dateString;
++ (NSDate *)dateValueFromString:(NSString *)dateTimeString;
 + (NSMutableDictionary *)extractXML:(NSMutableDictionary *)XMLDictionary;
 + (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj;
 + (CLLocationCoordinate2D) getUserCurrentLocation;

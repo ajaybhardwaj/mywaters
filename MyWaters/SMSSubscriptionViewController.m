@@ -742,6 +742,16 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+}
+
 /*
  #pragma mark - Navigation
  

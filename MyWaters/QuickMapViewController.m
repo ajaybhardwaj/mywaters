@@ -28,6 +28,63 @@
 
 
 
+//*************** Method To Create Hints PopUp Views
+
+- (void) createMapHints {
+    
+    if (nil == currentLocationPopUp) {
+        
+        currentLocationPopUp = [[CMPopTipView alloc] initWithMessage:@"Tap to locate your current location."];
+        currentLocationPopUp.delegate = self;
+        currentLocationPopUp.backgroundColor = [UIColor whiteColor];
+        currentLocationPopUp.textColor = [UIColor blackColor];
+        
+        [self.visiblePopTipViews addObject:currentLocationButton];
+        [currentLocationPopUp presentPointingAtView:currentLocationButton inView:self.view animated:YES];
+    }
+    else {
+        [self.visiblePopTipViews addObject:currentLocationButton];
+        [currentLocationPopUp presentPointingAtView:currentLocationButton inView:self.view animated:YES];
+    }
+//    else {
+//        // Dismiss
+//        [self.roundRectButtonPopTipView dismissAnimated:YES];
+//        self.roundRectButtonPopTipView = nil;
+//    }
+    
+    if (nil == menuPopUp) {
+        
+        menuPopUp = [[CMPopTipView alloc] initWithMessage:@"Tap to see options"];
+        menuPopUp.delegate = self;
+        menuPopUp.backgroundColor = [UIColor whiteColor];
+        menuPopUp.textColor = [UIColor blackColor];
+        
+        [self.visiblePopTipViews addObject:menuPopUp];
+        [menuPopUp presentPointingAtView:menuContentView inView:self.view animated:YES];
+    }
+    else {
+        [self.visiblePopTipViews addObject:menuPopUp];
+        [menuPopUp presentPointingAtView:menuContentView inView:self.view animated:YES];
+    }
+    
+    
+    if (nil == mapCenterPopUp) {
+        
+        mapCenterPopUp = [[CMPopTipView alloc] initWithMessage:@"Click anywhere to start exploring."];
+        mapCenterPopUp.delegate = self;
+        mapCenterPopUp.backgroundColor = [UIColor whiteColor];
+        mapCenterPopUp.textColor = [UIColor blackColor];
+        
+        [self.visiblePopTipViews addObject:mapCenterPopUp];
+        [mapCenterPopUp presentPointingAtView:mapCenterHiddenButon inView:self.view animated:YES];
+    }
+    else {
+        [self.visiblePopTipViews addObject:mapCenterPopUp];
+        [mapCenterPopUp presentPointingAtView:mapCenterHiddenButon inView:self.view animated:YES];
+    }
+}
+
+
 
 //*************** Method For Saving ABC Water Sites Data
 
@@ -71,6 +128,13 @@
 
 - (void) zoomInUserLocation {
     
+    if (currentLocationPopUp) {
+        [currentLocationPopUp removeFromSuperview];
+    }
+    
+    if (mapCenterPopUp) {
+        [mapCenterPopUp removeFromSuperview];
+    }
     // showing them in the mapView
     //    quickMap.region = MKCoordinateRegionMakeWithDistance(appDelegate.USER_CURRENT_LOCATION_COORDINATE, 250, 250);
     [quickMap setRegion:MKCoordinateRegionMake(appDelegate.USER_CURRENT_LOCATION_COORDINATE, MKCoordinateSpanMake(0.1f, 0.1f)) animated:YES];
@@ -496,7 +560,7 @@
     //    annotationRegion.span.longitudeDelta = 0.02f;
     
     
-    
+
     
     UIButton *button = (id) sender;
     selectedAnnotationButton = button.tag;
@@ -1002,6 +1066,14 @@
 
 
 
+#pragma mark - CMPopTipViewDelegate methods
+
+- (void)popTipViewWasDismissedByUser:(CMPopTipView *)popTipView
+{
+//    [self.visiblePopTipViews removeObject:popTipView];
+    [self.visiblePopTipViews removeAllObjects];
+    self.currentPopTipViewTarget = nil;
+}
 
 
 # pragma mark - ASIHTTPRequestDelegate Methods
@@ -1668,6 +1740,14 @@
 
 - (void)stackMenuWillOpen:(UPStackMenu *)menu
 {
+    if (menuPopUp) {
+        [menuPopUp removeFromSuperview];
+    }
+    
+    if (mapCenterPopUp) {
+        [mapCenterPopUp removeFromSuperview];
+    }
+    
     if([[menuContentView subviews] count] == 0)
         return;
     
@@ -1922,6 +2002,8 @@
     isShowingCamera = NO;
     isShowingDrain = NO;
     
+    self.visiblePopTipViews = [[NSMutableArray alloc] init];
+    
     
     currentLocationButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [currentLocationButton addTarget:self action:@selector(zoomInUserLocation) forControlEvents:UIControlEventTouchUpInside];
@@ -1929,6 +2011,18 @@
     currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-60, 40, 40);
     [quickMap addSubview:currentLocationButton];
     
+    mapCenterHiddenButon = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    mapCenterHiddenButon.frame = CGRectMake(quickMap.bounds.size.width/2 - 20, quickMap.bounds.size.height/2-60, 40, 40);
+    [quickMap addSubview:mapCenterHiddenButon];
+    
+    
+//    currentLocationHintLabel = [[UILabel alloc] initWithFrame:CGRectMake(currentLocationButton.frame.origin.x+currentLocationButton.bounds.size.width+10, quickMap.bounds.size.height-60, 150, 40)];
+//    currentLocationHintLabel.backgroundColor = [UIColor clearColor];
+//    currentLocationHintLabel.text = [NSString stringWithFormat:@"--- Tap to locate your\n    current location."];
+//    currentLocationHintLabel.numberOfLines = 0;
+//    currentLocationHintLabel.textColor = [UIColor whiteColor];
+//    currentLocationHintLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+//    [quickMap addSubview:currentLocationHintLabel];
     
     
     menuContentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
@@ -2047,6 +2141,24 @@
             [quickMap removeOverlay:_routeOverlay];
         }
     }
+    
+    
+    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"quickMapHints"] isEqualToString:@"YES"]) {
+        [self createMapHints];
+    }
+    else {
+        if (menuPopUp) {
+            [menuPopUp removeFromSuperview];
+        }
+        
+        if (mapCenterPopUp) {
+            [mapCenterPopUp removeFromSuperview];
+        }
+        
+        if (currentLocationPopUp) {
+            [currentLocationPopUp removeFromSuperview];
+        }
+    }
 }
 
 
@@ -2058,6 +2170,16 @@
 //    
 //    [self.view addGestureRecognizer:swipeGesture];
     
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
 }
 
 

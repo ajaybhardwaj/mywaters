@@ -1232,6 +1232,14 @@
 }
 
 
+
+
+-(NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+
 @end
 
 
@@ -1239,6 +1247,10 @@
  *	This section overrides the auto-rotate methods for UINaviationController and UITabBarController 
  *	to allow the tab bar to rotate only when a FGalleryController is the visible controller. Sweet.
  */
+
+
+
+
 
 @implementation UINavigationController (FGallery)
 

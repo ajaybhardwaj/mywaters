@@ -30,6 +30,51 @@
 }
 
 
+
+//*************** Method To Register For System Notifications
+
+- (void) registerForSystemNotifications:(id) sender {
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    if (isSystemNotifications) {
+        
+        isSystemNotifications = NO;
+        [systemNotificationSwitch setOn:NO animated:YES];
+        [prefs setValue:@"NO" forKey:@"systemNotifications"];
+        
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    }
+    else {
+        
+        isSystemNotifications = YES;
+        [systemNotificationSwitch setOn:YES animated:YES];
+        [prefs setValue:@"YES" forKey:@"systemNotifications"];
+        
+        if (appDelegate.SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY.count!=0) {
+            
+            for (int i=0; i<appDelegate.SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY.count; i++) {
+                
+                UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+                if (localNotif == nil)
+                    return;
+                localNotif.fireDate = [CommonFunctions dateValueFromString:[[appDelegate.SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidFrom"]];
+                localNotif.timeZone = [NSTimeZone defaultTimeZone];
+                
+                localNotif.alertBody = [NSString stringWithFormat:@"%@ From %@ - Till %@",[[appDelegate.SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Description"],[CommonFunctions dateTimeFromString:[[appDelegate.SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidFrom"]],[CommonFunctions dateTimeFromString:[[appDelegate.SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidTo"]]];
+                localNotif.alertTitle = [[appDelegate.SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Title"];
+                
+                localNotif.soundName = UILocalNotificationDefaultSoundName;
+                localNotif.applicationIconBadgeNumber = 1;
+                            
+                [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+            }
+        }
+    }
+    [prefs synchronize];
+}
+
+
 //*************** Method To Register User For Flood Alerts
 
 - (void) registerForFloodALerts:(id) sender {
@@ -97,7 +142,7 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
-        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+//        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
         if (isFloodAlerts) {
             if (isFloodAlertsTurningOff) {
                 isFloodAlertOff = NO;
@@ -123,12 +168,7 @@
         [notificationSettingsTable reloadData];
     }
     else {
-        if (isFloodAlerts) {
-            [floodAlertsSwitch setOn:NO];
-        }
-        if (isGeneralNotification) {
-            [generalNotificationSwitch setOn:NO];
-        }
+
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
 }
@@ -185,7 +225,7 @@
     
     cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.numberOfLines = 0;
-
+    
     
     UIImageView *cellSeperator;
     if (indexPath.row==0) {
@@ -224,14 +264,22 @@
     else if (indexPath.row==2) {
         
         systemNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"floodAlert"] isEqualToString:@"YES"]) {
+            [systemNotificationSwitch setOn:YES];
+            isSystemNotifications = YES;
+        }
+        else {
+            [systemNotificationSwitch setOn:NO];
+            isSystemNotifications = NO;
+        }
         [systemNotificationSwitch addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
         cell.accessoryView = systemNotificationSwitch;
         
         cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
-//    else if (indexPath.row==3) {
-//        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
-//    }
+    //    else if (indexPath.row==3) {
+    //        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
+    //    }
     
     [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
     [cell.contentView addSubview:cellSeperator];
@@ -247,8 +295,8 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
     if (indexPath.row==3) {
-//        WaterLevelAlertsSettingViewController *viewObj = [[WaterLevelAlertsSettingViewController alloc] init];
-//        [self.navigationController pushViewController:viewObj animated:NO];
+        //        WaterLevelAlertsSettingViewController *viewObj = [[WaterLevelAlertsSettingViewController alloc] init];
+        //        [self.navigationController pushViewController:viewObj animated:NO];
     }
 }
 
@@ -273,13 +321,13 @@
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     
     
-//    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications",@"Read Out Message", nil];
-//    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance",@"Notifications will be read out when received.", nil];
+    //    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications",@"Read Out Message", nil];
+    //    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance",@"Notifications will be read out when received.", nil];
     
     tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications", nil];
     tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance", nil];
-
-
+    
+    
     notificationSettingsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
     notificationSettingsTable.delegate = self;
     notificationSettingsTable.dataSource = self;
@@ -295,7 +343,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-
+    
 }
 
 

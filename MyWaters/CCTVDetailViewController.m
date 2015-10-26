@@ -150,6 +150,13 @@
     desinationLocation.longitude = longValue;
     distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
     
+    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+        
+        distanceLabel.text = @"";
+        arrowIcon.hidden = YES;
+        directionButton.enabled = NO;
+    }
+    
     [cctvListingTable reloadData];
     
     [zoomedImageView setImageURL:[NSURL URLWithString:imageUrl]];
@@ -239,6 +246,12 @@
     [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:arrowIcon];
     
+    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+        
+        distanceLabel.text = @"";
+        arrowIcon.hidden = YES;
+        directionButton.enabled = NO;
+    }
     
     cctvListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+64))];
     cctvListingTable.delegate = self;
@@ -370,7 +383,14 @@
     searchTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     searchTableView.hidden = YES;
     
-    fullImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(-124, 124, self.view.bounds.size.height, self.view.bounds.size.width)];
+    
+    fullImageScrollView = [[UIScrollView alloc] init];
+    if (IS_IPHONE_6P) {
+        fullImageScrollView.frame = CGRectMake(-162, 162, self.view.bounds.size.height, self.view.bounds.size.width);
+    }
+    else {
+        fullImageScrollView.frame = CGRectMake(-124, 124, self.view.bounds.size.height, self.view.bounds.size.width);
+    }
     fullImageScrollView.showsHorizontalScrollIndicator = NO;
     fullImageScrollView.showsVerticalScrollIndicator = NO;
     fullImageScrollView.minimumZoomScale=1.0;
@@ -393,7 +413,7 @@
     closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [closeButton setBackgroundImage:[UIImage imageNamed:@"btn_close.png"] forState:UIControlStateNormal];
     [closeButton addTarget:self action:@selector(removeFullViewImageView) forControlEvents:UIControlEventTouchUpInside];
-    closeButton.frame = CGRectMake(self.view.bounds.size.width-30, self.view.bounds.size.height-30, 29, 29);
+    closeButton.frame = CGRectMake(self.view.bounds.size.width-40, self.view.bounds.size.height-40, 29, 29);
     [self.view addSubview:closeButton];
     closeButton.hidden = YES;
     
@@ -582,8 +602,6 @@
             currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
             currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
             
-            DebugLog(@"%f---%f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
-            DebugLog(@"%f---%f",currentLocation.latitude,currentLocation.longitude);
             
             for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY count];idx++) {
                 
@@ -850,6 +868,11 @@
     subTitleLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:subTitleLabel];
     
+    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+        
+        subTitleLabel.text = @"";
+    }
+    
     
     UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, cctvListingTable.bounds.size.width, 0.5)];
     [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
@@ -952,7 +975,13 @@
 - (void) viewWillDisappear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:NO];
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
 }
+
 
 - (BOOL)prefersStatusBarHidden {
     return YES;

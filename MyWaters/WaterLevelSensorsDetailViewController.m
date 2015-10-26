@@ -690,19 +690,19 @@
     
     if (drainDepthType==1) {
         riskLabel.text = @"Low Flood Risk";
-        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_3.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     }
     else if (drainDepthType==2) {
         riskLabel.text = @"Moderate Flood Risk";
-        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_1.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     }
     else if (drainDepthType==3) {
         riskLabel.text = @"High Flood Risk";
-        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_2.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     }
     else {
         riskLabel.text = @"Under Maintenance";
-        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_maintenance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     }
     [riskLabel sizeToFit];
     
@@ -777,6 +777,12 @@
     [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:arrowIcon];
     
+    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+        
+        distanceLabel.text = @"";
+        arrowIcon.hidden = YES;
+        directionButton.enabled = NO;
+    }
     
     wlsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+55))];
     wlsListingTable.delegate = self;
@@ -1267,6 +1273,11 @@
     subTitleLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:subTitleLabel];
     
+    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+        
+        subTitleLabel.text = @"";
+    }
+    
     
     UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, wlsListingTable.bounds.size.width, 0.5)];
     [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
@@ -1409,10 +1420,22 @@
 }
 
 
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
+}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 
 /*
  #pragma mark - Navigation

@@ -14,7 +14,7 @@
 
 @implementation AppDelegate
 @synthesize RESOURCE_FOLDER_PATH,database;
-@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY,EVENTS_LISTING_ARRAY,WLS_LISTING_ARRAY,CCTV_LISTING_ARRAY,USER_FAVOURITES_ARRAY,APP_CONFIG_DATA_ARRAY,TIPS_VIDEOS_ARRAY,USER_FLOOD_SUBMISSION_ARRAY,PUB_FLOOD_SUBMISSION_ARRAY,PUSH_NOTIFICATION_ARRAY;
+@synthesize DASHBOARD_PREFERENCES_ARRAY,NEW_DASHBOARD_STATUS,DASHBOARD_PREFERENCE_ID,ABC_WATERS_LISTING_ARRAY,POI_ARRAY,EVENTS_LISTING_ARRAY,WLS_LISTING_ARRAY,CCTV_LISTING_ARRAY,USER_FAVOURITES_ARRAY,APP_CONFIG_DATA_ARRAY,TIPS_VIDEOS_ARRAY,USER_FLOOD_SUBMISSION_ARRAY,PUB_FLOOD_SUBMISSION_ARRAY,PUSH_NOTIFICATION_ARRAY,SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY;
 @synthesize screen_width,left_deck_width;
 @synthesize IS_COMING_AFTER_LOGIN;
 @synthesize SELECTED_MENU_ID;
@@ -59,7 +59,33 @@
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [APP_CONFIG_DATA_ARRAY removeAllObjects];
+        [SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY removeAllObjects];
         APP_CONFIG_DATA_ARRAY = [[responseString JSONValue] objectForKey:APP_CONFIG_DATA_RESPONSE_NAME];
+        SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY = [[responseString JSONValue] objectForKey:APP_SYSTEM_NOTIFICATION_DATA_RESPONSE_NAME];
+        
+        
+        if (SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY.count!=0) {
+            
+            if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"systemNotifications"] isEqualToString:@"YES"]) {
+                
+                for (int i=0; i<SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY.count; i++) {
+                    
+                    UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+                    if (localNotif == nil)
+                        return;
+                    localNotif.fireDate = [CommonFunctions dateValueFromString:[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidFrom"]];
+                    localNotif.timeZone = [NSTimeZone defaultTimeZone];
+                    
+                    localNotif.alertBody = [NSString stringWithFormat:@"%@ From %@ - Till %@",[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Description"],[CommonFunctions dateTimeFromString:[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidFrom"]],[CommonFunctions dateTimeFromString:[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidTo"]]];
+                    localNotif.alertTitle = [[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Title"];
+                    
+                    localNotif.soundName = UILocalNotificationDefaultSoundName;
+                    localNotif.applicationIconBadgeNumber = 1;
+                    
+                    [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+                }
+            }
+        }
         
     }
     else {
@@ -311,7 +337,7 @@
     
     const char *dbpath = [destinationPath UTF8String];
     int recordCount =0;
-
+    
     if (sqlite3_open(dbpath, &database) == SQLITE_OK)
     {
         
@@ -422,7 +448,7 @@
 //*************** Method To Insert ABC Site Data In Sqlite
 
 - (void) insertABCWatersData:(NSMutableArray*) parametersArray {
-
+    
     sqlite3_stmt    *statement;
     
     NSString *destinationPath = [self getdestinationPath];
@@ -627,7 +653,7 @@
                 
                 if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"] != (id)[NSNull null])
                     imageName = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"];
-            
+                
                 NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO events (eventId, eventTitle, eventDescription, eventLat, eventlong, eventPhone, eventAddress, eventStartDate, eventEndDate, eventImageName) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", eventID,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,imageName];
                 const char *insert_stmt = [insertSQL UTF8String];
                 
@@ -869,6 +895,7 @@
     USER_FLOOD_SUBMISSION_ARRAY = [[NSMutableArray alloc] init];
     PUB_FLOOD_SUBMISSION_ARRAY = [[NSMutableArray alloc] init];
     PUSH_NOTIFICATION_ARRAY = [[NSMutableArray alloc] init];
+    SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY = [[NSMutableArray alloc] init];
     
     LONG_PRESS_USER_LOCATION_LAT = 0.0;
     LONG_PRESS_USER_LOCATION_LONG = 0.0;
@@ -887,6 +914,12 @@
     }
     if ([prefs stringForKey:@"generalNotifications"] == (id)[NSNull null] || [[prefs stringForKey:@"generalNotifications"] length] == 0) {
         [prefs setValue:@"YES" forKey:@"generalNotifications"];
+    }
+    if ([prefs stringForKey:@"quickMapHints"] == (id)[NSNull null] || [[prefs stringForKey:@"quickMapHints"] length] == 0) {
+        [prefs setValue:@"YES" forKey:@"quickMapHints"];
+    }
+    if ([prefs stringForKey:@"systemNotifications"] == (id)[NSNull null] || [[prefs stringForKey:@"systemNotifications"] length] == 0) {
+        [prefs setValue:@"YES" forKey:@"systemNotifications"];
     }
     [prefs synchronize];
     
@@ -927,10 +960,19 @@
     UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeNewsstandContentAvailability;
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:myTypes];
     
-    [self getConfigData];
+    
     // Override point for customization after application launch.
     
-    self.window.backgroundColor = RGB(247, 247, 247);;
+    self.window.backgroundColor = RGB(247, 247, 247);
+    
+    UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+    
+    UIUserNotificationSettings *mySettings =
+    [UIUserNotificationSettings settingsForTypes:types categories:nil];
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+    
+    [self getConfigData];
     
     return YES;
 }
@@ -942,10 +984,10 @@
                                                 sourceApplication:sourceApplication
                                                        annotation:annotation];
     
-//    return [FBSession.activeSession handleOpenURL:url];
+    //    return [FBSession.activeSession handleOpenURL:url];
     
-//    return [FBAppCall handleOpenURL:url
-//                  sourceApplication:sourceApplication];
+    //    return [FBAppCall handleOpenURL:url
+    //                  sourceApplication:sourceApplication];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -961,7 +1003,9 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     application.applicationIconBadgeNumber = 0;
-
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    
+    [self getConfigData];
     // Register Device Token
     [self registerDeviceToken];
 }
@@ -969,6 +1013,8 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
+    application.applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [FBSession.activeSession handleDidBecomeActive];
 }
 

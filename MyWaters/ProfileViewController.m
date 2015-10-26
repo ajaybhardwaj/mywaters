@@ -21,12 +21,18 @@
 
 - (void) tapToMoveToPhotoGallery:(id) sender {
     
-    GalleryViewController *viewObj = [[GalleryViewController alloc] init];
-    viewObj.galleryImages = photosDataSource;
-    viewObj.isABCGallery = NO;
-    viewObj.isUserGallery = YES;
-    viewObj.isPOIGallery = NO;
-    [self.navigationController pushViewController:viewObj animated:YES];
+    
+    if (photoDataSourceForGallery.count!=0) {
+        networkGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
+        [self.navigationController pushViewController:networkGallery animated:YES];
+    }
+    
+//    GalleryViewController *viewObj = [[GalleryViewController alloc] init];
+//    viewObj.galleryImages = photosDataSource;
+//    viewObj.isABCGallery = NO;
+//    viewObj.isUserGallery = YES;
+//    viewObj.isPOIGallery = NO;
+//    [self.navigationController pushViewController:viewObj animated:YES];
 }
 
 
@@ -578,39 +584,71 @@
 
 //*************** Method To Show Badges Tool Tip
 
-- (void) showBadgesToolTip:(UIButton *)sender {
+- (void) showBadgesToolTip:(id)sender {
     
-    UIImageView *toolTipView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
-    toolTipView.backgroundColor = [UIColor whiteColor];
+//    UIImageView *toolTipView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
+//    toolTipView.backgroundColor = [UIColor whiteColor];
+//    
+//    CGRect frameValue = sender.frame;
+//    frameValue.origin.y = frameValue.origin.y + 180;
+//    
+//    AKETooltip *tooltip = [[AKETooltip alloc] initWithContentView:toolTipView sourceRect:frameValue parentWindow:self.view.window];
+//    
+//    tooltip.hideShadow = NO;
+//    tooltip.arrowColor = RGB(85,49,118);
+//    tooltip.borderColor = [UIColor whiteColor];//RGB(85,49,118);
+//    tooltip.layer.cornerRadius = 10.0;
+//    [tooltip show];
+//
+//    
+//    NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
+//    
+//    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//    activityIndicator.center = CGPointMake(toolTipView.bounds.size.width/2, toolTipView.bounds.size.height/2);
+//    [toolTipView addSubview:activityIndicator];
+//    [activityIndicator startAnimating];
+//    
+//    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+//        if (succeeded) {
+//            
+//            toolTipView.image = image;
+//            
+//        }
+//        [activityIndicator stopAnimating];
+//    }];
     
-    CGRect frameValue = sender.frame;
-    frameValue.origin.y = frameValue.origin.y + 180;
+    CustomIOSAlertView *alertView = [[CustomIOSAlertView alloc] init];
     
-    AKETooltip *tooltip = [[AKETooltip alloc] initWithContentView:toolTipView sourceRect:frameValue parentWindow:self.view.window];
-    
-    tooltip.hideShadow = NO;
-    tooltip.arrowColor = RGB(85,49,118);
-    tooltip.borderColor = [UIColor whiteColor];//RGB(85,49,118);
-    tooltip.layer.cornerRadius = 10.0;
-    [tooltip show];
-
+    UIImageView *toolTipImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
+    toolTipImageView.layer.cornerRadius = 10.0;
+    toolTipImageView.layer.masksToBounds = YES;
+    toolTipImageView.backgroundColor = [UIColor whiteColor];
     
     NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
     
     UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    activityIndicator.center = CGPointMake(toolTipView.bounds.size.width/2, toolTipView.bounds.size.height/2);
-    [toolTipView addSubview:activityIndicator];
+    activityIndicator.center = CGPointMake(toolTipImageView.bounds.size.width/2, toolTipImageView.bounds.size.height/2);
+    [toolTipImageView addSubview:activityIndicator];
     [activityIndicator startAnimating];
     
     [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
         if (succeeded) {
             
-            toolTipView.image = image;
+            toolTipImageView.image = image;
             
         }
         [activityIndicator stopAnimating];
     }];
     
+    [alertView setOnButtonTouchUpInside:^(CustomIOSAlertView *alertView, int buttonIndex) {
+        [alertView close];
+    }];
+    [alertView setButtonTitles:[NSMutableArray arrayWithObjects:@"Close", nil]];
+    [alertView setUseMotionEffects:true];
+    [alertView setContainerView:toolTipImageView];
+    [alertView show];
+    
+    [self.view addSubview:alertView];
     
 }
 
@@ -636,6 +674,12 @@
         [badgesDataSource setArray:[[responseString JSONValue] objectForKey:USER_BADGES_RESPONSE_NAME]];
         [rewardsDataSource setArray:[[responseString JSONValue] objectForKey:REWARDS_RESPONSE_NAME]];
         [pointsDataSource setArray:[[responseString JSONValue] objectForKey:USER_ACTION_HISTORY_RESPONSE_NAME]];
+        
+        [photoDataSourceForGallery removeAllObjects];
+        
+        for (int i=0; i<photosDataSource.count; i++) {
+            [photoDataSourceForGallery addObject:[NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[photosDataSource objectAtIndex:i]]];
+        }
         
 //        photosDataSource = [[responseString JSONValue] objectForKey:USER_UPLOADED_IMAGES_RESPONSE_NAME];
 //        badgesDataSource = [[responseString JSONValue] objectForKey:USER_BADGES_RESPONSE_NAME];
@@ -937,6 +981,70 @@
     }
 }
 
+
+#pragma mark - FGalleryViewControllerDelegate Methods
+
+
+- (int)numberOfPhotosForPhotoGallery:(FGalleryViewController *)gallery
+{
+    int num;
+    //    if( gallery == localGallery ) {
+    //        num = [localImages count];
+    //    }
+    //    else if( gallery == networkGallery ) {
+    if( gallery == networkGallery ) {
+        num = (int)[photoDataSourceForGallery count];
+    }
+    return num;
+}
+
+
+- (FGalleryPhotoSourceType)photoGallery:(FGalleryViewController *)gallery sourceTypeForPhotoAtIndex:(NSUInteger)index
+{
+    //    if( gallery == localGallery ) {
+    //        return FGalleryPhotoSourceTypeLocal;
+    //    }
+    //    else
+    return FGalleryPhotoSourceTypeNetwork;
+}
+
+
+- (NSString*)photoGallery:(FGalleryViewController *)gallery captionForPhotoAtIndex:(NSUInteger)index
+{
+    //    NSString *caption;
+    //    if( gallery == localGallery ) {
+    //        caption = [localCaptions objectAtIndex:index];
+    //    }
+    //    else if( gallery == networkGallery ) {
+    //        caption = [networkCaptions objectAtIndex:index];
+    //    }
+    //    return caption;
+    return nil;
+}
+
+
+- (NSString*)photoGallery:(FGalleryViewController*)gallery filePathForPhotoSize:(FGalleryPhotoSize)size atIndex:(NSUInteger)index {
+    //    return [localImages objectAtIndex:index];
+    return nil;
+}
+
+- (NSString*)photoGallery:(FGalleryViewController *)gallery urlForPhotoSize:(FGalleryPhotoSize)size atIndex:(NSUInteger)index {
+    return [photoDataSourceForGallery objectAtIndex:index];
+}
+
+- (void)handleTrashButtonTouch:(id)sender {
+    // here we could remove images from our local array storage and tell the gallery to remove that image
+    // ex:
+    //[localGallery removeImageAtIndex:[localGallery currentIndex]];
+}
+
+
+- (void)handleEditCaptionButtonTouch:(id)sender {
+    // here we could implement some code to change the caption for a stored image
+}
+
+
+
 # pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad {
@@ -956,6 +1064,7 @@
     badgesDataSource = [[NSMutableArray alloc] init];
     pointsDataSource = [[NSMutableArray alloc] init];
     rewardsDataSource = [[NSMutableArray alloc] init];
+    photoDataSourceForGallery = [[NSMutableArray alloc] init];
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(moveToEditProfile)];
@@ -1213,6 +1322,16 @@
         [self getOtherProfileData];
     
     //    self.hidesBottomBarWhenPushed = NO;
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req setDelegate:nil];
+    }
 }
 
 

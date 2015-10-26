@@ -21,8 +21,8 @@
 @property (nonatomic, strong) ARGeoCoordinate *coordinate;
 @property (nonatomic, weak) id <MarkerViewDelegate> delegate;
 
-- (id)initWithCoordinate:(ARGeoCoordinate *)coordinate delegate:(id<MarkerViewDelegate>)delegate;
-
+//- (id)initWithCoordinate:(ARGeoCoordinate *)coordinate delegate:(id<MarkerViewDelegate>)delegate;
+- (id)initWithCoordinate:(ARGeoCoordinate *)coordinate delegate:(id<MarkerViewDelegate>)delegate image:(NSString*) imageURLString;
 @end
 
 @protocol MarkerViewDelegate <NSObject>
