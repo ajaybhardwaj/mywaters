@@ -98,7 +98,13 @@
         parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
         values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"1", @"1", nil];
     }
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
+    
+    if ([CommonFunctions hasConnectivity]) {
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
 }
 
 
@@ -126,7 +132,13 @@
         parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
         values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"4", @"1", nil];
     }
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
+    
+    if ([CommonFunctions hasConnectivity]) {
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
 }
 
 
@@ -264,7 +276,7 @@
     else if (indexPath.row==2) {
         
         systemNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
-        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"floodAlert"] isEqualToString:@"YES"]) {
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"systemNotifications"] isEqualToString:@"YES"]) {
             [systemNotificationSwitch setOn:YES];
             isSystemNotifications = YES;
         }
@@ -272,7 +284,7 @@
             [systemNotificationSwitch setOn:NO];
             isSystemNotifications = NO;
         }
-        [systemNotificationSwitch addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
+        [systemNotificationSwitch addTarget:self action:@selector(registerForSystemNotifications:) forControlEvents:UIControlEventValueChanged];
         cell.accessoryView = systemNotificationSwitch;
         
         cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
@@ -343,7 +355,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-    
+    [appDelegate setShouldRotate:NO];
 }
 
 

@@ -625,7 +625,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView==filterTableView) {
-        return 40.0f;
+        return 44.0f;
     }
     else if (tableView==listTabeView) {
         return 80.0f;
@@ -1076,7 +1076,6 @@
                   forControlEvents:UIControlEventValueChanged];
     [listTabeView addSubview:self.refreshControl];
     
-    [self fetchABCWaterSites];
 }
 
 
@@ -1086,6 +1085,8 @@
     self.navigationController.navigationBar.alpha = 1.0;
     [self.navigationController setNavigationBarHidden:NO];
     
+    [appDelegate setShouldRotate:NO];
+    
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,156,249) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
@@ -1094,6 +1095,14 @@
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
+    
+    if ([CommonFunctions hasConnectivity]) {
+        [self fetchABCWaterSites];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
+
 }
 
 

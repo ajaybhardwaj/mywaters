@@ -75,6 +75,18 @@
     bookingWebView.contentMode = UIViewContentModeScaleAspectFill;
     bookingWebView.scalesPageToFit = YES;
     
+    
+    [self.view addSubview:bookingWebView];
+    
+}
+
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    self.view.alpha = 1.0;
+    self.navigationController.navigationBar.alpha = 1.0;
+    [appDelegate setShouldRotate:NO];
+    
     NSString *bookingUrl;
     
     for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
@@ -88,24 +100,16 @@
     
     NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
     if ([CommonFunctions hasConnectivity]) {
+        
         loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         loadingIndicator.hidesWhenStopped = YES;
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loadingIndicator];
-
+        
         [bookingWebView loadRequest:nsrequest];
     }
     else {
         [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
     }
-    [self.view addSubview:bookingWebView];
-    
-}
-
-
-- (void) viewWillAppear:(BOOL)animated {
-    
-    self.view.alpha = 1.0;
-    self.navigationController.navigationBar.alpha = 1.0;
 }
 
 - (void) viewDidAppear:(BOOL)animated {

@@ -17,6 +17,7 @@ const float kHeight = 100.0f;
 
 @property (nonatomic, strong) UILabel *lblDistance;
 @property (nonatomic, strong) UILabel *lblTitle;
+@property (nonatomic, strong) UIImageView *cellImage;
 @end
 
 
@@ -49,19 +50,20 @@ const float kHeight = 100.0f;
         backgroundView.layer.cornerRadius = 5.0;
         [self addSubview:backgroundView];
         
-        UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 20, 60, 60)];
-        [backgroundView addSubview:cellImage];
+        _cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 20, 60, 60)];
         
         NSString *imageFullUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,imageURLString];
         
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        activityIndicator.center = CGPointMake(cellImage.bounds.size.width/2, cellImage.bounds.size.height/2);
-        [cellImage addSubview:activityIndicator];
+        activityIndicator.center = CGPointMake(_cellImage.bounds.size.width/2, _cellImage.bounds.size.height/2);
+        [_cellImage addSubview:activityIndicator];
         [activityIndicator startAnimating];
+        
+        DebugLog(@"Marker Image Url %@",imageFullUrl);
         
         [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageFullUrl] completionBlock:^(BOOL succeeded, UIImage *image) {
             if (succeeded) {
-                cellImage.image = image;
+                _cellImage.image = image;
             }
         }];
         
@@ -89,6 +91,8 @@ const float kHeight = 100.0f;
         
         [backgroundView addSubview:_lblTitle];
         [backgroundView addSubview:_lblDistance];
+        [backgroundView addSubview:_cellImage];
+
         
         [self setBackgroundColor:[UIColor clearColor]];
         

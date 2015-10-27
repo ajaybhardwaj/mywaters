@@ -846,12 +846,15 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
+//    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
+//    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+
+    [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeRight animated:NO];
+//    [appDelegate setShouldRotate:YES];
     //    [self generateGeoLocations];
     [self.navigationController setNavigationBarHidden:YES];
     self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
 
-    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
-    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
 
     
     // Disable iOS 7 back gesture
@@ -890,21 +893,26 @@
 }
 
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return UIInterfaceOrientationMaskLandscapeRight;
+}
 
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-//{
-//    return ((interfaceOrientation == UIInterfaceOrientationLandscapeLeft) || (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
-//}
-//
-//-(NSUInteger)supportedInterfaceOrientations
-//{
-//    return UIInterfaceOrientationMaskLandscape;
-//}
-//
-//-(BOOL)shouldAutorotate
-//{
-//    return NO;
-//}
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+   
+    return UIInterfaceOrientationMaskLandscapeLeft;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationMaskLandscapeRight;
+}
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

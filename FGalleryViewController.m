@@ -249,6 +249,9 @@
     
     // build stuff
     [self reloadGallery];
+    
+    isLoadingFirstTime = YES;
+    [self performSelector:@selector(handleSeeAllTouch:) withObject:nil afterDelay:0.1];
 }
 
 
@@ -332,7 +335,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-	
+	self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     _isActive = YES;
     
     self.useThumbnailView = _useThumbnailView;
@@ -846,8 +849,14 @@
 
 - (void)handleSeeAllTouch:(id)sender
 {
+    if (isLoadingFirstTime) {
+        isLoadingFirstTime = NO;
+        [self toggleThumbnailViewWithAnimation:NO];
+    }
+    else {
+        [self toggleThumbnailViewWithAnimation:YES];
+    }
 	// show thumb view
-	[self toggleThumbnailViewWithAnimation:YES];
 	
 	// tell thumbs that havent loaded to load
 	[self loadAllThumbViewPhotos];

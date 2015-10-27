@@ -22,7 +22,7 @@
 @synthesize IS_MOVING_TO_WLS_FROM_DASHBOARD,IS_MOVING_TO_CCTV_FROM_DASHBOARD,IS_SKIPPING_USER_LOGIN;
 @synthesize hud;
 @synthesize CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG,USER_CURRENT_LOCATION_COORDINATE,LONG_PRESS_USER_LOCATION_LAT,LONG_PRESS_USER_LOCATION_LONG,LONG_PRESS_USER_LOCATION_COORDINATE;
-@synthesize IS_COMING_FROM_DASHBOARD,IS_RELAUNCHING_APP;
+@synthesize IS_COMING_FROM_DASHBOARD,IS_RELAUNCHING_APP,IS_SHARING_ON_SOCIAL_MEDIA;
 @synthesize DASHBOARD_PREFERENCES_CHANGED,IS_USER_LOCATION_SELECTED_BY_LONG_PRESS;
 
 
@@ -972,13 +972,32 @@
     
     [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
     
-    [self getConfigData];
-    
+    if ([CommonFunctions hasConnectivity]) {
+        [self getConfigData];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
     return YES;
 }
 
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
+    
+//    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication  fallbackHandler:^(FBAppCall *call)
+//            {
+//                NSLog(@"Facebook handler");
+//            }
+//            ];
+    
+//    BOOL wasHandled = [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+//    return wasHandled;
+    if (IS_SHARING_ON_SOCIAL_MEDIA) {
+        IS_SHARING_ON_SOCIAL_MEDIA = NO;
+        return [FBAppCall handleOpenURL:url
+                     sourceApplication:sourceApplication];
+    }
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                                           openURL:url
                                                 sourceApplication:sourceApplication
@@ -986,9 +1005,17 @@
     
     //    return [FBSession.activeSession handleOpenURL:url];
     
-    //    return [FBAppCall handleOpenURL:url
-    //                  sourceApplication:sourceApplication];
+    
 }
+
+- (NSUInteger) application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+   
+    if (self.shouldRotate)
+        return UIInterfaceOrientationMaskLandscapeRight;
+    else
+        return UIInterfaceOrientationMaskPortrait;
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -1005,9 +1032,14 @@
     application.applicationIconBadgeNumber = 0;
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
-    [self getConfigData];
-    // Register Device Token
-    [self registerDeviceToken];
+    if ([CommonFunctions hasConnectivity]) {
+        [self getConfigData];
+        // Register Device Token
+            [self registerDeviceToken];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -1015,11 +1047,15 @@
     
     application.applicationIconBadgeNumber = 0;
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-    [FBSession.activeSession handleDidBecomeActive];
+//    [FBSession.activeSession handleDidBecomeActive];
+    
+    [FBAppEvents activateApp];
+    [FBAppCall handleDidBecomeActive];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [FBSession.activeSession close];
 }
 
 

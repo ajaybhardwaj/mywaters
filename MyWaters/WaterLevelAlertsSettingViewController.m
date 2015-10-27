@@ -91,7 +91,10 @@
     
 }
 
-
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [appDelegate setShouldRotate:NO];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

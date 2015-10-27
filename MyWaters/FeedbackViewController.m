@@ -23,6 +23,12 @@
 
 - (void) showActionSheet {
     
+    [nameField resignFirstResponder];
+    [locationField resignFirstResponder];
+    [commentField resignFirstResponder];
+    [phoneField resignFirstResponder];
+    [emailField resignFirstResponder];
+    
     [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
 }
 
@@ -132,10 +138,6 @@
             }
         }
         
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
-        
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
         
@@ -192,7 +194,10 @@
 
         }
         
-        DebugLog(@"%@---%@",parameters,values);
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+
         
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,FEEDBACK_API_URL]];
     }
@@ -334,6 +339,8 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
+    [appDelegate.hud hide:YES];
+
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [CommonFunctions showAlertView:self title:[[responseString JSONValue] objectForKey:@"Message"] msg:nil cancel:@"OK" otherButton:nil];
@@ -344,15 +351,20 @@
         emailField.text = @"";
         phoneField.text = @"";
         nameField.text = @"";
+        locationField.text = @"";
+        
+        tempCommentString = @"";
+        tempEmailString = @"";
+        tempPhoneString = @"";
+        tempLocationString = @"";
+        tempNameString = @"";
         
         appDelegate.IS_USER_LOCATION_SELECTED_BY_LONG_PRESS = NO;
         appDelegate.LONG_PRESS_USER_LOCATION_LAT = 0.0;
         appDelegate.LONG_PRESS_USER_LOCATION_LONG = 0.0;
         
-        [appDelegate.hud hide:YES];
     }
     else {
-        [appDelegate.hud hide:YES];
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
 }
@@ -697,7 +709,7 @@
         else if (indexPath.row==1) {
             
             commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, 120)];
-            commentField.returnKeyType = UIReturnKeyDone;
+            commentField.returnKeyType = UIReturnKeyDefault;
             commentField.delegate = self;
             commentField.text = @" Comments *";
             commentField.textColor = [UIColor lightGrayColor];
@@ -1060,6 +1072,7 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     selectedPickerIndex = 0;
+    [appDelegate setShouldRotate:NO];
     
     if (!isNotFeedbackController) {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];

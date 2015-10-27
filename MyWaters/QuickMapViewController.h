@@ -19,6 +19,10 @@
 #import "WaterLevelSensorsDetailViewController.h"
 #import "UserFloodSubmissionViewController.h"
 #import "CMPopTipView.h"
+#import "WLSMapAnnotations.h"
+#import "FeedbackMapAnnotations.h"
+#import "CCTVMapAnnoations.h"
+#import "FloodMapAnnotations.h"
 
 @interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UPStackMenuDelegate,CMPopTipViewDelegate> {
     
@@ -36,7 +40,12 @@
     NSDictionary *locationsDict;
     
     // Place Annotation Point
-    QuickMapAnnotations *cctvAnnotation,*wlsAnnotation,*userFloodAnnotation,*pubFloodAnnotation,*longPressLocationAnnotation;
+    QuickMapAnnotations *longPressLocationAnnotation;
+    WLSMapAnnotations *wlsAnnotation;
+    FloodMapAnnotations *pubFloodAnnotation;
+    FeedbackMapAnnotations *userFloodAnnotation;
+    CCTVMapAnnoations *cctvAnnotation;
+    
     UIView *calloutView;
     BOOL isShowingCallout;
     UITapGestureRecognizer *cctvTapGesture;

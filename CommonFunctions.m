@@ -66,6 +66,8 @@
 
 + (void) sharePostOnFacebook:(NSString*)postImageUrl appUrl:(NSString*)appstoreUrl title:(NSString*)postTitle desc:(NSString*)postDescription view:(UIViewController*) viewObj {
     
+    AppDelegate *appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    appDelegate.IS_SHARING_ON_SOCIAL_MEDIA = YES;
     // Present share dialog
     [FBDialogs presentShareDialogWithLink:[NSURL URLWithString:appstoreUrl]
                                      name:postTitle

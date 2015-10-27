@@ -124,6 +124,12 @@
 
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [appDelegate setShouldRotate:NO];
+}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

@@ -110,6 +110,9 @@
 
 - (void) showActionSheet {
     
+    [locationField resignFirstResponder];
+    [commentField resignFirstResponder];
+    
     [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
 }
 

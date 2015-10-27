@@ -345,7 +345,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView==filterTableView) {
-        return 40.0f;
+        return 44.0f;
     }
     else if (tableView==eventsListingTableView) {
         return 100.0f;
@@ -824,7 +824,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-    
+    [appDelegate setShouldRotate:NO];
     //    if (!isNotEventController) {
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
@@ -844,8 +844,6 @@
     //        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     //
     //    }
-    [self fetchEventsListing];
-
 }
 
 
@@ -856,6 +854,13 @@
 //    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
 //    
 //    [self.view addGestureRecognizer:swipeGesture];
+    
+    if ([CommonFunctions hasConnectivity]) {
+        [self fetchEventsListing];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
     
 }
 

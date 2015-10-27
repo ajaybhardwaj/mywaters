@@ -97,6 +97,7 @@
 - (void) validateLoginParameters {
     
     if ([CommonFunctions hasConnectivity]) {
+        
         if ([emailField.text length]==0) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
         }
@@ -160,6 +161,34 @@
 - (void) getFacebookDetailsForLogin {
     
     
+    
+    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+    [login logInWithReadPermissions:@[@"email"] handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        if (error) {
+            // Process error
+        } else if (result.isCancelled) {
+            // Handle cancellations
+        } else {
+            // If you ask for multiple permissions at once, you
+            // should check if specific permissions missing
+            if ([result.grantedPermissions containsObject:@"email"]) {
+                // Do work
+            }
+        }
+    }];
+//    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+//                                  initWithGraphPath:@"/me"
+//                                  parameters:@{@"fields": @"id, name, email"}
+//                                  HTTPMethod:@"GET"];
+//    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+//                                          id result,
+//                                          NSError *error) {
+//        // Handle the result
+//        NSLog(@"%@",result);
+//    }];
+    
+    
+    /*
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
     
     [login logInWithReadPermissions:[NSArray arrayWithObjects:@"public_profile",@"email", nil] fromViewController:self handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
@@ -188,12 +217,6 @@
                          [parameters addObject:@"Email"];
                          [values addObject:[result objectForKey:@"email"]];
                          
-                         //                         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-                         //                         [prefs setObject:[result objectForKey:@"email"] forKey:@"userEmail"];
-                         //                         [prefs synchronize];
-                         
-                         
-                         
                          [parameters addObject:@"FacebookID"];
                          [values addObject:[result objectForKey:@"id"]];
                          
@@ -204,6 +227,8 @@
             }
         }
     }];
+    */
+    
     
     
     //    if (!FBSession.activeSession.isOpen) {
@@ -221,40 +246,40 @@
     //                                                                                        otherButtonTitles:nil];
     //                                              [alertView show];
     //                                          }
-    //                                          else if (session.isOpen) {
-    //                                              //run your user info request here
-    //
-    //                                              [[FBRequest requestForMe] startWithCompletionHandler:
-    //                                               ^(FBRequestConnection *connection,
-    //                                                 NSDictionary<FBGraphUser> *user,
-    //                                                 NSError *error) {
-    //                                                   if (!error) {
-    //                                                       //                                                       NSString *imageUrl = [[NSString alloc] initWithFormat: @"http://graph.facebook.com/%@/picture?type=large", facebookId];
-    //
-    //                                                       appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    //                                                       appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    //                                                       appDelegate.hud.labelText = @"Loading...";
-    //
-    //                                                       NSMutableArray *parameters = [[NSMutableArray alloc] init];
-    //                                                       NSMutableArray *values = [[NSMutableArray alloc] init];
-    //
-    //
-    //                                                       [parameters addObject:@"Email"];
-    //                                                       [values addObject:[user objectForKey:@"email"]];
-    //
-    //                                                       NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    //                                                       [prefs setObject:[user objectForKey:@"email"] forKey:@"userEmail"];
-    //                                                       [prefs synchronize];
-    //
-    //
-    //
-    //                                                       [parameters addObject:@"FacebookID"];
-    //                                                       [values addObject:user.objectID];
-    //
-    //                                                       [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,LOGIN_API_URL]];
-    //                                                   }
-    //                                               }];
-    //                                          }
+//                                              else if (session.isOpen) {
+//                                                  //run your user info request here
+//    
+//                                                  [[FBRequest requestForMe] startWithCompletionHandler:
+//                                                   ^(FBRequestConnection *connection,
+//                                                     NSDictionary<FBGraphUser> *user,
+//                                                     NSError *error) {
+//                                                       if (!error) {
+//                                                           //                                                       NSString *imageUrl = [[NSString alloc] initWithFormat: @"http://graph.facebook.com/%@/picture?type=large", facebookId];
+//    
+//                                                           appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//                                                           appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//                                                           appDelegate.hud.labelText = @"Loading...";
+//    
+//                                                           NSMutableArray *parameters = [[NSMutableArray alloc] init];
+//                                                           NSMutableArray *values = [[NSMutableArray alloc] init];
+//    
+//    
+//                                                           [parameters addObject:@"Email"];
+//                                                           [values addObject:[user objectForKey:@"email"]];
+//    
+//                                                           NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+//                                                           [prefs setObject:[user objectForKey:@"email"] forKey:@"userEmail"];
+//                                                           [prefs synchronize];
+//    
+//    
+//    
+//                                                           [parameters addObject:@"FacebookID"];
+//                                                           [values addObject:user.objectID];
+//    
+//                                                           [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,LOGIN_API_URL]];
+//                                                       }
+//                                                   }];
+//                                              }
     //                                      }];
     //    }
     //    else {
@@ -293,6 +318,51 @@
 }
 
 
+# pragma mark - FBLoginViewDelegate Methods
+
+- (void)loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user {
+    
+    DebugLog(@"User name - %@",user);
+}
+
+
+- (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView {
+    
+    DebugLog(@"You are logged in");
+    
+}
+
+
+- (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
+    
+    DebugLog(@"You are logged out");
+}
+
+
+- (void)loginView:(FBLoginView *)loginView handleError:(NSError *)error {
+    
+    NSString *alertMessage,*alertTitle;
+    if ([FBErrorUtility shouldNotifyUserForError:error]) {
+        alertTitle = @"Facebook Error";
+        alertMessage = [FBErrorUtility userMessageForError:error];
+    }
+    else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession) {
+        alertTitle = @"Session Error";
+        alertMessage = @"Your current session is no longer valid. Please log in again.";
+    }
+    else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
+        DebugLog(@"User Cancelled Login");
+    }
+    else {
+        alertTitle = @"Something went wrong";
+        alertMessage = @"Please try later.";
+        DebugLog(@"Unexpected error: %@",error.description);
+    }
+    
+    if (alertMessage) {
+        [CommonFunctions showAlertView:nil title:alertTitle msg:alertMessage cancel:@"OK" otherButton:nil];
+    }
+}
 
 
 # pragma mark - ASIHTTPRequestDelegate Methods
@@ -438,6 +508,11 @@
     [facebookButton addTarget:self action:@selector(getFacebookDetailsForLogin) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:facebookButton];
     
+//    self.loginView = [[FBLoginView alloc] init];
+//    self.loginView.delegate = self;
+//    self.loginView.readPermissions = @[@"public_profile",@"email",@"basic_info"];
+//    self.loginView.frame = CGRectMake(10, topVolleyView.frame.origin.y+topVolleyView.bounds.size.height+20, backgroundScrollView.bounds.size.width-20, 40);
+//    [backgroundScrollView addSubview:self.loginView];
     
     emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, facebookButton.frame.origin.y+facebookButton.bounds.size.height+10, backgroundScrollView.bounds.size.width-20, 40)];
     emailField.textColor = RGB(61, 71, 94);

@@ -207,7 +207,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-
+    [appDelegate setShouldRotate:NO];
 }
 
 

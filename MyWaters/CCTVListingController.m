@@ -280,7 +280,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView==filterTableView) {
-        return 40.0f;
+        return 44.0f;
     }
     else if (tableView==cctvListingTable) {
         return 80.0f;
@@ -585,6 +585,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
+    [appDelegate setShouldRotate:NO];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
@@ -594,8 +595,12 @@
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
 
-    [self fetchCCTVListing];
-
+    if ([CommonFunctions hasConnectivity]) {
+        [self fetchCCTVListing];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
 }
 
 - (void) viewWillDisappear:(BOOL)animated {

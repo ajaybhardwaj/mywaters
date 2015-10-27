@@ -99,7 +99,7 @@
     
     if (isAlreadyFav) {
         [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        favouriteLabel.text = @"Favourited";
+        favouriteLabel.text = @"Favourite";
     }
     else {
         [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -417,6 +417,10 @@
     if (isShowingTopMenu) {
         [self animateTopMenu];
     }
+    
+//    UIInterfaceOrientation currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+//    if (currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown)
+//        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
     
     ARViewController *viewObj = [[ARViewController alloc] init];
     viewObj.abcWaterSiteID = abcSiteId;
@@ -822,7 +826,7 @@
     favouriteLabel.textAlignment = NSTextAlignmentCenter;
     favouriteLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     if (isAlreadyFav)
-        favouriteLabel.text = @"Favourited";
+        favouriteLabel.text = @"Favourite";
     else
         favouriteLabel.text = @"Favourite";
     favouriteLabel.textColor = [UIColor whiteColor];
@@ -844,6 +848,8 @@
 
 
 - (void) viewWillAppear:(BOOL)animated {
+    
+    [appDelegate setShouldRotate:NO];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,156,249) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

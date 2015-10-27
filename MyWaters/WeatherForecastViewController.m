@@ -205,7 +205,7 @@
 //    DebugLog(@"%@",nowCastWeatherData);
 
     
-//    [self getTwelveWeatherData];
+    [self getTwelveWeatherData];
 }
 
 
@@ -310,7 +310,10 @@
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(36,160,236) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
 
-    [self getTwelveWeatherData];
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied)
+        [self getNowcastWeatherData];
+    else
+        [self getTwelveWeatherData];
 }
 
 

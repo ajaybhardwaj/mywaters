@@ -11,8 +11,9 @@
 #import "SignUpViewController.h"
 #import "OTPViewController.h"
 #import "ForgotPasswordViewController.h"
+#import <FacebookSDK/FacebookSDK.h>
 
-@interface LoginViewController : UIViewController <UITextFieldDelegate> {
+@interface LoginViewController : UIViewController <UITextFieldDelegate,FBLoginViewDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -24,5 +25,7 @@
     NSString *facebookIDString;
 }
 @property (assign) bool isUsingFacebookForSignIn;
+@property (strong, nonatomic) FBLoginView *loginView;
+
 
 @end

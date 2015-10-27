@@ -36,6 +36,17 @@
 }
 
 
+//*************** Method To Show Badges Description ALerts
+
+- (void) showBadgesDescPopUp:(id) sender {
+    
+    UIButton *button = (id) sender;
+    NSString *alertTitle = [[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"Description"];
+    
+    [CommonFunctions showAlertView:nil title:nil msg:alertTitle cancel:@"OK" otherButton:nil];
+}
+
+
 //*************** Method To Move To Edit Profile View
 
 - (void) moveToEditProfile {
@@ -422,13 +433,20 @@
         if (counter==3) {
             
             heightCounter = heightCounter + 1;
-            counter = 1;
+            counter = 0;
             
             UIImageView *badgeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, (badgesScrollView.bounds.size.width-75)/4, (badgesScrollView.bounds.size.width-75)/4)];
             badgeImageView.tag = i+1;
             [badgeImageView setBackgroundColor:[UIColor clearColor]];
             badgeImageView.opaque = NO;
             [badgesScrollView addSubview:badgeImageView];
+            badgeImageView.userInteractionEnabled = YES;
+            
+            UIButton *popUpButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            popUpButton.frame = CGRectMake(0, 0, badgeImageView.bounds.size.width, badgeImageView.bounds.size.height);
+            popUpButton.tag = i+1;
+            [popUpButton addTarget:self action:@selector(showBadgesDescPopUp:) forControlEvents:UIControlEventTouchUpInside];
+            [badgeImageView addSubview:popUpButton];
             
             NSString *imageName,*imageURLString;
             
@@ -506,7 +524,13 @@
             [badgeImageView setBackgroundColor:[UIColor clearColor]];
             badgeImageView.opaque = NO;
             [badgesScrollView addSubview:badgeImageView];
+            badgeImageView.userInteractionEnabled = YES;
             
+            UIButton *popUpButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            popUpButton.frame = CGRectMake(0, 0, badgeImageView.bounds.size.width, badgeImageView.bounds.size.height);
+            popUpButton.tag = i+1;
+            [popUpButton addTarget:self action:@selector(showBadgesDescPopUp:) forControlEvents:UIControlEventTouchUpInside];
+            [badgeImageView addSubview:popUpButton];
             
             NSString *imageName,*imageURLString;
             NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
@@ -1215,19 +1239,19 @@
     myBadgesLabel.numberOfLines = 0;
     [badgesBackgroundView addSubview:myBadgesLabel];
     
-    infoIconButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    infoIconButton.frame = CGRectMake(myBadgesLabel.frame.origin.x+myBadgesLabel.bounds.size.width, 13, 16, 16);
-    [infoIconButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [infoIconButton addTarget:self action:@selector(showBadgesToolTip:) forControlEvents:UIControlEventTouchUpInside];
-    [badgesBackgroundView addSubview:infoIconButton];
+//    infoIconButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    infoIconButton.frame = CGRectMake(myBadgesLabel.frame.origin.x+myBadgesLabel.bounds.size.width, 13, 16, 16);
+//    [infoIconButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+//    [infoIconButton addTarget:self action:@selector(showBadgesToolTip:) forControlEvents:UIControlEventTouchUpInside];
+//    [badgesBackgroundView addSubview:infoIconButton];
     
-    badgesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, infoIconButton.frame.origin.y+infoIconButton.bounds.size.height+5, badgesBackgroundView.bounds.size.width, badgesBackgroundView.bounds.size.height)];
+    badgesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, myBadgesLabel.frame.origin.y+myBadgesLabel.bounds.size.height+10, badgesBackgroundView.bounds.size.width, badgesBackgroundView.bounds.size.height)];
     badgesScrollView.showsHorizontalScrollIndicator = NO;
     badgesScrollView.showsVerticalScrollIndicator = NO;
     [badgesBackgroundView addSubview:badgesScrollView];
     badgesScrollView.backgroundColor = [UIColor clearColor];
     badgesScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 100);
-    
+    badgesScrollView.userInteractionEnabled = YES;
     
     
     //===== For Rewards SubViews
@@ -1289,6 +1313,8 @@
 //}
 
 - (void) viewWillAppear:(BOOL)animated {
+    
+    [appDelegate setShouldRotate:NO];
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;

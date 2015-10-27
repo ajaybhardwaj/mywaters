@@ -40,7 +40,7 @@
     
     UITableView *wlsListingTable;
     
-    UIButton *notifiyButton,*unsubscribeButton;
+    UIButton *notifiyButton,*unsubscribeButton,*smsSubScribeButton;
     
     QuickMapAnnotations *annotation1;
     

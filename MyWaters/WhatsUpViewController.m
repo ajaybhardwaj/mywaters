@@ -37,6 +37,30 @@
 
 
 
+//*************** Method To Edit Chatter Table
+
+- (void) editChatterTable {
+    
+    if (isEditingChatterTable) {
+        isEditingChatterTable = NO;
+        [exploreTableView setEditing:NO animated:YES];
+        self.navigationItem.rightBarButtonItem = nil;
+        UIBarButtonItem *reportButton = [[UIBarButtonItem alloc] initWithTitle:@"Report" style:UIBarButtonItemStylePlain
+                                                                        target:self action:@selector(editChatterTable)];
+        self.navigationItem.rightBarButtonItem = reportButton;
+    }
+    else {
+        isEditingChatterTable = YES;
+        [exploreTableView setEditing:YES animated:YES];
+        self.navigationItem.rightBarButtonItem = nil;
+        UIBarButtonItem *reportButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain
+                                                       target:self action:@selector(editChatterTable)];
+        self.navigationItem.rightBarButtonItem = reportButton;
+
+    }
+}
+
+
 
 //*************** Method To Handle Segmented Control Action
 
@@ -44,16 +68,29 @@
     
     if (sender==segmentedControl) {
         if (sender.selectedSegmentIndex==0) {
-            isShowingChatterTable = YES;
-            isShowingFeedTable = NO;
+            isShowingChatterTable = NO;
+            isShowingFeedTable = YES;
             exploreTableView.hidden = YES;
             feedTableView.hidden = NO;
+            
+            self.navigationItem.rightBarButtonItem = nil;
         }
         else if (sender.selectedSegmentIndex==1) {
             isShowingFeedTable = YES;
             isShowingChatterTable = NO;
             exploreTableView.hidden = NO;
             feedTableView.hidden = YES;
+            
+            UIBarButtonItem *reportButton;
+            if (isEditingChatterTable) {
+                reportButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain
+                                                               target:self action:@selector(editChatterTable)];
+            }
+            else {
+                reportButton = [[UIBarButtonItem alloc] initWithTitle:@"Report" style:UIBarButtonItemStylePlain
+                                                                            target:self action:@selector(editChatterTable)];
+            }
+            self.navigationItem.rightBarButtonItem = reportButton;
         }
     }
 }
@@ -187,22 +224,22 @@
     if (tableView==feedTableView) {
         
         if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"] != (id)[NSNull null]) {
-            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:feedTableView.bounds.size.width-100];
-            subtractComponent = subtractComponent + 30;
+            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:feedTableView.bounds.size.width-150];
+            subtractComponent = subtractComponent + 25;
         }
         
-        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null]) {
-            subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:feedTableView.bounds.size.width-100];
-            subtractComponent = subtractComponent + 30;
-        }
+//        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"] != (id)[NSNull null]) {
+//            subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"HashTag"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:feedTableView.bounds.size.width-90];
+//            subtractComponent = subtractComponent + 30;
+//        }
         
         if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"] != (id)[NSNull null]) {
-            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:feedTableView.bounds.size.width-100];
-            subtractComponent = subtractComponent + 30;
+            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:feedTableView.bounds.size.width-110];
+            subtractComponent = subtractComponent + 25;
         }
         
-        if ((titleHeight+subTitleHeight+dateHeight) < 90) {
-            return 90.0f;
+        if ((titleHeight+subTitleHeight+dateHeight) < 100) {
+            return 100.0f;
         }
         
         return titleHeight+subTitleHeight+dateHeight-subtractComponent;
@@ -599,7 +636,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-    
+    [appDelegate setShouldRotate:NO];
     
     if (appDelegate.IS_COMING_FROM_DASHBOARD) {
         

@@ -90,17 +90,21 @@
         
         favouritesListingTableView.alpha = 1.0;
         favouritesListingTableView.userInteractionEnabled = YES;
+        filterTableView.center = pos;
+        [UIView commitAnimations];
+        filterTableView.hidden = YES;
     }
     else {
-        
+        filterTableView.hidden = NO;
         isShowingFilter = YES;
-        pos.y = 80;
+        pos.y = 100;
         
         favouritesListingTableView.alpha = 0.5;
         favouritesListingTableView.userInteractionEnabled = NO;
+        filterTableView.center = pos;
+        [UIView commitAnimations];
+
     }
-    filterTableView.center = pos;
-    [UIView commitAnimations];
     
 }
 
@@ -111,7 +115,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView==filterTableView) {
-        return 40.0f;
+        return 44.0f;
     }
     return 80.0f;
 }
@@ -140,6 +144,10 @@
             [appDelegate retrieveFavouriteItems:favouritesTypeIndex];
         }
         else if (indexPath.row==3) {
+            favouritesTypeIndex = 3;
+            [appDelegate retrieveFavouriteItems:favouritesTypeIndex];
+        }
+        else if (indexPath.row==4) {
             favouritesTypeIndex = 4;
             [appDelegate retrieveFavouriteItems:favouritesTypeIndex];
         }
@@ -428,7 +436,7 @@
     favouritesListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     favouritesListingTableView.hidden = YES;
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -160, self.view.bounds.size.width, 160) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -200, self.view.bounds.size.width, 200) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -438,7 +446,7 @@
     filterTableView.alpha = 0.8;
     filterTableView.scrollEnabled = NO;
     filterTableView.alwaysBounceVertical = NO;
-
+    filterTableView.hidden = YES;
     
     favouritesDataSource = [[NSArray alloc] initWithObjects:@"Sembawang Park - ABC Waters",@"Boon Lay Way - CCTV",@"Boon Keng Road/Bendemeer Road - CCTV", nil];
     filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTVs",@"Event",@"ABC Water Sites",@"Water Level Sensor",@"Distance", nil];
@@ -469,6 +477,7 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     
+    [appDelegate setShouldRotate:NO];
     [favouritesListingTableView setEditing:NO];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(85,49,118) frame:CGRectMake(0, 0, 1, 1)];

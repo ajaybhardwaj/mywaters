@@ -122,7 +122,10 @@
             
             DebugLog(@"%@",appDelegate.WLS_LISTING_ARRAY);
             
+//            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
             NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
+
             NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
                 float v1 = [left floatValue];
                 float v2 = [right floatValue];
@@ -134,7 +137,7 @@
                     return NSOrderedSame;
             }];
             
-            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             
             
             if (appDelegate.WLS_LISTING_ARRAY.count!=0)
@@ -316,6 +319,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
+    [appDelegate setShouldRotate:NO];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
@@ -326,8 +330,12 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
 
     
-    [self fetchWLSListing];
-}
+    if ([CommonFunctions hasConnectivity]) {
+        [self fetchWLSListing];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }}
 
 
 - (void) viewWillDisappear:(BOOL)animated {

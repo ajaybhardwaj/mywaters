@@ -182,7 +182,7 @@
     
     if (isAlreadyFav) {
         [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        addToFavlabel.text = @"Favourited";
+        addToFavlabel.text = @"Favourite";
     }
     else {
         [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -603,7 +603,7 @@
     addToFavlabel.textAlignment = NSTextAlignmentCenter;
     addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     if (isAlreadyFav)
-        addToFavlabel.text = @"Favourited";
+        addToFavlabel.text = @"Favourite";
     else
         addToFavlabel.text = @"Favourite";
     addToFavlabel.textColor = [UIColor whiteColor];
@@ -644,6 +644,8 @@
 }
 
 - (void) viewWillAppear:(BOOL)animated {
+    
+    [appDelegate setShouldRotate:NO];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

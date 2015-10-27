@@ -218,6 +218,12 @@
 }
 
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [appDelegate setShouldRotate:NO];
+
+}
+
 - (void) viewWillDisappear:(BOOL)animated {
     
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)

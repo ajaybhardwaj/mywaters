@@ -146,7 +146,7 @@
     
     
     NSURL *url = [NSURL URLWithString:@"http://207.82.13.198/PUB_FMAS/Public/SubscribeWaterSensorAlert.ashx"];
-//    NSURL *url = [NSURL URLWithString:@"https://www.pubfmas.com.sg/PUB_FMAS/Public/SubscribeWaterSensorAlert.ashx"];
+    //    NSURL *url = [NSURL URLWithString:@"https://www.pubfmas.com.sg/PUB_FMAS/Public/SubscribeWaterSensorAlert.ashx"];
     __block ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setTimeOutSeconds:20];
     [request setPostValue:@"1ac9e66fde53ecb4adf8f22f82aff0bc" forKey:@"Key"];
@@ -160,7 +160,7 @@
     [request setPostValue:[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:pickerSelectedIndex] objectForKey:@"id"] forKey:@"StationCode"];
     [request setPostValue:@"0" forKey:@"HRWFlag"];
     [request setPostValue:@"1" forKey:@"WSAFlag"];
-//    [request startSynchronous];
+    //    [request startSynchronous];
     
     
     [request setCompletionBlock:^{
@@ -168,7 +168,7 @@
         NSString *responseString = [request responseString];
         DebugLog(@"%@",responseString);
         // Use when fetching binary data
-//        NSData *responseData = [request responseData];
+        //        NSData *responseData = [request responseData];
         
         [CommonFunctions showAlertView:nil title:nil msg:@"Successfully subscribed to SMS alert." cancel:@"OK" otherButton:nil];
         nameField.text = @"";
@@ -179,78 +179,78 @@
         idTypeField.text = @"";
         locationField.text = @"";
         pickerSelectedIndex = 0;
-
+        
     }];
     [request setFailedBlock:^{
         NSError *error = [request error];
         [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-
+        
     }];
     [request startAsynchronous];
     
-//    //NSLog(@"request: %@", request.postBody);
-//    NSError *error = [request error];
-//    if (!error) {
-//        NSString *response = [request responseString];
-//        DebugLog(@"%@",response);
-////        NSRange titleResultsRange3 = [response rangeOfString:@"<html>"];
-////        if (titleResultsRange3.location != NSNotFound)
-////        {
-////            NSLog(@"found <html> !!!!!");
-////            /*NSString *msg = [NSString stringWithFormat:@"Please call PUB 24hr Call Centre to report failure to subscribe."];
-////             UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-////             message:msg
-////             delegate:self
-////             cancelButtonTitle:@"OK"
-////             otherButtonTitles:nil ];
-////             [alertView show];
-////             [alertView release];*/
-////            return 3;
-////            //return NO;
-////        }
-////        NSLog(@"response: %@", response);
-////        
-////        NSRange titleResultsRange = [response rangeOfString:@"1:" options:NSCaseInsensitiveSearch];
-////        NSRange titleResultsRange2 = [response rangeOfString:@"2:" options:NSCaseInsensitiveSearch];
-////        
-////        if (titleResultsRange.length > 0)
-////        {
-////            return 1;
-////            //return YES;
-////        }
-////        else if(titleResultsRange2.length > 0)
-////        {
-////            //action 'after i found , want to add that array in arrayNew.
-////            return 2;
-////            //return YES;
-////        }
-////        else
-////        {
-////            /*NSString *msg = [NSString stringWithFormat:@"%@\nPlease call PUB 24hr Call Centre to report failure to subscribe.", response];
-////             UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-////             message:msg
-////             delegate:self
-////             cancelButtonTitle:@"OK"
-////             otherButtonTitles:nil ];
-////             [alertView show];
-////             [alertView release];*/
-////            //return NO;
-////            return 3;
-////        }
-//        
-//        [CommonFunctions showAlertView:nil title:nil msg:@"Successfully subscribed to SMS alert." cancel:@"OK" otherButton:nil];
-//        nameField.text = @"";
-//        emailField.text = @"";
-//        identificationNumberField.text = @"";
-//        mobileField.text = @"";
-//        postalCodeField.text = @"";
-//        idTypeField.text = @"";
-//        locationField.text = @"";
-//        pickerSelectedIndex = 0;
-//    }
-//    else {
-//        [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-//    }
+    //    //NSLog(@"request: %@", request.postBody);
+    //    NSError *error = [request error];
+    //    if (!error) {
+    //        NSString *response = [request responseString];
+    //        DebugLog(@"%@",response);
+    ////        NSRange titleResultsRange3 = [response rangeOfString:@"<html>"];
+    ////        if (titleResultsRange3.location != NSNotFound)
+    ////        {
+    ////            NSLog(@"found <html> !!!!!");
+    ////            /*NSString *msg = [NSString stringWithFormat:@"Please call PUB 24hr Call Centre to report failure to subscribe."];
+    ////             UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+    ////             message:msg
+    ////             delegate:self
+    ////             cancelButtonTitle:@"OK"
+    ////             otherButtonTitles:nil ];
+    ////             [alertView show];
+    ////             [alertView release];*/
+    ////            return 3;
+    ////            //return NO;
+    ////        }
+    ////        NSLog(@"response: %@", response);
+    ////
+    ////        NSRange titleResultsRange = [response rangeOfString:@"1:" options:NSCaseInsensitiveSearch];
+    ////        NSRange titleResultsRange2 = [response rangeOfString:@"2:" options:NSCaseInsensitiveSearch];
+    ////
+    ////        if (titleResultsRange.length > 0)
+    ////        {
+    ////            return 1;
+    ////            //return YES;
+    ////        }
+    ////        else if(titleResultsRange2.length > 0)
+    ////        {
+    ////            //action 'after i found , want to add that array in arrayNew.
+    ////            return 2;
+    ////            //return YES;
+    ////        }
+    ////        else
+    ////        {
+    ////            /*NSString *msg = [NSString stringWithFormat:@"%@\nPlease call PUB 24hr Call Centre to report failure to subscribe.", response];
+    ////             UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+    ////             message:msg
+    ////             delegate:self
+    ////             cancelButtonTitle:@"OK"
+    ////             otherButtonTitles:nil ];
+    ////             [alertView show];
+    ////             [alertView release];*/
+    ////            //return NO;
+    ////            return 3;
+    ////        }
+    //
+    //        [CommonFunctions showAlertView:nil title:nil msg:@"Successfully subscribed to SMS alert." cancel:@"OK" otherButton:nil];
+    //        nameField.text = @"";
+    //        emailField.text = @"";
+    //        identificationNumberField.text = @"";
+    //        mobileField.text = @"";
+    //        postalCodeField.text = @"";
+    //        idTypeField.text = @"";
+    //        locationField.text = @"";
+    //        pickerSelectedIndex = 0;
+    //    }
+    //    else {
+    //        [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+    //    }
 }
 
 
@@ -596,12 +596,12 @@
         [mobileField resignFirstResponder];
         [postalCodeField resignFirstResponder];
         
-//        [UIView beginAnimations:@"topMenu" context:NULL];
-//        [UIView setAnimationDuration:0.5];
-//        CGPoint pos = uiBackgroundView.center;
-//        pos.y = 239;
-//        uiBackgroundView.center = pos;
-//        [UIView commitAnimations];
+        //        [UIView beginAnimations:@"topMenu" context:NULL];
+        //        [UIView setAnimationDuration:0.5];
+        //        CGPoint pos = uiBackgroundView.center;
+        //        pos.y = 239;
+        //        uiBackgroundView.center = pos;
+        //        [UIView commitAnimations];
         
         [self animateOptionsPicker];
         
@@ -618,18 +618,24 @@
         [mobileField resignFirstResponder];
         [postalCodeField resignFirstResponder];
         
-//        [UIView beginAnimations:@"topMenu" context:NULL];
-//        [UIView setAnimationDuration:0.5];
-//        CGPoint pos = uiBackgroundView.center;
-//        pos.y = 239;
-//        uiBackgroundView.center = pos;
-//        [UIView commitAnimations];
+        //        [UIView beginAnimations:@"topMenu" context:NULL];
+        //        [UIView setAnimationDuration:0.5];
+        //        CGPoint pos = uiBackgroundView.center;
+        //        pos.y = 239;
+        //        uiBackgroundView.center = pos;
+        //        [UIView commitAnimations];
         
-        if (appDelegate.WLS_LISTING_ARRAY.count==0) {
-            [self fetchWLSListing];
+        
+        if ([CommonFunctions hasConnectivity]) {
+            if (appDelegate.WLS_LISTING_ARRAY.count==0) {
+                [self fetchWLSListing];
+            }
+            else {
+                [self animateOptionsPicker];
+            }
         }
         else {
-            [self animateOptionsPicker];
+            [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
         }
         
         return NO;
@@ -641,8 +647,8 @@
         [UIView beginAnimations:@"topMenu" context:NULL];
         [UIView setAnimationDuration:0.5];
         CGPoint pos = uiBackgroundView.center;
-//        if (IS_IPHONE_4_OR_LESS)
-            pos.y = 110;
+        //        if (IS_IPHONE_4_OR_LESS)
+        pos.y = 110;
         uiBackgroundView.center = pos;
         [UIView commitAnimations];
         
@@ -726,6 +732,8 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
+    [appDelegate setShouldRotate:NO];
+    
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
@@ -733,7 +741,7 @@
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-
+    
 }
 
 

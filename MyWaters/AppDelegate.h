@@ -35,7 +35,9 @@
 
 @property (nonatomic, assign) double CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG,LONG_PRESS_USER_LOCATION_LAT,LONG_PRESS_USER_LOCATION_LONG;
 @property (nonatomic, assign) CLLocationCoordinate2D USER_CURRENT_LOCATION_COORDINATE,LONG_PRESS_USER_LOCATION_COORDINATE;
-@property (nonatomic, assign) BOOL IS_COMING_FROM_DASHBOARD,IS_RELAUNCHING_APP,IS_USER_LOCATION_SELECTED_BY_LONG_PRESS;
+@property (nonatomic, assign) BOOL IS_COMING_FROM_DASHBOARD,IS_RELAUNCHING_APP,IS_USER_LOCATION_SELECTED_BY_LONG_PRESS,IS_SHARING_ON_SOCIAL_MEDIA;
+
+@property (nonatomic, assign) BOOL shouldRotate;
 
 - (void) createViewDeckController;
 - (void) retrieveDashboardPreferences;

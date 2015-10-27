@@ -335,7 +335,7 @@
     addToFavlabel.textAlignment = NSTextAlignmentCenter;
     addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     if (isAlreadyFav) {
-        addToFavlabel.text = @"Favourited";
+        addToFavlabel.text = @"Favourite";
     }
     else {
         addToFavlabel.text = @"Favourite";
@@ -481,7 +481,7 @@
     
     if (isAlreadyFav) {
         [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        addToFavlabel.text = @"Favourited";
+        addToFavlabel.text = @"Favourite";
     }
     else {
         [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -619,7 +619,6 @@
             }
             
             
-            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
             NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
                 float v1 = [left floatValue];
                 float v2 = [right floatValue];
@@ -631,7 +630,7 @@
                     return NSOrderedSame;
             }];
             
-            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             
             if (!tempNearByArray) {
                 tempNearByArray = [[NSMutableArray alloc] init];
@@ -937,6 +936,20 @@
             tempNearByArray = [[NSMutableArray alloc] init];
         }
         
+        
+        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            float v1 = [left floatValue];
+            float v2 = [right floatValue];
+            if (v1 < v2)
+                return NSOrderedAscending;
+            else if (v1 > v2)
+                return NSOrderedDescending;
+            else
+                return NSOrderedSame;
+        }];
+        
+        [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        
         int count = 0;
         [tempNearByArray removeAllObjects];
         for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
@@ -961,6 +974,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
+    [appDelegate setShouldRotate:NO];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

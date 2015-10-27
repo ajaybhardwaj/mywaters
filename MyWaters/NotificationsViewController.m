@@ -161,7 +161,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView==filterTableView) {
-        return 40.0f;
+        return 44.0f;
     }
     else if (tableView==notificationsTable) {
         
@@ -472,10 +472,13 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
+    [appDelegate setShouldRotate:NO];
+    
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     
     [self fetchNotificationListing];
+    
 }
 
 

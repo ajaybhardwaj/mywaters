@@ -98,7 +98,7 @@
     }
     
     
-    bigWeatherTempTitle.text = [NSString stringWithFormat:@"%@°C - %@°C",[[twelveHourForecastDictionary objectForKey:@"temperature"] objectForKey:@"_high"],[[twelveHourForecastDictionary objectForKey:@"temperature"] objectForKey:@"_low"]];
+    bigWeatherTempTitle.text = [NSString stringWithFormat:@"%@°C - %@°C",[[twelveHourForecastDictionary objectForKey:@"temperature"] objectForKey:@"_low"],[[twelveHourForecastDictionary objectForKey:@"temperature"] objectForKey:@"_high"]];
     bigTimeLabel.text = [NSString stringWithFormat:@"%@ - %@",[[twelveHourForecastDictionary objectForKey:@"forecastValidityFrom"] objectForKey:@"_time"],[[twelveHourForecastDictionary objectForKey:@"forecastValidityTill"] objectForKey:@"_time"]];
 }
 
@@ -367,8 +367,15 @@
     //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
     //    appDelegate.hud.labelText = @"Loading...";
     
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"true",@"1.0",[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], nil];
+    NSArray *parameters,*values;
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+        parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon", nil];
+        values = [[NSArray alloc] initWithObjects:@"true",@"1.0",[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], nil];
+    }
+    else {
+        parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version", nil];
+        values = [[NSArray alloc] initWithObjects:@"true",@"1.0", nil];
+    }
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
@@ -1494,7 +1501,7 @@
     
     if (tableView==whatsUpListingTable) {
         
-        UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 10, tableView.bounds.size.width-10, 45)];
+        UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 10, tableView.bounds.size.width-10, 30)];
         cellTitleLabel.backgroundColor = [UIColor clearColor];
         cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
         cellTitleLabel.numberOfLines = 0;
@@ -1502,6 +1509,19 @@
         [cell.contentView addSubview:cellTitleLabel];
         
         cellTitleLabel.text = [[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"FeedText"];
+        
+        UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        socialButton.frame = CGRectMake(whatsUpListingTable.bounds.size.width-15, cellTitleLabel.frame.origin.y+cellTitleLabel.bounds.size.height+3, 12, 12);
+        if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 1) {
+            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_facebook_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        }
+        else if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 2) {
+            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_twitter_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        }
+        else if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 3) {
+            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        }
+        [cell.contentView addSubview:socialButton];
         
     }
     else if (tableView==eventsListingTable) {
@@ -1623,6 +1643,8 @@
     
     [backgroundScrollView setContentOffset:CGPointZero animated:NO];
     
+    [appDelegate setShouldRotate:NO];
+    
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     
@@ -1645,6 +1667,15 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
     
+    if ([CommonFunctions hasConnectivity]) {
+        [self fetchDashboardData];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        return;
+    }
+    
+    
     
     //    if (!isExpandingMenu) {
     
@@ -1654,21 +1685,16 @@
         [self createDynamicUIColumns];
     }
     
-    [self fetchDashboardData];
-    //    }
-    //    else {
-    //        isExpandingMenu = NO;
-    //    }
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-    
-    [self.view addGestureRecognizer:swipeGesture];
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+//    swipeGesture.numberOfTouchesRequired = 1;
+//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+//    
+//    [self.view addGestureRecognizer:swipeGesture];
     
 }
 
@@ -1680,6 +1706,14 @@
         [req cancel];
         [req setDelegate:nil];
     }
+}
+
+
+
+
+
+- (BOOL)shouldAutorotate {
+    return NO;
 }
 
 

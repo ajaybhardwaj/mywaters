@@ -167,6 +167,10 @@
 		FE82AC5B1A92DE0800CCC94D /* GEOLocations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC561A92DE0800CCC94D /* GEOLocations.m */; };
 		FE82AC5E1A92E34100CCC94D /* MarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC5D1A92E34100CCC94D /* MarkerView.m */; };
 		FE82AC661A93312700CCC94D /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82AC651A93312700CCC94D /* Place.m */; };
+		FE82BF3D1BDFAF0A005A2BF3 /* WLSMapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82BF3C1BDFAF0A005A2BF3 /* WLSMapAnnotations.m */; settings = {ASSET_TAGS = (); }; };
+		FE82BF401BDFB16A005A2BF3 /* CCTVMapAnnoations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82BF3F1BDFB16A005A2BF3 /* CCTVMapAnnoations.m */; settings = {ASSET_TAGS = (); }; };
+		FE82BF431BDFB17F005A2BF3 /* FloodMapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82BF421BDFB17F005A2BF3 /* FloodMapAnnotations.m */; settings = {ASSET_TAGS = (); }; };
+		FE82BF461BDFB192005A2BF3 /* FeedbackMapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82BF451BDFB192005A2BF3 /* FeedbackMapAnnotations.m */; settings = {ASSET_TAGS = (); }; };
 		FE8652141BC4BE6600BA5689 /* rainmaptemp.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8652131BC4BE6600BA5689 /* rainmaptemp.png */; settings = {ASSET_TAGS = (); }; };
 		FE8652161BC4CF4F00BA5689 /* 201509281910.rain.zo.png in Resources */ = {isa = PBXBuildFile; fileRef = FE8652151BC4CF4F00BA5689 /* 201509281910.rain.zo.png */; settings = {ASSET_TAGS = (); }; };
 		FE86521B1BC4F5C000BA5689 /* MapOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8652181BC4F5C000BA5689 /* MapOverlay.m */; settings = {ASSET_TAGS = (); }; };
@@ -669,6 +673,14 @@
 		FE82AC5D1A92E34100CCC94D /* MarkerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkerView.m; sourceTree = "<group>"; };
 		FE82AC641A93312700CCC94D /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
 		FE82AC651A93312700CCC94D /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Place.m; sourceTree = "<group>"; };
+		FE82BF3B1BDFAF0A005A2BF3 /* WLSMapAnnotations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WLSMapAnnotations.h; sourceTree = "<group>"; };
+		FE82BF3C1BDFAF0A005A2BF3 /* WLSMapAnnotations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WLSMapAnnotations.m; sourceTree = "<group>"; };
+		FE82BF3E1BDFB16A005A2BF3 /* CCTVMapAnnoations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTVMapAnnoations.h; sourceTree = "<group>"; };
+		FE82BF3F1BDFB16A005A2BF3 /* CCTVMapAnnoations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTVMapAnnoations.m; sourceTree = "<group>"; };
+		FE82BF411BDFB17F005A2BF3 /* FloodMapAnnotations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloodMapAnnotations.h; sourceTree = "<group>"; };
+		FE82BF421BDFB17F005A2BF3 /* FloodMapAnnotations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloodMapAnnotations.m; sourceTree = "<group>"; };
+		FE82BF441BDFB192005A2BF3 /* FeedbackMapAnnotations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackMapAnnotations.h; sourceTree = "<group>"; };
+		FE82BF451BDFB192005A2BF3 /* FeedbackMapAnnotations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedbackMapAnnotations.m; sourceTree = "<group>"; };
 		FE8652131BC4BE6600BA5689 /* rainmaptemp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rainmaptemp.png; sourceTree = "<group>"; };
 		FE8652151BC4CF4F00BA5689 /* 201509281910.rain.zo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 201509281910.rain.zo.png; sourceTree = "<group>"; };
 		FE8652171BC4F5C000BA5689 /* MapOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapOverlay.h; sourceTree = "<group>"; };
@@ -1878,6 +1890,14 @@
 				FE86521A1BC4F5C000BA5689 /* MapOverlayView.m */,
 				FECC28CB1BD8DD6E0000DB0F /* UserFloodSubmissionViewController.h */,
 				FECC28CC1BD8DD6E0000DB0F /* UserFloodSubmissionViewController.m */,
+				FE82BF3B1BDFAF0A005A2BF3 /* WLSMapAnnotations.h */,
+				FE82BF3C1BDFAF0A005A2BF3 /* WLSMapAnnotations.m */,
+				FE82BF3E1BDFB16A005A2BF3 /* CCTVMapAnnoations.h */,
+				FE82BF3F1BDFB16A005A2BF3 /* CCTVMapAnnoations.m */,
+				FE82BF411BDFB17F005A2BF3 /* FloodMapAnnotations.h */,
+				FE82BF421BDFB17F005A2BF3 /* FloodMapAnnotations.m */,
+				FE82BF441BDFB192005A2BF3 /* FeedbackMapAnnotations.h */,
+				FE82BF451BDFB192005A2BF3 /* FeedbackMapAnnotations.m */,
 			);
 			name = "Quick Map";
 			sourceTree = "<group>";
@@ -2749,6 +2769,7 @@
 				FEF5CE7A1BDD32D5003E3A98 /* FGalleryPhoto.m in Sources */,
 				FE99BE1C1A7B7918000B83E8 /* DashboardSettingsViewController.m in Sources */,
 				FEAA8EFF1BD526B6007D4C9A /* SMSSubscriptionViewController.m in Sources */,
+				FE82BF3D1BDFAF0A005A2BF3 /* WLSMapAnnotations.m in Sources */,
 				FE4F37601A8862CD0028903C /* SignUpViewController.m in Sources */,
 				FEE65A841B8AC39E002C5C6D /* NSString+SBJSON.m in Sources */,
 				FED999B41BAAAC65007BEE55 /* UIImage+GIF.m in Sources */,
@@ -2767,6 +2788,7 @@
 				FED999B91BAAAC65007BEE55 /* UIView+WebCacheOperation.m in Sources */,
 				FE82AC591A92DE0800CCC94D /* ARKit.m in Sources */,
 				FEB13FB41A77658A0061CE74 /* QuickMapViewController.m in Sources */,
+				FE82BF461BDFB192005A2BF3 /* FeedbackMapAnnotations.m in Sources */,
 				FEA7307C1A77342100D274A6 /* IIViewDeckController.m in Sources */,
 				FEF43C2D1A7A099A00237CAD /* EventsDetailsViewController.m in Sources */,
 				FEA730A71A77355800D274A6 /* FeedbackViewController.m in Sources */,
@@ -2781,6 +2803,8 @@
 				FEA730951A77352700D274A6 /* NotificationsViewController.m in Sources */,
 				FEE65A6C1B8ABB55002C5C6D /* ASIAuthenticationDialog.m in Sources */,
 				FED999AE1BAAAC65007BEE55 /* SDWebImageDecoder.m in Sources */,
+				FE82BF401BDFB16A005A2BF3 /* CCTVMapAnnoations.m in Sources */,
+				FE82BF431BDFB17F005A2BF3 /* FloodMapAnnotations.m in Sources */,
 				FECE02F11BDC124700AA6A2C /* AKETooltip.m in Sources */,
 				FEFB4CCB1BB931330040F105 /* OTPViewController.m in Sources */,
 				FED999B81BAAAC65007BEE55 /* UIImageView+WebCache.m in Sources */,

@@ -263,7 +263,7 @@
     
     notifiyButton.userInteractionEnabled = NO;
     
-    alertOptionsView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-100, self.view.bounds.size.height/2-150, 200, 300)];
+    alertOptionsView = [[UIView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-100, self.view.bounds.size.height/2-125, 200, 250)];
     alertOptionsView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:alertOptionsView];
     
@@ -365,15 +365,15 @@
     [subscribeButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
     [alertOptionsView addSubview:subscribeButton];
     
-    UIButton *subscribeToSMSButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [subscribeToSMSButton setTitle:@"SMS SUBSCRIBE" forState:UIControlStateNormal];
-    [subscribeToSMSButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    subscribeToSMSButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
-    subscribeToSMSButton.tag = 6;
-    subscribeToSMSButton.frame = CGRectMake(10, subscribeButton.frame.origin.y+subscribeButton.bounds.size.height+20, alertOptionsView.bounds.size.width-20, 30);
-    [subscribeToSMSButton addTarget:self action:@selector(moveToSMSSubscriptionView) forControlEvents:UIControlEventTouchUpInside];
-    [subscribeToSMSButton setBackgroundColor:RGB(83, 83, 83)];
-    [alertOptionsView addSubview:subscribeToSMSButton];
+//    UIButton *subscribeToSMSButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [subscribeToSMSButton setTitle:@"SMS SUBSCRIBE" forState:UIControlStateNormal];
+//    [subscribeToSMSButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    subscribeToSMSButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
+//    subscribeToSMSButton.tag = 6;
+//    subscribeToSMSButton.frame = CGRectMake(10, subscribeButton.frame.origin.y+subscribeButton.bounds.size.height+20, alertOptionsView.bounds.size.width-20, 30);
+//    [subscribeToSMSButton addTarget:self action:@selector(moveToSMSSubscriptionView) forControlEvents:UIControlEventTouchUpInside];
+//    [subscribeToSMSButton setBackgroundColor:RGB(83, 83, 83)];
+//    [alertOptionsView addSubview:subscribeToSMSButton];
     
     dimmedImageView.hidden = NO;
     
@@ -497,7 +497,7 @@
     
     if (isAlreadyFav) {
         [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        addToFavLabel.text = @"Favourited";
+        addToFavLabel.text = @"Favourite";
     }
     else {
         [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -587,7 +587,7 @@
     addToFavLabel.textAlignment = NSTextAlignmentCenter;
     addToFavLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
     if (isAlreadyFav)
-        addToFavLabel.text = @"Favourited";
+        addToFavLabel.text = @"Favourite";
     else
         addToFavLabel.text = @"Favourite";
     addToFavLabel.textColor = [UIColor whiteColor];
@@ -648,8 +648,8 @@
     }
     
     notifiyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    notifiyButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, 40);
-    [notifiyButton setBackgroundColor:[UIColor lightGrayColor]];
+    notifiyButton.frame = CGRectMake(0, 0, self.view.bounds.size.width/2-1, 40);
+    [notifiyButton setBackgroundColor:RGB(117, 213, 73)];
     [notifiyButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [notifiyButton setTitle:@"NOTIFY ME" forState:UIControlStateNormal];
     [notifiyButton addTarget:self action:@selector(createAlertOptions) forControlEvents:UIControlEventTouchUpInside];
@@ -657,13 +657,23 @@
     [self.view addSubview:notifiyButton];
     
     unsubscribeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    unsubscribeButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, 40);
-    [unsubscribeButton setBackgroundColor:[UIColor lightGrayColor]];
+    unsubscribeButton.frame = CGRectMake(0, 0, self.view.bounds.size.width/2-1, 40);
+    [unsubscribeButton setBackgroundColor:[UIColor darkGrayColor]];
     [unsubscribeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [unsubscribeButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
     [unsubscribeButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
     unsubscribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
     [self.view addSubview:unsubscribeButton];
+    
+    
+    smsSubScribeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    smsSubScribeButton.frame = CGRectMake(self.view.bounds.size.width/2+1, 0, self.view.bounds.size.width/2, 40);
+    [smsSubScribeButton setBackgroundColor:RGB(83, 83, 83)];
+    [smsSubScribeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [smsSubScribeButton setTitle:@"SMS ALERTS" forState:UIControlStateNormal];
+    [smsSubScribeButton addTarget:self action:@selector(moveToSMSSubscriptionView) forControlEvents:UIControlEventTouchUpInside];
+    smsSubScribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
+    [self.view addSubview:smsSubScribeButton];
     
     if (isSubscribed) {
         
@@ -995,6 +1005,8 @@
                 else
                     return NSOrderedSame;
             }];
+            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+
             
             //            [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             if (!tempNearByArray) {
@@ -1395,7 +1407,13 @@
         }
     }
     else {
-        [self fetchWLSListing];
+        if ([CommonFunctions hasConnectivity]) {
+            [self fetchWLSListing];
+        }
+        else {
+            [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+            return;
+        }
     }
     
     
@@ -1408,6 +1426,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
+    [appDelegate setShouldRotate:NO];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

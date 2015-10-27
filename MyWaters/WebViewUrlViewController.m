@@ -117,6 +117,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:NO];
+    [appDelegate setShouldRotate:NO];
 }
 
 

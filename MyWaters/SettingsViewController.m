@@ -156,7 +156,7 @@
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
     
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Hints",@"Dashboard",@"Notifications",@"Terms and Conditions", nil];
+    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Quick Map Hints",@"Dashboard",@"Notifications",@"Terms and Conditions", nil];
 //    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"App will remember where you last left off",@"",@"",@"",@"", nil];
     tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"",@"",@"",@"", nil];
     
@@ -184,7 +184,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-
+    [appDelegate setShouldRotate:NO];
 }
 
 
