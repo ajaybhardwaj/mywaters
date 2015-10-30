@@ -54,7 +54,7 @@
     
     threeDayWeatherData = [[[xmlDictionary objectForKey:@"channel"] objectForKey:@"item"] valueForKey:@"weatherForecast"];
     
-//    DebugLog(@"%ld",nowCastWeatherData.count);
+    //    DebugLog(@"%ld",nowCastWeatherData.count);
     DebugLog(@"%@",threeDayWeatherData);
     
     NSArray *dayArray = [threeDayWeatherData objectForKey:@"day"];
@@ -119,11 +119,9 @@
 
 //*************** Method To Get Nowcast Weather XML Data
 
-- (void) getTwelveWeatherData {
+- (void) getTwelveHourWeatherData {
     
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:TWELVE_HOUR_FORECAST] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10
-                                    ];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:TWELVE_HOUR_FORECAST] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10];
     
     [request setHTTPMethod: @"GET"];
     
@@ -134,48 +132,52 @@
     NSString *responseString  = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
     
     NSDictionary *xmlDictionary = [NSDictionary dictionaryWithXMLString:responseString];
-
+    
     twelveHourWeatherData = [[xmlDictionary objectForKey:@"channel"] objectForKey:@"item"];
     
     NSString *issueDate = [CommonFunctions dateFromString:[[twelveHourWeatherData objectForKey:@"forecastIssue"] objectForKey:@"_date"]];
-    threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@ @ %@",issueDate,[[twelveHourWeatherData objectForKey:@"forecastIssue"] objectForKey:@"_time"]];
-
-    NSString *iconImageName;
+//    threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@ @ %@",issueDate,[[twelveHourWeatherData objectForKey:@"forecastIssue"] objectForKey:@"_time"]];
     
-    if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"FD"]) {
-        iconImageName = @"FD.png";
-    }
-    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"FN"]) {
-        iconImageName = @"FN.png";
-    }
-    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"PC"]) {
-        iconImageName = @"PC.png";
-    }
-    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"CD"]) {
-        iconImageName = @"CD.png";
-    }
-    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"HZ"]) {
-        iconImageName = @"HZ.png";
-    }
-    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"WD"]) {
-        iconImageName = @"WD.png";
-    }
-    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"RA"]) {
-        iconImageName = @"RA.png";
-    }
-    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"PS"]) {
-        iconImageName = @"PS.png";
-    }
-    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"SH"]) {
-        iconImageName = @"SH.png";
-    }
-    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"TS"]) {
-        iconImageName = @"TS.png";
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+        NSString *iconImageName;
+        
+        if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"FD"]) {
+            iconImageName = @"FD.png";
+        }
+        else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"FN"]) {
+            iconImageName = @"FN.png";
+        }
+        else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"PC"]) {
+            iconImageName = @"PC.png";
+        }
+        else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"CD"]) {
+            iconImageName = @"CD.png";
+        }
+        else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"HZ"]) {
+            iconImageName = @"HZ.png";
+        }
+        else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"WD"]) {
+            iconImageName = @"WD.png";
+        }
+        else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"RA"]) {
+            iconImageName = @"RA.png";
+        }
+        else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"PS"]) {
+            iconImageName = @"PS.png";
+        }
+        else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"SH"]) {
+            iconImageName = @"SH.png";
+        }
+        else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"TS"]) {
+            iconImageName = @"TS.png";
+        }
+        [threeHourBigIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,iconImageName]]];
+        threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@ @ %@",issueDate,[[twelveHourWeatherData objectForKey:@"forecastIssue"] objectForKey:@"_time"]];
+
     }
     
     twelveHourTempLabel.text = [NSString stringWithFormat:@"%@°C",[[twelveHourWeatherData objectForKey:@"temperature"] objectForKey:@"_high"]];
-    [threeHourBigIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,iconImageName]]];
-
+    
     [self getThreeDaysWeatherData];
 }
 
@@ -187,7 +189,7 @@
     
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:NOWCAST_WEATHER_URL] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10
-     ];
+                                    ];
     
     [request setHTTPMethod: @"GET"];
     
@@ -198,14 +200,102 @@
     NSString *responseString  = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
     
     NSDictionary *xmlDictionary = [NSDictionary dictionaryWithXMLString:responseString];
-    DebugLog(@"%@",xmlDictionary);
     nowCastWeatherData = [[[[xmlDictionary objectForKey:@"channel"] objectForKey:@"item"] valueForKey:@"weatherForecast"] valueForKey:@"area"];
+    nowcastTimeString = [[[xmlDictionary objectForKey:@"channel"] objectForKey:@"item"] valueForKey:@"issue_datentime"];
     
-//    DebugLog(@"%ld",nowCastWeatherData.count);
-//    DebugLog(@"%@",nowCastWeatherData);
-
+    NSString *match = @"at ";
+    NSString *preString,*postString;
     
-    [self getTwelveWeatherData];
+    NSScanner *scanner = [NSScanner scannerWithString:nowcastTimeString];
+    [scanner scanUpToString:match intoString:&preString];
+    [scanner scanString:match intoString:nil];
+    postString = [nowcastTimeString substringFromIndex:scanner.scanLocation];
+    
+    nowcastTimeString = [postString substringToIndex:8];
+    nowcastDateString = [postString substringWithRange:NSMakeRange(12, 10)];
+    
+    NSString *issueDate = [CommonFunctions dateFromString:nowcastDateString];
+    threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@ @ %@",issueDate,nowcastTimeString];
+    
+    
+    CLLocationCoordinate2D currentLocation;
+    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+    
+    
+    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+    
+    for (NSDictionary *tempDict in nowCastWeatherData) {
+        
+        [tempArray addObject:tempDict];
+    }
+    
+    
+    for (int idx = 0; idx<[tempArray count];idx++) {
+        
+        NSMutableDictionary *dict = [tempArray[idx] mutableCopy];
+        
+        CLLocationCoordinate2D desinationLocation;
+        desinationLocation.latitude = [dict[@"_lat"] doubleValue];
+        desinationLocation.longitude = [dict[@"_lon"] doubleValue];
+        
+        dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];
+        tempArray[idx] = dict;
+        
+    }
+    
+    
+    NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+        float v1 = [left floatValue];
+        float v2 = [right floatValue];
+        if (v1 < v2)
+            return NSOrderedAscending;
+        else if (v1 > v2)
+            return NSOrderedDescending;
+        else
+            return NSOrderedSame;
+    }];
+    
+    [tempArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+    
+    DebugLog(@"%@",tempArray);
+    
+    NSString *iconImageName;
+    
+    if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"FD"]) {
+        iconImageName = @"FD.png";
+    }
+    else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"FN"]) {
+        iconImageName = @"FN.png";
+    }
+    else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"PC"]) {
+        iconImageName = @"PC.png";
+    }
+    else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"CD"]) {
+        iconImageName = @"CD.png";
+    }
+    else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"HA"] || [[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"HZ"]) {
+        iconImageName = @"HZ.png";
+    }
+    else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"WD"]) {
+        iconImageName = @"WD.png";
+    }
+    else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"RA"]) {
+        iconImageName = @"RA.png";
+    }
+    else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"PS"]) {
+        iconImageName = @"PS.png";
+    }
+    else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"SH"]) {
+        iconImageName = @"SH.png";
+    }
+    else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"TS"]) {
+        iconImageName = @"TS.png";
+    }
+    [threeHourBigIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,iconImageName]]];
+    
+    
+    [self getTwelveHourWeatherData];
 }
 
 
@@ -276,7 +366,7 @@
     
     threeDayThirdIcon = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-140, threeDaySecondIcon.frame.origin.y+threeDaySecondIcon.bounds.size.height+15, 40, 40)];
     [self.view addSubview:threeDayThirdIcon];
-
+    
 }
 
 
@@ -290,14 +380,18 @@
     self.view.backgroundColor = RGB(247, 247, 247);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-//    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
-
-
+    //    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
+    
+    
+//    nowCastWeatherData = [[NSMutableDictionary alloc] init];
+//    twelveHourWeatherData = [[NSMutableDictionary alloc] init];
+//    threeDayWeatherData = [[NSMutableDictionary alloc] init];
+    
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-
+    
     [self createUI];
 }
 
@@ -309,11 +403,11 @@
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(36,160,236) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
-
+    
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied)
         [self getNowcastWeatherData];
     else
-        [self getTwelveWeatherData];
+        [self getTwelveHourWeatherData];
 }
 
 
@@ -323,13 +417,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

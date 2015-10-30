@@ -41,9 +41,10 @@
 - (void) showBadgesDescPopUp:(id) sender {
     
     UIButton *button = (id) sender;
-    NSString *alertTitle = [[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"Description"];
+    NSString *alertTitle = [[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"Name"];
+    NSString *alertMessage = [[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"Description"];
     
-    [CommonFunctions showAlertView:nil title:nil msg:alertTitle cancel:@"OK" otherButton:nil];
+    [CommonFunctions showAlertView:nil title:alertTitle msg:alertMessage cancel:@"OK" otherButton:nil];
 }
 
 
@@ -738,8 +739,35 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (tableView==rewardsListingTableView) {
-        return 100.0f;
+    
+        float titleHeight = 0.0;
+        float subTitleHeight = 0.0;
+        float dateHeight = 0.0;
+        int subtractComponent = 0;
+        
+        if (tableView==rewardsListingTableView) {
+            
+            if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null]) {
+                titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:rewardsListingTableView.bounds.size.width-85];
+                subtractComponent = subtractComponent + 25;
+            }
+            
+            if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] != (id)[NSNull null]) {
+                subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:rewardsListingTableView.bounds.size.width-90];
+                subtractComponent = subtractComponent + 25;
+            }
+            
+            if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"] != (id)[NSNull null]) {
+                dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:rewardsListingTableView.bounds.size.width-85];
+                subtractComponent = subtractComponent + 25;
+            }
+            
+            if ((titleHeight+subTitleHeight+dateHeight) < 90) {
+                return 90.0f;
+            }
+            
+            return titleHeight+subTitleHeight+dateHeight-subtractComponent;
+        
     }
     else if (tableView==pointsTableView) {
         return 70.0f;
@@ -926,15 +954,23 @@
         }
         
         
-        UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 5, rewardsListingTableView.bounds.size.width-100, 40)];
+        UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, rewardsListingTableView.bounds.size.width-100, 40)];
         cellTitleLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"];
         cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         cellTitleLabel.backgroundColor = [UIColor clearColor];
         cellTitleLabel.numberOfLines = 0;
         [cell.contentView addSubview:cellTitleLabel];
         
+        CGRect newTitleLabelLabelFrame = cellTitleLabel.frame;
+        newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"]] font:cellTitleLabel.font withinWidth:rewardsListingTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        cellTitleLabel.frame = newTitleLabelLabelFrame;
+        [cell.contentView addSubview:cellTitleLabel];
         
-        UILabel *cellPointsLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 50, rewardsListingTableView.bounds.size.width-100, 13)];
+        [cell.contentView addSubview:cellTitleLabel];
+        [cellTitleLabel sizeToFit];
+        
+        
+        UILabel *cellPointsLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, cellTitleLabel.frame.origin.y+cellTitleLabel.bounds.size.height+5, rewardsListingTableView.bounds.size.width-100, 13)];
         cellPointsLabel.text = [NSString stringWithFormat:@"%d",[[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] intValue]];
         cellPointsLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         cellPointsLabel.backgroundColor = [UIColor clearColor];
@@ -942,13 +978,27 @@
         cellPointsLabel.numberOfLines = 0;
         [cell.contentView addSubview:cellPointsLabel];
         
-        UILabel *cellPlaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 65, rewardsListingTableView.bounds.size.width-100, 35)];
+        
+        CGRect newSubTitleLabelLabelFrame = cellPointsLabel.frame;
+        newSubTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"]] font:cellPointsLabel.font withinWidth:rewardsListingTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        cellPointsLabel.frame = newSubTitleLabelLabelFrame;
+        [cell.contentView addSubview:cellPointsLabel];
+        [cellPointsLabel sizeToFit];
+
+        
+        UILabel *cellPlaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, cellPointsLabel.frame.origin.y+cellPointsLabel.bounds.size.height+5, rewardsListingTableView.bounds.size.width-100, 35)];
         cellPlaceLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"];
         cellPlaceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         cellPlaceLabel.backgroundColor = [UIColor clearColor];
         cellPlaceLabel.textColor = [UIColor lightGrayColor];
         cellPlaceLabel.numberOfLines = 0;
         [cell.contentView addSubview:cellPlaceLabel];
+        
+        CGRect newDateLabelLabelFrame = cellPlaceLabel.frame;
+        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"]]] font:cellPlaceLabel.font withinWidth:rewardsListingTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        cellPlaceLabel.frame = newDateLabelLabelFrame;
+        [cell.contentView addSubview:cellPlaceLabel];
+        [cellPlaceLabel sizeToFit];
         
         
         UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 99.5, rewardsListingTableView.bounds.size.width, 0.5)];

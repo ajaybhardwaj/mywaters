@@ -119,7 +119,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnFacebook:@"http://52.74.251.44/PUB.MyWater.Api.New/uploads/info/Icon_180.png" appUrl:appUrl title:@"MyWaters" desc:@"Download app from app store." view:self];
+            [CommonFunctions sharePostOnFacebook:@"http://52.74.251.44/PUB.MyWater.Api.New/uploads/info/Icon_180.png" appUrl:appUrl title:@"MyWaters" desc:@"Download app from app store." view:self abcIDValue:@"0"];
         }
         else if (buttonIndex==1) {
             
@@ -130,7 +130,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnTwitter:appUrl title:@"Download MyWaters app from app store." view:self];
+            [CommonFunctions sharePostOnTwitter:appUrl title:@"Download MyWaters app from app store." view:self abcIDValue:@"-1"];
         }
     }
 }
@@ -154,7 +154,7 @@
         }
         else {
             
-//            [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
+            [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
             
             if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userIsFriendOfWater"] intValue] == 1) {
                 tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App", nil];

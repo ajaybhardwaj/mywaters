@@ -34,7 +34,7 @@
     
     if (nil == currentLocationPopUp) {
         
-        currentLocationPopUp = [[CMPopTipView alloc] initWithMessage:@"Tap to locate your current location."];
+        currentLocationPopUp = [[CMPopTipView alloc] initWithMessage:[NSString stringWithFormat:@"Tap to locate your \ncurrent location."]];
         currentLocationPopUp.delegate = self;
         currentLocationPopUp.backgroundColor = [UIColor whiteColor];
         currentLocationPopUp.textColor = [UIColor blackColor];
@@ -149,7 +149,7 @@
 - (void) fetchUserFloodSubmissionListing {
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"10",@"1.0", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"10",[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -159,7 +159,7 @@
 - (void) fetchPUBFloodSubmissionListing {
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"11",@"1.0", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"11",[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -169,7 +169,7 @@
 - (void) fetchCCTVListing {
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"1.0", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -180,7 +180,7 @@
 - (void) fetchWLSListing {
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"6",@"1.0", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -249,7 +249,7 @@
     }
     else {
         isShowingFilter = YES;
-        pos.y = 90;
+        pos.y = 100;
         
         quickMap.alpha = 0.5;
         quickMap.userInteractionEnabled = NO;
@@ -838,7 +838,7 @@
         titleLabel.textColor = [UIColor whiteColor];
         [cell.contentView addSubview:titleLabel];
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 43.5, filterTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -1306,7 +1306,7 @@
                 [self generatePUBFloodSubmissionAnnotations];
             }
             
-            [floodStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_pub_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+            [floodStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
             
         }
         else {
@@ -1511,7 +1511,7 @@
         [quickMap addGestureRecognizer:lpgr];
     }
     
-    isShowingFlood = NO;
+    isShowingFlood = YES;
     isShowingUserFeedback = NO;
     isShowingRain = NO;
     isShowingCamera = NO;
@@ -1570,7 +1570,9 @@
     stack = [[UPStackMenu alloc] initWithContentView:menuContentView];
     [stack setDelegate:self];
     
-    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by PUB" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+//    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by PUB" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by PUB" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+
     wlsStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Water Level Sensor" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
     cctvStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"CCTV" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
     userFeedbackStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by Users" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
@@ -1593,11 +1595,11 @@
         [item setLabelPosition:UPStackMenuItemLabelPosition_right];
         [item setLabelPosition:UPStackMenuItemLabelPosition_left];
     }];
-    
     [stack addItems:items];
     [quickMap addSubview:stack];
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -270, self.view.bounds.size.width, 180) style:UITableViewStylePlain];
+
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -270, self.view.bounds.size.width, 200) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -1610,6 +1612,9 @@
 
     
     filterDataSource = [[NSArray alloc] initWithObjects:@"Drain 0-75% Full",@"Drain 75%-90% Full",@"Drain 90%-100 Full",@"Station under maintenance", nil];
+    
+    isLoadingFloods = YES;
+    [self fetchPUBFloodSubmissionListing];
 }
 
 

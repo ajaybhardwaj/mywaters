@@ -63,7 +63,7 @@
     appDelegate.hud.labelText = @"Loading...";
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],@"1.0", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
     
     [self pullToRefreshTable];
@@ -80,7 +80,7 @@
     
     if (isShowingFilter) {
         isShowingFilter = NO;
-        pos.y = -120;
+        pos.y = -300;
         
         cctvListingTable.alpha = 1.0;
         cctvListingTable.userInteractionEnabled = YES;
@@ -113,7 +113,7 @@
     
     if (isShowingSearchBar) {
         isShowingSearchBar = NO;
-        pos.y = -150;
+        pos.y = -200;
         
         cctvListingTable.alpha = 1.0;
         cctvListingTable.userInteractionEnabled = YES;
@@ -413,7 +413,7 @@
         titleLabel.textColor = [UIColor whiteColor];
         [cell.contentView addSubview:titleLabel];
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 43.5, filterTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -530,7 +530,7 @@
     cctvListingTable.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -256, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -386, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -542,7 +542,7 @@
     filterTableView.alwaysBounceVertical = NO;
 
     
-    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
+    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -150, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;
     listinSearchBar.placeholder = @"Search...";
     [listinSearchBar setBackgroundImage:[[UIImage alloc] init]];

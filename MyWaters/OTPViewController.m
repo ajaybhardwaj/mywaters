@@ -308,6 +308,8 @@
             }
             else if (isResettingPassword) {
                 
+                [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
+                
                 PasswordResetViewController *viewObj = [[PasswordResetViewController alloc] init];
                 viewObj.emailString = emailStringForVerification;
                 [self.navigationController pushViewController:viewObj animated:YES];

@@ -23,6 +23,15 @@
     
 }
 
+
+//*************** Method To Hide Keypads
+
+- (void) hideAllKeypads {
+    
+    [emailField resignFirstResponder];
+}
+
+
 //*************** Method To Move Back To Parent View
 
 - (void) pop2Dismiss:(id) sender {
@@ -138,6 +147,11 @@
     [bgView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_background.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [self.view addSubview:bgView];
     
+    
+    UIButton *hideKeypadButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideKeypadButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideKeypadButton addTarget:self action:@selector(hideAllKeypads) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideKeypadButton];
     
     emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, 40, self.view.bounds.size.width-20, 40)];
     emailField.textColor = RGB(61, 71, 94);

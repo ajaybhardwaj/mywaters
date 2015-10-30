@@ -114,7 +114,7 @@
     appDelegate.hud.labelText = @"Loading...";
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"1",@"1.0", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"1",[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -636,9 +636,9 @@
                 tempNearByArray = [[NSMutableArray alloc] init];
             }
             int count = 0;
-            [tempNearByArray removeAllObjects];
+
             for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
-                if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"ID"] != cctvID) {
+                if (![[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"ID"] isEqualToString:cctvID]) {
                     if (count!=3) {
                         [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i]];
                         count++;
@@ -648,9 +648,6 @@
                     }
                 }
             }
-            
-            //            tempNearByArray = appDelegate.CCTV_LISTING_ARRAY;
-            //            [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             
         }
         
@@ -688,7 +685,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:appUrl title:titleString desc:nil view:self];
+            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:appUrl title:titleString desc:nil view:self abcIDValue:@"0"];
         }
         else if (buttonIndex==1) {
             NSString *appUrl;
@@ -698,7 +695,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnTwitter:appUrl title:titleString view:self];
+            [CommonFunctions sharePostOnTwitter:appUrl title:titleString view:self abcIDValue:@"0"];
         }
     }
 }
@@ -930,44 +927,50 @@
     
     [self createUI];
     
-    if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
-        
-        if (!tempNearByArray) {
-            tempNearByArray = [[NSMutableArray alloc] init];
-        }
-        
-        
-        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-            float v1 = [left floatValue];
-            float v2 = [right floatValue];
-            if (v1 < v2)
-                return NSOrderedAscending;
-            else if (v1 > v2)
-                return NSOrderedDescending;
-            else
-                return NSOrderedSame;
-        }];
-        
-        [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
-        
-        int count = 0;
-        [tempNearByArray removeAllObjects];
-        for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
-            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"ID"] != cctvID) {
-                if (count!=3) {
-                    [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i]];
-                    count++;
-                }
-                else {
-                    break;
-                }
-            }
-        }
-        
-    }
-    else {
+//    if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
+//        
+//        if (!tempNearByArray) {
+//            tempNearByArray = [[NSMutableArray alloc] init];
+//        }
+//        
+//        
+//        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+//            float v1 = [left floatValue];
+//            float v2 = [right floatValue];
+//            if (v1 < v2)
+//                return NSOrderedAscending;
+//            else if (v1 > v2)
+//                return NSOrderedDescending;
+//            else
+//                return NSOrderedSame;
+//        }];
+//        
+//        [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+//        
+//        int count = 0;
+////        [tempNearByArray removeAllObjects];
+//        for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
+//            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"ID"] != cctvID) {
+//                if (count!=3) {
+//                    [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i]];
+//                    count++;
+//                }
+//                else {
+//                    break;
+//                }
+//            }
+//        }
+//        
+//    }
+//    else {
+    if ([CommonFunctions hasConnectivity]) {
         [self fetchCCTVListing];
     }
+    else {
+        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        return;
+    }
+    //    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {

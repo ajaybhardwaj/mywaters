@@ -46,13 +46,28 @@
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     // load error, hide the activity indicator in the status bar
+//    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+//    [loadingIndicator stopAnimating];
+//    // report the error inside the webview
+//    NSString* errorString = [NSString stringWithFormat:
+//                             @"<html><center><font size=+5 color='red'>An error occurred:<br>%@</font></center></html>",
+//                             error.localizedDescription];
+//    [bookingWebView loadHTMLString:errorString baseURL:nil];
+    
+    // load error, hide the activity indicator in the status bar
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     [loadingIndicator stopAnimating];
-    // report the error inside the webview
-    NSString* errorString = [NSString stringWithFormat:
-                             @"<html><center><font size=+5 color='red'>An error occurred:<br>%@</font></center></html>",
-                             error.localizedDescription];
-    [bookingWebView loadHTMLString:errorString baseURL:nil];
+    if ([error code] == NSURLErrorCancelled) {
+        // don't show the error
+        
+        // if you want to know why I ignore these errors
+        // check out this question:
+        // http://stackoverflow.com/questions/1577670
+        return;
+    }
+    
+    [webView loadHTMLString:[[NSString alloc] initWithFormat:@"Failed to load page %@ %08d", [error localizedDescription], [error code]] baseURL:nil];
+
 }
 
 

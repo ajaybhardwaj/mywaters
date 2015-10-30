@@ -61,7 +61,7 @@ static SharedObject *sharedInstance_ = nil;  // -- shared instacne class object
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
     if ([[dict objectForKey:@"UserProfile"] valueForKey:@"ID"] != (id)[NSNull null])
-        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"ID"] forKey:@"userID"];
+        [prefs setValue:[NSString stringWithFormat:@"%d",[[[dict objectForKey:@"UserProfile"] valueForKey:@"ID"] intValue]] forKey:@"userID"];
     if ([[dict objectForKey:@"UserProfile"] valueForKey:@"Name"] != (id)[NSNull null])
         [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"Name"] forKey:@"userName"];
     if ([[dict objectForKey:@"UserProfile"] valueForKey:@"Email"] != (id)[NSNull null])
@@ -74,17 +74,18 @@ static SharedObject *sharedInstance_ = nil;  // -- shared instacne class object
         [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"ImageName"] forKey:@"userProfileImageName"];
     if ([[dict objectForKey:@"UserProfile"] valueForKey:@"ImageBase64"] != (id)[NSNull null])
         [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"ImageBase64"] forKey:@"userProfileImageBase64"];
-    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"IsFriendofWater"] != (id)[NSNull null])
-        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"IsFriendofWater"] forKey:@"userIsFriendOfWater"];
+    
+    if ([[dict objectForKey:@"UserProfile"] valueForKey:@"IsFriendOfWater"] != (id)[NSNull null])
+        [prefs setValue:[NSString stringWithFormat:@"%d",[[[dict objectForKey:@"UserProfile"] valueForKey:@"IsFriendOfWater"] intValue]] forKey:@"userIsFriendOfWater"];
     if ([[dict objectForKey:@"UserProfile"] valueForKey:@"IsEmailVerified"] != (id)[NSNull null])
-        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"IsEmailVerified"] forKey:@"isEmailVerified"];
+        [prefs setValue:[NSString stringWithFormat:@"%d",[[[dict objectForKey:@"UserProfile"] valueForKey:@"IsEmailVerified"] intValue]] forKey:@"isEmailVerified"];
     if ([[dict objectForKey:@"UserProfile"] valueForKey:@"IsAllowChangePassword"] != (id)[NSNull null])
-        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"IsAllowChangePassword"] forKey:@"isAllowChangePassword"];
+        [prefs setValue:[NSString stringWithFormat:@"%d",[[[dict objectForKey:@"UserProfile"] valueForKey:@"IsAllowChangePassword"] intValue]] forKey:@"isAllowChangePassword"];
     if ([[dict objectForKey:@"UserProfile"] valueForKey:@"Status"] != (id)[NSNull null])
-        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"Status"] forKey:@"userStatus"];
+        [prefs setValue:[NSString stringWithFormat:@"%d",[[[dict objectForKey:@"UserProfile"] valueForKey:@"Status"] intValue]] forKey:@"userStatus"];
     if ([[dict objectForKey:@"UserProfile"] valueForKey:@"CurrentRewardPoints"] != (id)[NSNull null])
-        [prefs setValue:[[dict objectForKey:@"UserProfile"] valueForKey:@"CurrentRewardPoints"] forKey:@"userRewardPoints"];
-    if ([dict valueForKey:@"AccessToken"] != (id)[NSNull null])
+        [prefs setValue:[NSString stringWithFormat:@"%d",[[[dict objectForKey:@"UserProfile"] valueForKey:@"CurrentRewardPoints"] intValue]] forKey:@"userRewardPoints"];
+    if ([dict valueForKey:@"AccessToken"] != (id)[NSNull null] && [[dict valueForKey:@"AccessToken"] length] != 0)
         [prefs setValue:[dict valueForKey:@"AccessToken"] forKey:@"AccessToken"];
 
     [prefs synchronize];

@@ -461,7 +461,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:appUrl title:titleString desc:descriptionString view:self];
+            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:appUrl title:titleString desc:descriptionString view:self abcIDValue:@"0"];
         }
         else if (buttonIndex==1) {
             
@@ -472,7 +472,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnTwitter:appUrl title:titleString view:self];
+            [CommonFunctions sharePostOnTwitter:appUrl title:titleString view:self abcIDValue:@"0"];
         }
     }
 }

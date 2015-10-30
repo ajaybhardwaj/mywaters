@@ -17,6 +17,7 @@
     UITableView *notificationSettingsTable;
     NSArray *tableTitleDataSource,*tableSubTitleDataSource;
     
+    CLLocationManager *locationManager;
     
     
     BOOL isGeneralNotification,isFloodAlerts,isSystemNotifications;

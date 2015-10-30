@@ -702,9 +702,9 @@
 		_sidePadding = 2.0;
         _borderWidth = 1.0;
 		
-		self.textFont = [UIFont boldSystemFontOfSize:14.0];
+        self.textFont = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];//[UIFont boldSystemFontOfSize:14.0];
 		self.textColor = [UIColor whiteColor];
-		self.textAlignment = NSTextAlignmentCenter;
+        self.textAlignment = NSTextAlignmentCenter;
 		self.backgroundColor = [UIColor colorWithRed:62.0/255.0 green:60.0/255.0 blue:154.0/255.0 alpha:1.0];
         self.has3DStyle = YES;
         self.borderColor = [UIColor blackColor];
@@ -714,6 +714,7 @@
         self.preferredPointDirection = PointDirectionAny;
         self.hasGradientBackground = YES;
         self.cornerRadius = 10.0;
+    
     }
     return self;
 }
@@ -750,7 +751,7 @@
         self.titleFont = [UIFont boldSystemFontOfSize:16.0];
         self.titleColor = [UIColor whiteColor];
         self.titleAlignment = NSTextAlignmentCenter;
-        self.textFont = [UIFont systemFontOfSize:14.0];
+        self.textFont = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];//[UIFont systemFontOfSize:14.0];
 		self.textColor = [UIColor whiteColor];
 	}
 	return self;

@@ -28,6 +28,7 @@
 
 
 + (BOOL) hasConnectivity;
++ (NSString *) getAppVersionNumber;
 + (BOOL) NSStringIsValidEmail:(NSString *)checkString;
 + (BOOL) characterSet1Found:(NSString *) text;
 + (BOOL) characterSet2Found:(NSString *) text;
@@ -52,7 +53,6 @@
 + (void)downloadImageWithURL:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))completionBlock;
 
 # pragma mark - Facebook & Twitter Share Method
-+ (void) sharePostOnFacebook:(NSString*)postImageUrl appUrl:(NSString*)appstoreUrl title:(NSString*)postTitle desc:(NSString*)postDescription view:(UIViewController*) viewObj;
-+ (void) sharePostOnTwitter:(NSString*)appStoreUrl title:(NSString*)postTitle view:(UIViewController*) viewObj;
-
++ (void) sharePostOnFacebook:(NSString*)postImageUrl appUrl:(NSString*)appstoreUrl title:(NSString*)postTitle desc:(NSString*)postDescription view:(UIViewController*) viewObj abcIDValue:(NSString*)abcIdString;
++ (void) sharePostOnTwitter:(NSString *)appStoreUrl title:(NSString *)postTitle view:(UIViewController *)viewObj abcIDValue:(NSString*)abcIdString;
 @end

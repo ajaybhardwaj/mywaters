@@ -24,7 +24,7 @@
 @synthesize CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG,USER_CURRENT_LOCATION_COORDINATE,LONG_PRESS_USER_LOCATION_LAT,LONG_PRESS_USER_LOCATION_LONG,LONG_PRESS_USER_LOCATION_COORDINATE;
 @synthesize IS_COMING_FROM_DASHBOARD,IS_RELAUNCHING_APP,IS_SHARING_ON_SOCIAL_MEDIA;
 @synthesize DASHBOARD_PREFERENCES_CHANGED,IS_USER_LOCATION_SELECTED_BY_LONG_PRESS;
-
+@synthesize RECEIVED_NOTIFICATION_TYPE,IS_PUSH_NOTIFICATION_RECEIVED,PUSH_NOTIFICATION_ALERT_MESSAGE;
 
 //*************** Method To Register Device Toke For Push Notifications
 
@@ -47,6 +47,56 @@
 }
 
 
+//*************** Method To Send User Location For Flood Notifications
+
+- (void) sendUserLocationForFloodNotifications {
+    
+    //    bgTask = [[UIApplication sharedApplication]
+    //              beginBackgroundTaskWithExpirationHandler:
+    //              ^{
+    //                  [[UIApplication sharedApplication} endBackgroundTask:bgTask];
+    //                   }];
+    
+    bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+    }];
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"PushToken",@"Lat",@"Lon",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[NSString stringWithFormat:@"%f",CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",CURRENT_LOCATION_LONG],[CommonFunctions getAppVersionNumber], nil];
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,LBS_NOTIFICATION_FOR_FLOOD]];
+    
+    if (bgTask != UIBackgroundTaskInvalid) {
+        
+        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+        bgTask = UIBackgroundTaskInvalid;
+    }
+}
+
+
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (alertView==notificationAlert) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:NO];
+    }
+    else {
+        if (buttonIndex==0) {
+            
+            NSString *appUrl;
+            for (int i=0; i<APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSShareURL"]) {
+                    appUrl = [[APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:appUrl]];
+        }
+    }
+}
+
 
 # pragma mark - ASIHTTPRequestDelegate Methods
 
@@ -59,9 +109,27 @@
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [APP_CONFIG_DATA_ARRAY removeAllObjects];
+        
         [SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY removeAllObjects];
         APP_CONFIG_DATA_ARRAY = [[responseString JSONValue] objectForKey:APP_CONFIG_DATA_RESPONSE_NAME];
         SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY = [[responseString JSONValue] objectForKey:APP_SYSTEM_NOTIFICATION_DATA_RESPONSE_NAME];
+        
+        
+        if (APP_CONFIG_DATA_ARRAY.count!=0) {
+            
+            NSString *configAppVersion;
+            for (int i=0; i<APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSPUBAppVersion"]) {
+                    configAppVersion = [[APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            
+            if ([[CommonFunctions getAppVersionNumber] intValue] < [configAppVersion intValue]) {
+                [CommonFunctions showAlertView:self title:nil msg:@"New app update is available." cancel:nil otherButton:@"Update",@"Cancel",nil];
+            }
+        }
+        
         
         
         if (SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY.count!=0) {
@@ -873,6 +941,39 @@
 }
 
 
+# pragma mark - CLLocationManagerDelegate Methods
+
+-(void) locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    
+    CURRENT_LOCATION_LAT = newLocation.coordinate.latitude;
+    CURRENT_LOCATION_LONG = newLocation.coordinate.longitude;
+    
+    DebugLog(@"%f---%f",CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG);
+    
+    USER_CURRENT_LOCATION_COORDINATE = [newLocation coordinate];
+    
+    BOOL isInBackground = NO;
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)
+    {
+        isInBackground = YES;
+    }
+    
+    // Handle location updates as normal, code omitted for brevity.
+    // The omitted code should determine whether to reject the location update for being too
+    // old, too close to the previous one, too inaccurate and so forth according to your own
+    // application design.
+    
+    if (isInBackground)
+    {
+        [self sendUserLocationForFloodNotifications];
+    }
+    else
+    {
+        // ...
+    }
+}
+
+
 
 # pragma mark - App Lifecycle Methods
 
@@ -880,8 +981,16 @@
     
     [self chkAndCreateDatbase];
     
+    // Temp Code
+    IS_PUSH_NOTIFICATION_RECEIVED = YES;
+    RECEIVED_NOTIFICATION_TYPE = 1;
+    // 
+    
     [FBLoginView class];
     [FBProfilePictureView class];
+    
+    locationManager = [[CLLocationManager alloc] init];
+    locationManager.delegate = self;
     
     DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
     ABC_WATERS_LISTING_ARRAY = [[NSMutableArray alloc] init];
@@ -985,31 +1094,32 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
     
-//    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication  fallbackHandler:^(FBAppCall *call)
-//            {
-//                NSLog(@"Facebook handler");
-//            }
-//            ];
+    //    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication  fallbackHandler:^(FBAppCall *call)
+    //            {
+    //                NSLog(@"Facebook handler");
+    //            }
+    //            ];
     
-//    BOOL wasHandled = [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
-//    return wasHandled;
+    //    BOOL wasHandled = [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+    //    return wasHandled;
     if (IS_SHARING_ON_SOCIAL_MEDIA) {
         IS_SHARING_ON_SOCIAL_MEDIA = NO;
         return [FBAppCall handleOpenURL:url
-                     sourceApplication:sourceApplication];
+                      sourceApplication:sourceApplication];
+        //        return [FBSession.activeSession handleOpenURL:url];
     }
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                                           openURL:url
                                                 sourceApplication:sourceApplication
                                                        annotation:annotation];
     
-    //    return [FBSession.activeSession handleOpenURL:url];
+    //        return [FBSession.activeSession handleOpenURL:url];
     
     
 }
 
 - (NSUInteger) application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
-   
+    
     if (self.shouldRotate)
         return UIInterfaceOrientationMaskLandscapeRight;
     else
@@ -1025,6 +1135,8 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    [locationManager startMonitoringSignificantLocationChanges];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -1035,7 +1147,7 @@
     if ([CommonFunctions hasConnectivity]) {
         [self getConfigData];
         // Register Device Token
-            [self registerDeviceToken];
+        [self registerDeviceToken];
     }
     else {
         [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
@@ -1047,10 +1159,13 @@
     
     application.applicationIconBadgeNumber = 0;
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-//    [FBSession.activeSession handleDidBecomeActive];
+    //    [FBSession.activeSession handleDidBecomeActive];
     
     [FBAppEvents activateApp];
     [FBAppCall handleDidBecomeActive];
+    
+    [locationManager stopMonitoringSignificantLocationChanges];
+    [locationManager startUpdatingLocation];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -1061,6 +1176,39 @@
 
 
 # pragma mark - APN Methods For Push Notification
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    
+    NSDictionary *aps = (NSDictionary *)[userInfo objectForKey:@"Payload"] ;
+    DebugLog(@"%@",aps);
+    NSArray *tempTypeArray = [[aps objectForKey:@"CustomItems"] objectForKey:@"type"];
+    DebugLog(@"%@",tempTypeArray);
+    
+    
+    IS_PUSH_NOTIFICATION_RECEIVED = YES;
+    RECEIVED_NOTIFICATION_TYPE = [[tempTypeArray objectAtIndex:0] intValue];
+    PUSH_NOTIFICATION_ALERT_MESSAGE = [[aps objectForKey:@"Alert"] objectForKey:@"Body"];
+    DebugLog(@"%ld",(long)RECEIVED_NOTIFICATION_TYPE);
+    
+    //    {
+    
+    UIApplicationState state = [UIApplication sharedApplication].applicationState;
+    
+    if (state == UIApplicationStateBackground || state==UIApplicationStateInactive) {
+        //            if (![[SharedObject sharedClass] isSSCUserSignedIn]) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:NO];
+        //            }
+        //            else {
+        //                [[ViewControllerHelper viewControllerHelper] enableThisController:SIGN_IN_CONTROLLER onCenter:YES withAnimate:NO];
+        //            }
+    }
+    else if (state == UIApplicationStateActive) {
+        
+        notificationAlert = [[UIAlertView alloc] initWithTitle:@"Promotion" message:@"PROMOTION_TITLE" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Cancel",@"Open", nil];
+        [notificationAlert show];
+    }
+    //    }
+}
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     

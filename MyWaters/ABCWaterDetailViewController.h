@@ -51,6 +51,10 @@
     NSMutableArray *abcGalleryImages;
     BOOL isFetchingGalleryImages;
     
+    NSDictionary *twelveHourWeatherData;
+    UIImageView *temperatureBgView,*temperatureIcon;
+    UILabel *temperatureLabel;
+    
     FGalleryViewController *networkGallery;
 //    NSArray *networkImages;
 }

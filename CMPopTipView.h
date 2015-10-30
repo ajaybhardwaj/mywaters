@@ -87,6 +87,7 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "Constants.h"
 
 typedef NS_ENUM(NSInteger, PointDirection) {
     PointDirectionAny = 0,

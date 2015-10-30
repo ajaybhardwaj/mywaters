@@ -35,6 +35,10 @@
 
 - (void) registerForSystemNotifications:(id) sender {
     
+//    isGeneralNotification = NO;
+//    isSystemNotifications = YES;
+//    isFloodAlerts = NO;
+
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
     if (isSystemNotifications) {
@@ -66,7 +70,7 @@
                 
                 localNotif.soundName = UILocalNotificationDefaultSoundName;
                 localNotif.applicationIconBadgeNumber = 1;
-                            
+                
                 [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
             }
         }
@@ -84,25 +88,34 @@
     isFloodAlerts = YES;
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    
-    NSArray *parameters,*values;
-    if (isFloodAlertOff) {
-        isFloodAlertsTurningOff = YES;
-        isFloodAlertsTurningOn = NO;
-        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
-        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"1", @"2", nil];
-    }
-    else {
-        isFloodAlertsTurningOff = NO;
-        isFloodAlertsTurningOn = YES;
-        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
-        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"1", @"1", nil];
-    }
-    
     if ([CommonFunctions hasConnectivity]) {
+        
+        NSArray *parameters,*values;
+        if (isFloodAlertOff) {
+            isFloodAlertsTurningOff = YES;
+            isFloodAlertsTurningOn = NO;
+            parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
+            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"1", @"2", nil];
+        }
+        else {
+            locationManager = [[CLLocationManager alloc] init];
+            [locationManager requestAlwaysAuthorization];
+            
+            isFloodAlertsTurningOff = NO;
+            isFloodAlertsTurningOn = YES;
+            parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
+            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"1", @"1", nil];
+        }
+        
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
     }
     else {
+        if (isFloodAlertOff) {
+            [floodAlertsSwitch setOn:YES animated:YES];
+        }
+        else {
+            [floodAlertsSwitch setOn:NO animated:YES];
+        }
         [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
     }
 }
@@ -119,24 +132,33 @@
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
-    NSArray *parameters,*values;
-    if (isGeneralNotificationOff) {
-        isGeneralNotificationsTurningOff = YES;
-        isGeneralNotificationsTurningOn = NO;
-        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
-        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"4", @"2", nil];
-    }
-    else {
-        isGeneralNotificationsTurningOff = NO;
-        isGeneralNotificationsTurningOn = YES;
-        parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
-        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"4", @"1", nil];
-    }
-    
     if ([CommonFunctions hasConnectivity]) {
+        
+        NSArray *parameters,*values;
+        if (isGeneralNotificationOff) {
+            isGeneralNotificationsTurningOff = YES;
+            isGeneralNotificationsTurningOn = NO;
+            parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
+            values = [[NSArray alloc] initWithObjects:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],@"4", @"2", nil];
+        }
+        else {
+            isGeneralNotificationsTurningOff = NO;
+            isGeneralNotificationsTurningOn = YES;
+            parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
+            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"]],@"4", @"1", nil];
+        }
+        
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
     }
     else {
+        
+        if (isGeneralNotificationOff) {
+            [generalNotificationSwitch setOn:YES animated:YES];
+        }
+        else {
+            [generalNotificationSwitch setOn:NO animated:YES];
+        }
+        
         [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
     }
 }
@@ -154,7 +176,7 @@
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
-//        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        //        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
         if (isFloodAlerts) {
             if (isFloodAlertsTurningOff) {
                 isFloodAlertOff = NO;
@@ -180,7 +202,7 @@
         [notificationSettingsTable reloadData];
     }
     else {
-
+        
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
 }

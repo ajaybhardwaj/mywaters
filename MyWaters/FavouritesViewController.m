@@ -92,12 +92,12 @@
         favouritesListingTableView.userInteractionEnabled = YES;
         filterTableView.center = pos;
         [UIView commitAnimations];
-        filterTableView.hidden = YES;
+//        filterTableView.hidden = YES;
     }
     else {
-        filterTableView.hidden = NO;
+//        filterTableView.hidden = NO;
         isShowingFilter = YES;
-        pos.y = 100;
+        pos.y = 110;
         
         favouritesListingTableView.alpha = 0.5;
         favouritesListingTableView.userInteractionEnabled = NO;
@@ -195,6 +195,7 @@
             
             ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
             
+            viewObj.abcSiteId = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+18];
             viewObj.titleString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+1];
             viewObj.descriptionString = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+7];
             viewObj.latValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+3] doubleValue];
@@ -211,7 +212,7 @@
             
             WaterLevelSensorsDetailViewController *viewObj = [[WaterLevelSensorsDetailViewController alloc] init];
             
-            viewObj.wlsID = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)];
+            viewObj.wlsID = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+18];
             viewObj.wlsName = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+1];
             viewObj.drainDepthType = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+13] intValue];
             viewObj.latValue = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+3] doubleValue];
@@ -299,7 +300,7 @@
         titleLabel.textColor = [UIColor whiteColor];
         [cell.contentView addSubview:titleLabel];
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 43.5, filterTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -436,7 +437,7 @@
     favouritesListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     favouritesListingTableView.hidden = YES;
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -200, self.view.bounds.size.width, 200) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -220, self.view.bounds.size.width, 220) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -446,7 +447,6 @@
     filterTableView.alpha = 0.8;
     filterTableView.scrollEnabled = NO;
     filterTableView.alwaysBounceVertical = NO;
-    filterTableView.hidden = YES;
     
     favouritesDataSource = [[NSArray alloc] initWithObjects:@"Sembawang Park - ABC Waters",@"Boon Lay Way - CCTV",@"Boon Keng Road/Bendemeer Road - CCTV", nil];
     filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTVs",@"Event",@"ABC Water Sites",@"Water Level Sensor",@"Distance", nil];

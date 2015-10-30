@@ -146,9 +146,9 @@
         
         isSubscribingForAlert = YES;
         
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
+//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//        appDelegate.hud.labelText = @"Loading...";
         
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         NSArray *parameters,*values;
@@ -167,9 +167,9 @@
         
         isSubscribed = NO;
         
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
+//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//        appDelegate.hud.labelText = @"Loading...";
         
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         NSArray *parameters,*values;
@@ -189,9 +189,9 @@
 
 - (void) fetchWLSListing {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     
     isSubscribingForAlert = NO;
@@ -199,7 +199,7 @@
     //    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
     //    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"1"],@"1.0", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"1"],[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -794,7 +794,7 @@
         directionButton.enabled = NO;
     }
     
-    wlsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+55))];
+    wlsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+75))];
     wlsListingTable.delegate = self;
     wlsListingTable.dataSource = self;
     [self.view addSubview:wlsListingTable];
@@ -898,7 +898,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnFacebook:@"http://a3.mzstatic.com/us/r30/Purple3/v4/97/4b/af/974baf1a-c8fd-6ce6-cab3-5182aeb08fb7/icon175x175.jpeg" appUrl:appUrl title:wlsName desc:nil view:self];
+            [CommonFunctions sharePostOnFacebook:@"http://a3.mzstatic.com/us/r30/Purple3/v4/97/4b/af/974baf1a-c8fd-6ce6-cab3-5182aeb08fb7/icon175x175.jpeg" appUrl:appUrl title:wlsName desc:nil view:self abcIDValue:@"0"];
         }
         else if (buttonIndex==1) {
             NSString *appUrl;
@@ -908,7 +908,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnTwitter:appUrl title:wlsName view:self];
+            [CommonFunctions sharePostOnTwitter:appUrl title:wlsName view:self abcIDValue:@"0"];
         }
     }
 }
@@ -989,11 +989,27 @@
             NSArray *tempArray = [[responseString JSONValue] objectForKey:WLS_LISTING_RESPONSE_NAME];
             [appDelegate.WLS_LISTING_ARRAY setArray:tempArray];
             
-            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
             
+            CLLocationCoordinate2D currentLocation;
+//            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+//            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+            currentLocation.latitude = latValue;
+            currentLocation.longitude = longValue;
             
-            tempNearByArray = appDelegate.WLS_LISTING_ARRAY;
+            for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY count];idx++) {
+                
+                NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY[idx] mutableCopy];
+                
+                CLLocationCoordinate2D desinationLocation;
+                desinationLocation.latitude = [dict[@"latitude"] doubleValue];
+                desinationLocation.longitude = [dict[@"longitude"] doubleValue];
+                
+                DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+                
+                dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                appDelegate.WLS_LISTING_ARRAY[idx] = dict;
+                
+            }
             
             NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
                 float v1 = [left floatValue];
@@ -1007,16 +1023,16 @@
             }];
             [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
 
-            
+            DebugLog(@"%@",appDelegate.WLS_LISTING_ARRAY);
             //            [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             if (!tempNearByArray) {
                 tempNearByArray = [[NSMutableArray alloc] init];
             }
             
             int count = 0;
-            [tempNearByArray removeAllObjects];
+            
             for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
-                if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != wlsID) {
+                if (![[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] isEqualToString:wlsID]) {
                     if (count!=3) {
                         [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
                         count++;
@@ -1026,9 +1042,8 @@
                     }
                 }
             }
-            [wlsListingTable reloadData];
-            //            [locationField becomeFirstResponder];
             
+            [wlsListingTable reloadData];
         }
         
         [appDelegate.hud hide:YES];
@@ -1386,27 +1401,40 @@
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots.png"]];
     
     
-    if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
-        
-        if (!tempNearByArray) {
-            tempNearByArray = [[NSMutableArray alloc] init];
-        }
-        
-        int count = 0;
-        [tempNearByArray removeAllObjects];
-        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
-            if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != wlsID) {
-                if (count!=3) {
-                    [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
-                    count++;
-                }
-                else {
-                    break;
-                }
-            }
-        }
-    }
-    else {
+    
+//    if (!appDelegate.IS_COMING_FROM_DASHBOARD) {
+//        
+//        if (!tempNearByArray) {
+//            tempNearByArray = [[NSMutableArray alloc] init];
+//        }
+//
+//        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+//            float v1 = [left floatValue];
+//            float v2 = [right floatValue];
+//            if (v1 < v2)
+//                return NSOrderedAscending;
+//            else if (v1 > v2)
+//                return NSOrderedDescending;
+//            else
+//                return NSOrderedSame;
+//        }];
+//        [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+//        
+//        int count = 0;
+//
+//        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
+//            if (![[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] isEqualToString:wlsID]) {
+//                if (count!=3) {
+//                    [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+//                    count++;
+//                }
+//                else {
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//    else {
         if ([CommonFunctions hasConnectivity]) {
             [self fetchWLSListing];
         }
@@ -1414,10 +1442,10 @@
             [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
             return;
         }
-    }
-    
+//    }
     
     [self createUI];
+
     
 }
 

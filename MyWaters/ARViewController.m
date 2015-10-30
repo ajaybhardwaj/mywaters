@@ -836,6 +836,12 @@
     
     
     [self fetchABCWaterSitePOI];
+    
+    
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",abcWaterSiteID,@"1",[CommonFunctions getAppVersionNumber], nil];
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -862,9 +868,10 @@
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
         self.navigationController.interactivePopGestureRecognizer.delegate = self;
     }
-    
-    
 }
+
+
+
 
 - (void) viewWillDisappear:(BOOL)animated {
     

@@ -68,7 +68,7 @@
     
     //    if (selectedFilterIndex==0) {
     parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
-    values = [[NSArray alloc] initWithObjects:@"2",@"2",@"1.0", nil];
+    values = [[NSArray alloc] initWithObjects:@"2",@"2",[CommonFunctions getAppVersionNumber], nil];
     //    }
     //
     //    else if (selectedFilterIndex==1) {
@@ -123,7 +123,7 @@
     
     if (isShowingSearchBar) {
         isShowingSearchBar = NO;
-        pos.y = -70;
+        pos.y = -100;
         
         listTabeView.alpha = 1.0;
         listTabeView.userInteractionEnabled = YES;
@@ -161,7 +161,7 @@
     
     if (isShowingFilter) {
         isShowingFilter = NO;
-        pos.y = -70;
+        pos.y = -130;
         
         listTabeView.alpha = 1.0;
         listTabeView.userInteractionEnabled = YES;
@@ -287,7 +287,7 @@
     }
     
     int gridCount = 0;
-    float xAxis = 0;
+    float xAxis = 0.30;
     float yAxis = 0;
     
     if (isFiltered) {
@@ -379,12 +379,12 @@
                 
                 gridCount = gridCount + 1;
                 if (gridCount!=3) {
-                    xAxis = xAxis + (segmentedControlBackground.bounds.size.width-2)/3;
+                    xAxis = xAxis + (segmentedControlBackground.bounds.size.width)/3;
                 }
                 else {
-                    xAxis = 0;
+                    xAxis = 0.25;
                     gridCount = 0;
-                    yAxis = yAxis +(segmentedControlBackground.bounds.size.width+2)/3;
+                    yAxis = yAxis +(segmentedControlBackground.bounds.size.width)/3;
                 }
             }
         }
@@ -477,12 +477,12 @@
                 
                 gridCount = gridCount + 1;
                 if (gridCount!=3) {
-                    xAxis = xAxis + (segmentedControlBackground.bounds.size.width-2)/3;
+                    xAxis = xAxis + (segmentedControlBackground.bounds.size.width)/3;
                 }
                 else {
-                    xAxis = 0;
+                    xAxis = 0.30;
                     gridCount = 0;
-                    yAxis = yAxis +(segmentedControlBackground.bounds.size.width+2)/3;
+                    yAxis = yAxis +(segmentedControlBackground.bounds.size.width)/3;
                 }
             }
         }
@@ -807,7 +807,7 @@
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 43.5, filterTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -1019,7 +1019,7 @@
     listTabeView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -90, self.view.bounds.size.width, 90) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -150, self.view.bounds.size.width, 90) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -1037,7 +1037,7 @@
     
     
     
-    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
+    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -150, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;
     listinSearchBar.placeholder = @"Search...";
     [listinSearchBar setBackgroundImage:[[UIImage alloc] init]];

@@ -62,44 +62,201 @@
 
 
 
+//*************** Function To Get App Version From Info Plist
+
++ (NSString *) getAppVersionNumber {
+    
+    NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
+    NSString* version = [infoDict objectForKey:@"CFBundleVersion"];
+    
+    return version;
+}
+
+
+
+//*************** A function for parsing URL parameters.
+
++ (NSDictionary*) parseURLParams:(NSString *)query {
+    
+    NSArray *pairs = [query componentsSeparatedByString:@"&"];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    for (NSString *pair in pairs) {
+        NSArray *kv = [pair componentsSeparatedByString:@"="];
+        NSString *val =
+        [kv[1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        params[kv[0]] = val;
+    }
+    return params;
+}
+
 //*************** Method For Sharing Content On Facebook
 
-+ (void) sharePostOnFacebook:(NSString*)postImageUrl appUrl:(NSString*)appstoreUrl title:(NSString*)postTitle desc:(NSString*)postDescription view:(UIViewController*) viewObj {
++ (void) sharePostOnFacebook:(NSString*)postImageUrl appUrl:(NSString*)appstoreUrl title:(NSString*)postTitle desc:(NSString*)postDescription view:(UIViewController*) viewObj abcIDValue:(NSString*)abcIdString {
     
     AppDelegate *appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    appDelegate.IS_SHARING_ON_SOCIAL_MEDIA = YES;
     // Present share dialog
-    [FBDialogs presentShareDialogWithLink:[NSURL URLWithString:appstoreUrl]
-                                     name:postTitle
-                                  caption:nil
-                              description:postDescription
-                                  picture:[NSURL URLWithString:postImageUrl]
-                              clientState:nil
-                                  handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
-                                      if(error) {
-                                          // An error occurred, we need to handle the error
-                                          // See: https://developers.facebook.com/docs/ios/errors
-                                          [self showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
-                                      } else {
-                                          // Success
-                                          DebugLog(@"%@",results);
-                                      }
-                                  }];
+    
+    
+    BOOL isInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fb://"]];
+    appDelegate.IS_SHARING_ON_SOCIAL_MEDIA = YES;
+    
+    if (isInstalled) {
+        
+        [FBDialogs presentShareDialogWithLink:[NSURL URLWithString:appstoreUrl]
+                                         name:postTitle
+                                      caption:nil
+                                  description:postDescription
+                                      picture:[NSURL URLWithString:postImageUrl]
+                                  clientState:nil
+                                      handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                                          if(error) {
+                                              // An error occurred, we need to handle the error
+                                              // See: https://developers.facebook.com/docs/ios/errors
+                                              [self showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+                                          } else {
+                                              // Success
+                                              DebugLog(@"%@",results);
+                                              [self showAlertView:nil title:nil msg:@"Sucessfully Posted." cancel:@"OK" otherButton:nil];
+                                              // 0 - For Other modules than ABC Waters
+                                              // -1 - For App Sharing
+                                              
+                                              if (![abcIdString isEqualToString:@"0"]) {
+                                                  NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
+                                                  NSArray *values = [[NSArray alloc] initWithObjects:@"5",abcIdString,@"1",[CommonFunctions getAppVersionNumber], nil];
+                                                  
+                                                  [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                                              }
+                                              else if ([abcIdString isEqualToString:@"-1"]) {
+                                                  NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionType",@"version", nil];
+                                                  NSArray *values = [[NSArray alloc] initWithObjects:@"5",@"1",[CommonFunctions getAppVersionNumber], nil];
+                                                  
+                                                  [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                                              }
+                                          }
+                                      }];
+    }
+    else {
+        
+        NSArray *permissions = [NSArray arrayWithObjects: @"read_stream",@"publish_stream", nil];
+        
+        NSMutableDictionary *params =
+        [NSMutableDictionary dictionaryWithObjectsAndKeys:
+         postTitle, @"name",
+         postDescription, @"description",
+         appstoreUrl, @"link",
+         postImageUrl, @"picture",
+         FACEBOOK_APP_ID, @"app_id",
+         nil];
+        
+        [FBSession openActiveSessionWithPublishPermissions:permissions defaultAudience:FBSessionDefaultAudienceEveryone allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError* error){
+            if(!error) {
+                [FBWebDialogs presentFeedDialogModallyWithSession:nil parameters:params handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+                    
+                    if (error) {
+                        // An error occurred, we need to handle the error
+                        // See: https://developers.facebook.com/docs/ios/errors
+                        [self showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+                    }
+                    else {
+                        if (result == FBWebDialogResultDialogNotCompleted) {
+                            // User canceled.
+                            NSLog(@"User cancelled.");
+                            [self showAlertView:nil title:nil msg:@"User cancelled sharing" cancel:@"OK" otherButton:nil];
+                        }
+                        else {
+                            NSDictionary *urlParams = [self parseURLParams:[resultURL query]];
+                            
+                            if (![urlParams valueForKey:@"post_id"]) {
+                                // User canceled.
+                                NSLog(@"User cancelled.");
+                                [self showAlertView:nil title:nil msg:@"User cancelled sharing" cancel:@"OK" otherButton:nil];
+                            }
+                            else {
+                                // User clicked the Share button
+                                
+                                //                        NSLog(@"fb web dialog result=====>%@",result);
+                                NSString *result = [NSString stringWithFormat: @"Posted story, id: %@", [urlParams valueForKey:@"post_id"]];
+                                NSLog(@"result %@", result);
+                                [self showAlertView:nil title:nil msg:@"Sucessfully Posted." cancel:@"OK" otherButton:nil];
+                                
+                                
+                                // 0 - For Other modules than ABC Waters
+                                // -1 - For App Sharing
+                                
+                                if (![abcIdString isEqualToString:@"0"]) {
+                                    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
+                                    NSArray *values = [[NSArray alloc] initWithObjects:@"5",abcIdString,@"1",[CommonFunctions getAppVersionNumber], nil];
+                                    
+                                    [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                                }
+                                else if ([abcIdString isEqualToString:@"-1"]) {
+                                    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionType",@"version", nil];
+                                    NSArray *values = [[NSArray alloc] initWithObjects:@"6",@"1",[CommonFunctions getAppVersionNumber], nil];
+                                    
+                                    [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                                }
+                                
+                            }
+                        }
+                    }
+                    
+                }];
+            }
+            else{
+                NSLog(@"error=>%@",[error localizedDescription]);
+            }
+        }];
+    }
     
 }
 
 
 //*************** Method For Sharing On Twitter
 
-+ (void) sharePostOnTwitter:(NSString *)appStoreUrl title:(NSString *)postTitle view:(UIViewController *)viewObj {
++ (void) sharePostOnTwitter:(NSString *)appStoreUrl title:(NSString *)postTitle view:(UIViewController *)viewObj abcIDValue:(NSString*)abcIdString {
+    
+    
+    SLComposeViewController *tweetSheet;
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
-        SLComposeViewController *tweetSheet = [SLComposeViewController
-                                               composeViewControllerForServiceType:SLServiceTypeTwitter];
+        tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         [tweetSheet setInitialText:[NSString stringWithFormat:@"%@\n%@",postTitle,[NSURL URLWithString:appStoreUrl]]];
         [viewObj presentViewController:tweetSheet animated:YES completion:nil];
     }
+
+    [tweetSheet setCompletionHandler:^(SLComposeViewControllerResult result){
+        
+        NSString *outout = [[NSString alloc] init];
+        
+        switch (result) {
+            case SLComposeViewControllerResultCancelled:
+                outout = @"Post Canceled";
+                break;
+            case SLComposeViewControllerResultDone: {
+                outout = @"Successfully Posted";
+                
+                if (![abcIdString isEqualToString:@"0"]) {
+                    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
+                    NSArray *values = [[NSArray alloc] initWithObjects:@"5",abcIdString,@"1",[CommonFunctions getAppVersionNumber], nil];
+                    
+                    [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                }
+                else if ([abcIdString isEqualToString:@"-1"]) {
+                    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionType",@"version", nil];
+                    NSArray *values = [[NSArray alloc] initWithObjects:@"6",@"1",[CommonFunctions getAppVersionNumber], nil];
+                    
+                    [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                }
+                
+            }
+                
+            default:
+                break;
+        }
+        UIAlertView *myalertView = [[UIAlertView alloc]initWithTitle:nil message:outout delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [myalertView show];
+    }];
 }
 
 
@@ -107,18 +264,18 @@
 
 + (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj {
     
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString( titleString, @"" ) message:NSLocalizedString( messageString, @"" ) preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString( @"Cancel", @"" ) style:UIAlertActionStyleCancel handler:nil];
-        UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString( @"Settings", @"" ) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-        }];
-        
-        [alertController addAction:cancelAction];
-        [alertController addAction:settingsAction];
-        
-        [viewObj presentViewController:alertController animated:YES completion:nil];
-
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString( titleString, @"" ) message:NSLocalizedString( messageString, @"" ) preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString( @"Cancel", @"" ) style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString( @"Settings", @"" ) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }];
+    
+    [alertController addAction:cancelAction];
+    [alertController addAction:settingsAction];
+    
+    [viewObj presentViewController:alertController animated:YES completion:nil];
+    
 }
 
 
@@ -236,9 +393,9 @@
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
     
     NSDate *result = [dateFormatter dateFromString:dateTimeString];
-//    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy @ HH:mm a"];
-//    
-//    NSString *resultStrig = [dateFormatter stringFromDate:result];
+    //    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy @ HH:mm a"];
+    //
+    //    NSString *resultStrig = [dateFormatter stringFromDate:result];
     return result;
 }
 
@@ -289,24 +446,24 @@
         [request setPostValue:access_token forKey:ACCOUNT_ACCESS_TOKEN];
     
     [request setPostValue:API_CLIENT_TAG_VALUE forKey:API_CLIENT_TAG];
-//    [request setCompletionBlock:^{
-//        
-//        NSString *responseString = [request responseString];
-//        
-//        NSLog(@"%@",responseString);
-//        
-//        if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] isEqualToString:@"true"]) {
-//            
-//        }
-//        else
-//        {
-//            
-//        }
-//    }];
-//    
-//    [request setFailedBlock:^{
-//        
-//    }];
+    //    [request setCompletionBlock:^{
+    //
+    //        NSString *responseString = [request responseString];
+    //
+    //        NSLog(@"%@",responseString);
+    //
+    //        if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] isEqualToString:@"true"]) {
+    //
+    //        }
+    //        else
+    //        {
+    //
+    //        }
+    //    }];
+    //
+    //    [request setFailedBlock:^{
+    //
+    //    }];
     
     [request startAsynchronous];
 }
@@ -428,7 +585,7 @@
     
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     actionSheet.destructiveButtonIndex = destructiveButtonIndex;
-//    [actionSheet showInView:view];
+    //    [actionSheet showInView:view];
     [actionSheet showInView:view.window];
 }
 

@@ -85,7 +85,7 @@
     }
     else {
         isShowingFilter = YES;
-        pos.y = 128;
+        pos.y = 135;
         
         notificationsTable.alpha = 0.5;
         notificationsTable.userInteractionEnabled = NO;
@@ -106,7 +106,7 @@
         appDelegate.hud.labelText = @"Loading...";
         
         NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"pushtoken",@"version", nil];
-        NSArray *values = [[NSArray alloc] initWithObjects:@"7",@"12345",@"1.0", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"7",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
         
         [self pullToRefreshTable];
@@ -125,7 +125,7 @@
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
     
-    selectedFilterIndex = -1;
+    selectedFilterIndex = 0;
     [filterTableView reloadData];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
@@ -204,16 +204,14 @@
             
             [tableDataSource removeAllObjects];
             for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
-                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 2) {
                     [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
-                }
             }
         }
         else if (indexPath.row==1) {
             
             [tableDataSource removeAllObjects];
             for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
-                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 3) {
+                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 2) {
                     [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
                 }
             }
@@ -222,12 +220,21 @@
             
             [tableDataSource removeAllObjects];
             for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
-                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 4) {
+                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 3) {
                     [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
                 }
             }
         }
         else if (indexPath.row==3) {
+            
+            [tableDataSource removeAllObjects];
+            for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
+                if ([[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 1 || [[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i] objectForKey:@"Type"] intValue] == 4) {
+                    [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
+                }
+            }
+        }
+        else if (indexPath.row==4) {
             
             [tableDataSource removeAllObjects];
             for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
@@ -312,7 +319,7 @@
         titleLabel.textColor = [UIColor whiteColor];
         [cell.contentView addSubview:titleLabel];
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 43.5, filterTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -400,7 +407,7 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     self.view.backgroundColor = RGB(247, 247, 247);
     
-    selectedFilterIndex = -1;
+    selectedFilterIndex = 0;
     canReadNotifications = YES;
     currentIndex = 0;
     previousIndex = -1;
@@ -444,7 +451,7 @@
     tableDataSource = [[NSMutableArray alloc] init];
     
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -456, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -456, self.view.bounds.size.width, 276) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -457,7 +464,7 @@
     
     
     //    filtersArray = [[NSArray alloc] initWithObjects:@"Announcements",@"Events",@"Flood",@"Heavy Rain",@"iAlerts",@"Tips", nil];
-    filtersArray = [[NSArray alloc] initWithObjects:@"Events",@"Heavy Rain",@"Flood",@"iAlerts", nil];
+    filtersArray = [[NSArray alloc] initWithObjects:@"All",@"Events",@"Heavy Rain",@"Flood",@"iAlerts", nil];
     
     
     // Initialize the refresh control.

@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "FeedbackViewController.h"
 
-@interface WhatsUpViewController : UIViewController <UITableViewDelegate,UITableViewDataSource> {
+@interface WhatsUpViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate> {
     
     AppDelegate *appDelegate;
     

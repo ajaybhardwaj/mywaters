@@ -68,6 +68,7 @@
 #define DASHBOARD_API_FEEDS_RESPONSE_NAME @"ListMediaFeed"
 #define DASHBOARD_API_FLOODS_RESPONSE_NAME @"ListFloodPUBSubmission"
 #define DASHBOARD_API_TIPS_RESPONSE_NAME @"ListMediaFeed"
+#define DASHBOARD_API_ABC_WATERS_RESPONSE_NAME @"ListABCWaterSites"
 
 
 # pragma mark - BASE URLS
@@ -88,6 +89,7 @@
 #define USER_PROFILE_OTHERS_DATA @"ProfileDetail/"
 #define USER_PROFILE_ACTIONS @"ProfileAction/"
 #define USER_FLOOD_SUBMISSION @"FloodSubmission/"
+#define LBS_NOTIFICATION_FOR_FLOOD @"LBS/"
 
 //#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"
 #define IMAGE_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/uploads/"

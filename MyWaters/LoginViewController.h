@@ -27,5 +27,6 @@
 @property (assign) bool isUsingFacebookForSignIn;
 @property (strong, nonatomic) FBLoginView *loginView;
 
+@property (nonatomic, strong) NSString *facebookID,*facebookName,*facebookEmail,*facebookImageUrl;
 
 @end

@@ -78,6 +78,10 @@
 
 
 
+# pragma mark - Social network Variables
+#define FACEBOOK_APP_ID @"363122567221033"
+
+
 #pragma mark - Device Screen Sizes For UI
 
 //#define IS_IPHONE_4 ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )480 ) < DBL_EPSILON )

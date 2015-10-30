@@ -28,7 +28,10 @@
     BOOL isTermsAgree,isProfilePictureSelected,isSigningUpViaFacebook;
     UITapGestureRecognizer *profileImageTap;
     
-    NSString *facebookIDString;
+    
 }
+@property (nonatomic, strong) NSString *facebookIDString,*facebookEmailString;
+@property (nonatomic, assign) BOOL isFacebookDataFetchInLogin;
+@property (nonatomic, strong) NSString *facebookIDStringFromLogin,*facebookNameStringFromLogin,*facebookEmailIDFromLogin,*facebookImageUrlFromLogin;
 
 @end

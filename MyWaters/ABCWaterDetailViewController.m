@@ -42,6 +42,66 @@
 }
 
 
+
+//*************** Method To Get 12 Hour Weather XML Data
+
+- (void) getTwelveHourWeatherData {
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:TWELVE_HOUR_FORECAST] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:10];
+    
+    [request setHTTPMethod: @"GET"];
+    
+    NSError *requestError = nil;
+    NSURLResponse *urlResponse = nil;
+    
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
+    NSString *responseString  = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    
+    NSDictionary *xmlDictionary = [NSDictionary dictionaryWithXMLString:responseString];
+    
+    twelveHourWeatherData = [[xmlDictionary objectForKey:@"channel"] objectForKey:@"item"];
+    
+    
+    NSString *iconImageName;
+    
+    if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"FD"]) {
+        iconImageName = @"FD.png";
+    }
+    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"FN"]) {
+        iconImageName = @"FN.png";
+    }
+    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"PC"]) {
+        iconImageName = @"PC.png";
+    }
+    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"CD"]) {
+        iconImageName = @"CD.png";
+    }
+    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"HZ"]) {
+        iconImageName = @"HZ.png";
+    }
+    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"WD"]) {
+        iconImageName = @"WD.png";
+    }
+    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"RA"]) {
+        iconImageName = @"RA.png";
+    }
+    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"PS"]) {
+        iconImageName = @"PS.png";
+    }
+    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"SH"]) {
+        iconImageName = @"SH.png";
+    }
+    else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"TS"]) {
+        iconImageName = @"TS.png";
+    }
+    [temperatureIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,iconImageName]]];
+    
+    
+    temperatureLabel.text = [NSString stringWithFormat:@"%@°",[[twelveHourWeatherData objectForKey:@"temperature"] objectForKey:@"_high"]];
+    
+}
+
+
 - (void) hideTopMenu {
     
     if (isShowingTopMenu) {
@@ -173,9 +233,9 @@
         [self animateTopMenu];
     }
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
     
     isFetchingGalleryImages = YES;
     
@@ -253,8 +313,26 @@
     
     
     
-    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, bgScrollView.bounds.size.width, 249)];
+    eventImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 249)];
     [bgScrollView addSubview:eventImageView];
+    
+    
+    temperatureBgView = [[UIImageView alloc] initWithFrame:CGRectMake(eventImageView.bounds.size.width-60, eventImageView.bounds.size.height-60, 50, 50)];
+    temperatureBgView.backgroundColor = [UIColor whiteColor];
+    temperatureBgView.alpha = 0.7;
+    temperatureBgView.layer.cornerRadius = 25.0;
+    [eventImageView addSubview:temperatureBgView];
+    
+    temperatureIcon = [[UIImageView alloc] initWithFrame:CGRectMake(12.5, 5, 25, 25)];
+    [temperatureBgView addSubview:temperatureIcon];
+    
+    temperatureLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, 50, 20)];
+    temperatureLabel.textAlignment = NSTextAlignmentCenter;
+    temperatureLabel.backgroundColor = [UIColor clearColor];
+    temperatureLabel.textColor = [UIColor blackColor];
+    temperatureLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+    [temperatureBgView addSubview:temperatureLabel];
+    
     
     NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
     NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
@@ -314,10 +392,10 @@
         certifiedLogo.hidden = YES;
     }
     
-    UIButton *temperatureButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    temperatureButton.frame = CGRectMake(eventImageView.bounds.size.width-50, eventImageView.bounds.size.height-40, 30, 30);
-    [temperatureButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_abcwater.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    [eventImageView addSubview:temperatureButton];
+//    UIButton *temperatureButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    temperatureButton.frame = CGRectMake(eventImageView.bounds.size.width-50, eventImageView.bounds.size.height-40, 30, 30);
+//    [temperatureButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_weather_abcwater.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+//    [eventImageView addSubview:temperatureButton];
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     directionButton.frame = CGRectMake(0, eventImageView.frame.origin.y+eventImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
@@ -368,7 +446,7 @@
         arrowIcon.hidden = YES;
         directionButton.enabled = NO;
     }
-
+    
     
     eventInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height+5, self.view.bounds.size.width, 40)];
     eventInfoLabel.backgroundColor = [UIColor whiteColor];
@@ -407,6 +485,8 @@
     // prevents the scroll view from swallowing up the touch event of child buttons
     tapGesture.cancelsTouchesInView = NO;
     [bgScrollView addGestureRecognizer:tapGesture];
+    
+    [self getTwelveHourWeatherData];
 }
 
 
@@ -418,9 +498,9 @@
         [self animateTopMenu];
     }
     
-//    UIInterfaceOrientation currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-//    if (currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown)
-//        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
+    //    UIInterfaceOrientation currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    //    if (currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown)
+    //        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
     
     ARViewController *viewObj = [[ARViewController alloc] init];
     viewObj.abcWaterSiteID = abcSiteId;
@@ -457,12 +537,12 @@
                 
                 networkGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
                 [self.navigationController pushViewController:networkGallery animated:YES];
-//                GalleryViewController *viewObj = [[GalleryViewController alloc] init];
-//                viewObj.isABCGallery = YES;
-//                viewObj.isUserGallery = NO;
-//                viewObj.isPOIGallery = NO;
-//                viewObj.galleryImages = abcGalleryImages;
-//                [self.navigationController pushViewController:viewObj animated:YES];
+                //                GalleryViewController *viewObj = [[GalleryViewController alloc] init];
+                //                viewObj.isABCGallery = YES;
+                //                viewObj.isUserGallery = NO;
+                //                viewObj.isPOIGallery = NO;
+                //                viewObj.galleryImages = abcGalleryImages;
+                //                [self.navigationController pushViewController:viewObj animated:YES];
                 
             }
             else {
@@ -540,7 +620,8 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:appUrl title:titleString desc:descriptionString view:self];
+            
+            [CommonFunctions sharePostOnFacebook:imageUrl appUrl:appUrl title:titleString desc:descriptionString view:self abcIDValue:abcSiteId];
         }
         else if (buttonIndex==1) {
             
@@ -551,7 +632,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnTwitter:appUrl title:titleString view:self];
+            [CommonFunctions sharePostOnTwitter:appUrl title:titleString view:self abcIDValue:abcSiteId];
         }
     }
 }
@@ -582,9 +663,9 @@
     NSData* data = UIImageJPEGRepresentation(chosenImage, 0.5f);
     NSString *base64ImageString = [Base64 encode:data];
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
     
     NSMutableArray *parameters = [[NSMutableArray alloc] init];
     NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -618,10 +699,10 @@
 - (int)numberOfPhotosForPhotoGallery:(FGalleryViewController *)gallery
 {
     int num;
-//    if( gallery == localGallery ) {
-//        num = [localImages count];
-//    }
-//    else if( gallery == networkGallery ) {
+    //    if( gallery == localGallery ) {
+    //        num = [localImages count];
+    //    }
+    //    else if( gallery == networkGallery ) {
     if( gallery == networkGallery ) {
         num = (int)[abcGalleryImages count];
     }
@@ -631,30 +712,30 @@
 
 - (FGalleryPhotoSourceType)photoGallery:(FGalleryViewController *)gallery sourceTypeForPhotoAtIndex:(NSUInteger)index
 {
-//    if( gallery == localGallery ) {
-//        return FGalleryPhotoSourceTypeLocal;
-//    }
-//    else
-        return FGalleryPhotoSourceTypeNetwork;
+    //    if( gallery == localGallery ) {
+    //        return FGalleryPhotoSourceTypeLocal;
+    //    }
+    //    else
+    return FGalleryPhotoSourceTypeNetwork;
 }
 
 
 - (NSString*)photoGallery:(FGalleryViewController *)gallery captionForPhotoAtIndex:(NSUInteger)index
 {
-//    NSString *caption;
-//    if( gallery == localGallery ) {
-//        caption = [localCaptions objectAtIndex:index];
-//    }
-//    else if( gallery == networkGallery ) {
-//        caption = [networkCaptions objectAtIndex:index];
-//    }
-//    return caption;
+    //    NSString *caption;
+    //    if( gallery == localGallery ) {
+    //        caption = [localCaptions objectAtIndex:index];
+    //    }
+    //    else if( gallery == networkGallery ) {
+    //        caption = [networkCaptions objectAtIndex:index];
+    //    }
+    //    return caption;
     return nil;
 }
 
 
 - (NSString*)photoGallery:(FGalleryViewController*)gallery filePathForPhotoSize:(FGalleryPhotoSize)size atIndex:(NSUInteger)index {
-//    return [localImages objectAtIndex:index];
+    //    return [localImages objectAtIndex:index];
     return nil;
 }
 
@@ -770,7 +851,7 @@
     
     addPhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];
     addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
-//    addPhotoButton.frame = CGRectMake(topMenu.bounds.size.width/4-10, 5, 20, 20);
+    //    addPhotoButton.frame = CGRectMake(topMenu.bounds.size.width/4-10, 5, 20, 20);
     [addPhotoButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_camera.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [addPhotoButton addTarget:self action:@selector(addPhotoToSite) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addPhotoButton];
@@ -785,7 +866,7 @@
     [topMenu addSubview:favouritesButton];
     
     shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    shareButton.frame = CGRectMake((topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/4)-10, 5, 20, 20);
+    //    shareButton.frame = CGRectMake((topMenu.bounds.size.width/2)+(topMenu.bounds.size.width/4)-10, 5, 20, 20);
     shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [shareButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
@@ -815,10 +896,10 @@
     [addShareOverlayButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addShareOverlayButton];
     
-//    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
-//    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2-1, 0, 0.5, 45)];
-//    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
-//    [topMenu addSubview:seperatorOne];
+    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
+    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2-1, 0, 0.5, 45)];
+    //    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
+    //    [topMenu addSubview:seperatorOne];
     
     
     favouriteLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
@@ -833,7 +914,7 @@
     [topMenu addSubview:favouriteLabel];
     
     shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
-//    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2, 32, topMenu.bounds.size.width/2, 10)];
+    //    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2, 32, topMenu.bounds.size.width/2, 10)];
     shareLabel.backgroundColor = [UIColor clearColor];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
@@ -842,7 +923,7 @@
     [topMenu addSubview:shareLabel];
     
     
-//    networkImages = [[NSArray alloc] initWithObjects:@"http://farm6.static.flickr.com/5042/5323996646_9c11e1b2f6_b.jpg", @"http://farm6.static.flickr.com/5007/5311573633_3cae940638.jpg",nil];
+    //    networkImages = [[NSArray alloc] initWithObjects:@"http://farm6.static.flickr.com/5042/5323996646_9c11e1b2f6_b.jpg", @"http://farm6.static.flickr.com/5007/5311573633_3cae940638.jpg",nil];
     
 }
 
@@ -873,11 +954,11 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     
-//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-//    swipeGesture.numberOfTouchesRequired = 1;
-//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-//    
-//    [self.view addGestureRecognizer:swipeGesture];
+    //    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    //    swipeGesture.numberOfTouchesRequired = 1;
+    //    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    //
+    //    [self.view addGestureRecognizer:swipeGesture];
     
     //    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
     

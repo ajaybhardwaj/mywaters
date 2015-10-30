@@ -27,6 +27,7 @@
     UIImageView *threeDayFirstIcon,*threeDaySecondIcon,*threeDayThirdIcon;
     UILabel *threeDayFirstTempLabel,*threeDaySecondTempLabel,*threeDayThirdTempLabel;
     
+    NSString *nowcastTimeString,*nowcastDateString;
 }
 
 @end

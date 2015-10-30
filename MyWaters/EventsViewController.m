@@ -62,7 +62,7 @@
     
     if (isShowingSearchBar) {
         isShowingSearchBar = NO;
-        pos.y = -70;
+        pos.y = -100;
         
         eventsListingTableView.alpha = 1.0;
         eventsListingTableView.userInteractionEnabled = YES;
@@ -100,7 +100,7 @@
     
     if (isShowingFilter) {
         isShowingFilter = NO;
-        pos.y = -70;
+        pos.y = -220;
         
         eventsListingTableView.alpha = 1.0;
         eventsListingTableView.userInteractionEnabled = YES;
@@ -147,7 +147,7 @@
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"3",[prefs stringForKey:@"device_token"],@"1.0", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"3",[prefs stringForKey:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
     
     [self pullToRefreshTable];
@@ -581,7 +581,7 @@
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 39.5, filterTableView.bounds.size.width, 0.5)];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 43.5, filterTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -767,7 +767,7 @@
     eventsListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -128, self.view.bounds.size.width, 128) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -200, self.view.bounds.size.width, 128) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -782,7 +782,7 @@
     filtersArray = [[NSArray alloc] initWithObjects:@"Date",@"Name",@"Distance", nil];
     filteredDataSource = [[NSMutableArray alloc] init];
     
-    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -50, self.view.bounds.size.width, 40)];
+    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -120, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;
     listinSearchBar.placeholder = @"Search...";
     [listinSearchBar setBackgroundImage:[[UIImage alloc] init]];

@@ -13,8 +13,9 @@
 @end
 
 @implementation SignUpViewController
-
-
+@synthesize facebookIDString,facebookEmailString;
+@synthesize isFacebookDataFetchInLogin;
+@synthesize facebookIDStringFromLogin,facebookNameStringFromLogin,facebookEmailIDFromLogin,facebookImageUrlFromLogin;
 
 //*************** Method To Skip Sign Up
 
@@ -128,8 +129,11 @@
                          
                          isSigningUpViaFacebook = YES;
                          
-                         if ([result objectForKey:@"email"] != (id)[NSNull null])
+                         if ([result objectForKey:@"email"] != (id)[NSNull null]) {
                              emailField.text = [result objectForKey:@"email"];
+                             facebookEmailString = [result objectForKey:@"email"];
+                         }
+                         
                          
                          if ([result objectForKey:@"name"] != (id)[NSNull null])
                              nameField.text = [result objectForKey:@"name"];
@@ -218,94 +222,100 @@
 - (void) validateSignUpParameters {
     
     if ([CommonFunctions hasConnectivity]) {
-    if ([emailField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([nameField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([CommonFunctions characterSet1Found:nameField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([passField.text length]==0) {
-        if (!isSigningUpViaFacebook) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+        if ([emailField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
-    }
-    
-    if ([retypePassField.text length]==0) {
-        if (!isSigningUpViaFacebook) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Retype password is mandatory." cancel:@"OK" otherButton:nil];
+        
+        if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
             return;
         }
-    }
-    
-    if (![passField.text isEqualToString:retypePassField.text]) {
-        if (!isSigningUpViaFacebook) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
+        
+        if ([nameField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
-    }
-    
-    [self submitSignupDetails];
-    
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
-    
-    NSMutableArray *parameters = [[NSMutableArray alloc] init];
-    NSMutableArray *values = [[NSMutableArray alloc] init];
-    
-    [parameters addObject:@"Profile.Name"];
-    [values addObject:nameField.text];
-    
-    
-    [parameters addObject:@"Profile.Email"];
-    [values addObject:emailField.text];
-    
-    
-    if (!isSigningUpViaFacebook) {
-        [parameters addObject:@"Profile.Password"];
-        [values addObject:passField.text];
-    }
-    
-    if (isSigningUpViaFacebook) {
-        [parameters addObject:@"Profile.FacebookID"];
-        [values addObject:facebookIDString];
-    }
-    
-    
-    if (isProfilePictureSelected) {
         
-        NSData* data = UIImageJPEGRepresentation(profileImageView.image, 0.5f);
-        NSString *base64ImageString = [Base64 encode:data];
+        if ([CommonFunctions characterSet1Found:nameField.text]) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+            return;
+        }
         
-        [parameters addObject:@"Profile.ImageBase64"];
-        [values addObject:base64ImageString];
+        if ([passField.text length]==0) {
+            if (!isSigningUpViaFacebook) {
+                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+                return;
+            }
+        }
         
-    }
-    
-    [parameters addObject:@"Profile.IsFriendOfWater"];
-    if (isTermsAgree) {
-        [values addObject:@"true"];
-    }
-    else {
-        [values addObject:@"false"];
-    }
-    
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,SIGNUP_API_URL]];
+        if ([retypePassField.text length]==0) {
+            if (!isSigningUpViaFacebook) {
+                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Retype password is mandatory." cancel:@"OK" otherButton:nil];
+                return;
+            }
+        }
+        
+        if (![passField.text isEqualToString:retypePassField.text]) {
+            if (!isSigningUpViaFacebook) {
+                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
+                return;
+            }
+        }
+        
+        [self submitSignupDetails];
+        
+        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        appDelegate.hud.labelText = @"Loading...";
+        
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        NSMutableArray *values = [[NSMutableArray alloc] init];
+        
+        [parameters addObject:@"Profile.Name"];
+        [values addObject:nameField.text];
+        
+        
+        [parameters addObject:@"Profile.Email"];
+        [values addObject:emailField.text];
+        
+        
+        if (!isSigningUpViaFacebook) {
+            [parameters addObject:@"Profile.Password"];
+            [values addObject:passField.text];
+        }
+        
+        if (isSigningUpViaFacebook) {
+            
+            [parameters addObject:@"Profile.FacebookID"];
+            [values addObject:facebookIDString];
+            
+            if ([emailField.text isEqualToString:facebookEmailString]) {
+                [parameters addObject:@"Profile.IsEmailVerified"];
+                [values addObject:@"True"];
+            }
+        }
+        
+        
+        if (isProfilePictureSelected) {
+            
+            NSData* data = UIImageJPEGRepresentation(profileImageView.image, 0.5f);
+            NSString *base64ImageString = [Base64 encode:data];
+            
+            [parameters addObject:@"Profile.ImageBase64"];
+            [values addObject:base64ImageString];
+            
+        }
+        
+        [parameters addObject:@"Profile.IsFriendOfWater"];
+        if (isTermsAgree) {
+            [values addObject:@"true"];
+        }
+        else {
+            [values addObject:@"false"];
+        }
+        
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,SIGNUP_API_URL]];
     }
     else {
         [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
@@ -322,14 +332,28 @@
     DebugLog(@"%@",responseString);
     
     [appDelegate.hud hide:YES];
-
+    
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
-
-        OTPViewController *viewObj = [[OTPViewController alloc] init];
-        viewObj.emailStringForVerification = emailField.text;
-        viewObj.isValidatingEmail = YES;
-        viewObj.isResettingPassword = NO;
-        [self.navigationController pushViewController:viewObj animated:YES];
+        
+        isSigningUpViaFacebook = NO;
+        
+        [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
+        
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"isEmailVerified"] intValue] == 1) {
+            
+            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+            [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+            
+            appDelegate.IS_COMING_AFTER_LOGIN = YES;
+        }
+        else {
+            
+            OTPViewController *viewObj = [[OTPViewController alloc] init];
+            viewObj.emailStringForVerification = emailField.text;
+            viewObj.isValidatingEmail = YES;
+            viewObj.isResettingPassword = NO;
+            [self.navigationController pushViewController:viewObj animated:YES];
+        }
     }
     else {
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
@@ -732,6 +756,41 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:YES];
+    
+    if (isFacebookDataFetchInLogin) {
+        
+        isFacebookDataFetchInLogin = NO;
+        
+        isSigningUpViaFacebook = YES;
+        passField.hidden = YES;
+        retypePassField.hidden = YES;
+        
+        emailField.text = facebookEmailIDFromLogin;
+        facebookEmailString = facebookEmailIDFromLogin;
+        
+        
+        nameField.text = facebookNameStringFromLogin;
+        
+        facebookIDString = facebookIDStringFromLogin;
+        
+        passField.hidden = YES;
+        retypePassField.hidden = YES;
+        
+        
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicator.center = CGPointMake(profileImageView.bounds.size.width/2, profileImageView.bounds.size.height/2);
+        [profileImageView addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+        
+        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:facebookImageUrlFromLogin] completionBlock:^(BOOL succeeded, UIImage *image) {
+            if (succeeded) {
+                
+                profileImageView.image = image;
+                isProfilePictureSelected = YES;
+            }
+            [activityIndicator stopAnimating];
+        }];
+    }
 }
 
 

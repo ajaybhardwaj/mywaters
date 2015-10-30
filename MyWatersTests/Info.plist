@@ -15,11 +15,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -45,6 +45,7 @@
 		<string>fbshareextension</string>
 		<string>fbauth</string>
 		<string>fbauth2</string>
+		<string>fb</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>

@@ -57,29 +57,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MyWaters/WaterLevelSensorsDetailViewController.m"
-            timestampString = "467627862.679512"
+            filePath = "MyWaters/QuickMapViewController.m"
+            timestampString = "467889366.859647"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1410"
-            endingLineNumber = "1410"
-            landmarkName = "-viewDidLoad"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "MyWaters/WaterLevelSensorsDetailViewController.m"
-            timestampString = "467627874.119309"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "956"
-            endingLineNumber = "956"
-            landmarkName = "-requestFinished:"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
+            landmarkName = "-handleLongPress:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
