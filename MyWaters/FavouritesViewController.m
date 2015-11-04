@@ -86,7 +86,7 @@
     if (isShowingFilter) {
         
         isShowingFilter = NO;
-        pos.y = -120;
+        pos.y = -320;
         
         favouritesListingTableView.alpha = 1.0;
         favouritesListingTableView.userInteractionEnabled = YES;
@@ -205,6 +205,7 @@
             viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+2]];
             viewObj.imageName = [appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+2];
             viewObj.isCertified = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+11] intValue];
+            viewObj.isHavingPOI = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+20] intValue];
             
             [self.navigationController pushViewController:viewObj animated:YES];
         }
@@ -222,6 +223,7 @@
             viewObj.waterLevelPercentageValue = [NSString stringWithFormat:@"%d",[[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+14] intValue]];
             viewObj.waterLevelTypeValue = [NSString stringWithFormat:@"%d",[[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+15] intValue]];
             viewObj.drainDepthValue = [NSString stringWithFormat:@"%d",[[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+13] intValue]];
+            viewObj.isSubscribed = [[appDelegate.USER_FAVOURITES_ARRAY objectAtIndex:(indexPath.row*20)+19] intValue];
             
             [self.navigationController pushViewController:viewObj animated:YES];
         }
@@ -380,7 +382,7 @@
         subTitleLabel.textAlignment = NSTextAlignmentRight;
         [cell.contentView addSubview:subTitleLabel];
         
-        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
             
             subTitleLabel.text = @"";
         }
@@ -437,7 +439,7 @@
     favouritesListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     favouritesListingTableView.hidden = YES;
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -220, self.view.bounds.size.width, 220) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -320, self.view.bounds.size.width, 220) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -448,7 +450,6 @@
     filterTableView.scrollEnabled = NO;
     filterTableView.alwaysBounceVertical = NO;
     
-    favouritesDataSource = [[NSArray alloc] initWithObjects:@"Sembawang Park - ABC Waters",@"Boon Lay Way - CCTV",@"Boon Keng Road/Bendemeer Road - CCTV", nil];
     filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTVs",@"Event",@"ABC Water Sites",@"Water Level Sensor",@"Distance", nil];
     
     selectedFilterIndex = 0;
@@ -458,6 +459,7 @@
     noFavFoundLabel.textAlignment = NSTextAlignmentCenter;
     noFavFoundLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
     noFavFoundLabel.backgroundColor = [UIColor clearColor];
+    noFavFoundLabel.textColor = [UIColor lightGrayColor];
     [self.view addSubview:noFavFoundLabel];
     noFavFoundLabel.hidden = YES;
     

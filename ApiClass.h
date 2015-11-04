@@ -76,6 +76,7 @@
 
 #define API_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/api/"
 #define MODULES_API_URL @"Modules/"
+#define WLS_DETAIL_DUPLICATE_MODULES_API_URL @"Modules/"
 #define FEEDBACK_API_URL @"Feedback/"
 #define SIGNUP_API_URL @"SignUp/"
 #define VERIFICATION_API_URL @"Verification/"

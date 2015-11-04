@@ -14,7 +14,7 @@
 
 @implementation OTPViewController
 @synthesize emailStringForVerification;
-@synthesize isResettingPassword,isValidatingEmail;
+@synthesize isResettingPassword,isValidatingEmail,isChangingEmail;
 
 
 
@@ -48,14 +48,15 @@
         
         NSString *otpString = [NSString stringWithFormat:@"%@%@%@%@%@%@",otpField1.text,otpField2.text,otpField3.text,otpField4.text,otpField5.text,otpField6.text];
         
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
         
-        if (isValidatingEmail) {
+        if (isValidatingEmail || isChangingEmail) {
             [parameters addObject:@"VerificationMode"];
             [values addObject:@"1"];
         }
@@ -92,12 +93,14 @@
 - (void) requestNewOTPCode {
     
     if ([CommonFunctions hasConnectivity]) {
+        
         isVerifyingEmail = NO;
         isResendingOTP = YES;
         
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -273,12 +276,19 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if (buttonIndex==0) {
-        
-        [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
-        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
-        
-        appDelegate.IS_COMING_AFTER_LOGIN = YES;
+    
+    if (isChangingEmail) {
+        isChangingEmail = NO;
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+    else {
+        if (buttonIndex==0) {
+            
+            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+            [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+            
+            appDelegate.IS_COMING_AFTER_LOGIN = YES;
+        }
     }
 }
 
@@ -291,28 +301,31 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         if (isVerifyingEmail) {
             
+            [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
+            
             if (isValidatingEmail) {
                 
-//                [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
-                [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
+                //                [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
                 
                 [CommonFunctions showAlertView:self title:nil msg:@"Account successfully created." cancel:@"OK" otherButton:nil];
             }
             else if (isResettingPassword) {
                 
-                [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
-                
                 PasswordResetViewController *viewObj = [[PasswordResetViewController alloc] init];
                 viewObj.emailString = emailStringForVerification;
                 [self.navigationController pushViewController:viewObj animated:YES];
+            }
+            else if (isChangingEmail) {
+                
+                [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
             }
         }
         else if (isResendingOTP) {
@@ -329,7 +342,8 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
 }
 
@@ -373,6 +387,7 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    self.navigationItem.hidesBackButton = YES;
     
     UIImageView *bgView = [[UIImageView alloc] init];
     if (IS_IPHONE_4_OR_LESS) {
@@ -392,6 +407,9 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+
 
 /*
  #pragma mark - Navigation

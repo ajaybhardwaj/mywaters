@@ -99,7 +99,9 @@
         }
         else {
             locationManager = [[CLLocationManager alloc] init];
-            [locationManager requestAlwaysAuthorization];
+            if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                [locationManager requestAlwaysAuthorization];
+            }
             
             isFloodAlertsTurningOff = NO;
             isFloodAlertsTurningOn = YES;
@@ -130,8 +132,6 @@
     isSystemNotifications = NO;
     isFloodAlerts = NO;
     
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    
     if ([CommonFunctions hasConnectivity]) {
         
         NSArray *parameters,*values;
@@ -145,7 +145,7 @@
             isGeneralNotificationsTurningOff = NO;
             isGeneralNotificationsTurningOn = YES;
             parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode", nil];
-            values = [[NSArray alloc] initWithObjects:[prefs stringForKey:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"]],@"4", @"1", nil];
+            values = [[NSArray alloc] initWithObjects:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],@"4", @"1", nil];
         }
         
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
@@ -173,7 +173,7 @@
     NSString *responseString = [request responseString];
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     DebugLog(@"%@",responseString);
-    
+    [CommonFunctions dismissGlobalHUD];
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         //        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
@@ -216,8 +216,8 @@
     if (isFloodAlerts) {
         [floodAlertsSwitch setOn:NO];
     }
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 

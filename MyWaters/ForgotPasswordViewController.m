@@ -55,9 +55,11 @@
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
         }
         else {
-            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-            appDelegate.hud.labelText = @"Loading...";
+            
+            [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//            appDelegate.hud.labelText = @"Loading...";
             
             NSMutableArray *parameters = [[NSMutableArray alloc] init];
             NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -83,8 +85,8 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
@@ -105,7 +107,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 

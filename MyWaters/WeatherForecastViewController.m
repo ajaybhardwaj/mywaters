@@ -379,8 +379,8 @@
     self.title = @"Weather Forecast";
     self.view.backgroundColor = RGB(247, 247, 247);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-    //    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
+    
+    
     
     
 //    nowCastWeatherData = [[NSMutableDictionary alloc] init];
@@ -403,6 +403,15 @@
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(36,160,236) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+    
+    
+    if (appDelegate.IS_COMING_FROM_DASHBOARD) {
+        appDelegate.IS_COMING_FROM_DASHBOARD = NO;
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+    }
+    else {
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
+    }
     
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied)
         [self getNowcastWeatherData];

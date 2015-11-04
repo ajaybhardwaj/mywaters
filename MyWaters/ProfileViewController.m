@@ -27,12 +27,12 @@
         [self.navigationController pushViewController:networkGallery animated:YES];
     }
     
-//    GalleryViewController *viewObj = [[GalleryViewController alloc] init];
-//    viewObj.galleryImages = photosDataSource;
-//    viewObj.isABCGallery = NO;
-//    viewObj.isUserGallery = YES;
-//    viewObj.isPOIGallery = NO;
-//    [self.navigationController pushViewController:viewObj animated:YES];
+    //    GalleryViewController *viewObj = [[GalleryViewController alloc] init];
+    //    viewObj.galleryImages = photosDataSource;
+    //    viewObj.isABCGallery = NO;
+    //    viewObj.isUserGallery = YES;
+    //    viewObj.isPOIGallery = NO;
+    //    [self.navigationController pushViewController:viewObj animated:YES];
 }
 
 
@@ -41,10 +41,17 @@
 - (void) showBadgesDescPopUp:(id) sender {
     
     UIButton *button = (id) sender;
-    NSString *alertTitle = [[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"Name"];
+    //    NSString *alertTitle = [[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"Name"];
     NSString *alertMessage = [[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"Description"];
     
-    [CommonFunctions showAlertView:nil title:alertTitle msg:alertMessage cancel:@"OK" otherButton:nil];
+    if ([[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"UnlockedAt"] != (id)[NSNull null]) {
+        isBadgeUnlocked = YES;
+        [CommonFunctions showAlertView:self title:nil msg:alertMessage cancel:nil otherButton:@"Share on Facebook",@"Cancel",nil];
+    }
+    else {
+        isBadgeUnlocked = NO;
+        [CommonFunctions showAlertView:self title:nil msg:alertMessage cancel:@"OK" otherButton:nil];
+    }
 }
 
 
@@ -102,9 +109,10 @@
 
 - (void) getOtherProfileData {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+    //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    //    appDelegate.hud.labelText = @"Loading...";
     
     [CommonFunctions grabGetRequest:USER_PROFILE_OTHERS_DATA delegate:self isNSData:NO accessToken:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"AccessToken"]];
     
@@ -286,7 +294,7 @@
             [badgeImageView addSubview:tapButton];
             
             NSString *imageName = [photosDataSource objectAtIndex:i];
-//            imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
+            //            imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
             NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[photosDataSource objectAtIndex:i]];
             
             
@@ -343,7 +351,7 @@
             DebugLog(@"Else X-Axis %f --- Y-Axis %f",xAxis,yAxis);
             
             UIImageView *badgeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xAxis, yAxis, photosScrollView.bounds.size.width/3 - 1, photosScrollView.bounds.size.width/3)];
-//            [badgeImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/dummy_my_pic_new.jpeg",appDelegate.RESOURCE_FOLDER_PATH]]];
+            //            [badgeImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/dummy_my_pic_new.jpeg",appDelegate.RESOURCE_FOLDER_PATH]]];
             badgeImageView.tag = i+1;
             [photosScrollView addSubview:badgeImageView];
             badgeImageView.userInteractionEnabled = YES;
@@ -355,7 +363,7 @@
             [badgeImageView addSubview:tapButton];
             
             NSString *imageName = [photosDataSource objectAtIndex:i];
-//            imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
+            //            imageName = [imageName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
             NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[photosDataSource objectAtIndex:i]];
             
             
@@ -454,14 +462,14 @@
             NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
             NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
             NSString *destinationPath;//=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
-
+            
             
             imageName = [[badgesDataSource objectAtIndex:i] objectForKey:@"Image"];
             
             if ([[badgesDataSource objectAtIndex:i] objectForKey:@"UnlockedAt"] == (id)[NSNull null]) {
                 imageURLString = [NSString stringWithFormat:@"%@grey/%@",IMAGE_BASE_URL,[[badgesDataSource objectAtIndex:i] objectForKey:@"Image"]];
                 destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges/Grey"]];
-
+                
             }
             else {
                 destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
@@ -537,7 +545,7 @@
             NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
             NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
             NSString *destinationPath;//=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"ProfileBadges"]];
-
+            
             imageName = [[badgesDataSource objectAtIndex:i] objectForKey:@"Image"];
             
             if ([[badgesDataSource objectAtIndex:i] objectForKey:@"UnlockedAt"] == (id)[NSNull null]) {
@@ -611,36 +619,36 @@
 
 - (void) showBadgesToolTip:(id)sender {
     
-//    UIImageView *toolTipView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
-//    toolTipView.backgroundColor = [UIColor whiteColor];
-//    
-//    CGRect frameValue = sender.frame;
-//    frameValue.origin.y = frameValue.origin.y + 180;
-//    
-//    AKETooltip *tooltip = [[AKETooltip alloc] initWithContentView:toolTipView sourceRect:frameValue parentWindow:self.view.window];
-//    
-//    tooltip.hideShadow = NO;
-//    tooltip.arrowColor = RGB(85,49,118);
-//    tooltip.borderColor = [UIColor whiteColor];//RGB(85,49,118);
-//    tooltip.layer.cornerRadius = 10.0;
-//    [tooltip show];
-//
-//    
-//    NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
-//    
-//    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-//    activityIndicator.center = CGPointMake(toolTipView.bounds.size.width/2, toolTipView.bounds.size.height/2);
-//    [toolTipView addSubview:activityIndicator];
-//    [activityIndicator startAnimating];
-//    
-//    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
-//        if (succeeded) {
-//            
-//            toolTipView.image = image;
-//            
-//        }
-//        [activityIndicator stopAnimating];
-//    }];
+    //    UIImageView *toolTipView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
+    //    toolTipView.backgroundColor = [UIColor whiteColor];
+    //
+    //    CGRect frameValue = sender.frame;
+    //    frameValue.origin.y = frameValue.origin.y + 180;
+    //
+    //    AKETooltip *tooltip = [[AKETooltip alloc] initWithContentView:toolTipView sourceRect:frameValue parentWindow:self.view.window];
+    //
+    //    tooltip.hideShadow = NO;
+    //    tooltip.arrowColor = RGB(85,49,118);
+    //    tooltip.borderColor = [UIColor whiteColor];//RGB(85,49,118);
+    //    tooltip.layer.cornerRadius = 10.0;
+    //    [tooltip show];
+    //
+    //
+    //    NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
+    //
+    //    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    //    activityIndicator.center = CGPointMake(toolTipView.bounds.size.width/2, toolTipView.bounds.size.height/2);
+    //    [toolTipView addSubview:activityIndicator];
+    //    [activityIndicator startAnimating];
+    //
+    //    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+    //        if (succeeded) {
+    //
+    //            toolTipView.image = image;
+    //
+    //        }
+    //        [activityIndicator stopAnimating];
+    //    }];
     
     CustomIOSAlertView *alertView = [[CustomIOSAlertView alloc] init];
     
@@ -684,7 +692,8 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+    //    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
@@ -706,10 +715,10 @@
             [photoDataSourceForGallery addObject:[NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[photosDataSource objectAtIndex:i]]];
         }
         
-//        photosDataSource = [[responseString JSONValue] objectForKey:USER_UPLOADED_IMAGES_RESPONSE_NAME];
-//        badgesDataSource = [[responseString JSONValue] objectForKey:USER_BADGES_RESPONSE_NAME];
-//        rewardsDataSource = [[responseString JSONValue] objectForKey:REWARDS_RESPONSE_NAME];
-//        pointsDataSource = [[responseString JSONValue] objectForKey:USER_ACTION_HISTORY_RESPONSE_NAME];
+        //        photosDataSource = [[responseString JSONValue] objectForKey:USER_UPLOADED_IMAGES_RESPONSE_NAME];
+        //        badgesDataSource = [[responseString JSONValue] objectForKey:USER_BADGES_RESPONSE_NAME];
+        //        rewardsDataSource = [[responseString JSONValue] objectForKey:REWARDS_RESPONSE_NAME];
+        //        pointsDataSource = [[responseString JSONValue] objectForKey:USER_ACTION_HISTORY_RESPONSE_NAME];
         
         DebugLog(@"%@",photosDataSource);
         DebugLog(@"%@",badgesDataSource);
@@ -729,8 +738,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+    //    [appDelegate.hud hide:YES];
 }
 
 
@@ -740,33 +749,33 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     
-        float titleHeight = 0.0;
-        float subTitleHeight = 0.0;
-        float dateHeight = 0.0;
-        int subtractComponent = 0;
+    float titleHeight = 0.0;
+    float subTitleHeight = 0.0;
+    float dateHeight = 0.0;
+    int subtractComponent = 0;
+    
+    if (tableView==rewardsListingTableView) {
         
-        if (tableView==rewardsListingTableView) {
-            
-            if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null]) {
-                titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:rewardsListingTableView.bounds.size.width-85];
-                subtractComponent = subtractComponent + 25;
-            }
-            
-            if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] != (id)[NSNull null]) {
-                subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:rewardsListingTableView.bounds.size.width-90];
-                subtractComponent = subtractComponent + 25;
-            }
-            
-            if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"] != (id)[NSNull null]) {
-                dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:rewardsListingTableView.bounds.size.width-85];
-                subtractComponent = subtractComponent + 25;
-            }
-            
-            if ((titleHeight+subTitleHeight+dateHeight) < 90) {
-                return 90.0f;
-            }
-            
-            return titleHeight+subTitleHeight+dateHeight-subtractComponent;
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null]) {
+            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:rewardsListingTableView.bounds.size.width-85];
+            subtractComponent = subtractComponent + 25;
+        }
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] != (id)[NSNull null]) {
+            subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:rewardsListingTableView.bounds.size.width-90];
+            subtractComponent = subtractComponent + 25;
+        }
+        
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"] != (id)[NSNull null]) {
+            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:rewardsListingTableView.bounds.size.width-85];
+            subtractComponent = subtractComponent + 25;
+        }
+        
+        if ((titleHeight+subTitleHeight+dateHeight) < 90) {
+            return 90.0f;
+        }
+        
+        return titleHeight+subTitleHeight+dateHeight-subtractComponent;
         
     }
     else if (tableView==pointsTableView) {
@@ -984,7 +993,7 @@
         cellPointsLabel.frame = newSubTitleLabelLabelFrame;
         [cell.contentView addSubview:cellPointsLabel];
         [cellPointsLabel sizeToFit];
-
+        
         
         UILabel *cellPlaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, cellPointsLabel.frame.origin.y+cellPointsLabel.bounds.size.height+5, rewardsListingTableView.bounds.size.width-100, 35)];
         cellPlaceLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"];
@@ -1049,9 +1058,18 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if (buttonIndex==0) {
-        appDelegate.IS_SKIPPING_USER_LOGIN = NO;
-        [[ViewControllerHelper viewControllerHelper] signOut];
+    if (appDelegate.IS_SKIPPING_USER_LOGIN) {
+        if (buttonIndex==0) {
+            appDelegate.IS_SKIPPING_USER_LOGIN = NO;
+            [[ViewControllerHelper viewControllerHelper] signOut];
+        }
+    }
+    else {
+        if (isBadgeUnlocked) {
+            if (buttonIndex==0) {
+                // Code To Post To Facebook
+            }
+        }
     }
 }
 
@@ -1124,7 +1142,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    // Do any additional setup after loading the view.  
+    // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     self.view.backgroundColor = RGB(247, 247, 247);
@@ -1282,18 +1300,18 @@
     badgesBackgroundView.userInteractionEnabled = YES;
     
     myBadgesLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, 115, 20)];
-    myBadgesLabel.text = @"What are badges?";
+    myBadgesLabel.text = @"What are my badges";
     myBadgesLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.5];
     myBadgesLabel.textColor = [UIColor blackColor];
     myBadgesLabel.backgroundColor = [UIColor clearColor];
     myBadgesLabel.numberOfLines = 0;
     [badgesBackgroundView addSubview:myBadgesLabel];
     
-//    infoIconButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    infoIconButton.frame = CGRectMake(myBadgesLabel.frame.origin.x+myBadgesLabel.bounds.size.width, 13, 16, 16);
-//    [infoIconButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-//    [infoIconButton addTarget:self action:@selector(showBadgesToolTip:) forControlEvents:UIControlEventTouchUpInside];
-//    [badgesBackgroundView addSubview:infoIconButton];
+    //    infoIconButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    //    infoIconButton.frame = CGRectMake(myBadgesLabel.frame.origin.x+myBadgesLabel.bounds.size.width, 13, 16, 16);
+    //    [infoIconButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    //    [infoIconButton addTarget:self action:@selector(showBadgesToolTip:) forControlEvents:UIControlEventTouchUpInside];
+    //    [badgesBackgroundView addSubview:infoIconButton];
     
     badgesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, myBadgesLabel.frame.origin.y+myBadgesLabel.bounds.size.height+10, badgesBackgroundView.bounds.size.width, badgesBackgroundView.bounds.size.height)];
     badgesScrollView.showsHorizontalScrollIndicator = NO;
@@ -1372,7 +1390,7 @@
     userNameLabel.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
     
     if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"] length] !=0) {
-    
+        
         NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"]];
         
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

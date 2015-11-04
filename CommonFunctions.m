@@ -10,6 +10,7 @@
 
 @implementation CommonFunctions
 
+static UIWindow *window;
 
 # pragma mark - ASIHTTP Delegate Methods
 
@@ -62,6 +63,28 @@
 
 
 
+//*************** Function To Show Global MBProgressView
+
++ (MBProgressHUD *)showGlobalProgressHUDWithTitle:(NSString *)title {
+    
+    window = [UIApplication sharedApplication].keyWindow;
+    [MBProgressHUD hideAllHUDsForView:window animated:YES];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:window animated:YES];
+    hud.mode = MBProgressHUDModeIndeterminate;
+    hud.labelText = title;
+    return hud;
+}
+
+//*************** Function To Hide Global MBProgressView
+
+
++ (void)dismissGlobalHUD {
+    
+    window = [UIApplication sharedApplication].keyWindow;
+    [MBProgressHUD hideHUDForView:window animated:YES];
+}
+
+
 //*************** Function To Get App Version From Info Plist
 
 + (NSString *) getAppVersionNumber {
@@ -104,7 +127,7 @@
         
         [FBDialogs presentShareDialogWithLink:[NSURL URLWithString:appstoreUrl]
                                          name:postTitle
-                                      caption:nil
+                                      caption:postTitle
                                   description:postDescription
                                       picture:[NSURL URLWithString:postImageUrl]
                                   clientState:nil
@@ -120,15 +143,21 @@
                                               // 0 - For Other modules than ABC Waters
                                               // -1 - For App Sharing
                                               
-                                              if (![abcIdString isEqualToString:@"0"]) {
+                                              if ([[NSString stringWithFormat:@"%@",abcIdString] isEqualToString:@"0"]) {
                                                   NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
-                                                  NSArray *values = [[NSArray alloc] initWithObjects:@"5",abcIdString,@"1",[CommonFunctions getAppVersionNumber], nil];
+                                                  NSArray *values = [[NSArray alloc] initWithObjects:@"5",@"0",@"1",[CommonFunctions getAppVersionNumber], nil];
                                                   
                                                   [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
                                               }
-                                              else if ([abcIdString isEqualToString:@"-1"]) {
+                                              else if ([[NSString stringWithFormat:@"%@",abcIdString] isEqualToString:@"-1"]) {
                                                   NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionType",@"version", nil];
                                                   NSArray *values = [[NSArray alloc] initWithObjects:@"5",@"1",[CommonFunctions getAppVersionNumber], nil];
+                                                  
+                                                  [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                                              }
+                                              else {
+                                                  NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
+                                                  NSArray *values = [[NSArray alloc] initWithObjects:@"5",abcIdString,@"1",[CommonFunctions getAppVersionNumber], nil];
                                                   
                                                   [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
                                               }
@@ -183,15 +212,21 @@
                                 // 0 - For Other modules than ABC Waters
                                 // -1 - For App Sharing
                                 
-                                if (![abcIdString isEqualToString:@"0"]) {
+                                if ([[NSString stringWithFormat:@"%@",abcIdString] isEqualToString:@"0"]) {
                                     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
-                                    NSArray *values = [[NSArray alloc] initWithObjects:@"5",abcIdString,@"1",[CommonFunctions getAppVersionNumber], nil];
+                                    NSArray *values = [[NSArray alloc] initWithObjects:@"5",@"0",@"1",[CommonFunctions getAppVersionNumber], nil];
                                     
                                     [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
                                 }
-                                else if ([abcIdString isEqualToString:@"-1"]) {
+                                else if ([[NSString stringWithFormat:@"%@",abcIdString] isEqualToString:@"-1"]) {
                                     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionType",@"version", nil];
-                                    NSArray *values = [[NSArray alloc] initWithObjects:@"6",@"1",[CommonFunctions getAppVersionNumber], nil];
+                                    NSArray *values = [[NSArray alloc] initWithObjects:@"5",@"1",[CommonFunctions getAppVersionNumber], nil];
+                                    
+                                    [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                                }
+                                else {
+                                    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
+                                    NSArray *values = [[NSArray alloc] initWithObjects:@"5",abcIdString,@"1",[CommonFunctions getAppVersionNumber], nil];
                                     
                                     [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
                                 }
@@ -420,7 +455,11 @@
 
 + (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data accessToken:(NSString*)token {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@?accessToken=%@&ClientTag=%@",API_BASE_URL,apiName,token,API_CLIENT_TAG_VALUE]];
+    NSURL *url;
+    if ([token isEqualToString:@"NA"])
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@?ClientTag=%@",API_BASE_URL,apiName,API_CLIENT_TAG_VALUE]];
+    else
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@?accessToken=%@&ClientTag=%@",API_BASE_URL,apiName,token,API_CLIENT_TAG_VALUE]];
     
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setName:apiName];

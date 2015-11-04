@@ -210,6 +210,7 @@
 
 - (void) fetchABCWaterPOIImage:(NSInteger) tagValue {
     
+//    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
     isFetchingImages = YES;
     isFetchingPOI = NO;
     isUploadingImage = NO;
@@ -240,11 +241,9 @@
         
         for (int i=0; i<appDelegate.POI_ARRAY.count; i++) {
             
-            //            CLLocation *locationValue=[[CLLocation alloc] initWithLatitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"lat"] doubleValue] longitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"long"] doubleValue]];
             CLLocation *locationValue=[[CLLocation alloc] initWithLatitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Lat"] doubleValue] longitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Lon"] doubleValue]];
             
             ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Name"]];
-            //            ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"name"]];
             [coordinate calibrateUsingOrigin:[_userLocation location]];
             MarkerView *markerView = [[MarkerView alloc] initWithCoordinate:coordinate delegate:self image:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"MainImage"]];
             DebugLog(@"Marker view %@", markerView);
@@ -301,6 +300,7 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
+    
     UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
@@ -311,10 +311,10 @@
     isFetchingPOI = NO;
     isUploadingImage = YES;
     
-    
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+//    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     NSMutableArray *parameters = [[NSMutableArray alloc] init];
     NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -342,6 +342,7 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     
     [picker dismissViewControllerAnimated:YES completion:NULL];
+
 }
 
 
@@ -352,7 +353,8 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    
+//    [CommonFunctions dismissGlobalHUD];
+
     DebugLog(@"%@",responseString);
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
@@ -386,6 +388,7 @@
         else if (isFetchingImages) {
             
             pictureDataSource = [[responseString JSONValue] objectForKey:ABC_WATER_SITES_POI_IMAGES];
+            [pictureDataSourceForGallery removeAllObjects];
             for (int i=0; i<pictureDataSource.count; i++) {
                 [pictureDataSourceForGallery addObject:[NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[pictureDataSource objectAtIndex:i] objectForKey:@"Image"]]];
             }
@@ -398,8 +401,7 @@
             [self fetchABCWaterPOIImage:poiID];
         }
     }
-    
-    [appDelegate.hud hide:YES];
+//    [appDelegate.hud hide:YES];
 }
 
 - (void) requestFailed:(ASIHTTPRequest *)request {
@@ -407,7 +409,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-    [appDelegate.hud hide:YES];
+//    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 
@@ -452,7 +455,7 @@
     
     overlayScrollview.hidden = NO;
     
-    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 50, self.view.bounds.size.width-20, 25)];
+    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20.0f, 50.0f, self.view.bounds.size.width-20.0f, 25.0f)];
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:18.0];
@@ -474,7 +477,7 @@
     desinationLocation.longitude = [[[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"Lon"] doubleValue];
     
     
-    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-100, 50, 70, 25)];
+    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-100.0f, 50.0f, 70.0f, 25.0f)];
     distanceLabel.textColor = [UIColor whiteColor];
     distanceLabel.backgroundColor = [UIColor clearColor];
     distanceLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:18.0];
@@ -483,12 +486,12 @@
     distanceLabel.textAlignment = NSTextAlignmentRight;
     [overlayScrollview addSubview:distanceLabel];
     
-    seperatorImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 80, self.view.bounds.size.width-40, 2)];
+    seperatorImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0f, 80.0f, self.view.bounds.size.width-40.0f, 2.0f)];
     seperatorImageView.backgroundColor = [UIColor whiteColor];
     [overlayScrollview addSubview:seperatorImageView];
     
     
-    descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(20, seperatorImageView.frame.origin.y+seperatorImageView.bounds.size.height+10, self.view.bounds.size.width-40, 40)];
+    descriptionLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(20.0f, seperatorImageView.frame.origin.y+seperatorImageView.bounds.size.height+10.0f, self.view.bounds.size.width-40.0f, 40.0f)];
     descriptionLabel.backgroundColor = [UIColor clearColor];
     descriptionLabel.text = [NSString stringWithFormat:@"%@",[[appDelegate.POI_ARRAY objectAtIndex:markerView.tag] objectForKey:@"Description"]];
     descriptionLabel.textColor = [UIColor whiteColor];
@@ -502,7 +505,7 @@
     [overlayScrollview addSubview:descriptionLabel];
     
     
-    picturesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, descriptionLabel.frame.origin.y+descriptionLabel.bounds.size.height+10, self.view.bounds.size.width, 80)];
+    picturesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0f, descriptionLabel.frame.origin.y+descriptionLabel.bounds.size.height+10.0f, self.view.bounds.size.width, 80.0f)];
     picturesScrollView.showsHorizontalScrollIndicator = NO;
     picturesScrollView.showsVerticalScrollIndicator = NO;
     [overlayScrollview addSubview:picturesScrollView];
@@ -510,7 +513,7 @@
     
     
     UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    closeButton.frame = CGRectMake(overlayScrollview.bounds.size.width-45, 10, 25, 25);
+    closeButton.frame = CGRectMake(overlayScrollview.bounds.size.width-45.0f, 10.0f, 25.0f, 25.0f);
     [closeButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_cross.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [closeButton addTarget:self action:@selector(removeOverlayScrollview) forControlEvents:UIControlEventTouchUpInside];
     [overlayScrollview addSubview:closeButton];
@@ -550,8 +553,8 @@
         
         for (int i=0; i<appDelegate.POI_ARRAY.count; i++) {
             
-            CLLocation *location = [[CLLocation alloc] initWithLatitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"lat"] doubleValue] longitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"long"] doubleValue]];
-            Place *currentPlace = [[Place alloc] initWithLocation:location reference:nil name:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"name"] address:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"address"]];
+            CLLocation *location = [[CLLocation alloc] initWithLatitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Lat"] doubleValue] longitude:[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Lon"] doubleValue]];
+            Place *currentPlace = [[Place alloc] initWithLocation:location reference:nil name:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Name"] address:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Address"]];
             [temp addObject:currentPlace];
             
         }
@@ -644,11 +647,15 @@
     if (indexPath.row==0) {
         
         if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+            isShowingImagePicker = YES;
             UIImagePickerController *picker = [[UIImagePickerController alloc] init];
             picker.delegate = self;
             picker.allowsEditing = YES;
             picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-            
+//            [self.view addSubview:picker.view];
+//            picker.view.frame = self.view.frame;
+//            picker.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+//            [picker didMoveToParentViewController:self];
             [self presentViewController:picker animated:YES completion:NULL];
         }
         else {
@@ -659,11 +666,17 @@
     else if (indexPath.row==1) {
         
         if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+            isShowingImagePicker = YES;
             UIImagePickerController *picker = [[UIImagePickerController alloc] init];
             picker.delegate = self;
             picker.allowsEditing = YES;
             picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-            
+
+//            [self.view addSubview:picker.view];
+//            picker.view.frame = self.view.frame;
+//            picker.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+//            [picker didMoveToParentViewController:self];
+
             [self presentViewController:picker animated:YES completion:NULL];
         }
         else {
@@ -736,6 +749,21 @@
 
 
 
+- (void)didChangeOrientation:(NSNotification *)notification
+{
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    
+    if (UIInterfaceOrientationIsLandscape(orientation)) {
+//        self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
+    }
+    else {
+//        self.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
+    }
+    
+   
+}
+
 
 # pragma mark - View Lifecycle Methods
 
@@ -743,10 +771,11 @@
     
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.view.backgroundColor = [UIColor blackColor];
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     appDelegate.IS_ARVIEW_CUSTOM_LABEL = YES;
-    
+    [appDelegate setShouldRotate:YES];
+
     pictureDataSourceForGallery = [[NSMutableArray alloc] init];
     
     _locations = [[NSArray alloc] init];
@@ -770,22 +799,7 @@
     [_arController setRotateViewsBasedOnPerspective:YES];
     [_arController setDebugMode:NO];
     
-    
-//    UIToolbar *toolBar = [[UIToolbar alloc]init];
-//    if (IS_IPHONE_4_OR_LESS) {
-//        toolBar.frame = CGRectMake(60, 218, self.view.bounds.size.height, 44);
-//    }
-//    else if (IS_IPHONE_5) {
-//        toolBar.frame = CGRectMake(15, 262, self.view.bounds.size.height, 44);
-//    }
-//    else if (IS_IPHONE_6) {
-//        toolBar.frame = CGRectMake(20, 312, self.view.bounds.size.height, 44);
-//    }
-//    else if (IS_IPHONE_6P) {
-//        toolBar.frame = CGRectMake(25, 347, self.view.bounds.size.height, 44);
-//    }
-    
-    UIToolbar *toolBar = [[UIToolbar alloc]init];
+    toolBar = [[UIToolbar alloc]init];
     if (IS_IPHONE_4_OR_LESS) {
         toolBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, 44);
     }
@@ -809,11 +823,11 @@
     
     [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
     
-    CGAffineTransform rotationTransform = CGAffineTransformIdentity;
-    rotationTransform = CGAffineTransformRotate(rotationTransform, degreesToRadians(90));
+//    CGAffineTransform rotationTransform = CGAffineTransformIdentity;
+//    rotationTransform = CGAffineTransformRotate(rotationTransform, degreesToRadians(90));
 //    toolBar.transform = rotationTransform;
     
-    overlayScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    overlayScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.bounds.size.width, self.view.bounds.size.height)];
     overlayScrollview.backgroundColor = [UIColor blackColor];
     overlayScrollview.showsHorizontalScrollIndicator = NO;
     overlayScrollview.showsVerticalScrollIndicator = NO;
@@ -824,7 +838,7 @@
 //    overlayScrollview.transform = rotationTransform;
     
     
-    imageUploadOptionsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, 200) style:UITableViewStyleGrouped];
+    imageUploadOptionsTable = [[UITableView alloc] initWithFrame:CGRectMake(0.0, self.view.bounds.size.height, self.view.bounds.size.width, 200.0) style:UITableViewStyleGrouped];
     imageUploadOptionsTable.delegate = self;
     imageUploadOptionsTable.dataSource = self;
     [self.view addSubview:imageUploadOptionsTable];
@@ -837,7 +851,8 @@
     
     [self fetchABCWaterSitePOI];
     
-    
+
+
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
     NSArray *values = [[NSArray alloc] initWithObjects:@"4",abcWaterSiteID,@"1",[CommonFunctions getAppVersionNumber], nil];
     
@@ -854,20 +869,14 @@
     
 //    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
 //    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-
-    [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeRight animated:NO];
-//    [appDelegate setShouldRotate:YES];
-    //    [self generateGeoLocations];
-    [self.navigationController setNavigationBarHidden:YES];
-    self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
-
-
     
-    // Disable iOS 7 back gesture
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-        self.navigationController.interactivePopGestureRecognizer.delegate = self;
-    }
+    [appDelegate setShouldRotate:NO];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:)
+                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
+    
+
+    [self.navigationController setNavigationBarHidden:YES];
+//    self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
 }
 
 
@@ -875,6 +884,11 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+    [appDelegate setShouldRotate:NO];
+    
+    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
+
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {
         [req cancel];
@@ -882,10 +896,6 @@
     }
     
     [self.navigationController setNavigationBarHidden:NO];
-    self.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    
-    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationPortrait];
-    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
 }
 
 
@@ -900,39 +910,23 @@
 }
 
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
+    if (isShowingImagePicker) {
+        isShowingImagePicker = NO;
+        return UIInterfaceOrientationPortrait;
+    }
     return UIInterfaceOrientationMaskLandscapeRight;
 }
 
-- (BOOL)shouldAutorotate
-{
+
+- (BOOL)shouldAutorotate {
     return NO;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
-{
-   
-    return UIInterfaceOrientationMaskLandscapeLeft;
-}
-
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    return UIInterfaceOrientationMaskLandscapeRight;
-}
-
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
-    if ([[segue identifier] isEqualToString:@"showAlternate"]) {
-        [[segue destinationViewController] setDelegate:self];
-        [[segue destinationViewController] setLocations:_locations];
-        [[segue destinationViewController] setUserLocation:[_mapView userLocation]];
-    }
-}
-
-
-
+//- (NSUInteger)supportedInterfaceOrientations {
+//    return UIInterfaceOrientationMaskLandscapeRight + UIInterfaceOrientationMaskLandscapeLeft;
+//}
 
 /*
  #pragma mark - Navigation

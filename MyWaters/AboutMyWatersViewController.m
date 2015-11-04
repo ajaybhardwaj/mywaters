@@ -49,20 +49,28 @@
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, aboutTableView.bounds.size.width, 380)];
     
-    //    UILabel *aboutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, aboutTableView.bounds.size.width-20, 20)];
-    //    aboutLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:15];
-    //    aboutLabel.text = @"About MyWaters";
-    //    aboutLabel.backgroundColor = [UIColor clearColor];
-    //    [headerView addSubview:aboutLabel];
+    NSString *aboutPUB;
+    for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+        if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"AboutPUB"]) {
+            aboutPUB = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+            break;
+        }
+    }
     
+    //    NSAttributedString * attrStr = [[NSAttributedString alloc] initWithData:[aboutPUB dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType } documentAttributes:nil error:nil];
     
     UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, aboutTableView.bounds.size.width-20, 380)];
-    descriptionLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13];
-    descriptionLabel.text = [NSString stringWithFormat:@"As the national water agency. Public Utilities Board (PUB) is responsible for the collection, production, distribution and reclamation of water in Singapore.\n\nIn just five decades, Singapore has overcome water shortage despite its lack of natural water resources and pollution in its rivers.\n\nDriven by a vision of what it takes to be sustainable in water, Singapore has been investing inresearch and technology. Today, the nation has built a robust, diversified and sustainable water supply from four different sources known as the Four National Taps (water from local catchment areas, imported water, reclaimed water knows as NEWater and desalinated water).\n\nBy integrating the system and maximising the efficiency of each of the four taps. Singapore has ensured a stable, sustainable water supply that is weather resilient, capable of catering to the country's continued growth."];
+    descriptionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
+    descriptionLabel.text = [NSString stringWithFormat:@"%@",aboutPUB];
     descriptionLabel.backgroundColor = [UIColor clearColor];
     descriptionLabel.numberOfLines = 0;
+    
+    CGRect newDescLabelLabelFrame = descriptionLabel.frame;
+    newDescLabelLabelFrame.size.height = [CommonFunctions heightForText:descriptionLabel.text font:descriptionLabel.font withinWidth:aboutTableView.bounds.size.width-20];
+    descriptionLabel.frame = newDescLabelLabelFrame;
     [headerView addSubview:descriptionLabel];
     
+    headerView.frame = newDescLabelLabelFrame;
     
     [aboutTableView setTableHeaderView:headerView];
 }
@@ -73,11 +81,12 @@
 
 - (void) getConfigData {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+    //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    //    appDelegate.hud.labelText = @"Loading...";
     
-    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"AccessToken"]];
+    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:@"NA"];
     
     
     
@@ -91,9 +100,10 @@
     
     if (buttonIndex==0) {
         
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+        //        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        //        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+        //        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -119,7 +129,7 @@
                     break;
                 }
             }
-            [CommonFunctions sharePostOnFacebook:@"http://52.74.251.44/PUB.MyWater.Api.New/uploads/info/Icon_180.png" appUrl:appUrl title:@"MyWaters" desc:@"Download app from app store." view:self abcIDValue:@"0"];
+            [CommonFunctions sharePostOnFacebook:@"http://52.74.251.44/PUB.MyWater.Api.New/uploads/info/Icon_180.png" appUrl:appUrl title:@"MyWaters" desc:@"Download app from app store." view:self abcIDValue:@"-1"];
         }
         else if (buttonIndex==1) {
             
@@ -143,7 +153,8 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+    //    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
@@ -177,8 +188,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+    //    [appDelegate.hud hide:YES];
 }
 
 
@@ -345,13 +356,19 @@
     //    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
-    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userIsFriendOfWater"] intValue] == 1) {
-        tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App", nil];
+    if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
+        
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userIsFriendOfWater"] intValue] == 1) {
+            tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App", nil];
+        }
+        else {
+            tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App",@"Join Friends of Water", nil];
+        }
     }
     else {
-        tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App",@"Join Friends of Water", nil];
+        tableTitleDataSource = [[NSMutableArray alloc] initWithObjects:@"Website",@"Facebook",@"Twitter",@"Instagram",@"YouTube",@"Share MyWaters App", nil];
+        
     }
-    
     aboutTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     aboutTableView.delegate = self;
     aboutTableView.dataSource = self;
@@ -379,11 +396,11 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     
-//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-//    swipeGesture.numberOfTouchesRequired = 1;
-//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-//    
-//    [self.view addGestureRecognizer:swipeGesture];
+    //    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    //    swipeGesture.numberOfTouchesRequired = 1;
+    //    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    //
+    //    [self.view addGestureRecognizer:swipeGesture];
     
 }
 

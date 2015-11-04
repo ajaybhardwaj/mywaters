@@ -15,6 +15,7 @@
 #import "ARGeoCoordinate.h"
 #import "UILabel + Extension.h"
 #import "FGalleryViewController.h"
+#import "UINavigationController+Orientations.h"
 
 @interface ARViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate, ARLocationDelegate, ARDelegate, ARMarkerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate,FGalleryViewControllerDelegate> {
     
@@ -35,6 +36,9 @@
     
     FGalleryViewController *networkGallery;
     NSMutableArray *pictureDataSourceForGallery;
+    UIToolbar *toolBar;
+    
+    BOOL isShowingImagePicker;
 }
 
 @property (weak, nonatomic) MKMapView *mapView;

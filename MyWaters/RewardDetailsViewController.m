@@ -47,9 +47,10 @@
 
 - (void) redeemReward {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
     NSArray *values = [[NSArray alloc] initWithObjects:@"8",rewardID,@"2",[CommonFunctions getAppVersionNumber], nil];
@@ -154,7 +155,7 @@
     [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:arrowIcon];
     
-    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         
         distanceLabel.text = @"";
         arrowIcon.hidden = YES;
@@ -268,7 +269,8 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 
     DebugLog(@"%@",responseString);
     
@@ -286,7 +288,8 @@
     
     NSError *error = [request error];
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 

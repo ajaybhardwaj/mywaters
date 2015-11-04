@@ -59,7 +59,8 @@
         return;
     }
     
-    
+        
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
 //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
 //    appDelegate.hud.labelText = @"Loading...";
@@ -162,6 +163,7 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
+    [CommonFunctions dismissGlobalHUD];
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [CommonFunctions showAlertView:self title:[[responseString JSONValue] objectForKey:@"Message"] msg:nil cancel:@"OK" otherButton:nil];
@@ -170,11 +172,8 @@
         [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         commentField.text = @"";
         
-        
-        [appDelegate.hud hide:YES];
     }
     else {
-        [appDelegate.hud hide:YES];
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
 }
@@ -184,7 +183,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 

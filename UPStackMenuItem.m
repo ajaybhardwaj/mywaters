@@ -56,7 +56,8 @@ const static UPStackMenuItemLabelPosition_e kStackMenuItemDefaultLabelPosition  
                                           MAX(_image.size.height, _highlightedImage.size.height))];
         
         _label = [[UILabel alloc] initWithFrame:CGRectZero];
-        _label.backgroundColor = [UIColor blackColor];
+//        _label.backgroundColor = [UIColor blackColor];
+        _label.backgroundColor = [UIColor clearColor];
         _label.textColor = [UIColor whiteColor];
         _label.layer.cornerRadius = 2.0;
         _label.textAlignment = NSTextAlignmentCenter;

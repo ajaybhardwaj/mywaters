@@ -50,6 +50,8 @@
     UITableView *eventsListingTable,*whatsUpListingTable;
     NSMutableArray *eventsDataSource,*whatsUpFeedDataSource;
     
+    UILabel *noCCTVDataLabel;
+    
     MKMapView *quickMap;
     QuickMapAnnotations *annotation1,*longPressLocationAnnotation;
     

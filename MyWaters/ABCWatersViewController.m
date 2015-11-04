@@ -559,12 +559,13 @@
             
             [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
             
-            if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0)
-                [self performSelectorInBackground:@selector(saveABCWaterData) withObject:nil];
+            // Temp commented for UAT
+//            if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0)
+//                [self performSelectorInBackground:@selector(saveABCWaterData) withObject:nil];
             
         }
-        
-        [appDelegate.hud hide:YES];
+        [CommonFunctions dismissGlobalHUD];
+//        [appDelegate.hud hide:YES];
         [self createGridView];
         [self.refreshControl endRefreshing];
     }
@@ -575,8 +576,8 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    abcWatersPageCount = -1;
-    [appDelegate.hud hide:YES];
+//    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
 }
 
 
@@ -591,7 +592,9 @@
     else
     {
         isFiltered = YES;
-        [filteredDataSource removeAllObjects];
+        if(filteredDataSource.count!=0)
+            [filteredDataSource removeAllObjects];
+        
         for (int i=0; i<appDelegate.ABC_WATERS_LISTING_ARRAY.count; i++) {
             
             NSRange nameRange = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"siteName"] rangeOfString:text options:NSCaseInsensitiveSearch];
@@ -911,7 +914,7 @@
         subTitleLabel.textAlignment = NSTextAlignmentRight;
         [cell.contentView addSubview:subTitleLabel];
         
-        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
             
             subTitleLabel.text = @"";
         }
@@ -1062,10 +1065,10 @@
         }
     }
     
-    
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     // Initialize the refresh control.
     self.refreshControl = [[UIRefreshControl alloc] init];

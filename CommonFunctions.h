@@ -22,12 +22,15 @@
 #import <FBSDKShareKit/FBSDKShareKit.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <Social/Social.h>
-
+#import "MBProgressHUD.h"
 
 @interface CommonFunctions : NSObject <CLLocationManagerDelegate>
 
 
 + (BOOL) hasConnectivity;
++ (MBProgressHUD *)showGlobalProgressHUDWithTitle:(NSString *)title;
++ (void)dismissGlobalHUD;
+
 + (NSString *) getAppVersionNumber;
 + (BOOL) NSStringIsValidEmail:(NSString *)checkString;
 + (BOOL) characterSet1Found:(NSString *) text;

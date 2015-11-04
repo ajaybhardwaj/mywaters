@@ -58,9 +58,10 @@
 
 - (void) fetchCCTVListing {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
     NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
@@ -182,6 +183,8 @@
 
 - (void) requestFinished:(ASIHTTPRequest *)request {
     
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     // Use when fetching text data
     NSString *responseString = [request responseString];
     
@@ -190,8 +193,13 @@
         
         NSArray *tempArray = [[NSArray alloc] init];
         
-        tempArray = [[responseString JSONValue] objectForKey:CCTV_LISTING_RESPONSE_NAME];
-        cctvPageCount = [[[responseString JSONValue] objectForKey:CCTV_LISTING_TOTAL_COUNT] intValue];
+        if ([[responseString JSONValue] objectForKey:CCTV_LISTING_RESPONSE_NAME] != (id)[NSNull null]) {
+            tempArray = [[responseString JSONValue] objectForKey:CCTV_LISTING_RESPONSE_NAME];
+        }
+        else {
+            [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
+            return;
+        }
         
         if (tempArray.count==0) {
             //            cctvPageCount = 0;
@@ -243,8 +251,9 @@
             
             [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
             
-            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
-                [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
+            // Temp commented for UAT
+//            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
+//                [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
 
             //            }
             //            else {
@@ -256,12 +265,11 @@
             //            }
         }
         
-        [appDelegate.hud hide:YES];
         [cctvListingTable reloadData];
         [self.refreshControl endRefreshing];
     }
     else {
-        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"Ok" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
     }
     
 }
@@ -270,8 +278,9 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 
@@ -456,7 +465,7 @@
         subTitleLabel.textAlignment = NSTextAlignmentRight;
         [cell.contentView addSubview:subTitleLabel];
         
-        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
             
             subTitleLabel.text = @"";
         }

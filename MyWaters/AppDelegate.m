@@ -26,6 +26,7 @@
 @synthesize DASHBOARD_PREFERENCES_CHANGED,IS_USER_LOCATION_SELECTED_BY_LONG_PRESS;
 @synthesize RECEIVED_NOTIFICATION_TYPE,IS_PUSH_NOTIFICATION_RECEIVED,PUSH_NOTIFICATION_ALERT_MESSAGE;
 
+
 //*************** Method To Register Device Toke For Push Notifications
 
 - (void) registerDeviceToken {
@@ -43,7 +44,7 @@
 
 - (void) getConfigData {
     
-    [CommonFunctions grabGetRequest:APP_CONFIG_DATA delegate:self isNSData:NO accessToken:[[SharedObject sharedClass] getPhysicalABuseAccessToken]];
+    [CommonFunctions grabGetRequest:@"ConfigData/" delegate:self isNSData:NO accessToken:@"NA"];
 }
 
 
@@ -79,7 +80,12 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (alertView==notificationAlert) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:NO];
+        if (buttonIndex==1) {
+            [[ViewControllerHelper viewControllerHelper] enableThisController:NOTIFICATIONS_CONTROLLER onCenter:YES withAnimate:NO];
+        }
+        else {
+            
+        }
     }
     else {
         if (buttonIndex==0) {
@@ -145,8 +151,9 @@
                     localNotif.timeZone = [NSTimeZone defaultTimeZone];
                     
                     localNotif.alertBody = [NSString stringWithFormat:@"%@ From %@ - Till %@",[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Description"],[CommonFunctions dateTimeFromString:[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidFrom"]],[CommonFunctions dateTimeFromString:[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidTo"]]];
-                    localNotif.alertTitle = [[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Title"];
-                    
+                    if (IS_IOS9())
+                        localNotif.alertTitle = [[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Title"];
+
                     localNotif.soundName = UILocalNotificationDefaultSoundName;
                     localNotif.applicationIconBadgeNumber = 1;
                     
@@ -466,7 +473,7 @@
         
         if (recordCount==0) {
             
-            NSString *insertSQL = [NSString stringWithFormat: @"INSERT OR IGNORE INTO favourites (name, image, lat, long, address, phoneno, description, start_date_event, end_date_event, website_event, isCertified_ABC, water_level_wls, drain_depth_wls, water_level_percentage_wls, water_level_type_wls, observation_time_wls, fav_type, fav_id) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", [parametersDict objectForKey:@"name"],[parametersDict objectForKey:@"image"],[parametersDict objectForKey:@"lat"],[parametersDict objectForKey:@"long"],[parametersDict objectForKey:@"address"],[parametersDict objectForKey:@"phoneno"],[parametersDict objectForKey:@"description"],[parametersDict objectForKey:@"start_date_event"],[parametersDict objectForKey:@"end_date_event"],[parametersDict objectForKey:@"website_event"],[parametersDict objectForKey:@"isCertified_ABC"],[parametersDict objectForKey:@"water_level_wls"],[parametersDict objectForKey:@"drain_depth_wls"],[parametersDict objectForKey:@"water_level_percentage_wls"],[parametersDict objectForKey:@"water_level_type_wls"],[parametersDict objectForKey:@"observation_time_wls"],[parametersDict objectForKey:@"fav_type"],[parametersDict objectForKey:@"fav_id"]];
+            NSString *insertSQL = [NSString stringWithFormat: @"INSERT OR IGNORE INTO favourites (name, image, lat, long, address, phoneno, description, start_date_event, end_date_event, website_event, isCertified_ABC, water_level_wls, drain_depth_wls, water_level_percentage_wls, water_level_type_wls, observation_time_wls, fav_type, fav_id, isWlsSubscribed, hasPOI) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", [parametersDict objectForKey:@"name"],[parametersDict objectForKey:@"image"],[parametersDict objectForKey:@"lat"],[parametersDict objectForKey:@"long"],[parametersDict objectForKey:@"address"],[parametersDict objectForKey:@"phoneno"],[parametersDict objectForKey:@"description"],[parametersDict objectForKey:@"start_date_event"],[parametersDict objectForKey:@"end_date_event"],[parametersDict objectForKey:@"website_event"],[parametersDict objectForKey:@"isCertified_ABC"],[parametersDict objectForKey:@"water_level_wls"],[parametersDict objectForKey:@"drain_depth_wls"],[parametersDict objectForKey:@"water_level_percentage_wls"],[parametersDict objectForKey:@"water_level_type_wls"],[parametersDict objectForKey:@"observation_time_wls"],[parametersDict objectForKey:@"fav_type"],[parametersDict objectForKey:@"fav_id"],[parametersDict objectForKey:@"isWlsSubscribed"],[parametersDict objectForKey:@"hasPOI"]];
             const char *insert_stmt = [insertSQL UTF8String];
             
             DebugLog(@"Insert query %@",insertSQL);
@@ -536,7 +543,7 @@
             
             for (int i=0; i<ABC_WATERS_LISTING_ARRAY.count; i++) {
                 
-                NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO abcwatersites (abcSiteId, siteTitle, siteDescription, siteLat, siteLong, sitePhone, siteAddress, siteMainImage, isCertified) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", [NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"siteName"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"description"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLatitude"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLongitude"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"phoneNo"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"address"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"isCertified"]]];
+                NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO abcwatersites (abcSiteId, siteTitle, siteDescription, siteLat, siteLong, sitePhone, siteAddress, siteMainImage, isCertified, hasPOI) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", [NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"siteName"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"description"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLatitude"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"locationLongitude"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"phoneNo"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"address"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"isCertified"]],[NSString stringWithFormat:@"%@",[[ABC_WATERS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"hasPOI"]]];
                 const char *insert_stmt = [insertSQL UTF8String];
                 
                 DebugLog(@"Insert query %@",insertSQL);
@@ -872,6 +879,137 @@
 }
 
 
+//*************** Method To Get Random Favourite ABC Water
+
+- (NSMutableArray*) getRandomFavouriteForDashBoard:(NSString *) favouriteType {
+    
+    // Fav Types:
+    // 1- CCTV, 2- Events, 3-ABC, 4-WLS
+    
+    sqlite3_stmt    *statement;
+    
+    NSMutableDictionary *favouriteDict = [[NSMutableDictionary alloc] init];
+    NSMutableArray *favouriteArray = [[NSMutableArray alloc] init];
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        int recordCount =0;
+        NSString *searchQuery = [NSString stringWithFormat: @"SELECT COUNT(*) FROM favourites WHERE fav_type=\"%@\"",favouriteType];
+        
+        const char *query_stmt = [searchQuery UTF8String];
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                recordCount = sqlite3_column_int(statement, 0);
+            }
+        }
+        
+        
+        if (recordCount!=0) {
+            
+            NSString *getSQL = [NSString stringWithFormat: @"SELECT * FROM favourites WHERE fav_type=\"%@\" ORDER BY RANDOM() LIMIT 1",favouriteType];
+            const char *get_stmt = [getSQL UTF8String];
+            
+            DebugLog(@"Insert query %@",getSQL);
+            
+            sqlite3_prepare_v2(database, get_stmt, -1, &statement, NULL);
+            if (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                if ([favouriteType isEqualToString:@"1"]) {
+                    
+                    NSString *nameValue = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)];
+                    NSString *image = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 2)];
+                    NSString *lat = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)];
+                    NSString *lon = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)];
+                    NSString *favId = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 18)];
+                    
+                    [favouriteDict setObject:favId forKey:@"ID"];
+                    [favouriteDict setObject:nameValue forKey:@"Name"];
+                    [favouriteDict setObject:lat forKey:@"Lat"];
+                    [favouriteDict setObject:lon forKey:@"Lon"];
+                    [favouriteDict setObject:image forKey:@"CCTVImageURL"];
+                    
+                    [favouriteArray addObject:favouriteDict];
+                    
+                }
+                else if ([favouriteType isEqualToString:@"2"]) {
+                    
+                    DebugLog(@"No case of favorite events in dashboard");
+                }
+                else if ([favouriteType isEqualToString:@"3"]) {
+                    
+                    NSString *nameValue = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)];
+                    NSString *image = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 2)];
+                    NSString *lat = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)];
+                    NSString *lon = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)];
+                    NSString *address = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 5)];
+                    NSString *phoneno = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 6)];
+                    NSString *description = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 7)];
+                    NSString *isCertified = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 11)];
+                    NSString *favId = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 18)];
+                    NSString *hasPOI = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 20)];
+
+                    [favouriteDict setObject:favId forKey:@"id"];
+                    [favouriteDict setObject:nameValue forKey:@"siteName"];
+                    [favouriteDict setObject:lat forKey:@"locationLatitude"];
+                    [favouriteDict setObject:lon forKey:@"locationLongitude"];
+                    [favouriteDict setObject:address forKey:@"address"];
+                    [favouriteDict setObject:phoneno forKey:@"phoneNo"];
+                    [favouriteDict setObject:image forKey:@"image"];
+                    [favouriteDict setObject:description forKey:@"description"];
+                    [favouriteDict setObject:isCertified forKey:@"isCertified"];
+                    [favouriteDict setObject:hasPOI forKey:@"hasPOI"];
+                    
+                    [favouriteArray addObject:favouriteDict];
+                    
+                }
+                else if ([favouriteType isEqualToString:@"4"]) {
+                    
+                    NSString *nameValue = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)];
+                    NSString *lat = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)];
+                    NSString *lon = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)];
+                    NSString *waterLevel = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 12)];
+                    NSString *drainDepth = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 13)];
+                    NSString *waterLevelPercentage = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 14)];
+                    NSString *waterLevelType = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 15)];
+                    NSString *observationTime = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 16)];
+                    NSString *favId = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 18)];
+                    NSString *isWlsSubscribed = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 19)];
+                    
+                    [favouriteDict setObject:favId forKey:@"id"];
+                    [favouriteDict setObject:nameValue forKey:@"name"];
+                    [favouriteDict setObject:lat forKey:@"latitude"];
+                    [favouriteDict setObject:lon forKey:@"longitude"];
+                    [favouriteDict setObject:waterLevel forKey:@"waterLevel"];
+                    [favouriteDict setObject:drainDepth forKey:@"drainDepth"];
+                    [favouriteDict setObject:waterLevelPercentage forKey:@"waterLevelPercentage"];
+                    [favouriteDict setObject:waterLevelType forKey:@"waterLevelType"];
+                    [favouriteDict setObject:observationTime forKey:@"observationTime"];
+                    [favouriteDict setObject:isWlsSubscribed forKey:@"isSubscribed"];
+                    
+                    [favouriteArray addObject:favouriteDict];
+                }
+            }
+            
+            else {
+                DebugLog(@"Can not get favourite. Some error occured.");
+            }
+            
+        }
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+    return favouriteArray;
+}
+
+
 
 # pragma mark - SQLite Create & Open Methods
 
@@ -981,11 +1119,6 @@
     
     [self chkAndCreateDatbase];
     
-    // Temp Code
-    IS_PUSH_NOTIFICATION_RECEIVED = YES;
-    RECEIVED_NOTIFICATION_TYPE = 1;
-    // 
-    
     [FBLoginView class];
     [FBProfilePictureView class];
     
@@ -1045,15 +1178,23 @@
     [self createViewDeckController];
     [self.window setRootViewController:_rootDeckController];
     
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
-    {
-        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    }
-    else
-    {
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
-    }
+//    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+//    {
+//        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+//        [[UIApplication sharedApplication] registerForRemoteNotifications];
+//    }
+//    else
+//    {
+//        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+//    }
+    
+//    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+//        UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+//        [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
+//        [[UIApplication sharedApplication] registerForRemoteNotifications];
+//    } else {
+//        [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+//    }
     
     _rootDeckController.navigationController.interactivePopGestureRecognizer.enabled = NO;
     
@@ -1074,15 +1215,15 @@
     
     self.window.backgroundColor = RGB(247, 247, 247);
     
-    UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
-    
-    UIUserNotificationSettings *mySettings =
-    [UIUserNotificationSettings settingsForTypes:types categories:nil];
-    
-    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+//    UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+//    
+//    UIUserNotificationSettings *mySettings =
+//    [UIUserNotificationSettings settingsForTypes:types categories:nil];
+//    
+//    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
     
     if ([CommonFunctions hasConnectivity]) {
-        [self getConfigData];
+            [self getConfigData];
     }
     else {
         [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
@@ -1122,9 +1263,12 @@
     
     if (self.shouldRotate)
         return UIInterfaceOrientationMaskLandscapeRight;
-    else
+    else {
         return UIInterfaceOrientationMaskPortrait;
+    }
 }
+
+
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -1143,6 +1287,7 @@
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     application.applicationIconBadgeNumber = 0;
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     if ([CommonFunctions hasConnectivity]) {
         [self getConfigData];
@@ -1159,6 +1304,7 @@
     
     application.applicationIconBadgeNumber = 0;
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     //    [FBSession.activeSession handleDidBecomeActive];
     
     [FBAppEvents activateApp];
@@ -1178,17 +1324,14 @@
 # pragma mark - APN Methods For Push Notification
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    
-    NSDictionary *aps = (NSDictionary *)[userInfo objectForKey:@"Payload"] ;
-    DebugLog(@"%@",aps);
-    NSArray *tempTypeArray = [[aps objectForKey:@"CustomItems"] objectForKey:@"type"];
-    DebugLog(@"%@",tempTypeArray);
-    
+
+    DebugLog(@"%@",userInfo);
     
     IS_PUSH_NOTIFICATION_RECEIVED = YES;
-    RECEIVED_NOTIFICATION_TYPE = [[tempTypeArray objectAtIndex:0] intValue];
-    PUSH_NOTIFICATION_ALERT_MESSAGE = [[aps objectForKey:@"Alert"] objectForKey:@"Body"];
-    DebugLog(@"%ld",(long)RECEIVED_NOTIFICATION_TYPE);
+    RECEIVED_NOTIFICATION_TYPE = [[userInfo objectForKey:@"type"] intValue];
+    PUSH_NOTIFICATION_ALERT_MESSAGE = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+
+    DebugLog(@"%ld---%@",(long)RECEIVED_NOTIFICATION_TYPE,PUSH_NOTIFICATION_ALERT_MESSAGE);
     
     //    {
     
@@ -1204,7 +1347,7 @@
     }
     else if (state == UIApplicationStateActive) {
         
-        notificationAlert = [[UIAlertView alloc] initWithTitle:@"Promotion" message:@"PROMOTION_TITLE" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Cancel",@"Open", nil];
+        notificationAlert = [[UIAlertView alloc] initWithTitle:nil message:PUSH_NOTIFICATION_ALERT_MESSAGE delegate:self cancelButtonTitle:nil otherButtonTitles:@"Cancel",@"Open", nil];
         [notificationAlert show];
     }
     //    }

@@ -48,9 +48,10 @@
 
 - (void) sendRouteRequest {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     CLLocationCoordinate2D destinationCoords = CLLocationCoordinate2DMake(destinationLat,destinationLong);
     MKPlacemark *destinationPlacemark = [[MKPlacemark alloc] initWithCoordinate:destinationCoords addressDictionary:nil];
@@ -71,7 +72,8 @@
             
 //            self.navigationItem.rightBarButtonItem = routesButton;
 //            [stepsTableView reloadData];
-            [appDelegate.hud hide:YES];
+            [CommonFunctions dismissGlobalHUD];
+//            [appDelegate.hud hide:YES];
 
 //            for (MKRoute *route in [response routes]) {
 //                [directionMapView addOverlay:[route polyline] level:MKOverlayLevelAboveRoads]; // Draws the route above roads, but below labels.

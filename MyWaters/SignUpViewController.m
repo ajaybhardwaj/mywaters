@@ -265,9 +265,10 @@
         
         [self submitSignupDetails];
         
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -330,8 +331,8 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
@@ -365,7 +366,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 
@@ -581,7 +583,7 @@
     
     
     facebookButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [facebookButton setTitle:@"CONNECT VIA FACEBOOK" forState:UIControlStateNormal];
+    [facebookButton setTitle:@"REGISTER VIA FACEBOOK" forState:UIControlStateNormal];
     [facebookButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     facebookButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
     facebookButton.tag = 1;

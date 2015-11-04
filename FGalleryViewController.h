@@ -60,6 +60,8 @@ typedef enum
     
 	UIBarButtonItem *_nextButton;
 	UIBarButtonItem *_prevButton;
+    
+//    AppDelegate *appDelegate;
 }
 
 - (id)initWithPhotoSource:(NSObject<FGalleryViewControllerDelegate>*)photoSrc;

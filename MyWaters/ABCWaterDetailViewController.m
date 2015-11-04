@@ -151,7 +151,13 @@
     [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
     [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
     [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
-    
+    [parametersDict setValue:@"NO" forKey:@"isWlsSubscribed"];
+    if (isHavingPOI) {
+        [parametersDict setValue:@"YES" forKey:@"hasPOI"];
+    }
+    else {
+        [parametersDict setValue:@"NO" forKey:@"hasPOI"];
+    }
     
     [appDelegate insertFavouriteItems:parametersDict];
     
@@ -233,9 +239,10 @@
         [self animateTopMenu];
     }
     
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//        appDelegate.hud.labelText = @"Loading...";
     
     isFetchingGalleryImages = YES;
     
@@ -253,7 +260,12 @@
     
     [self animateTopMenu];
     
-    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
+    if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
+        [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:@"To upload photo, Please login." cancel:nil otherButton:@"OK",nil];
+    }
 }
 
 
@@ -440,8 +452,7 @@
     [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:arrowIcon];
     
-    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
-        
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         distanceLabel.text = @"";
         arrowIcon.hidden = YES;
         directionButton.enabled = NO;
@@ -452,7 +463,7 @@
     eventInfoLabel.backgroundColor = [UIColor whiteColor];
     eventInfoLabel.textAlignment = NSTextAlignmentLeft;
     eventInfoLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
-    eventInfoLabel.text = @"            ABC Waters Info";
+    eventInfoLabel.text = @"            Our Waters Info";
     [bgScrollView addSubview:eventInfoLabel];
     
     UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, eventInfoLabel.bounds.size.width, 0.5)];
@@ -494,10 +505,10 @@
 
 - (void) moveToARView {
     
+    
     if (isShowingTopMenu) {
         [self animateTopMenu];
     }
-    
     //    UIInterfaceOrientation currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
     //    if (currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown)
     //        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
@@ -514,7 +525,8 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     
     DebugLog(@"%@",responseString);
     
@@ -569,7 +581,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 
@@ -620,7 +633,7 @@
                     break;
                 }
             }
-            
+            DebugLog(@"%@-----%@---%@",appUrl,titleString,descriptionString);
             [CommonFunctions sharePostOnFacebook:imageUrl appUrl:appUrl title:titleString desc:descriptionString view:self abcIDValue:abcSiteId];
         }
         else if (buttonIndex==1) {
@@ -662,10 +675,11 @@
     
     NSData* data = UIImageJPEGRepresentation(chosenImage, 0.5f);
     NSString *base64ImageString = [Base64 encode:data];
-    
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
+
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//        appDelegate.hud.labelText = @"Loading...";
     
     NSMutableArray *parameters = [[NSMutableArray alloc] init];
     NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -769,7 +783,7 @@
     isAlreadyFav = [appDelegate checkItemForFavourite:@"3" idValue:abcSiteId];
     
     self.view.backgroundColor = RGB(242, 242, 242);
-    self.title = @"ABC Waters Info";
+    self.title = @"Our Waters Info";
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateTopMenu) withIconName:@"icn_3dots"]];

@@ -146,6 +146,7 @@
         
         isSubscribingForAlert = YES;
         
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
 //        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
 //        appDelegate.hud.labelText = @"Loading...";
@@ -167,6 +168,7 @@
         
         isSubscribed = NO;
         
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
 //        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
 //        appDelegate.hud.labelText = @"Loading...";
@@ -189,6 +191,8 @@
 
 - (void) fetchWLSListing {
     
+//    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+    
 //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
 //    appDelegate.hud.labelText = @"Loading...";
@@ -198,8 +202,10 @@
     
     //    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
     //    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"1"],[CommonFunctions getAppVersionNumber], nil];
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
+
+    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
+
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -491,6 +497,14 @@
     else
         [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
     
+    if (isSubscribed) {
+        [parametersDict setValue:@"YES" forKey:@"isWlsSubscribed"];
+    }
+    else {
+        [parametersDict setValue:@"NO" forKey:@"isWlsSubscribed"];
+    }
+    [parametersDict setValue:@"NO" forKey:@"hasPOI"];
+    
     [appDelegate insertFavouriteItems:parametersDict];
     
     isAlreadyFav = [appDelegate checkItemForFavourite:@"4" idValue:wlsID];
@@ -649,20 +663,20 @@
     
     notifiyButton = [UIButton buttonWithType:UIButtonTypeCustom];
     notifiyButton.frame = CGRectMake(0, 0, self.view.bounds.size.width/2-1, 40);
-    [notifiyButton setBackgroundColor:RGB(117, 213, 73)];
+    [notifiyButton setBackgroundColor:[UIColor darkGrayColor]];
     [notifiyButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [notifiyButton setTitle:@"NOTIFY ME" forState:UIControlStateNormal];
+    [notifiyButton setTitle:@"iAlerts" forState:UIControlStateNormal];
     [notifiyButton addTarget:self action:@selector(createAlertOptions) forControlEvents:UIControlEventTouchUpInside];
-    notifiyButton.titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
+    notifiyButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     [self.view addSubview:notifiyButton];
     
     unsubscribeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     unsubscribeButton.frame = CGRectMake(0, 0, self.view.bounds.size.width/2-1, 40);
-    [unsubscribeButton setBackgroundColor:[UIColor darkGrayColor]];
+    [unsubscribeButton setBackgroundColor:[UIColor greenColor]];
     [unsubscribeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [unsubscribeButton setTitle:@"UNSUBSCRIBE ME" forState:UIControlStateNormal];
     [unsubscribeButton addTarget:self action:@selector(registerForWLSALerts) forControlEvents:UIControlEventTouchUpInside];
-    unsubscribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
+    unsubscribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     [self.view addSubview:unsubscribeButton];
     
     
@@ -672,7 +686,7 @@
     [smsSubScribeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [smsSubScribeButton setTitle:@"SMS ALERTS" forState:UIControlStateNormal];
     [smsSubScribeButton addTarget:self action:@selector(moveToSMSSubscriptionView) forControlEvents:UIControlEventTouchUpInside];
-    smsSubScribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
+    smsSubScribeButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     [self.view addSubview:smsSubScribeButton];
     
     if (isSubscribed) {
@@ -787,7 +801,7 @@
     [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:arrowIcon];
     
-    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         
         distanceLabel.text = @"";
         arrowIcon.hidden = YES;
@@ -958,7 +972,7 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
     
     if (isSubscribingForAlert) {
         
@@ -1045,8 +1059,7 @@
             
             [wlsListingTable reloadData];
         }
-        
-        [appDelegate.hud hide:YES];
+//        [appDelegate.hud hide:YES];
     }
 }
 
@@ -1055,8 +1068,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 
@@ -1300,7 +1313,7 @@
     subTitleLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:subTitleLabel];
     
-    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         
         subTitleLabel.text = @"";
     }

@@ -22,5 +22,5 @@
     BOOL isVerifyingEmail,isResendingOTP;
 }
 @property (nonatomic, strong) NSString *emailStringForVerification;
-@property (nonatomic, assign) BOOL isResettingPassword,isValidatingEmail;
+@property (nonatomic, assign) BOOL isResettingPassword,isValidatingEmail,isChangingEmail;
 @end

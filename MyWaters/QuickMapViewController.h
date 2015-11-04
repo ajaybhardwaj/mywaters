@@ -73,6 +73,15 @@
     //*************** Quick Map Hints Variables
     CMPopTipView *currentLocationPopUp,*menuPopUp,*mapCenterPopUp;
     UIButton *mapCenterHiddenButon;
+    
+    
+    UIButton *btnfilter,*btnHints;
+    BOOL isShowingHelpScreen;
+    UIImageView *helpScreenImageView;
+    UILabel *locationHelpLabel,*menuHelpLabel,*rainAreaHelpLabel,*floodByUsersHelpLabel,*cctvHelpLabel,*wlsHelpLabel,*floodByPUBHelpLabel,*meteorologicalDisclaimerLabel;
+    NSString *meteorologicalDisclaimerString,*userSubmissionFinePrintString;
+    BOOL isShowingMeteorologicalDisclaimer,isShwoingFinePrint;
+    
 }
 @property (nonatomic, strong) id currentPopTipViewTarget;
 @property (nonatomic, strong) NSMutableArray	*visiblePopTipViews;

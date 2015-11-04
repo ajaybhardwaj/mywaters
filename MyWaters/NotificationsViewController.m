@@ -101,9 +101,11 @@
 - (void) fetchNotificationListing {
     
     if ([CommonFunctions hasConnectivity]) {
-        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        appDelegate.hud.labelText = @"Loading...";
+        
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//        appDelegate.hud.labelText = @"Loading...";
         
         NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"pushtoken",@"version", nil];
         NSArray *values = [[NSArray alloc] initWithObjects:@"7",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
@@ -127,6 +129,7 @@
     
     selectedFilterIndex = 0;
     [filterTableView reloadData];
+    [CommonFunctions dismissGlobalHUD];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
@@ -134,17 +137,28 @@
         
         if (tempArray.count==0) {
             
+            notificationsTable.hidden = NO;
+            noRecentNotifiactionLabel.hidden = YES;
         }
         else {
             
+            noRecentNotifiactionLabel.hidden = YES;
+            notificationsTable.hidden = NO;
+            
             [appDelegate.PUSH_NOTIFICATION_ARRAY removeAllObjects];
             [appDelegate.PUSH_NOTIFICATION_ARRAY setArray:tempArray];
-            [tableDataSource setArray:tempArray];
+//            [tableDataSource setArray:tempArray];
+           
+            [tableDataSource removeAllObjects];
+            for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
+                [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
+            }
+            
+            DebugLog(@"New Table Data Source -- %@",tableDataSource);
+            
+            [notificationsTable reloadData];
+
         }
-        
-        [appDelegate.hud hide:YES];
-        [notificationsTable reloadData];
-        [self.refreshControl endRefreshing];
     }
 }
 
@@ -152,8 +166,9 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 # pragma mark - UITableViewDelegate Methods
@@ -467,6 +482,15 @@
     filtersArray = [[NSArray alloc] initWithObjects:@"All",@"Events",@"Heavy Rain",@"Flood",@"iAlerts", nil];
     
     
+    noRecentNotifiactionLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height/2 - 40, self.view.bounds.size.width-20, 20)];
+    noRecentNotifiactionLabel.text = @"No recent notifications.";
+    noRecentNotifiactionLabel.textAlignment = NSTextAlignmentCenter;
+    noRecentNotifiactionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+    noRecentNotifiactionLabel.backgroundColor = [UIColor clearColor];
+    noRecentNotifiactionLabel.textColor = [UIColor lightGrayColor];
+    [self.view addSubview:noRecentNotifiactionLabel];
+    noRecentNotifiactionLabel.hidden = YES;
+    
     // Initialize the refresh control.
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl.backgroundColor = [UIColor whiteColor];
@@ -484,7 +508,7 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     
-    [self fetchNotificationListing];
+    [self performSelector:@selector(fetchNotificationListing) withObject:nil afterDelay:1.0];
     
 }
 

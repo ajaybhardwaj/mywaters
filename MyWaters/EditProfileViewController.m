@@ -35,6 +35,14 @@
 }
 
 
+//*************** Method To Pop View Controller To Login View
+
+- (void) moveToLoginView {
+    
+    [[ViewControllerHelper viewControllerHelper] signOut];
+}
+
+
 
 //*************** Method For Handling Edit Profile Actions
 
@@ -57,9 +65,10 @@
             [nameField resignFirstResponder];
             [emailField resignFirstResponder];
             
-            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-            appDelegate.hud.labelText = @"Loading...";
+            [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//            appDelegate.hud.labelText = @"Loading...";
             
             NSMutableArray *parameters = [[NSMutableArray alloc] init];
             NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -196,17 +205,21 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
         
-        //        OTPViewController *viewObj = [[OTPViewController alloc] init];
-        //        viewObj.emailStringForVerification = [appDelegate.USER_PROFILE_DICTIONARY objectForKey:@"Email"];
-        //        [self.navigationController pushViewController:viewObj animated:YES];
+        OTPViewController *viewObj = [[OTPViewController alloc] init];
+        viewObj.emailStringForVerification = emailField.text;
+        viewObj.isChangingEmail = YES;
+        viewObj.isValidatingEmail = NO;
+        viewObj.isResettingPassword = NO;
+        [self.navigationController pushViewController:viewObj animated:YES];
         
-        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+//        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
         
     }
     else {
@@ -219,7 +232,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 
@@ -332,12 +346,23 @@
     emailField.tag = 2;
     emailField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
     
+    
+    signoutButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [signoutButton setTitle:@"SIGN OUT" forState:UIControlStateNormal];
+    [signoutButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
+    signoutButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+    signoutButton.tag = 1;
+    signoutButton.frame = CGRectMake(0, self.view.bounds.size.height-110, self.view.bounds.size.width, 45);
+    [signoutButton addTarget:self action:@selector(moveToLoginView) forControlEvents:UIControlEventTouchUpInside];
+    [signoutButton setBackgroundColor:[UIColor redColor]];
+    [self.view addSubview:signoutButton];
+    
     updateButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [updateButton setTitle:@"UPDATE" forState:UIControlStateNormal];
     [updateButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     updateButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
     updateButton.tag = 1;
-    updateButton.frame = CGRectMake(0, self.view.bounds.size.height-110, self.view.bounds.size.width, 45);
+    updateButton.frame = CGRectMake(0, signoutButton.frame.origin.y-50, self.view.bounds.size.width, 45);
     [updateButton addTarget:self action:@selector(handleEitProfileActions:) forControlEvents:UIControlEventTouchUpInside];
     [updateButton setBackgroundColor:RGB(86, 46, 120)];
     [self.view addSubview:updateButton];
@@ -357,6 +382,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [appDelegate setShouldRotate:NO];
+
 }
 
 

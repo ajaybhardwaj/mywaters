@@ -28,22 +28,24 @@
 #import "WLSListingViewController.h"
 #import "LoginViewController.h"
 #import "TipsListingViewController.h"
+#import "WeatherForecastViewController.h"
 
 typedef enum {
   
     HOME_CONTROLLER = 0,
-    NOTIFICATIONS_CONTROLLER,
-    PROFILE_CONTROLLER,
-    FAVOURITES_CONTROLLER,
-    WHATSUP_CONTROLLER,
-    FLOODMAP_CONTROLLER,
-    ABCWATERS_CONTROLLER,
-    EVENTS_CONTROLLER,
-    CCTV_CONTROLLER,
-    WLS_CONTROLLER,
     BOOKING_CONTROLLER,
+    CCTV_CONTROLLER,
+    EVENTS_CONTROLLER,
+    FAVOURITES_CONTROLLER,
     FEEDBACK_CONTROLLER,
+    PROFILE_CONTROLLER,
+    NOTIFICATIONS_CONTROLLER,
+    ABCWATERS_CONTROLLER,
+    FLOODMAP_CONTROLLER,
     TIPS_CONTROLLER,
+    WLS_CONTROLLER,
+    WEATHER_FORECAST_CONTROLLER,
+    WHATSUP_CONTROLLER,
     SETTINGS_CONTROLLER,
     ABOUT_PUB_CONTROLLER,
     SIGN_IN_CONTROLLER,
@@ -71,7 +73,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger currentDeckIndex;
 
 
-@property (nonatomic, retain) UINavigationController *homeNavController,*notificationsNavController,*whatsupNavController,*floodmapNavController,*abcwatersNavController,*eventsNavController,*cctvNavController,*wlsController,*bookingNavController,*feedbackNavController,*settingsNavController,*profileNavController,*favouritesNavController,*signInController,*aboutPUBController,*tipsNavController;
+@property (nonatomic, retain) UINavigationController *homeNavController,*notificationsNavController,*whatsupNavController,*floodmapNavController,*abcwatersNavController,*eventsNavController,*cctvNavController,*wlsController,*bookingNavController,*feedbackNavController,*settingsNavController,*profileNavController,*favouritesNavController,*signInController,*aboutPUBController,*tipsNavController,*weatherForecastNavController;
 
 - (void) clear_All_ControllersInThisNavigationCntrl:(UINavigationController*)navControl;
 - (void) clearAllThe_Controllers;
@@ -98,7 +100,7 @@ typedef enum {
 - (UINavigationController*) getFavouritesController;
 - (UINavigationController*) getSignInController;
 - (UINavigationController*) getAboutPUBController;
-
+- (UINavigationController*) getWeatherForecastController;
 
 //*************** Switch between controllers ***************//
 -(void)enableDeckView:(id)sender;

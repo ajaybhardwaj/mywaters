@@ -388,43 +388,46 @@
     }
     else if (touchedView.tag==2) {
         // Water Level Sensors
-        WaterLevelSensorsDetailViewController *viewObj = [[WaterLevelSensorsDetailViewController alloc] init];
-        appDelegate.IS_MOVING_TO_WLS_FROM_DASHBOARD = YES;
         
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"id"] != (id)[NSNull null])
-            viewObj.wlsID = [[wlsDataArray objectAtIndex:0] objectForKey:@"id"];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"name"] != (id)[NSNull null])
-            viewObj.wlsName = [[wlsDataArray objectAtIndex:0] objectForKey:@"name"];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] != (id)[NSNull null])
-            viewObj.drainDepthType = [[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] != (id)[NSNull null])
-            viewObj.latValue = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] != (id)[NSNull null])
-            viewObj.longValue = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"observationTime"] != (id)[NSNull null])
-            viewObj.observedTime = [CommonFunctions dateTimeFromString:[[wlsDataArray objectAtIndex:0] objectForKey:@"observationTime"]];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevel"] != (id)[NSNull null])
-            viewObj.waterLevelValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevel"] intValue]];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelPercentage"] != (id)[NSNull null])
-            viewObj.waterLevelPercentageValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelPercentage"] intValue]];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] != (id)[NSNull null])
-            viewObj.waterLevelTypeValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"drainDepth"] != (id)[NSNull null])
-            viewObj.drainDepthValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"drainDepth"] intValue]];
-        
-        if ([[wlsDataArray objectAtIndex:0] objectForKey:@"isSubscribed"] != (id)[NSNull null])
-            viewObj.isSubscribed = [[[wlsDataArray objectAtIndex:0] objectForKey:@"isSubscribed"] intValue];
-        
-        [self.navigationController pushViewController:viewObj animated:YES];
+        if ((wlsDataArray != (id)[NSNull null])  && wlsDataArray.count!=0 ) {
+            WaterLevelSensorsDetailViewController *viewObj = [[WaterLevelSensorsDetailViewController alloc] init];
+            appDelegate.IS_MOVING_TO_WLS_FROM_DASHBOARD = YES;
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"id"] != (id)[NSNull null])
+                viewObj.wlsID = [[wlsDataArray objectAtIndex:0] objectForKey:@"id"];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"name"] != (id)[NSNull null])
+                viewObj.wlsName = [[wlsDataArray objectAtIndex:0] objectForKey:@"name"];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] != (id)[NSNull null])
+                viewObj.drainDepthType = [[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] != (id)[NSNull null])
+                viewObj.latValue = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] != (id)[NSNull null])
+                viewObj.longValue = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"observationTime"] != (id)[NSNull null])
+                viewObj.observedTime = [CommonFunctions dateTimeFromString:[[wlsDataArray objectAtIndex:0] objectForKey:@"observationTime"]];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevel"] != (id)[NSNull null])
+                viewObj.waterLevelValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevel"] intValue]];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelPercentage"] != (id)[NSNull null])
+                viewObj.waterLevelPercentageValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelPercentage"] intValue]];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] != (id)[NSNull null])
+                viewObj.waterLevelTypeValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"drainDepth"] != (id)[NSNull null])
+                viewObj.drainDepthValue = [NSString stringWithFormat:@"%d",[[[wlsDataArray objectAtIndex:0] objectForKey:@"drainDepth"] intValue]];
+            
+            if ([[wlsDataArray objectAtIndex:0] objectForKey:@"isSubscribed"] != (id)[NSNull null])
+                viewObj.isSubscribed = [[[wlsDataArray objectAtIndex:0] objectForKey:@"isSubscribed"] intValue];
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+        }
     }
     else if (touchedView.tag==3) {
         WeatherForecastViewController *viewObj = [[WeatherForecastViewController alloc] init];
@@ -432,21 +435,24 @@
     }
     else if (touchedView.tag==4) {
         
-        CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
-        appDelegate.IS_MOVING_TO_CCTV_FROM_DASHBOARD = YES;
-        
-        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
-            viewObj.imageUrl = [[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"];
-        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"Name"] != (id)[NSNull null])
-            viewObj.titleString = [[cctvDataArray objectAtIndex:0] objectForKey:@"Name"];
-        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"ID"] != (id)[NSNull null])
-            viewObj.cctvID = [[cctvDataArray objectAtIndex:0] objectForKey:@"ID"];
-        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] != (id)[NSNull null])
-            viewObj.latValue = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] doubleValue];
-        if ([[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] != (id)[NSNull null])
-            viewObj.longValue = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] doubleValue];
-        
-        [self.navigationController pushViewController:viewObj animated:YES];
+        if (cctvDataArray != (id)[NSNull null] && cctvDataArray.count!=0) {
+            
+            CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
+            appDelegate.IS_MOVING_TO_CCTV_FROM_DASHBOARD = YES;
+            
+            if ([[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
+                viewObj.imageUrl = [[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"];
+            if ([[cctvDataArray objectAtIndex:0] objectForKey:@"Name"] != (id)[NSNull null])
+                viewObj.titleString = [[cctvDataArray objectAtIndex:0] objectForKey:@"Name"];
+            if ([[cctvDataArray objectAtIndex:0] objectForKey:@"ID"] != (id)[NSNull null])
+                viewObj.cctvID = [[cctvDataArray objectAtIndex:0] objectForKey:@"ID"];
+            if ([[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] != (id)[NSNull null])
+                viewObj.latValue = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] doubleValue];
+            if ([[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] != (id)[NSNull null])
+                viewObj.longValue = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] doubleValue];
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
+        }
     }
     else if (touchedView.tag==5) {
         WhatsUpViewController *viewObj = [[WhatsUpViewController alloc] init];
@@ -459,41 +465,45 @@
         [self.navigationController pushViewController:viewObj animated:YES];
     }
     else if (touchedView.tag==8) {
-        ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
         
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"id"] != (id)[NSNull null])
-            viewObj.abcSiteId = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"id"];
-        
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"siteName"] != (id)[NSNull null])
-            viewObj.titleString = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"siteName"];
-        
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"description"] != (id)[NSNull null])
-            viewObj.descriptionString = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"description"];
-        
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-            viewObj.latValue = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLatitude"] doubleValue];
-        
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-            viewObj.longValue = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLongitude"] doubleValue];
-        
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"phoneNo"] != (id)[NSNull null])
-            viewObj.phoneNoString = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"phoneNo"];
-        
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"address"] != (id)[NSNull null])
-            viewObj.addressString = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"address"];
-        
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"image"] != (id)[NSNull null]) {
-            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[abcWatersDataArray objectAtIndex:0] objectForKey:@"image"]];
-            viewObj.imageName = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"image"];
+        if (abcWatersDataArray != (id)[NSNull null]  && abcWatersDataArray.count!=0) {
+            
+            ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"id"] != (id)[NSNull null])
+                viewObj.abcSiteId = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"id"];
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"siteName"] != (id)[NSNull null])
+                viewObj.titleString = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"siteName"];
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"description"] != (id)[NSNull null])
+                viewObj.descriptionString = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"description"];
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+                viewObj.latValue = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLatitude"] doubleValue];
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+                viewObj.longValue = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLongitude"] doubleValue];
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"phoneNo"] != (id)[NSNull null])
+                viewObj.phoneNoString = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"phoneNo"];
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"address"] != (id)[NSNull null])
+                viewObj.addressString = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"address"];
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"image"] != (id)[NSNull null]) {
+                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[abcWatersDataArray objectAtIndex:0] objectForKey:@"image"]];
+                viewObj.imageName = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"image"];
+            }
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"isCertified"] != (id)[NSNull null])
+                viewObj.isCertified = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"isCertified"] intValue];
+            
+            if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"hasPOI"] != (id)[NSNull null])
+                viewObj.isHavingPOI = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"hasPOI"] intValue];
+            
+            [self.navigationController pushViewController:viewObj animated:YES];
         }
-        
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"isCertified"] != (id)[NSNull null])
-            viewObj.isCertified = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"isCertified"] intValue];
-        
-        if ([[abcWatersDataArray objectAtIndex:0] objectForKey:@"hasPOI"] != (id)[NSNull null])
-            viewObj.isHavingPOI = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"hasPOI"] intValue];
-        
-        [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
 
@@ -552,9 +562,10 @@
 
 - (void) fetchDashboardData {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     NSArray *parameters,*values;
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
@@ -612,7 +623,7 @@
     }
     
     // WLS Content Refresh
-    if (wlsDataArray.count!=0) {
+    if (wlsDataArray != (id)[NSNull null] && wlsDataArray.count!=0) {
         
         if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
             drainDepthValueLabel.text = @"Low Flood Risk";
@@ -632,10 +643,17 @@
         waterSensorLocationLabel.text = [[wlsDataArray objectAtIndex:0] objectForKey:@"name"];
         
         
-        desinationLocationWLS.latitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
-        desinationLocationWLS.longitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
-        NSString *wlsDistanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationWLS]];
-        waterSensorDrainDepthLabel.text = wlsDistanceString;
+        if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+            desinationLocationWLS.latitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
+            desinationLocationWLS.longitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
+            NSString *wlsDistanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationWLS]];
+            waterSensorDrainDepthLabel.text = wlsDistanceString;
+            waterSensorDrainDepthImage.hidden = NO;
+        }
+        else {
+            waterSensorDrainDepthLabel.text = @"";
+            waterSensorDrainDepthImage.hidden = YES;
+        }
         
         if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
             [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
@@ -654,8 +672,9 @@
     
     // CCTV Content Refresh
     
-    if (cctvDataArray.count!=0) {
+    if (cctvDataArray != (id)[NSNull null] && cctvDataArray.count!=0) {
         
+        noCCTVDataLabel.hidden = YES;
         NSString *imageURLString = [NSString stringWithFormat:@"%@",[[cctvDataArray objectAtIndex:0] objectForKey:@"CCTVImageURL"]];
         
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -674,18 +693,26 @@
         
         cctvLocationLabel.text = [[cctvDataArray objectAtIndex:0] objectForKey:@"Name"];
         
-        
-        CLLocationCoordinate2D desinationLocationCCTV;
-        desinationLocationCCTV.latitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] doubleValue];
-        desinationLocationCCTV.longitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] doubleValue];
-        NSString *cctvDistanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationCCTV]];
-        cctvDistanceLabel.text = cctvDistanceString;
-        
+        if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+            CLLocationCoordinate2D desinationLocationCCTV;
+            desinationLocationCCTV.latitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] doubleValue];
+            desinationLocationCCTV.longitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] doubleValue];
+            NSString *cctvDistanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationCCTV]];
+            cctvDistanceLabel.text = cctvDistanceString;
+            cctvDistanceImage.hidden = NO;
+        }
+        else {
+            cctvDistanceLabel.text = @"";
+            cctvDistanceImage.hidden = YES;
+        }
+    }
+    else {
+        noCCTVDataLabel.hidden = NO;
     }
     
     // ABC Waters Content Refresh
     
-    if (abcWatersDataArray.count!=0) {
+    if (abcWatersDataArray != (id)[NSNull null] && abcWatersDataArray.count!=0) {
         
         NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[abcWatersDataArray objectAtIndex:0] objectForKey:@"image"]];
         
@@ -706,12 +733,18 @@
         
         abcWatersNameLabel.text = [[abcWatersDataArray objectAtIndex:0] objectForKey:@"siteName"];
         
-        
-        CLLocationCoordinate2D desinationLocationCCTV;
-        desinationLocationCCTV.latitude = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLatitude"] doubleValue];
-        desinationLocationCCTV.longitude = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLongitude"] doubleValue];
-        NSString *distanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationCCTV]];
-        abcWatersDistanceLabel.text = distanceString;
+        if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+            CLLocationCoordinate2D desinationLocationABCWaters;
+            desinationLocationABCWaters.latitude = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLatitude"] doubleValue];
+            desinationLocationABCWaters.longitude = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLongitude"] doubleValue];
+            NSString *distanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationABCWaters]];
+            abcWatersDistanceLabel.text = distanceString;
+            abcWatersDistanceImage.hidden = NO;
+        }
+        else {
+            abcWatersDistanceImage.hidden = YES;
+            abcWatersDistanceLabel.text = @"";
+        }
         
         if (![[[abcWatersDataArray objectAtIndex:0] objectForKey:@"isCertified"] intValue]) {
             abcCertifiedLogo.hidden = YES;
@@ -809,7 +842,10 @@
     
     [self setMaskTo:notificationLabel byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight];
     
-    notificationMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 30, notificationView.bounds.size.width-110, 70)];
+    notificationIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 40, 50, 50)];
+    [notificationView addSubview:notificationIconImageView];
+    
+    notificationMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 30, notificationView.bounds.size.width-90, 70)];
     notificationMessageLabel.text = @"";
     notificationMessageLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13];
     notificationMessageLabel.textColor = [UIColor blackColor];
@@ -817,9 +853,6 @@
     notificationMessageLabel.numberOfLines = 0;
     [notificationView addSubview:notificationMessageLabel];
     
-    
-    notificationIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 40, 50, 50)];
-    [notificationView addSubview:notificationIconImageView];
     
     badgeLabel = [[UILabel alloc] initWithFrame:CGRectMake(notificationView.bounds.size.width-18, -5, 27, 27)];
     badgeLabel.text = @"1";
@@ -977,11 +1010,15 @@
                     else{
                         if(IS_IOS8()){
                             if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied) {
-                                [locationManager requestWhenInUseAuthorization];
+                                if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                                    [locationManager requestWhenInUseAuthorization];
+                                }
                             }
                             //[locationManager requestAlwaysAuthorization];
                         }
-                        [locationManager requestWhenInUseAuthorization];
+                        if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                            [locationManager requestWhenInUseAuthorization];
+                        }
                         locationManager.delegate = self;
                         locationManager.desiredAccuracy = kCLLocationAccuracyBest;
                         [locationManager startUpdatingLocation];
@@ -1097,6 +1134,14 @@
                     cctvDistanceLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     cctvDistanceLabel.backgroundColor = [UIColor clearColor];
                     [columnView addSubview:cctvDistanceLabel];
+                    
+                    noCCTVDataLabel = [[UILabel alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width, columnView.bounds.size.height-20)];
+                    noCCTVDataLabel.backgroundColor = [UIColor whiteColor];
+                    noCCTVDataLabel.text = [NSString stringWithFormat:@"No Data\nAvailable"];
+                    noCCTVDataLabel.textAlignment = NSTextAlignmentCenter;
+                    noCCTVDataLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+                    [columnView addSubview:noCCTVDataLabel];
+                    noCCTVDataLabel.hidden = YES;
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5) {
                     
@@ -1243,11 +1288,15 @@
                     else{
                         if(IS_IOS8()){
                             if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied) {
-                                [locationManager requestWhenInUseAuthorization];
+                                if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                                    [locationManager requestWhenInUseAuthorization];
+                                }
                             }
                             
                         }
-                        [locationManager requestWhenInUseAuthorization];
+                        if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                            [locationManager requestWhenInUseAuthorization];
+                        }
                         locationManager.delegate = self;
                         locationManager.desiredAccuracy = kCLLocationAccuracyBest;
                         [locationManager startUpdatingLocation];
@@ -1437,6 +1486,14 @@
                     cctvDistanceLabel.backgroundColor = [UIColor clearColor];
                     //                    [cctvDistanceLabel sizeToFit];
                     [columnView addSubview:cctvDistanceLabel];
+                    
+                    noCCTVDataLabel = [[UILabel alloc] initWithFrame:CGRectMake(-1, 20, columnView.bounds.size.width, columnView.bounds.size.height-20)];
+                    noCCTVDataLabel.backgroundColor = [UIColor whiteColor];
+                    noCCTVDataLabel.text = [NSString stringWithFormat:@"No Data\nAvailable"];
+                    noCCTVDataLabel.textAlignment = NSTextAlignmentCenter;
+                    noCCTVDataLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+                    [columnView addSubview:noCCTVDataLabel];
+                    noCCTVDataLabel.hidden = YES;
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5) {
                     
@@ -1563,7 +1620,8 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
@@ -1573,6 +1631,7 @@
         [cctvDataArray removeAllObjects];
         [floodsDataArray removeAllObjects];
         [tipsDataArray removeAllObjects];
+        [abcWatersDataArray removeAllObjects];
         
         if ([[responseString JSONValue] objectForKey:DASHBOARD_API_EVENTS_RESPONSE_NAME] != (id)[NSNull null])
             [eventsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_EVENTS_RESPONSE_NAME]];
@@ -1589,6 +1648,25 @@
         if ([[responseString JSONValue] objectForKey:DASHBOARD_API_ABC_WATERS_RESPONSE_NAME] != (id)[NSNull null])
             [abcWatersDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_ABC_WATERS_RESPONSE_NAME]];
         
+        
+        NSArray *tempWLS = [appDelegate getRandomFavouriteForDashBoard:@"4"];
+        if (tempWLS != (id)[NSNull null] && tempWLS.count!=0) {
+            [wlsDataArray removeAllObjects];
+            [wlsDataArray setArray:tempWLS];
+        }
+        
+        NSArray *tempABC = [appDelegate getRandomFavouriteForDashBoard:@"3"];
+        if (tempABC != (id)[NSNull null] && tempABC.count!=0) {
+            [abcWatersDataArray removeAllObjects];
+            [abcWatersDataArray setArray:tempABC];
+        }
+        
+        NSArray *tempCCTV = [appDelegate getRandomFavouriteForDashBoard:@"1"];
+        if (tempCCTV != (id)[NSNull null] && tempCCTV.count!=0) {
+            [cctvDataArray removeAllObjects];
+            [cctvDataArray setArray:tempCCTV];
+        }
+        
         [self refreshHomePageContent];
         
     }
@@ -1599,7 +1677,8 @@
 
 - (void) requestFailed:(ASIHTTPRequest *)request {
     
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     NSError *error = [request error];
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
 }
@@ -1908,7 +1987,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.view.backgroundColor = RGB(245, 245, 245);
+    self.view.backgroundColor = RGB(213, 213, 213);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeStarted:) name:@"UIMoviePlayerControllerDidEnterFullscreenNotification" object:nil];

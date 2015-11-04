@@ -23,6 +23,8 @@
     UIButton *btnSpeaker;
     NSInteger selectedFilterIndex,previousIndex,currentIndex;
     
+    UILabel *noRecentNotifiactionLabel;
+    
     //*************** Demo App Variables
     UIImageView *bgImageView;
     UIButton *detailButton;

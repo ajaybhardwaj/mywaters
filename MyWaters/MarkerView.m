@@ -45,12 +45,12 @@ const float kHeight = 100.0f;
         
         [self setUserInteractionEnabled:YES];
         
-        UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 260, 100)];
+        UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 260.0f, 100.0f)];
         backgroundView.backgroundColor = RGB(35, 35, 35);
         backgroundView.layer.cornerRadius = 5.0;
         [self addSubview:backgroundView];
         
-        _cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 20, 60, 60)];
+        _cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(10.0f, 20.0f, 60.0f, 60.0f)];
         
         NSString *imageFullUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,imageURLString];
         
@@ -89,17 +89,13 @@ const float kHeight = 100.0f;
         _lblDistance.font = [UIFont fontWithName:ROBOTO_MEDIUM size:18.0f];
         _lblDistance.backgroundColor = [UIColor clearColor];
         
+        [backgroundView addSubview:_cellImage];
         [backgroundView addSubview:_lblTitle];
         [backgroundView addSubview:_lblDistance];
-        [backgroundView addSubview:_cellImage];
 
         
         [self setBackgroundColor:[UIColor clearColor]];
-        
-        CGAffineTransform rotationTransform = CGAffineTransformIdentity;
-        rotationTransform = CGAffineTransformRotate(rotationTransform, degreesToRadians(90));
-//        backgroundView.transform = rotationTransform;
-        
+                
     }
     
     return self;

@@ -17,13 +17,13 @@
     AppDelegate *appDelegate;
     
     UITextField *nameField,*emailField;
-    UIButton *changePasswordButton,*updateButton;
+    UIButton *changePasswordButton,*updateButton,*signoutButton;
     
     UIImageView *profileImageView;
     UITapGestureRecognizer *profileImageTap;
     UILabel *uploadAvatarLabel;
     
-    BOOL isProfilePictureSelected;
+    BOOL isProfilePictureSelected,isChangingName;
 }
 
 @end

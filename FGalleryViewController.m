@@ -7,6 +7,8 @@
 //
 
 #import "FGalleryViewController.h"
+#import "AppDelegate.h"
+
 
 #define kThumbnailSize 75
 #define kThumbnailSpacing 4
@@ -332,8 +334,35 @@
 }
 
 
+
+- (void)didChangeOrientation:(NSNotification *)notification
+{
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    
+    if (UIInterfaceOrientationIsLandscape(orientation)) {
+        //        self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
+        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
+
+    }
+    else {
+        //        self.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+//        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
+    }
+    
+    
+}
+
+
 - (void)viewWillAppear:(BOOL)animated
 {
+ 
+    AppDelegate *appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate setShouldRotate:NO];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:)
+                                                 name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+
+    
     [super viewWillAppear:animated];
 	self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     _isActive = YES;

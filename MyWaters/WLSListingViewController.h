@@ -12,7 +12,7 @@
 #import "JSON.h"
 #import "XMLReader.h"
 
-@interface WLSListingViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,NSURLConnectionDelegate> {
+@interface WLSListingViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,NSURLConnectionDelegate,UISearchBarDelegate,UITextFieldDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -20,6 +20,9 @@
     
     NSURLConnection *theConnection;
     NSInteger wlsPageCount,wlsTotalCount;
+    UISearchBar *listinSearchBar;
+    BOOL isShowingSearchBar,isFiltered;
+    NSMutableArray *filteredDataSource;
     
 }
 @property (strong, nonatomic) NSMutableData *responseData;

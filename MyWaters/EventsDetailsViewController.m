@@ -174,7 +174,8 @@
     [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
     [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
     [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
-    
+    [parametersDict setValue:@"NO" forKey:@"isWlsSubscribed"];
+    [parametersDict setValue:@"NO" forKey:@"hasPOI"];
     
     [appDelegate insertFavouriteItems:parametersDict];
     
@@ -200,9 +201,10 @@
         [self animateTopMenu];
     }
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     NSArray *parameters,*values;
@@ -302,9 +304,14 @@
     directionButton.frame = CGRectMake(0, eventImageView.frame.origin.y+eventImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
     [directionButton setBackgroundColor:[UIColor whiteColor]];
     [directionButton addTarget:self action:@selector(moveToDirectionView) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    CGRect newDirectionButtonFrame = directionButton.frame;
+    newDirectionButtonFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",titleString] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:bgScrollView.bounds.size.width-10];
+    directionButton.frame = newDirectionButtonFrame;
     [bgScrollView addSubview:directionButton];
     
-    directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
+    directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, directionButton.bounds.size.height/2 - 11, 22, 22)];
     [directionIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_directions.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:directionIcon];
     
@@ -320,7 +327,7 @@
     desinationLocation.latitude = latValue;
     desinationLocation.longitude = longValue;
     
-    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
+    distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, directionButton.bounds.size.height/2 - 20, 100, 40)];
     distanceLabel.backgroundColor = [UIColor clearColor];
     distanceLabel.textAlignment = NSTextAlignmentRight;
     distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
@@ -334,7 +341,12 @@
     eventTitle.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14];
     eventTitle.text = titleString;
     eventTitle.numberOfLines = 0;
+    
+    CGRect newTitleFrame = eventTitle.frame;
+    newTitleFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",titleString] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:directionButton.bounds.size.width-80];
+    eventTitle.frame = newTitleFrame;
     [directionButton addSubview:eventTitle];
+//    [eventTitle sizeToFit];
     
     distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-130, 0, 100, 40)];
     distanceLabel.backgroundColor = [UIColor clearColor];
@@ -343,11 +355,11 @@
     distanceLabel.text = @"";//@"1.03 KM";
     [directionButton addSubview:distanceLabel];
     
-    arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, 12.5, 15, 15)];
+    arrowIcon = [[UIImageView alloc] initWithFrame:CGRectMake(directionButton.bounds.size.width-20, directionButton.bounds.size.height/2 - 7.5, 15, 15)];
     [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:arrowIcon];
     
-    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         
         distanceLabel.text = @"";
         arrowIcon.hidden = YES;
@@ -487,7 +499,8 @@
     // Use when fetching text data
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
@@ -511,8 +524,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 

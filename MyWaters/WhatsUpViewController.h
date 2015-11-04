@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "FeedbackViewController.h"
+#import "WebViewUrlViewController.h"
+#import "SWTableViewCell.h"
 
-@interface WhatsUpViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate> {
+@interface WhatsUpViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,SWTableViewCellDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -21,7 +23,10 @@
     UITableView *feedTableView,*exploreTableView;
     
     NSMutableArray *feedDataSource,*chatterDataSource;
-    BOOL isShowingFeedTable,isShowingChatterTable,isEditingChatterTable;
+    BOOL isShowingFeedTable,isShowingChatterTable,isEditingChatterTable,isShowingHelpScreen;
+    
+    UIImageView *helpScreenImageView;
+    UILabel *helpLabel;
 }
 
 @property (nonatomic, assign) BOOL isNotWhatsUpController,isDashboardChatter;

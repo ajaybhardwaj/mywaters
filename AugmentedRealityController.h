@@ -7,11 +7,14 @@
 //
 
 #import "ARKit.h"
+#import "AppDelegate.h"
 
 @class ARCoordinate;
 
 @interface AugmentedRealityController : NSObject <UIAccelerometerDelegate, CLLocationManagerDelegate> {
 	
+    AppDelegate *appDelegate;
+    
 @private
 	double	latestHeading;
 	double  degreeRange;

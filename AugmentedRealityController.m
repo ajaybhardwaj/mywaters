@@ -59,6 +59,11 @@
 {    
     if (!(self = [super init]))
 		return nil;
+    appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate setShouldRotate:YES];
+    
+    arView.backgroundColor = [UIColor blackColor];
+    displayView.backgroundColor = [UIColor blackColor];
     
     [self setParentViewController:parentVC];
     [self setDelegate:aDelegate];
@@ -497,6 +502,15 @@
         [self updateDebugMode:YES];
         [[self delegate] didUpdateOrientation:orientation];
 	}
+}
+
+
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskLandscapeRight + UIInterfaceOrientationMaskLandscapeLeft;
 }
 
 #pragma mark -	

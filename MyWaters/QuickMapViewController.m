@@ -537,7 +537,46 @@
 
 
 
+//*************** Method To Show And Hide Help Screen
 
+- (void) showHideHelpScreen {
+    
+    if (isShowingHelpScreen) {
+        
+        isShowingHelpScreen = NO;
+        [btnHints setImage:[UIImage imageNamed:@"icn_helpicon"] forState:UIControlStateNormal];
+ 
+        helpScreenImageView.hidden = YES;
+        locationHelpLabel.hidden = YES;
+        menuHelpLabel.hidden = YES;
+        rainAreaHelpLabel.hidden = YES;
+        floodByUsersHelpLabel.hidden = YES;
+        cctvHelpLabel.hidden = YES;
+        wlsHelpLabel.hidden = YES;
+        floodByPUBHelpLabel.hidden = YES;
+        
+        [quickMap sendSubviewToBack:menuContentView];
+        self.view.userInteractionEnabled = YES;
+    }
+    else {
+        isShowingHelpScreen = YES;
+        [btnHints setImage:[UIImage imageNamed:@"icn_help_closebutton"] forState:UIControlStateNormal];
+        
+        
+        helpScreenImageView.hidden = NO;
+        locationHelpLabel.hidden = NO;
+        menuHelpLabel.hidden = NO;
+        rainAreaHelpLabel.hidden = NO;
+        floodByUsersHelpLabel.hidden = NO;
+        cctvHelpLabel.hidden = NO;
+        wlsHelpLabel.hidden = NO;
+        floodByPUBHelpLabel.hidden = NO;
+
+        [quickMap bringSubviewToFront:stack];
+        [stack openStack];
+        self.view.userInteractionEnabled = NO;
+    }
+}
 
 
 #pragma mark - Utility Methods
@@ -560,9 +599,10 @@
 
 - (void) sendRouteRequest {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     CLLocationCoordinate2D destinationCoords = CLLocationCoordinate2DMake(destinationLat,destinationLong);
     MKPlacemark *destinationPlacemark = [[MKPlacemark alloc] initWithCoordinate:destinationCoords addressDictionary:nil];
@@ -583,7 +623,8 @@
             
             //            self.navigationItem.rightBarButtonItem = routesButton;
             //            [stepsTableView reloadData];
-            [appDelegate.hud hide:YES];
+            [CommonFunctions dismissGlobalHUD];
+//            [appDelegate.hud hide:YES];
             
             //            for (MKRoute *route in [response routes]) {
             //                [directionMapView addOverlay:[route polyline] level:MKOverlayLevelAboveRoads]; // Draws the route above roads, but below labels.
@@ -614,6 +655,7 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
+    [CommonFunctions dismissGlobalHUD];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
@@ -664,8 +706,10 @@
                 [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
                 
                 [self generateCCTVAnnotations];
-                if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
-                    [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
+                
+                // Temp commented for UAT
+//                if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
+//                    [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
 
             }
             else {
@@ -720,8 +764,9 @@
                 
                 [self generateWLSAnnotations];
                 
-                if (appDelegate.WLS_LISTING_ARRAY.count!=0)
-                    [self performSelectorInBackground:@selector(saveWLSData) withObject:nil];
+                // Temp commented for UAT
+//                if (appDelegate.WLS_LISTING_ARRAY.count!=0)
+//                    [self performSelectorInBackground:@selector(saveWLSData) withObject:nil];
 
             }
             else {
@@ -763,7 +808,7 @@
             }
         }
         
-        [appDelegate.hud hide:YES];
+//        [appDelegate.hud hide:YES];
     }
 }
 
@@ -771,7 +816,8 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
 }
 
@@ -1295,9 +1341,10 @@
                 isLoadingFeedback = NO;
                 isLoadingRainMap = NO;
                 
-                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-                appDelegate.hud.labelText = @"Loading...";
+                [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//                appDelegate.hud.labelText = @"Loading...";
                 
                 [self fetchPUBFloodSubmissionListing];
             }
@@ -1324,7 +1371,7 @@
             
             isShowingDrain = YES;
             
-            [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+            btnfilter.hidden = NO;
             
             if (appDelegate.WLS_LISTING_ARRAY.count==0) {
                 
@@ -1334,9 +1381,10 @@
                 isLoadingFeedback = NO;
                 isLoadingRainMap = NO;
                 
-                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-                appDelegate.hud.labelText = @"Loading...";
+                [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//                appDelegate.hud.labelText = @"Loading...";
                 
                 [self fetchWLSListing];
             }
@@ -1349,8 +1397,7 @@
         }
         else {
             
-            self.navigationItem.rightBarButtonItem = nil;
-            
+            btnfilter.hidden = YES;
             isShowingDrain = NO;
             
             //Remove all annotations in the array from the mapView
@@ -1374,9 +1421,10 @@
                 isLoadingFeedback = NO;
                 isLoadingRainMap = NO;
                 
-                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-                appDelegate.hud.labelText = @"Loading...";
+                [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//                appDelegate.hud.labelText = @"Loading...";
                 
                 [self fetchCCTVListing];
             }
@@ -1402,6 +1450,19 @@
         if (!isShowingUserFeedback) {
             
             isShowingUserFeedback = YES;
+            isShwoingFinePrint = YES;
+            meteorologicalDisclaimerLabel.hidden = NO;
+
+            if (isShowingMeteorologicalDisclaimer) {
+                meteorologicalDisclaimerLabel.text = [NSString stringWithFormat:@"%@\n%@",meteorologicalDisclaimerString,userSubmissionFinePrintString];
+            }
+            else {
+                meteorologicalDisclaimerLabel.text = [NSString stringWithFormat:@"%@",userSubmissionFinePrintString];
+            }
+            
+            CGRect newDisclaimerLabelFrame = meteorologicalDisclaimerLabel.frame;
+            newDisclaimerLabelFrame.size.height = [CommonFunctions heightForText:meteorologicalDisclaimerLabel.text font:meteorologicalDisclaimerLabel.font withinWidth:self.view.bounds.size.width]-20;//expectedDescriptionLabelSize.height;
+            meteorologicalDisclaimerLabel.frame = newDisclaimerLabelFrame;
             
             if (appDelegate.USER_FLOOD_SUBMISSION_ARRAY.count==0) {
                 
@@ -1411,9 +1472,10 @@
                 isLoadingFeedback = YES;
                 isLoadingRainMap = NO;
                 
-                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-                appDelegate.hud.labelText = @"Loading...";
+                [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//                appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//                appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//                appDelegate.hud.labelText = @"Loading...";
                 
                 [self fetchUserFloodSubmissionListing];
             }
@@ -1426,6 +1488,20 @@
         }
         else {
             isShowingUserFeedback = NO;
+            isShwoingFinePrint = NO;
+            
+            if (isShowingMeteorologicalDisclaimer) {
+                meteorologicalDisclaimerLabel.hidden = NO;
+                meteorologicalDisclaimerLabel.text = [NSString stringWithFormat:@"%@",meteorologicalDisclaimerString];
+            }
+            else {
+                meteorologicalDisclaimerLabel.hidden = YES;
+            }
+            
+            CGRect newDisclaimerLabelFrame = meteorologicalDisclaimerLabel.frame;
+            newDisclaimerLabelFrame.size.height = [CommonFunctions heightForText:meteorologicalDisclaimerLabel.text font:meteorologicalDisclaimerLabel.font withinWidth:self.view.bounds.size.width]-20;//expectedDescriptionLabelSize.height;
+            meteorologicalDisclaimerLabel.frame = newDisclaimerLabelFrame;
+
             
             //Remove all annotations in the array from the mapView
             [quickMap removeAnnotations:userFeedbackAnnotationsArray];
@@ -1446,8 +1522,20 @@
             isLoadingFeedback = NO;
             isLoadingRainMap = YES;
             
-            
+            meteorologicalDisclaimerLabel.hidden = NO;
+            isShowingMeteorologicalDisclaimer = YES;
             self.mapOverlay = [[MapOverlay alloc] initWithLowerLeftCoordinate:CLLocationCoordinate2DMake(1.229001, 103.607254) withUpperRightCoordinate:CLLocationCoordinate2DMake(1.46926, 104.026108)];
+            
+            if (isShwoingFinePrint) {
+                meteorologicalDisclaimerLabel.text = [NSString stringWithFormat:@"%@\n%@",meteorologicalDisclaimerString,userSubmissionFinePrintString];
+            }
+            else {
+                meteorologicalDisclaimerLabel.text = [NSString stringWithFormat:@"%@",meteorologicalDisclaimerString];
+            }
+            
+            CGRect newDisclaimerLabelFrame = meteorologicalDisclaimerLabel.frame;
+            newDisclaimerLabelFrame.size.height = [CommonFunctions heightForText:meteorologicalDisclaimerLabel.text font:meteorologicalDisclaimerLabel.font withinWidth:self.view.bounds.size.width]-20;//expectedDescriptionLabelSize.height;
+            meteorologicalDisclaimerLabel.frame = newDisclaimerLabelFrame;
             
             // add the custom overlay
             [quickMap addOverlay:self.mapOverlay];
@@ -1466,6 +1554,20 @@
         else {
             isShowingRain = NO;
             
+            if (isShwoingFinePrint) {
+                meteorologicalDisclaimerLabel.hidden = NO;
+                meteorologicalDisclaimerLabel.text = [NSString stringWithFormat:@"%@",meteorologicalDisclaimerString];
+            }
+            else {
+                meteorologicalDisclaimerLabel.hidden = YES;
+            }
+            
+            CGRect newDisclaimerLabelFrame = meteorologicalDisclaimerLabel.frame;
+            newDisclaimerLabelFrame.size.height = [CommonFunctions heightForText:meteorologicalDisclaimerLabel.text font:meteorologicalDisclaimerLabel.font withinWidth:self.view.bounds.size.width]-20;//expectedDescriptionLabelSize.height;
+            meteorologicalDisclaimerLabel.frame = newDisclaimerLabelFrame;
+
+            
+            isShowingMeteorologicalDisclaimer = NO;
             [quickMap removeOverlay:self.mapOverlay];
             [rainMapStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
             
@@ -1492,8 +1594,40 @@
     // Do any additional setup after loading the view.
     selectedFilterIndex = 1;
     
+    
+    btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
+    [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [btnfilter setFrame:CGRectMake(0, 0, 32, 32)];
+    
+    btnHints =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnHints setImage:[UIImage imageNamed:@"icn_helpicon"] forState:UIControlStateNormal];
+    [btnHints addTarget:self action:@selector(showHideHelpScreen) forControlEvents:UIControlEventTouchUpInside];
+    [btnHints setFrame:CGRectMake(44, 0, 32, 32)];
+    
+    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
+    [rightBarButtonItems addSubview:btnfilter];
+    [rightBarButtonItems addSubview:btnHints];
+    btnfilter.hidden = YES;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
+    
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     //    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(animateFilterTable) withIconName:@"icn_filter"]];
+    
+    for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+        if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"RainAreaDisclaimer"]) {
+            meteorologicalDisclaimerString = [NSString stringWithFormat:@"  %@",[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"]];
+            break;
+        }
+    }
+    
+    for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+        if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"UserFloodSubmissionDisclaimer"]) {
+            userSubmissionFinePrintString = [NSString stringWithFormat:@"  %@",[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"]];
+            break;
+        }
+    }
     
     quickMap = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
     quickMap.delegate = self;
@@ -1531,14 +1665,6 @@
     [quickMap addSubview:mapCenterHiddenButon];
     
     
-//    currentLocationHintLabel = [[UILabel alloc] initWithFrame:CGRectMake(currentLocationButton.frame.origin.x+currentLocationButton.bounds.size.width+10, quickMap.bounds.size.height-60, 150, 40)];
-//    currentLocationHintLabel.backgroundColor = [UIColor clearColor];
-//    currentLocationHintLabel.text = [NSString stringWithFormat:@"--- Tap to locate your\n    current location."];
-//    currentLocationHintLabel.numberOfLines = 0;
-//    currentLocationHintLabel.textColor = [UIColor whiteColor];
-//    currentLocationHintLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-//    [quickMap addSubview:currentLocationHintLabel];
-    
     
     menuContentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     [menuContentView.layer setCornerRadius:20];
@@ -1570,14 +1696,23 @@
     stack = [[UPStackMenu alloc] initWithContentView:menuContentView];
     [stack setDelegate:self];
     
-//    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by PUB" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
-    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by PUB" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
-
-    wlsStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Water Level Sensor" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
-    cctvStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"CCTV" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
-    userFeedbackStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by Users" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
-    rainMapStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Rain Area" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+////    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by PUB" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+//    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by PUB" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+//
+//    wlsStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Water Level Sensor" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+//    cctvStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"CCTV" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+//    userFeedbackStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by Users" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+//    rainMapStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Rain Area" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
     
+
+    
+    //    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:@"Flood Info by PUB" font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    floodStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:nil font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    
+    wlsStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:nil font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    cctvStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:nil font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    userFeedbackStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:nil font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
+    rainMapStackItem = [[UPStackMenuItem alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] highlightedImage:nil title:nil font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0]];
     
     
     NSMutableArray *items = [[NSMutableArray alloc] initWithObjects:rainMapStackItem, userFeedbackStackItem, cctvStackItem, wlsStackItem, floodStackItem, nil];
@@ -1614,6 +1749,94 @@
     filterDataSource = [[NSArray alloc] initWithObjects:@"Drain 0-75% Full",@"Drain 75%-90% Full",@"Drain 90%-100 Full",@"Station under maintenance", nil];
     
     isLoadingFloods = YES;
+    
+    meteorologicalDisclaimerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 15)];
+    meteorologicalDisclaimerLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10.0];
+    meteorologicalDisclaimerLabel.textColor = [UIColor whiteColor];
+    meteorologicalDisclaimerLabel.backgroundColor = [UIColor blackColor];
+    meteorologicalDisclaimerLabel.numberOfLines = 0;
+    [self.view addSubview:meteorologicalDisclaimerLabel];
+    meteorologicalDisclaimerLabel.hidden = YES;
+    
+    
+    helpScreenImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, quickMap.bounds.size.width, quickMap.bounds.size.height)];
+    helpScreenImageView.backgroundColor = [UIColor blackColor];
+    helpScreenImageView.alpha = 0.7;
+    [quickMap addSubview:helpScreenImageView];
+    helpScreenImageView.hidden = YES;
+    
+    
+    locationHelpLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, quickMap.bounds.size.height-110, 100, 40)];
+    locationHelpLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+    locationHelpLabel.textColor = [UIColor whiteColor];
+    locationHelpLabel.backgroundColor = [UIColor clearColor];
+    locationHelpLabel.text = [NSString stringWithFormat:@"Tap to locate your\ncurrent location"];
+    locationHelpLabel.numberOfLines = 0;
+    [quickMap addSubview:locationHelpLabel];
+    locationHelpLabel.hidden = YES;
+    
+    menuHelpLabel = [[UILabel alloc] initWithFrame:CGRectMake(quickMap.bounds.size.width-225, quickMap.bounds.size.height-55, 160, 20)];
+    menuHelpLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+    menuHelpLabel.textColor = [UIColor whiteColor];
+    menuHelpLabel.textAlignment = NSTextAlignmentRight;
+    menuHelpLabel.backgroundColor = [UIColor clearColor];
+    menuHelpLabel.text = [NSString stringWithFormat:@"Tap to Open/Hide options"];
+    menuHelpLabel.numberOfLines = 0;
+    [quickMap addSubview:menuHelpLabel];
+    menuHelpLabel.hidden = YES;
+    
+    rainAreaHelpLabel = [[UILabel alloc] initWithFrame:CGRectMake(quickMap.bounds.size.width-225, menuHelpLabel.frame.origin.y-50, 160, 20)];
+    rainAreaHelpLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+    rainAreaHelpLabel.textColor = [UIColor whiteColor];
+    rainAreaHelpLabel.textAlignment = NSTextAlignmentRight;
+    rainAreaHelpLabel.backgroundColor = [UIColor clearColor];
+    rainAreaHelpLabel.text = [NSString stringWithFormat:@"Rain Area"];
+    rainAreaHelpLabel.numberOfLines = 0;
+    [quickMap addSubview:rainAreaHelpLabel];
+    rainAreaHelpLabel.hidden = YES;
+    
+    floodByUsersHelpLabel = [[UILabel alloc] initWithFrame:CGRectMake(quickMap.bounds.size.width-225, rainAreaHelpLabel.frame.origin.y-50, 160, 20)];
+    floodByUsersHelpLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+    floodByUsersHelpLabel.textColor = [UIColor whiteColor];
+    floodByUsersHelpLabel.textAlignment = NSTextAlignmentRight;
+    floodByUsersHelpLabel.backgroundColor = [UIColor clearColor];
+    floodByUsersHelpLabel.text = [NSString stringWithFormat:@"Flood Info by Users"];
+    floodByUsersHelpLabel.numberOfLines = 0;
+    [quickMap addSubview:floodByUsersHelpLabel];
+    floodByUsersHelpLabel.hidden = YES;
+    
+    cctvHelpLabel = [[UILabel alloc] initWithFrame:CGRectMake(quickMap.bounds.size.width-225, floodByUsersHelpLabel.frame.origin.y-50, 160, 20)];
+    cctvHelpLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+    cctvHelpLabel.textColor = [UIColor whiteColor];
+    cctvHelpLabel.textAlignment = NSTextAlignmentRight;
+    cctvHelpLabel.backgroundColor = [UIColor clearColor];
+    cctvHelpLabel.text = [NSString stringWithFormat:@"CCTV"];
+    cctvHelpLabel.numberOfLines = 0;
+    [quickMap addSubview:cctvHelpLabel];
+    cctvHelpLabel.hidden = YES;
+    
+    wlsHelpLabel = [[UILabel alloc] initWithFrame:CGRectMake(quickMap.bounds.size.width-225, cctvHelpLabel.frame.origin.y-50, 160, 20)];
+    wlsHelpLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+    wlsHelpLabel.textColor = [UIColor whiteColor];
+    wlsHelpLabel.textAlignment = NSTextAlignmentRight;
+    wlsHelpLabel.backgroundColor = [UIColor clearColor];
+    wlsHelpLabel.text = [NSString stringWithFormat:@"Water Level Sensor"];
+    wlsHelpLabel.numberOfLines = 0;
+    [quickMap addSubview:wlsHelpLabel];
+    wlsHelpLabel.hidden = YES;
+    
+    floodByPUBHelpLabel = [[UILabel alloc] initWithFrame:CGRectMake(quickMap.bounds.size.width-225, wlsHelpLabel.frame.origin.y-50, 160, 20)];
+    floodByPUBHelpLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+    floodByPUBHelpLabel.textColor = [UIColor whiteColor];
+    floodByPUBHelpLabel.textAlignment = NSTextAlignmentRight;
+    floodByPUBHelpLabel.backgroundColor = [UIColor clearColor];
+    floodByPUBHelpLabel.text = [NSString stringWithFormat:@"Flood Info by PUB"];
+    floodByPUBHelpLabel.numberOfLines = 0;
+    [quickMap addSubview:floodByPUBHelpLabel];
+    floodByPUBHelpLabel.hidden = YES;
+    
+    
+    
     [self fetchPUBFloodSubmissionListing];
 }
 
@@ -1663,22 +1886,22 @@
     }
     
     
-    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"quickMapHints"] isEqualToString:@"YES"]) {
-        [self createMapHints];
-    }
-    else {
-        if (menuPopUp) {
-            [menuPopUp removeFromSuperview];
-        }
-        
-        if (mapCenterPopUp) {
-            [mapCenterPopUp removeFromSuperview];
-        }
-        
-        if (currentLocationPopUp) {
-            [currentLocationPopUp removeFromSuperview];
-        }
-    }
+//    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"quickMapHints"] isEqualToString:@"YES"]) {
+//        [self createMapHints];
+//    }
+//    else {
+//        if (menuPopUp) {
+//            [menuPopUp removeFromSuperview];
+//        }
+//        
+//        if (mapCenterPopUp) {
+//            [mapCenterPopUp removeFromSuperview];
+//        }
+//        
+//        if (currentLocationPopUp) {
+//            [currentLocationPopUp removeFromSuperview];
+//        }
+//    }
 }
 
 

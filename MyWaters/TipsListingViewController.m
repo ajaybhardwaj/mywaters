@@ -31,6 +31,7 @@
 - (void) fetchTipsListing {
     
     if ([CommonFunctions hasConnectivity]) {
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
 //        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
 //        appDelegate.hud.labelText = @"Loading...";
@@ -78,7 +79,8 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
     
     DebugLog(@"%@",responseString);
     
@@ -88,7 +90,7 @@
         
         if (tempArray.count==0) {
             noDataLabel.hidden = NO;
-            noDataLabel.text = @"No tips data available.";
+            noDataLabel.text = @"No data available.";
             tipsListingTableView.hidden = YES;
         }
         else {
@@ -108,8 +110,8 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-    
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 
@@ -234,6 +236,7 @@
     // Do any additional setup after loading the view.
     
     self.view.backgroundColor = RGB(247, 247, 247);
+    self.title = @"Videos";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeStarted:) name:@"UIMoviePlayerControllerDidEnterFullscreenNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeFinished:) name:@"UIMoviePlayerControllerDidExitFullscreenNotification" object:nil];
@@ -271,7 +274,7 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
-    self.title = @"Tips";
+    self.title = @"Videos";
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;

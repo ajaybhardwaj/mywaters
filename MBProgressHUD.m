@@ -113,7 +113,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 #pragma mark - Class methods
 
 + (MB_INSTANCETYPE)showHUDAddedTo:(UIView *)view animated:(BOOL)animated {
-	MBProgressHUD *hud = [[self alloc] initWithView:view];
+	MBProgressHUD *hud = [[self alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
 	hud.removeFromSuperViewOnHide = YES;
 	[view addSubview:hud];
 	[hud show:animated];
@@ -121,7 +121,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 }
 
 + (BOOL)hideHUDForView:(UIView *)view animated:(BOOL)animated {
-	MBProgressHUD *hud = [self HUDForView:view];
+	MBProgressHUD *hud = [self HUDForView:[UIApplication sharedApplication].keyWindow];
 	if (hud != nil) {
 		hud.removeFromSuperViewOnHide = YES;
 		[hud hide:animated];
@@ -131,7 +131,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 }
 
 + (NSUInteger)hideAllHUDsForView:(UIView *)view animated:(BOOL)animated {
-	NSArray *huds = [MBProgressHUD allHUDsForView:view];
+	NSArray *huds = [MBProgressHUD allHUDsForView:[UIApplication sharedApplication].keyWindow];
 	for (MBProgressHUD *hud in huds) {
 		hud.removeFromSuperViewOnHide = YES;
 		[hud hide:animated];

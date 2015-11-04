@@ -283,7 +283,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_abcwatersNavController) {
         
         ABCWatersViewController *abcwaters = [[ABCWatersViewController alloc] init];
-        [abcwaters setTitle:@"ABC Waters"];
+        [abcwaters setTitle:@"Our Waters"];
         _abcwatersNavController = [[UINavigationController alloc] initWithRootViewController:abcwaters];
         
         [self setNavigationBarStyle_Transclucent:_abcwatersNavController.navigationBar];
@@ -564,6 +564,34 @@ static ViewControllerHelper *sharedViewHelper = nil;
 }
 
 
+- (UINavigationController*) getWeatherForecastController {
+    
+    if (!_weatherForecastNavController) {
+        
+        WeatherForecastViewController *weather = [[WeatherForecastViewController alloc] init];
+        [weather setTitle:@"Home"];
+        _weatherForecastNavController = [[UINavigationController alloc] initWithRootViewController:weather];
+        
+        [self setNavigationBarStyle_Transclucent:_homeNavController.navigationBar];
+        [[[weather navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+        //        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(36,160,236) frame:CGRectMake(0, 0, 1, 1)];
+        [[[weather navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
+        
+        [_weatherForecastNavController.view setAutoresizesSubviews:TRUE];
+        [_weatherForecastNavController.view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin)];
+        _currentDeckIndex = WEATHER_FORECAST_CONTROLLER;
+        
+        [_weatherForecastNavController popToRootViewControllerAnimated:NO];
+    }
+    else {
+        [_weatherForecastNavController popToRootViewControllerAnimated:NO];
+    }
+    
+    return _weatherForecastNavController;
+}
+
+
 - (UINavigationController*) getAboutPUBController {
     
     if (!_aboutPUBController) {
@@ -663,94 +691,34 @@ static ViewControllerHelper *sharedViewHelper = nil;
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:HOME_CONTROLLER];
             break;
             
-        case NOTIFICATIONS_CONTROLLER:
+        case BOOKING_CONTROLLER:
             if (center) {
                 [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getNotificationsController]];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getBookingController]];
             }
             else{
                 [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getNotificationsController]];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getBookingController]];
                 if (animate) {
                     [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
                 }
             }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:NOTIFICATIONS_CONTROLLER];
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:BOOKING_CONTROLLER];
             break;
             
-        case PROFILE_CONTROLLER:
+        case CCTV_CONTROLLER:
             if (center) {
                 [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getProfileController]];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getCCTVController]];
             }
             else{
                 [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getProfileController]];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getCCTVController]];
                 if (animate) {
                     [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
                 }
             }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:PROFILE_CONTROLLER];
-            break;
-            
-        case FAVOURITES_CONTROLLER:
-            if (center) {
-                [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getFavouritesController]];
-            }
-            else{
-                [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getFavouritesController]];
-                if (animate) {
-                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
-                }
-            }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:FAVOURITES_CONTROLLER];
-            break;
-            
-        case WHATSUP_CONTROLLER:
-            if (center) {
-                [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getWhatsUpController]];
-            }
-            else{
-                [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getWhatsUpController]];
-                if (animate) {
-                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
-                }
-            }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:WHATSUP_CONTROLLER];
-            break;
-            
-        case FLOODMAP_CONTROLLER:
-            if (center) {
-                [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getFloodMapController]];
-            }
-            else{
-                [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getFloodMapController]];
-                if (animate) {
-                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
-                }
-            }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:FLOODMAP_CONTROLLER];
-            break;
-            
-        case ABCWATERS_CONTROLLER:
-            if (center) {
-                [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getABCWatersController]];
-            }
-            else{
-                [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getABCWatersController]];
-                if (animate) {
-                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
-                }
-            }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:ABCWATERS_CONTROLLER];
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:CCTV_CONTROLLER];
             break;
             
         case EVENTS_CONTROLLER:
@@ -768,50 +736,19 @@ static ViewControllerHelper *sharedViewHelper = nil;
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:EVENTS_CONTROLLER];
             break;
             
-            
-        case CCTV_CONTROLLER:
+        case FAVOURITES_CONTROLLER:
             if (center) {
                 [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getCCTVController]];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getFavouritesController]];
             }
             else{
                 [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getCCTVController]];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getFavouritesController]];
                 if (animate) {
                     [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
                 }
             }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:CCTV_CONTROLLER];
-            break;
-            
-        case WLS_CONTROLLER:
-            if (center) {
-                [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getWlsController]];
-            }
-            else{
-                [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getWlsController]];
-                if (animate) {
-                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
-                }
-            }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:WLS_CONTROLLER];
-            break;
-            
-        case BOOKING_CONTROLLER:
-            if (center) {
-                [[appDelegate rootDeckController] setCenterController:nil];
-                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getBookingController]];
-            }
-            else{
-                [[appDelegate rootDeckController] setRightController:nil];
-                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getBookingController]];
-                if (animate) {
-                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
-                }
-            }
-            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:BOOKING_CONTROLLER];
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:FAVOURITES_CONTROLLER];
             break;
             
         case FEEDBACK_CONTROLLER:
@@ -829,6 +766,67 @@ static ViewControllerHelper *sharedViewHelper = nil;
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:FEEDBACK_CONTROLLER];
             break;
             
+        case PROFILE_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getProfileController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getProfileController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:PROFILE_CONTROLLER];
+            break;
+            
+        case NOTIFICATIONS_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getNotificationsController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getNotificationsController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:NOTIFICATIONS_CONTROLLER];
+            break;
+            
+        case ABCWATERS_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getABCWatersController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getABCWatersController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:ABCWATERS_CONTROLLER];
+            break;
+            
+        case FLOODMAP_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getFloodMapController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getFloodMapController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:FLOODMAP_CONTROLLER];
+            break;
+            
+            
         case TIPS_CONTROLLER:
             if (center) {
                 [[appDelegate rootDeckController] setCenterController:nil];
@@ -842,6 +840,51 @@ static ViewControllerHelper *sharedViewHelper = nil;
                 }
             }
             [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:TIPS_CONTROLLER];
+            break;
+            
+        case WLS_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getWlsController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getWlsController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:WLS_CONTROLLER];
+            break;
+            
+        case WEATHER_FORECAST_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getWeatherForecastController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getWeatherForecastController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:WEATHER_FORECAST_CONTROLLER];
+            break;
+            
+        case WHATSUP_CONTROLLER:
+            if (center) {
+                [[appDelegate rootDeckController] setCenterController:nil];
+                [[appDelegate rootDeckController] setCenterController:[[ViewControllerHelper viewControllerHelper] getWhatsUpController]];
+            }
+            else{
+                [[appDelegate rootDeckController] setRightController:nil];
+                [[appDelegate rootDeckController] setRightController:[[ViewControllerHelper viewControllerHelper] getWhatsUpController]];
+                if (animate) {
+                    [[appDelegate rootDeckController] toggleRightViewAnimated:TRUE];
+                }
+            }
+            [[[ViewControllerHelper viewControllerHelper] getOptionsController] setCurrentIndex:WHATSUP_CONTROLLER];
             break;
             
         case SETTINGS_CONTROLLER:
@@ -998,6 +1041,9 @@ static ViewControllerHelper *sharedViewHelper = nil;
     [self clear_All_ControllersInThisNavigationCntrl:[self aboutPUBController]];
     [self setAboutPUBController:nil];
     
+    [self clear_All_ControllersInThisNavigationCntrl:[self weatherForecastNavController]];
+    [self setWeatherForecastNavController:nil];
+
 }
 
 

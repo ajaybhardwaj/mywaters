@@ -73,7 +73,7 @@
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
-    defaultWebview = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    defaultWebview = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64)];
     defaultWebview.delegate = self;
     defaultWebview.backgroundColor = [UIColor clearColor];
     defaultWebview.opaque = NO;
@@ -94,6 +94,9 @@
         else {
             defaultWebview.contentMode = UIViewContentModeScaleAspectFill;
             defaultWebview.scalesPageToFit = YES;
+            
+            NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:@"Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3", @"UserAgent", nil];
+            [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
             
             NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
             [defaultWebview loadRequest:nsrequest];

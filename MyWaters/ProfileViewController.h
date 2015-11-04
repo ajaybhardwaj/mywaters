@@ -42,6 +42,7 @@
     //===== Badges Controls
     UIView *badgesBackgroundView;
     NSMutableArray *badgesDataSource;
+    BOOL isBadgeUnlocked;
     
     //===== Rewards Controls
     UITableView *rewardsListingTableView;

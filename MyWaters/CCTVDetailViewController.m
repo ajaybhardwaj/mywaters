@@ -109,9 +109,10 @@
 
 - (void) fetchCCTVListing {
     
-    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    appDelegate.hud.labelText = @"Loading...";
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+//    appDelegate.hud.labelText = @"Loading...";
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
     NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"1",[CommonFunctions getAppVersionNumber], nil];
@@ -150,7 +151,7 @@
     desinationLocation.longitude = longValue;
     distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
     
-    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         
         distanceLabel.text = @"";
         arrowIcon.hidden = YES;
@@ -246,7 +247,7 @@
     [arrowIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_arrow_grey.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [directionButton addSubview:arrowIcon];
     
-    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         
         distanceLabel.text = @"";
         arrowIcon.hidden = YES;
@@ -473,7 +474,8 @@
     [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
     [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
     [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
-    
+    [parametersDict setValue:@"NO" forKey:@"isWlsSubscribed"];
+    [parametersDict setValue:@"NO" forKey:@"hasPOI"];
     
     [appDelegate insertFavouriteItems:parametersDict];
     
@@ -650,8 +652,8 @@
             }
             
         }
-        
-        [appDelegate.hud hide:YES];
+        [CommonFunctions dismissGlobalHUD];
+//        [appDelegate.hud hide:YES];
         [cctvListingTable reloadData];
     }
     else {
@@ -665,7 +667,8 @@
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
-    [appDelegate.hud hide:YES];
+    [CommonFunctions dismissGlobalHUD];
+//    [appDelegate.hud hide:YES];
 }
 
 
@@ -864,7 +867,7 @@
     subTitleLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:subTitleLabel];
     
-    if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         
         subTitleLabel.text = @"";
     }

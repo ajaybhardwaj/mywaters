@@ -47,45 +47,48 @@
         [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
     else if (appDelegate.SELECTED_MENU_ID==1) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:NOTIFICATIONS_CONTROLLER onCenter:TRUE withAnimate:NO];
-    }
-    else if (appDelegate.SELECTED_MENU_ID==2) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:PROFILE_CONTROLLER onCenter:TRUE withAnimate:NO];
-    }
-    else if (appDelegate.SELECTED_MENU_ID==3) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:FAVOURITES_CONTROLLER onCenter:TRUE withAnimate:NO];
-    }
-    else if (appDelegate.SELECTED_MENU_ID==4) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:WHATSUP_CONTROLLER onCenter:TRUE withAnimate:NO];
-    }
-    else if (appDelegate.SELECTED_MENU_ID==5) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:FLOODMAP_CONTROLLER onCenter:TRUE withAnimate:NO];
-    }
-    else if (appDelegate.SELECTED_MENU_ID==6) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:ABCWATERS_CONTROLLER onCenter:TRUE withAnimate:NO];
-    }
-    else if (appDelegate.SELECTED_MENU_ID==7) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:EVENTS_CONTROLLER onCenter:TRUE withAnimate:NO];
-    }
-    else if (appDelegate.SELECTED_MENU_ID==8) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:CCTV_CONTROLLER onCenter:TRUE withAnimate:NO];
-    }
-    else if (appDelegate.SELECTED_MENU_ID==9) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:WLS_CONTROLLER onCenter:TRUE withAnimate:NO];
-    }
-    else if (appDelegate.SELECTED_MENU_ID==10) {
         [[ViewControllerHelper viewControllerHelper] enableThisController:BOOKING_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
-    else if (appDelegate.SELECTED_MENU_ID==11) {
+    else if (appDelegate.SELECTED_MENU_ID==2) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:CCTV_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==3) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:EVENTS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==4) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:FAVOURITES_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==5) {
         [[ViewControllerHelper viewControllerHelper] enableThisController:FEEDBACK_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
-    else if (appDelegate.SELECTED_MENU_ID==12) {
+    else if (appDelegate.SELECTED_MENU_ID==6) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:PROFILE_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==7) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:NOTIFICATIONS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==8) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:ABCWATERS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==9) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:FLOODMAP_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==10) {
         [[ViewControllerHelper viewControllerHelper] enableThisController:TIPS_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
+    else if (appDelegate.SELECTED_MENU_ID==11) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:WLS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==12) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:WEATHER_FORECAST_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
     else if (appDelegate.SELECTED_MENU_ID==13) {
-        [[ViewControllerHelper viewControllerHelper] enableThisController:SETTINGS_CONTROLLER onCenter:TRUE withAnimate:NO];
+        [[ViewControllerHelper viewControllerHelper] enableThisController:WHATSUP_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
     else if (appDelegate.SELECTED_MENU_ID==14) {
+        [[ViewControllerHelper viewControllerHelper] enableThisController:SETTINGS_CONTROLLER onCenter:TRUE withAnimate:NO];
+    }
+    else if (appDelegate.SELECTED_MENU_ID==15) {
         [[ViewControllerHelper viewControllerHelper] enableThisController:ABOUT_PUB_CONTROLLER onCenter:TRUE withAnimate:NO];
     }
 }
@@ -126,34 +129,36 @@
     NSDictionary *section0 = [NSDictionary dictionaryWithObjectsAndKeys:@"Menu",CELL__SECTION_HEADER_TEXT,[NSArray arrayWithObjects:
                                                                                                            
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Home",CELL__MAIN_TXT,@"icn_home",CELL__IMG, nil],
-                               
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Notifications",CELL__MAIN_TXT,@"icn_notifications",CELL__IMG, nil],
-                                                                                                
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"My Profile",CELL__MAIN_TXT,@"icn_profile",CELL__IMG, nil],
-                                
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Favourites",CELL__MAIN_TXT,@"icn_favourites",CELL__IMG, nil],
-
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"What's Up?",CELL__MAIN_TXT,@"icn_whatsup",CELL__IMG, nil],
-                               
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Quick Map",CELL__MAIN_TXT,@"icn_quickmap",CELL__IMG, nil],
-                               
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"ABC Waters",CELL__MAIN_TXT,@"icn_abcwaters",CELL__IMG, nil],
-                               
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Events",CELL__MAIN_TXT,@"icn_events",CELL__IMG, nil],
+                                                                                                           
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Booking",CELL__MAIN_TXT,@"icn_booking",CELL__IMG, nil],
                                                                                                            
                                [NSDictionary dictionaryWithObjectsAndKeys:@"CCTVs",CELL__MAIN_TXT,@"icn_cctv",CELL__IMG, nil],
-                                                                                                        
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Water Level Sensor",CELL__MAIN_TXT,@"icn_wls",CELL__IMG, nil],
-                               
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Booking",CELL__MAIN_TXT,@"icn_booking",CELL__IMG, nil],
-                               
+                                                                                                           
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Events",CELL__MAIN_TXT,@"icn_events",CELL__IMG, nil],
+                                                                                                    
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Favourites",CELL__MAIN_TXT,@"icn_favourites",CELL__IMG, nil],
+
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Feedback",CELL__MAIN_TXT,@"icn_feedback",CELL__IMG, nil],
                                                                                                            
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Tips",CELL__MAIN_TXT,@"icn_tips",CELL__IMG, nil],
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"My Profile",CELL__MAIN_TXT,@"icn_profile",CELL__IMG, nil],
+                                                                                                           
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Notifications",CELL__MAIN_TXT,@"icn_notifications",CELL__IMG, nil],
+                                                                                                
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Our Waters",CELL__MAIN_TXT,@"icn_abcwaters",CELL__IMG, nil],
+                                
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Quick Map",CELL__MAIN_TXT,@"icn_quickmap",CELL__IMG, nil],
+                                                                                                           
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Videos",CELL__MAIN_TXT,@"icn_tips",CELL__IMG, nil],
+
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Water Level Sensor",CELL__MAIN_TXT,@"icn_wls",CELL__IMG, nil],
+                                                                                                           
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Weather Forecast",CELL__MAIN_TXT,@"icn_menu_weather",CELL__IMG, nil],
+                                                                                                           
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"What's Up?",CELL__MAIN_TXT,@"icn_whatsup",CELL__IMG, nil],
                                
                                [NSDictionary dictionaryWithObjectsAndKeys:@"Settings",CELL__MAIN_TXT,@"icn_settings",CELL__IMG, nil],
                                                                                                            
-                                [NSDictionary dictionaryWithObjectsAndKeys:@"About PUB",CELL__MAIN_TXT,@"icn_about_pub",CELL__IMG, nil],
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"About PUB",CELL__MAIN_TXT,@"icn_about_pub",CELL__IMG, nil],
 
                                nil],TABLE__SECTION_ARRAY, nil];
     
@@ -228,68 +233,12 @@
                 }
                     break;
                     
-                case NOTIFICATIONS_CONTROLLER:{
+                case BOOKING_CONTROLLER:{
                     
                     [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
                     appDelegate.left_deck_width = self.view.bounds.size.width-180;
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:NOTIFICATIONS_CONTROLLER onCenter:TRUE withAnimate:NO];
                     
-                }
-                    break;
-                    
-                case PROFILE_CONTROLLER:{
-                    
-                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
-                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:PROFILE_CONTROLLER onCenter:TRUE withAnimate:NO];
-                    
-                }
-                    break;
-                    
-                    
-                case FAVOURITES_CONTROLLER:{
-                    
-                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
-                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:FAVOURITES_CONTROLLER onCenter:TRUE withAnimate:NO];
-                    
-                }
-                    break;
-                    
-                case WHATSUP_CONTROLLER:{
-                    
-                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
-                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:WHATSUP_CONTROLLER onCenter:TRUE withAnimate:NO];
-                    
-                }
-                    break;
-                    
-                case FLOODMAP_CONTROLLER:{
-                    
-                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
-                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:FLOODMAP_CONTROLLER onCenter:TRUE withAnimate:NO];
-                    
-                }
-                    break;
-                    
-                case ABCWATERS_CONTROLLER:{
-
-                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
-                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
-                    
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:ABCWATERS_CONTROLLER onCenter:TRUE withAnimate:NO];
-                    
-                }
-                    break;
-                    
-                case EVENTS_CONTROLLER:{
-                    
-                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
-                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
-
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:EVENTS_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:BOOKING_CONTROLLER onCenter:TRUE withAnimate:NO];
                     
                 }
                     break;
@@ -304,23 +253,21 @@
                 }
                     break;
                     
-                case WLS_CONTROLLER:{
+                case EVENTS_CONTROLLER:{
                     
                     [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
                     appDelegate.left_deck_width = self.view.bounds.size.width-180;
                     
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:WLS_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:EVENTS_CONTROLLER onCenter:TRUE withAnimate:NO];
                     
                 }
                     break;
                     
-                    
-                case BOOKING_CONTROLLER:{
+                case FAVOURITES_CONTROLLER:{
                     
                     [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
                     appDelegate.left_deck_width = self.view.bounds.size.width-180;
-
-                    [[ViewControllerHelper viewControllerHelper] enableThisController:BOOKING_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:FAVOURITES_CONTROLLER onCenter:TRUE withAnimate:NO];
                     
                 }
                     break;
@@ -334,6 +281,44 @@
                 }
                     break;
                     
+                case PROFILE_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:PROFILE_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
+                case NOTIFICATIONS_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:NOTIFICATIONS_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
+                case ABCWATERS_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:ABCWATERS_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
+                    
+                case FLOODMAP_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:FLOODMAP_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
                 case TIPS_CONTROLLER:{
                     
                     [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
@@ -343,6 +328,34 @@
                 }
                     break;
                     
+                case WLS_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:WLS_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
+                case WEATHER_FORECAST_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:WEATHER_FORECAST_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
+                    
+                case WHATSUP_CONTROLLER:{
+                    
+                    [[appDelegate rootDeckController] closeLeftView]; // -- close left view if is opened.. already.
+                    appDelegate.left_deck_width = self.view.bounds.size.width-180;
+                    [[ViewControllerHelper viewControllerHelper] enableThisController:WHATSUP_CONTROLLER onCenter:TRUE withAnimate:NO];
+                    
+                }
+                    break;
                     
                 case SETTINGS_CONTROLLER:{
                     

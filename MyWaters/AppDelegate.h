@@ -16,7 +16,7 @@
 #import "WelcomeViewController.h"
 #import "MBProgressHUD.h"
 #import <FacebookSDK/FacebookSDK.h>
-
+#import "ARViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,IIViewDeckControllerDelegate,CLLocationManagerDelegate,UIAlertViewDelegate> {
     
@@ -57,7 +57,7 @@
 - (void) retrieveFavouriteItems:(NSInteger) favouriteType;
 - (void) deleteFavouriteItems:(int) rowID;
 - (BOOL) checkItemForFavourite:(NSString*)favType idValue:(NSString*)favID;
-
+- (NSMutableArray*) getRandomFavouriteForDashBoard:(NSString *) favouriteType;
 
 - (void) insertABCWatersData:(NSMutableArray*) parametersArray;
 - (void) insertCCTVData:(NSMutableArray*) parametersArray;
