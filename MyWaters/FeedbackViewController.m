@@ -101,7 +101,7 @@
 
 - (void) submitUserFeedback {
     
-    if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
+//    if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
         if ([CommonFunctions hasConnectivity]) {
             
             if (!isReportingForChatter) {
@@ -165,10 +165,10 @@
                 
                 
                 [parameters addObject:@"Feedback.locationLatitude"];
-                [values addObject:[NSString stringWithFormat:@"%f",currentLocation.latitude]];
+                [values addObject:[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT]];
                 
                 [parameters addObject:@"Feedback.locationLongitude"];
-                [values addObject:[NSString stringWithFormat:@"%f",currentLocation.longitude]];
+                [values addObject:[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG]];
                 
                 if (isFeedbackImageAvailable) {
                     
@@ -179,16 +179,18 @@
                     [values addObject:base64ImageString];
                     
                 }
-                else {
-                    [CommonFunctions showAlertView:nil title:nil msg:@"Please provide image." cancel:@"OK" otherButton:nil];
-                    return;
-                }
+//                else {
+//                    [CommonFunctions showAlertView:nil title:nil msg:@"Please provide image." cancel:@"OK" otherButton:nil];
+//                    return;
+//                }
             }
             
             if (isReportingForChatter) {
                 
-                [parameters addObject:@"Feedback.UserID"];
-                [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userID"]];
+                if ([[SharedObject sharedClass] getPUBUserSavedDataValue:@"userID"] != (id)[NSNull null] && [[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userID"] length] != 0) {
+                    [parameters addObject:@"Feedback.UserID"];
+                    [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userID"]];
+                }
                 
                 [parameters addObject:@"Feedback.MediaFeedID"];
                 [values addObject:chatterID];
@@ -196,20 +198,16 @@
             }
             
             [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//            appDelegate.hud.labelText = @"Loading...";
-            
             
             [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,FEEDBACK_API_URL]];
         }
         else {
             [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
         }
-    }
-    else {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Please login to submit the feedback." cancel:@"OK" otherButton:nil];
-    }
+//    }
+//    else {
+//        [CommonFunctions showAlertView:nil title:nil msg:@"Please login to submit the feedback." cancel:@"OK" otherButton:nil];
+//    }
 }
 
 
@@ -1084,7 +1082,7 @@
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     }
     else {
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(113, 75, 51) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(219, 22, 31) frame:CGRectMake(0, 0, 1, 1)];
         [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];

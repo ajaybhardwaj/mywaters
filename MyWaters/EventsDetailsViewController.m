@@ -11,7 +11,7 @@
 
 @implementation EventsDetailsViewController
 @synthesize eventID,imageUrl,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,websiteString,imageName;
-@synthesize isSubscribed;
+@synthesize isSubscribed,timeValueString;
 
 
 //*************** Demo App UI
@@ -427,12 +427,24 @@
     [bgScrollView addSubview:endDateValueLabel];
     
     
-    UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, endDateValueLabel.frame.origin.y+endDateValueLabel.bounds.size.height+20, bgScrollView.bounds.size.width-80, 15)];
+    
+    UILabel *timeLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, endDateValueLabel.frame.origin.y+endDateValueLabel.bounds.size.height+5, bgScrollView.bounds.size.width, 40)];
+    timeLabel.backgroundColor = [UIColor whiteColor];
+    timeLabel.text = [NSString stringWithFormat:@"%@",timeValueString];
+    timeLabel.textColor = [UIColor darkGrayColor];
+    timeLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+    timeLabel.numberOfLines = 0;
+    timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [bgScrollView addSubview:timeLabel];
+    
+    
+    UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, timeLabel.frame.origin.y+timeLabel.bounds.size.height+10, bgScrollView.bounds.size.width-80, 15)];
     locationLabel.textColor = [UIColor darkGrayColor];
     locationLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     locationLabel.backgroundColor = [UIColor clearColor];
     locationLabel.text = @"Location:";
     [bgScrollView addSubview:locationLabel];
+    
     
     UILabel *locationValueLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, locationLabel.frame.origin.y+locationLabel.bounds.size.height+5, bgScrollView.bounds.size.width, 40)];
     locationValueLabel.backgroundColor = [UIColor whiteColor];
@@ -448,7 +460,9 @@
     [bgScrollView addSubview:locationValueLabel];
     [locationValueLabel sizeToFit];
     
-    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+startDateLabel.bounds.size.height+startDateValueLabel.bounds.size.height+endDateLabel.bounds.size.height+endDateValueLabel.bounds.size.height+locationLabel.bounds.size.height+locationValueLabel.bounds.size.height+100);
+    
+    
+    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+startDateLabel.bounds.size.height+startDateValueLabel.bounds.size.height+endDateLabel.bounds.size.height+endDateValueLabel.bounds.size.height+locationLabel.bounds.size.height+locationValueLabel.bounds.size.height+timeLabel.bounds.size.height+100);
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideTopMenu)];
     // prevents the scroll view from swallowing up the touch event of child buttons
@@ -660,7 +674,7 @@
     
     [appDelegate setShouldRotate:NO];
     
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(244,155,0) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];

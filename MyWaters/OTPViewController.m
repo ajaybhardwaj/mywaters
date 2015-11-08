@@ -23,11 +23,11 @@
 - (void) removeKeypad {
     
     [otpField1 resignFirstResponder];
-    [otpField2 resignFirstResponder];
-    [otpField3 resignFirstResponder];
-    [otpField4 resignFirstResponder];
-    [otpField5 resignFirstResponder];
-    [otpField6 resignFirstResponder];
+//    [otpField2 resignFirstResponder];
+//    [otpField3 resignFirstResponder];
+//    [otpField4 resignFirstResponder];
+//    [otpField5 resignFirstResponder];
+//    [otpField6 resignFirstResponder];
 }
 
 
@@ -35,8 +35,8 @@
 
 - (void) submitOTPCode {
     
-    if ([otpField1.text length] ==0 || [otpField2.text length] ==0 || [otpField3.text length] ==0 || [otpField4.text length] ==0 || [otpField5.text length] ==0 || [otpField6.text length] ==0) {
-        
+//    if ([otpField1.text length] ==0 || [otpField2.text length] ==0 || [otpField3.text length] ==0 || [otpField4.text length] ==0 || [otpField5.text length] ==0 || [otpField6.text length] ==0) {
+    if ([otpField1.text length] != 6) {
         [CommonFunctions showAlertView:nil title:nil msg:@"Please enter your six digit OTP code." cancel:@"OK" otherButton:nil];
     }
     else {
@@ -46,12 +46,9 @@
         isVerifyingEmail = YES;
         isResendingOTP = NO;
         
-        NSString *otpString = [NSString stringWithFormat:@"%@%@%@%@%@%@",otpField1.text,otpField2.text,otpField3.text,otpField4.text,otpField5.text,otpField6.text];
+        NSString *otpString = [NSString stringWithFormat:@"%@",otpField1.text];
         
         [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -98,9 +95,6 @@
         isResendingOTP = YES;
         
         [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -137,7 +131,9 @@
     instructionLabel.backgroundColor = [UIColor clearColor];
     [self.view addSubview:instructionLabel];
     
-    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
+    
+//    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
+    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width-20, 40)];
     otpField1.textColor = RGB(61, 71, 94);
     otpField1.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     otpField1.leftViewMode = UITextFieldViewModeAlways;
@@ -148,97 +144,100 @@
     otpField1.delegate = self;
     otpField1.keyboardType = UIKeyboardTypeNumberPad;
     otpField1.returnKeyType = UIReturnKeyNext;
-    [otpField1 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [otpField1 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     otpField1.tag = 1;
+    otpField1.placeholder=@"Enter 6 digits OTP";
+    [otpField1 setValue:RGB(61, 71, 94) forKeyPath:@"_placeholderLabel.textColor"];
     [[otpField1 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
     
     
-    otpField2 = [[UITextField alloc] initWithFrame:CGRectMake(otpField1.frame.origin.x+otpField1.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
-    otpField2.textColor = RGB(61, 71, 94);
-    otpField2.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    otpField2.leftViewMode = UITextFieldViewModeAlways;
-    otpField2.borderStyle = UITextBorderStyleNone;
-    otpField2.textAlignment = NSTextAlignmentCenter;
-    [otpField2 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    [self.view addSubview:otpField2];
-    otpField2.delegate = self;
-    otpField2.keyboardType = UIKeyboardTypeNumberPad;
-    otpField2.returnKeyType = UIReturnKeyNext;
-    [otpField2 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    otpField2.tag = 2;
-    [[otpField2 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
     
-    
-    
-    otpField3 = [[UITextField alloc] initWithFrame:CGRectMake(otpField2.frame.origin.x+otpField2.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
-    otpField3.textColor = RGB(61, 71, 94);
-    otpField3.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    otpField3.leftViewMode = UITextFieldViewModeAlways;
-    otpField3.borderStyle = UITextBorderStyleNone;
-    otpField3.textAlignment = NSTextAlignmentCenter;
-    [otpField3 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    [self.view addSubview:otpField3];
-    otpField3.delegate = self;
-    otpField3.keyboardType = UIKeyboardTypeNumberPad;
-    otpField3.returnKeyType = UIReturnKeyNext;
-    [otpField3 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    otpField3.tag = 3;
-    [[otpField3 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
-    
-    
-    otpField4 = [[UITextField alloc] initWithFrame:CGRectMake(otpField3.frame.origin.x+otpField3.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
-    otpField4.textColor = RGB(61, 71, 94);
-    otpField4.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    otpField4.leftViewMode = UITextFieldViewModeAlways;
-    otpField4.borderStyle = UITextBorderStyleNone;
-    otpField4.textAlignment = NSTextAlignmentCenter;
-    [otpField4 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    [self.view addSubview:otpField4];
-    otpField4.delegate = self;
-    otpField4.keyboardType = UIKeyboardTypeNumberPad;
-    otpField4.returnKeyType = UIReturnKeyNext;
-    [otpField4 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    otpField4.tag = 4;
-    [[otpField4 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
-    
-    
-    otpField5 = [[UITextField alloc] initWithFrame:CGRectMake(otpField4.frame.origin.x+otpField4.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
-    otpField5.textColor = RGB(61, 71, 94);
-    otpField5.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    otpField5.leftViewMode = UITextFieldViewModeAlways;
-    otpField5.borderStyle = UITextBorderStyleNone;
-    otpField5.textAlignment = NSTextAlignmentCenter;
-    [otpField5 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    [self.view addSubview:otpField5];
-    otpField5.delegate = self;
-    otpField5.keyboardType = UIKeyboardTypeNumberPad;
-    otpField5.returnKeyType = UIReturnKeyNext;
-    [otpField5 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    otpField5.tag = 5;
-    [[otpField5 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
-    
-    
-    otpField6 = [[UITextField alloc] initWithFrame:CGRectMake(otpField5.frame.origin.x+otpField5.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
-    otpField6.textColor = RGB(61, 71, 94);
-    otpField6.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    otpField6.leftViewMode = UITextFieldViewModeAlways;
-    otpField6.borderStyle = UITextBorderStyleNone;
-    otpField6.textAlignment = NSTextAlignmentCenter;
-    [otpField6 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    [self.view addSubview:otpField6];
-    otpField6.delegate = self;
-    otpField6.keyboardType = UIKeyboardTypeNumberPad;
-    otpField6.returnKeyType = UIReturnKeyNext;
-    [otpField6 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-    otpField6.tag = 6;
-    [[otpField6 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
+//    otpField2 = [[UITextField alloc] initWithFrame:CGRectMake(otpField1.frame.origin.x+otpField1.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
+//    otpField2.textColor = RGB(61, 71, 94);
+//    otpField2.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+//    otpField2.leftViewMode = UITextFieldViewModeAlways;
+//    otpField2.borderStyle = UITextBorderStyleNone;
+//    otpField2.textAlignment = NSTextAlignmentCenter;
+//    [otpField2 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+//    [self.view addSubview:otpField2];
+//    otpField2.delegate = self;
+//    otpField2.keyboardType = UIKeyboardTypeNumberPad;
+//    otpField2.returnKeyType = UIReturnKeyNext;
+//    [otpField2 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//    otpField2.tag = 2;
+//    [[otpField2 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
+//    
+//    
+//    
+//    otpField3 = [[UITextField alloc] initWithFrame:CGRectMake(otpField2.frame.origin.x+otpField2.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
+//    otpField3.textColor = RGB(61, 71, 94);
+//    otpField3.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+//    otpField3.leftViewMode = UITextFieldViewModeAlways;
+//    otpField3.borderStyle = UITextBorderStyleNone;
+//    otpField3.textAlignment = NSTextAlignmentCenter;
+//    [otpField3 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+//    [self.view addSubview:otpField3];
+//    otpField3.delegate = self;
+//    otpField3.keyboardType = UIKeyboardTypeNumberPad;
+//    otpField3.returnKeyType = UIReturnKeyNext;
+//    [otpField3 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//    otpField3.tag = 3;
+//    [[otpField3 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
+//    
+//    
+//    otpField4 = [[UITextField alloc] initWithFrame:CGRectMake(otpField3.frame.origin.x+otpField3.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
+//    otpField4.textColor = RGB(61, 71, 94);
+//    otpField4.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+//    otpField4.leftViewMode = UITextFieldViewModeAlways;
+//    otpField4.borderStyle = UITextBorderStyleNone;
+//    otpField4.textAlignment = NSTextAlignmentCenter;
+//    [otpField4 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+//    [self.view addSubview:otpField4];
+//    otpField4.delegate = self;
+//    otpField4.keyboardType = UIKeyboardTypeNumberPad;
+//    otpField4.returnKeyType = UIReturnKeyNext;
+//    [otpField4 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//    otpField4.tag = 4;
+//    [[otpField4 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
+//    
+//    
+//    otpField5 = [[UITextField alloc] initWithFrame:CGRectMake(otpField4.frame.origin.x+otpField4.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
+//    otpField5.textColor = RGB(61, 71, 94);
+//    otpField5.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+//    otpField5.leftViewMode = UITextFieldViewModeAlways;
+//    otpField5.borderStyle = UITextBorderStyleNone;
+//    otpField5.textAlignment = NSTextAlignmentCenter;
+//    [otpField5 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+//    [self.view addSubview:otpField5];
+//    otpField5.delegate = self;
+//    otpField5.keyboardType = UIKeyboardTypeNumberPad;
+//    otpField5.returnKeyType = UIReturnKeyNext;
+//    [otpField5 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//    otpField5.tag = 5;
+//    [[otpField5 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
+//    
+//    
+//    otpField6 = [[UITextField alloc] initWithFrame:CGRectMake(otpField5.frame.origin.x+otpField5.bounds.size.width+5, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
+//    otpField6.textColor = RGB(61, 71, 94);
+//    otpField6.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+//    otpField6.leftViewMode = UITextFieldViewModeAlways;
+//    otpField6.borderStyle = UITextBorderStyleNone;
+//    otpField6.textAlignment = NSTextAlignmentCenter;
+//    [otpField6 setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+//    [self.view addSubview:otpField6];
+//    otpField6.delegate = self;
+//    otpField6.keyboardType = UIKeyboardTypeNumberPad;
+//    otpField6.returnKeyType = UIReturnKeyNext;
+//    [otpField6 setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/otpline_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//    otpField6.tag = 6;
+//    [[otpField6 valueForKey:@"textInputTraits"] setValue:[UIColor clearColor] forKey:@"insertionPointColor"];
     
     
     submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
-    submitButton.frame = CGRectMake(10, otpField6.frame.origin.y+otpField6.bounds.size.height+20, self.view.bounds.size.width-20, 40);
+    submitButton.frame = CGRectMake(10, otpField1.frame.origin.y+otpField1.bounds.size.height+20, self.view.bounds.size.width-20, 40);
     [submitButton setBackgroundColor:RGB(68, 78, 98)];
     [submitButton addTarget:self action:@selector(submitOTPCode) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:submitButton];
@@ -281,15 +280,15 @@
         isChangingEmail = NO;
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
-    else {
-        if (buttonIndex==0) {
-            
-            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
-            [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
-            
-            appDelegate.IS_COMING_AFTER_LOGIN = YES;
-        }
-    }
+//    else {
+//        if (buttonIndex==0) {
+//            
+////            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+//            [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+//            
+//            appDelegate.IS_COMING_AFTER_LOGIN = YES;
+//        }
+//    }
 }
 
 
@@ -313,9 +312,10 @@
             
             if (isValidatingEmail) {
                 
-                //                [[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
-                
-                [CommonFunctions showAlertView:self title:nil msg:@"Account successfully created." cancel:@"OK" otherButton:nil];
+                //[[SharedObject sharedClass] saveAccessTokenIfNeed:[responseString JSONValue]];
+                [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
+                appDelegate.IS_COMING_AFTER_LOGIN = YES;
+//                [CommonFunctions showAlertView:nil title:nil msg:@"Account successfully created." cancel:@"OK" otherButton:nil];
             }
             else if (isResettingPassword) {
                 
@@ -350,32 +350,39 @@
 
 # pragma mark - UITextFieldDelegate Methods
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    if (textField.tag<10) {
-        
-        if ((textField.text.length >= 1) && (string.length > 0))
-        {
-            
-            NSInteger nextText = textField.tag + 1;
-            UIResponder* nextResponder = [textField.superview viewWithTag:nextText];
-            if (! nextResponder)
-                [textField resignFirstResponder];
-            if (nextResponder){
-                [nextResponder becomeFirstResponder];
-                
-                UITextField* nextTextfield= (UITextField*) [textField.superview viewWithTag:nextText];
-                
-                if ((nextTextfield.text.length < 1)){
-                    [nextTextfield setText:string];
-                }
-                return NO;
-            }
-            
-        }
-    }
+//- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+//{
+//    if (textField.tag<10) {
+//        
+//        if ((textField.text.length >= 1) && (string.length > 0))
+//        {
+//            
+//            NSInteger nextText = textField.tag + 1;
+//            UIResponder* nextResponder = [textField.superview viewWithTag:nextText];
+//            if (! nextResponder)
+//                [textField resignFirstResponder];
+//            if (nextResponder){
+//                [nextResponder becomeFirstResponder];
+//                
+//                UITextField* nextTextfield= (UITextField*) [textField.superview viewWithTag:nextText];
+//                
+//                if ((nextTextfield.text.length < 1)){
+//                    [nextTextfield setText:string];
+//                }
+//                return NO;
+//            }
+//            
+//        }
+//    }
+//    
+//    return YES;
+//}
+
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range   replacementString:(NSString *)string {
     
-    return YES;
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    return (newLength > 6) ? NO : YES;
 }
 
 

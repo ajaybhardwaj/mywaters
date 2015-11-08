@@ -44,16 +44,24 @@
         isShowingHelpScreen = NO;
         helpScreenImageView.hidden = YES;
         helpLabel.hidden = YES;
-        self.view.userInteractionEnabled = YES;
+//        self.view.userInteractionEnabled = YES;
         [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(showHideHelpScreen) withIconName:@"icn_helpicon"]];
     }
     else {
         isShowingHelpScreen = YES;
         helpScreenImageView.hidden = NO;
         helpLabel.hidden = NO;
-        self.view.userInteractionEnabled = NO;
+//        self.view.userInteractionEnabled = NO;
         [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(showHideHelpScreen) withIconName:@"icn_help_closebutton"]];
     }
+}
+
+
+//*************** Method For Removeing Help Image View
+
+-(void) removeHepImageView:(UITapGestureRecognizer *)gesture {
+    
+    [self showHideHelpScreen];
 }
 
 
@@ -285,7 +293,7 @@
     else if (tableView==exploreTableView) {
         
         if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"] != (id)[NSNull null]) {
-            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@\n\nUser : %@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"],[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"UserName"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:exploreTableView.bounds.size.width-20];
+            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:exploreTableView.bounds.size.width-20];
             subtractComponent = subtractComponent + 30;
         }
         
@@ -295,7 +303,7 @@
         //        }
         
         if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"] != (id)[NSNull null]) {
-            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:[UIFont fontWithName:ROBOTO_REGULAR size:13.0] withinWidth:exploreTableView.bounds.size.width];
+            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@\n%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"UserName"],[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]] font:[UIFont fontWithName:ROBOTO_REGULAR size:13.0] withinWidth:exploreTableView.bounds.size.width];
             subtractComponent = subtractComponent + 30;
         }
         
@@ -385,14 +393,14 @@
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, exploreTableView.bounds.size.width-20, 40)];
         
         if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"] != (id)[NSNull null])
-            titleLabel.text = [NSString stringWithFormat:@"%@\n\nUser : %@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"],[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"UserName"]];
+            titleLabel.text = [NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]];
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.textColor = RGB(0,0,0);
         titleLabel.numberOfLines = 0;
         
         CGRect newTitleLabelLabelFrame = titleLabel.frame;
-        newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@\n\nUser : %@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"],[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"UserName"]] font:titleLabel.font withinWidth:exploreTableView.bounds.size.width];//expectedDescriptionLabelSize.height;
+        newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedText"]] font:titleLabel.font withinWidth:exploreTableView.bounds.size.width];//expectedDescriptionLabelSize.height;
         titleLabel.frame = newTitleLabelLabelFrame;
         [customCell.contentView addSubview:titleLabel];
         [titleLabel sizeToFit];
@@ -402,11 +410,11 @@
         dateLabel.backgroundColor = [UIColor clearColor];
         dateLabel.textColor = [UIColor darkGrayColor];
         dateLabel.numberOfLines = 0;
-        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"] != (id)[NSNull null])
-            dateLabel.text = [CommonFunctions dateTimeFromString:[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]];
+//        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"] != (id)[NSNull null])
+        dateLabel.text = [NSString stringWithFormat:@"%@\n%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"UserName"],[CommonFunctions dateTimeFromString:[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]];
         
         CGRect newDateLabelLabelFrame = dateLabel.frame;
-        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:dateLabel.font withinWidth:exploreTableView.bounds.size.width];//expectedDescriptionLabelSize.height;
+        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@\n%@",[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"UserName"],[CommonFunctions dateTimeFromString:[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"PostedAt"]]] font:dateLabel.font withinWidth:exploreTableView.bounds.size.width];//expectedDescriptionLabelSize.height;
         dateLabel.frame = newDateLabelLabelFrame;
         [customCell.contentView addSubview:dateLabel];
         [dateLabel sizeToFit];
@@ -630,7 +638,7 @@
     
     
     segmentedControlBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50)];
-    segmentedControlBackground.backgroundColor = RGB(247,196,9);
+    segmentedControlBackground.backgroundColor = RGB(247,206,0);
     [self.view addSubview:segmentedControlBackground];
     
     NSArray *itemArray = [NSArray arrayWithObjects: @"FEED", @"CHATTER", nil];
@@ -693,6 +701,11 @@
     helpScreenImageView.alpha = 0.7;
     [self.view addSubview:helpScreenImageView];
     helpScreenImageView.hidden = YES;
+    helpScreenImageView.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer* zoomedTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeHepImageView:)];
+    zoomedTap.numberOfTapsRequired = 1;
+    [helpScreenImageView addGestureRecognizer:zoomedTap];
     
     helpLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 90, self.view.bounds.size.width-30, 20)];
     helpLabel.backgroundColor = [UIColor clearColor];
@@ -758,7 +771,7 @@
     else {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     }
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,206,0) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];

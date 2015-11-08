@@ -47,12 +47,12 @@
     // End the refreshing
     if (self.refreshControl) {
         
-//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//        [formatter setDateFormat:@"MMM d, h:mm a"];
-//        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
-//        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
-//                                                                    forKey:NSForegroundColorAttributeName];
-//        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        //        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        //        [formatter setDateFormat:@"MMM d, h:mm a"];
+        //        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        //        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+        //                                                                    forKey:NSForegroundColorAttributeName];
+        //        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
         //        self.refreshControl.attributedTitle = attributedTitle;
         
         [self.refreshControl endRefreshing];
@@ -557,15 +557,17 @@
                     return NSOrderedSame;
             }];
             
-            [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
-            
+            if (selectedFilterIndex==0)
+                [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
+            else
+                [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             // Temp commented for UAT
-//            if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0)
-//                [self performSelectorInBackground:@selector(saveABCWaterData) withObject:nil];
+            //            if (appDelegate.ABC_WATERS_LISTING_ARRAY.count!=0)
+            //                [self performSelectorInBackground:@selector(saveABCWaterData) withObject:nil];
             
         }
         [CommonFunctions dismissGlobalHUD];
-//        [appDelegate.hud hide:YES];
+        //        [appDelegate.hud hide:YES];
         [self createGridView];
         [self.refreshControl endRefreshing];
     }
@@ -576,7 +578,7 @@
     
     NSError *error = [request error];
     DebugLog(@"%@",[error description]);
-//    [appDelegate.hud hide:YES];
+    //    [appDelegate.hud hide:YES];
     [CommonFunctions dismissGlobalHUD];
 }
 
@@ -647,45 +649,67 @@
         if (indexPath.row==0) {
             
             NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"siteName" ascending:YES];
-            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-                float v1 = [left floatValue];
-                float v2 = [right floatValue];
-                if (v1 < v2)
-                    return NSOrderedAscending;
-                else if (v1 > v2)
-                    return NSOrderedDescending;
-                else
-                    return NSOrderedSame;
-            }];
+            //            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            //                float v1 = [left floatValue];
+            //                float v2 = [right floatValue];
+            //                if (v1 < v2)
+            //                    return NSOrderedAscending;
+            //                else if (v1 > v2)
+            //                    return NSOrderedDescending;
+            //                else
+            //                    return NSOrderedSame;
+            //            }];
             
-            [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+            //            [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+            [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
+            
+            [self animateFilterTable];
+            [filterTableView reloadData];
+            
+            if (isShowingGrid) {
+                [self createGridView];
+            }
+            else if (isShowingTable) {
+                [listTabeView reloadData];
+                [listTabeView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+            }
         }
         else if (indexPath.row==1) {
-            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"siteName" ascending:YES];
-            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-                float v1 = [left floatValue];
-                float v2 = [right floatValue];
-                if (v1 < v2)
-                    return NSOrderedAscending;
-                else if (v1 > v2)
-                    return NSOrderedDescending;
-                else
-                    return NSOrderedSame;
-            }];
             
-            [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByName,nil]];
+            if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+                //            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"siteName" ascending:YES];
+                NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                    float v1 = [left floatValue];
+                    float v2 = [right floatValue];
+                    if (v1 < v2)
+                        return NSOrderedAscending;
+                    else if (v1 > v2)
+                        return NSOrderedDescending;
+                    else
+                        return NSOrderedSame;
+                }];
+                
+                //            [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByName,nil]];
+                [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+                
+                [filterTableView reloadData];
+                
+                if (isShowingGrid) {
+                    [self createGridView];
+                }
+                else if (isShowingTable) {
+                    [listTabeView reloadData];
+                    [listTabeView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+                }
+            }
+            else {
+                
+                [self animateFilterTable];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Turn on location to filter by distance." cancel:@"OK" otherButton:nil];
+            }
         }
         
-        [self animateFilterTable];
-        [filterTableView reloadData];
         
-        if (isShowingGrid) {
-            [self createGridView];
-        }
-        else if (isShowingTable) {
-            [listTabeView reloadData];
-            [listTabeView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
-        }
     }
     else {
         
@@ -954,6 +978,7 @@
     isShowingTable = NO;
     isShowingGrid = YES;
     
+    selectedFilterIndex = 0;
     
     UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
     [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
@@ -973,7 +998,7 @@
     
     
     segmentedControlBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50)];
-    segmentedControlBackground.backgroundColor = RGB(52, 156, 249);//RGB(229,0,87);//RGB(52, 156, 249);
+    segmentedControlBackground.backgroundColor = RGB(76,175,238);//RGB(229,0,87);//RGB(52, 156, 249);
     [self.view addSubview:segmentedControlBackground];
     
     NSArray *itemArray = [NSArray arrayWithObjects: @"GRID", @"LIST", nil];
@@ -1066,9 +1091,9 @@
     }
     
     [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//    appDelegate.hud.labelText = @"Loading...";
+    //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    //    appDelegate.hud.labelText = @"Loading...";
     
     // Initialize the refresh control.
     self.refreshControl = [[UIRefreshControl alloc] init];
@@ -1090,7 +1115,7 @@
     
     [appDelegate setShouldRotate:NO];
     
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,156,249) frame:CGRectMake(0, 0, 1, 1)];
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(76,175,238) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
@@ -1105,17 +1130,17 @@
     else {
         [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
     }
-
+    
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     
-//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-//    swipeGesture.numberOfTouchesRequired = 1;
-//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-//    
-//    [self.view addGestureRecognizer:swipeGesture];
+    //    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+    //    swipeGesture.numberOfTouchesRequired = 1;
+    //    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+    //
+    //    [self.view addGestureRecognizer:swipeGesture];
     
 }
 

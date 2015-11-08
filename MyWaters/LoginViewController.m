@@ -22,7 +22,7 @@
     
     appDelegate.IS_COMING_AFTER_LOGIN = YES;
     appDelegate.IS_SKIPPING_USER_LOGIN = YES;
-    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+//    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
     [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
 }
 
@@ -383,7 +383,8 @@
             
             appDelegate.IS_COMING_AFTER_LOGIN = YES;
             
-            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+            // Commented out to stop showing menu when login Asked By Salaman
+//            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
             [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
             
         }
@@ -408,6 +409,9 @@
             viewObj.facebookNameStringFromLogin = facebookName;
             viewObj.isFacebookDataFetchInLogin = YES;
             [self.navigationController pushViewController:viewObj animated:YES];
+        }
+        else {
+            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
         }
     }
     else {
@@ -660,7 +664,7 @@
         if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"AccessToken"] length] !=0) {
             appDelegate.IS_COMING_AFTER_LOGIN = YES;
             
-            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+//            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
             [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
             //            [self validateLoginParameters];
         }

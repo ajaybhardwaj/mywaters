@@ -487,7 +487,6 @@
                   forControlEvents:UIControlEventValueChanged];
     [wlsListingtable addSubview:self.refreshControl];
     
-    [self fetchWLSListing];
 
 }
 
@@ -498,7 +497,7 @@
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
     
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(51,148,228) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
@@ -507,7 +506,7 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
     
-    
+    [self fetchWLSListing];
     
 }
 

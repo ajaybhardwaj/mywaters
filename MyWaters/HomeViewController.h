@@ -69,6 +69,7 @@
     UIButton *quickMapButton,*whatsUpButton,*cctvButton,*reportButton;
     
     UIWebView *tipsWebView;
+    UILabel *tipsVideoTitleLabel;
 }
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, assign) MKCoordinateRegion region;

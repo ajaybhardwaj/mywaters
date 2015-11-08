@@ -34,7 +34,7 @@
     //        [self submitLoginCredentials];
     
     // After Validation call it.
-    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+//    [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
     [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
     
     appDelegate.IS_COMING_AFTER_LOGIN = YES;
@@ -342,13 +342,13 @@
         
         if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"isEmailVerified"] intValue] == 1) {
             
-            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
+//            [[ViewControllerHelper viewControllerHelper] enableDeckView:self];
             [[ViewControllerHelper viewControllerHelper] enableThisController:HOME_CONTROLLER onCenter:YES withAnimate:YES];
-            
             appDelegate.IS_COMING_AFTER_LOGIN = YES;
         }
         else {
             
+            appDelegate.IS_CREATING_ACCOUNT = YES;
             OTPViewController *viewObj = [[OTPViewController alloc] init];
             viewObj.emailStringForVerification = emailField.text;
             viewObj.isValidatingEmail = YES;

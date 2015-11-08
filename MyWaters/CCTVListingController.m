@@ -41,13 +41,13 @@
     // End the refreshing
     if (self.refreshControl) {
         
-//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//        [formatter setDateFormat:@"MMM d, h:mm a"];
-//        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
-//        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
-//                                                                    forKey:NSForegroundColorAttributeName];
-//        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
-//        self.refreshControl.attributedTitle = attributedTitle;
+        //        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        //        [formatter setDateFormat:@"MMM d, h:mm a"];
+        //        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        //        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+        //                                                                    forKey:NSForegroundColorAttributeName];
+        //        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        //        self.refreshControl.attributedTitle = attributedTitle;
         
         [self.refreshControl endRefreshing];
     }
@@ -59,9 +59,9 @@
 - (void) fetchCCTVListing {
     
     [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//    appDelegate.hud.labelText = @"Loading...";
+    //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    //    appDelegate.hud.labelText = @"Loading...";
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
     NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
@@ -184,7 +184,7 @@
 - (void) requestFinished:(ASIHTTPRequest *)request {
     
     [CommonFunctions dismissGlobalHUD];
-//    [appDelegate.hud hide:YES];
+    //    [appDelegate.hud hide:YES];
     // Use when fetching text data
     NSString *responseString = [request responseString];
     
@@ -249,12 +249,14 @@
                     return NSOrderedSame;
             }];
             
-            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
-            
+            if (selectedFilterIndex==0)
+                [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
+            else
+               [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             // Temp commented for UAT
-//            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
-//                [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
-
+            //            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
+            //                [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
+            
             //            }
             //            else {
             //                if (appDelegate.CCTV_LISTING_ARRAY.count!=0) {
@@ -280,7 +282,7 @@
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
     [CommonFunctions dismissGlobalHUD];
-//    [appDelegate.hud hide:YES];
+    //    [appDelegate.hud hide:YES];
 }
 
 
@@ -310,48 +312,65 @@
         if (indexPath.row==0) {
             
             NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
-            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-                float v1 = [left floatValue];
-                float v2 = [right floatValue];
-                if (v1 < v2)
-                    return NSOrderedAscending;
-                else if (v1 > v2)
-                    return NSOrderedDescending;
-                else
-                    return NSOrderedSame;
-            }];
+            //            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            //                float v1 = [left floatValue];
+            //                float v2 = [right floatValue];
+            //                if (v1 < v2)
+            //                    return NSOrderedAscending;
+            //                else if (v1 > v2)
+            //                    return NSOrderedDescending;
+            //                else
+            //                    return NSOrderedSame;
+            //            }];
             
-            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+            //            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
+            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
+            
+            [self animateFilterTable];
+            [filterTableView reloadData];
+            [cctvListingTable reloadData];
+            [cctvListingTable scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
         }
         else if (indexPath.row==1) {
-            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
-            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-                float v1 = [left floatValue];
-                float v2 = [right floatValue];
-                if (v1 < v2)
-                    return NSOrderedAscending;
-                else if (v1 > v2)
-                    return NSOrderedDescending;
-                else
-                    return NSOrderedSame;
-            }];
             
-            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByName,nil]];
+            if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+                //            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
+                NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                    float v1 = [left floatValue];
+                    float v2 = [right floatValue];
+                    if (v1 < v2)
+                        return NSOrderedAscending;
+                    else if (v1 > v2)
+                        return NSOrderedDescending;
+                    else
+                        return NSOrderedSame;
+                }];
+                
+                //            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByName,nil]];
+                [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+                
+                [self animateFilterTable];
+                [filterTableView reloadData];
+                [cctvListingTable reloadData];
+                [cctvListingTable scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+            }
+            else {
+                
+                [self animateFilterTable];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Turn on location to filter by distance." cancel:@"OK" otherButton:nil];
+            }
         }
         
-        [self animateFilterTable];
-        [filterTableView reloadData];
-        [cctvListingTable reloadData];
-        [cctvListingTable scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+        
     }
     
     else if (tableView==cctvListingTable) {
         
-
+        
         if (isShowingSearchBar) {
             [self animateSearchBar];
         }
-
+        
         CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
         
         if (isFiltered) {
@@ -434,7 +453,7 @@
     else {
         
         UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 50, 50)];
-//        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-2.png",appDelegate.RESOURCE_FOLDER_PATH]];
+        //        cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/CCTV-2.png",appDelegate.RESOURCE_FOLDER_PATH]];
         cellImage.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]];
         [cell.contentView addSubview:cellImage];
         
@@ -502,6 +521,7 @@
     filtersArray = [[NSArray alloc] initWithObjects:@"Name",@"Distance", nil];
     filteredDataSource = [[NSMutableArray alloc] init];
     
+    selectedFilterIndex = 0;
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
@@ -516,17 +536,17 @@
     [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
     [btnSearch setFrame:CGRectMake(44, 0, 32, 32)];
     
-//    UIButton *btnLocation =  [UIButton buttonWithType:UIButtonTypeCustom];
-//    [btnLocation setImage:[UIImage imageNamed:@"icn_location_top"] forState:UIControlStateNormal];
-//    //    [btnLocation addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
-//    [btnLocation setFrame:CGRectMake(72, 0, 32, 32)];
+    //    UIButton *btnLocation =  [UIButton buttonWithType:UIButtonTypeCustom];
+    //    [btnLocation setImage:[UIImage imageNamed:@"icn_location_top"] forState:UIControlStateNormal];
+    //    //    [btnLocation addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
+    //    [btnLocation setFrame:CGRectMake(72, 0, 32, 32)];
     
     
-//    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 32)];
+    //    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 32)];
     UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
     [rightBarButtonItems addSubview:btnfilter];
     [rightBarButtonItems addSubview:btnSearch];
-//    [rightBarButtonItems addSubview:btnLocation];
+    //    [rightBarButtonItems addSubview:btnLocation];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
     
@@ -549,7 +569,7 @@
     filterTableView.alpha = 0.8;
     filterTableView.scrollEnabled = NO;
     filterTableView.alwaysBounceVertical = NO;
-
+    
     
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -150, self.view.bounds.size.width, 40)];
     listinSearchBar.delegate = self;
@@ -596,14 +616,14 @@
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
     
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(33, 131, 142) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
- 
+    
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
     [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-
+    
     if ([CommonFunctions hasConnectivity]) {
         [self fetchCCTVListing];
     }

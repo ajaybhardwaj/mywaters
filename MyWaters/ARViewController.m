@@ -886,7 +886,6 @@
     
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     [appDelegate setShouldRotate:NO];
-    
     [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
 
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)

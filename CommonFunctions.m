@@ -405,7 +405,7 @@ static UIWindow *window;
     return resultStrig;
 }
 
-//*************** Method For Converting Date String To NSDate
+//*************** Method For Converting Date String To Required Format String
 
 + (NSString *)dateTimeFromString:(NSString *)dateTimeString {
     
@@ -418,6 +418,22 @@ static UIWindow *window;
     NSString *resultStrig = [dateFormatter stringFromDate:result];
     return resultStrig;
 }
+
+
+//*************** Method For Converting Date String To Required Format String Without Time
+
++ (NSString *)dateWithoutTimeString:(NSString *)dateTimeString {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    
+    NSDate *result = [dateFormatter dateFromString:dateTimeString];
+    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy"];
+    
+    NSString *resultStrig = [dateFormatter stringFromDate:result];
+    return resultStrig;
+}
+
 
 
 //*************** Method For Converting Date String To NSDate

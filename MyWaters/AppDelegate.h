@@ -41,7 +41,7 @@
 @property (nonatomic, assign) CLLocationCoordinate2D USER_CURRENT_LOCATION_COORDINATE,LONG_PRESS_USER_LOCATION_COORDINATE;
 @property (nonatomic, assign) BOOL IS_COMING_FROM_DASHBOARD,IS_RELAUNCHING_APP,IS_USER_LOCATION_SELECTED_BY_LONG_PRESS,IS_SHARING_ON_SOCIAL_MEDIA;
 
-@property (nonatomic, assign) BOOL shouldRotate,IS_PUSH_NOTIFICATION_RECEIVED;
+@property (nonatomic, assign) BOOL shouldRotate,IS_PUSH_NOTIFICATION_RECEIVED,IS_CREATING_ACCOUNT;
 @property (nonatomic, assign) NSInteger RECEIVED_NOTIFICATION_TYPE;
 @property (nonatomic, strong) NSString *PUSH_NOTIFICATION_ALERT_MESSAGE;
 
@@ -50,7 +50,9 @@
 - (void) updateDashboardPreference;
 - (void) retrieveABCWatersListing;
 - (void) retrievePointOfInterests:(int) abcwater_id;
-
+- (int) checkNotificationReadStatus:(NSInteger) notificationID;
+- (void) insertNotificationReadStatus:(NSInteger) notificationID;
+- (void) removeNotificationsReadData;
 
 //***** Method For Sqlite For Favourites
 - (void) insertFavouriteItems:(NSMutableDictionary*) parametersDict;

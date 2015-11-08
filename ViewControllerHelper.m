@@ -79,7 +79,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
 //    [[SharedObject sharedClass] removeSaved_SUPER_SPORTS_CLUB_User];
     [[SharedObject sharedClass] clearPUBUserSavedData];
     _currentDeckIndex = -1;
-    
+    [appDelegate removeNotificationsReadData];
     
     
     
@@ -204,7 +204,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         [self setNavigationBarStyle_Transclucent:_notificationsNavController.navigationBar];
         [[[notification navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
 //        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(113, 75, 51) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(113, 75, 51) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(115, 177, 17) frame:CGRectMake(0, 0, 1, 1)];
         [[[notification navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_notificationsNavController.view setAutoresizesSubviews:TRUE];
@@ -232,7 +233,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_whatsupNavController.navigationBar];
         [[[whatsup navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,206,0) frame:CGRectMake(0, 0, 1, 1)];
         [[[whatsup navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_whatsupNavController.view setAutoresizesSubviews:TRUE];
@@ -260,7 +262,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_floodmapNavController.navigationBar];
         [[[floodmap navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(229,0,87) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(229,0,87) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(208,11,76) frame:CGRectMake(0, 0, 1, 1)];
         [[[floodmap navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_floodmapNavController.view setAutoresizesSubviews:TRUE];
@@ -288,7 +291,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_abcwatersNavController.navigationBar];
         [[[abcwaters navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,156,249) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(76,175,238) frame:CGRectMake(0, 0, 1, 1)];
         [[[abcwaters navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_abcwatersNavController.view setAutoresizesSubviews:TRUE];
@@ -316,7 +319,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_eventsNavController.navigationBar];
         [[[events navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(244,155,0) frame:CGRectMake(0, 0, 1, 1)];
         [[[events navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_eventsNavController.view setAutoresizesSubviews:TRUE];
@@ -344,7 +348,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_cctvNavController.navigationBar];
         [[[cctv navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(33, 131, 142) frame:CGRectMake(0, 0, 1, 1)];
         [[[cctv navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_cctvNavController.view setAutoresizesSubviews:TRUE];
@@ -372,7 +377,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_wlsController.navigationBar];
         [[[wls navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(52,158,240) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(51,148,228) frame:CGRectMake(0, 0, 1, 1)];
         [[[wls navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_wlsController.view setAutoresizesSubviews:TRUE];
@@ -401,7 +407,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_bookingNavController.navigationBar];
         [[[booking navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(231,95,39) frame:CGRectMake(0, 0, 1, 1)];
         [[[booking navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_bookingNavController.view setAutoresizesSubviews:TRUE];
@@ -429,9 +436,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_feedbackNavController.navigationBar];
         [[[feedback navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(140,164,0) frame:CGRectMake(0, 0, 1, 1)];
-//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(113, 75, 51) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(113, 75, 51) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(219, 22, 31) frame:CGRectMake(0, 0, 1, 1)];
         [[[feedback navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_feedbackNavController.view setAutoresizesSubviews:TRUE];
@@ -489,8 +495,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_settingsNavController.navigationBar];
         [[[settings navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(135, 135, 135) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(135, 135, 135) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(196, 197, 200) frame:CGRectMake(0, 0, 1, 1)];
         [[[settings navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_settingsNavController.view setAutoresizesSubviews:TRUE];
@@ -546,7 +552,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_favouritesNavController.navigationBar];
         [[[favourites navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(85,49,118) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(85,49,118) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(249,172,0) frame:CGRectMake(0, 0, 1, 1)];
         [[[favourites navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_favouritesNavController.view setAutoresizesSubviews:TRUE];
@@ -574,8 +581,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_homeNavController.navigationBar];
         [[[weather navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        //        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(36,160,236) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(36,160,236) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(184,213,239) frame:CGRectMake(0, 0, 1, 1)];
         [[[weather navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_weatherForecastNavController.view setAutoresizesSubviews:TRUE];
@@ -602,8 +609,8 @@ static ViewControllerHelper *sharedViewHelper = nil;
         
         [self setNavigationBarStyle_Transclucent:_aboutPUBController.navigationBar];
         [[[aboutPUB navigationController] navigationBar] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
-        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(135, 135, 135) frame:CGRectMake(0, 0, 1, 1)];
+//        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(135, 135, 135) frame:CGRectMake(0, 0, 1, 1)];
+        UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(134, 144, 156) frame:CGRectMake(0, 0, 1, 1)];
         [[[aboutPUB navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
         
         [_aboutPUBController.view setAutoresizesSubviews:TRUE];

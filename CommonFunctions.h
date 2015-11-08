@@ -43,6 +43,7 @@
 + (NSString *)dateTimeFromString:(NSString *)dateTimeString;
 + (NSString *)dateFromString:(NSString *)dateString;
 + (NSDate *)dateValueFromString:(NSString *)dateTimeString;
++ (NSString *)dateWithoutTimeString:(NSString *)dateTimeString;
 + (NSMutableDictionary *)extractXML:(NSMutableDictionary *)XMLDictionary;
 + (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj;
 + (CLLocationCoordinate2D) getUserCurrentLocation;

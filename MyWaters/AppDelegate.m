@@ -25,6 +25,7 @@
 @synthesize IS_COMING_FROM_DASHBOARD,IS_RELAUNCHING_APP,IS_SHARING_ON_SOCIAL_MEDIA;
 @synthesize DASHBOARD_PREFERENCES_CHANGED,IS_USER_LOCATION_SELECTED_BY_LONG_PRESS;
 @synthesize RECEIVED_NOTIFICATION_TYPE,IS_PUSH_NOTIFICATION_RECEIVED,PUSH_NOTIFICATION_ALERT_MESSAGE;
+@synthesize IS_CREATING_ACCOUNT;
 
 
 //*************** Method To Register Device Toke For Push Notifications
@@ -698,7 +699,7 @@
             for (int i=0; i<EVENTS_LISTING_ARRAY.count; i++) {
                 
                 
-                NSString *eventID,*titleString,*descriptionString,*latValue,*longValue,*phoneNoString,*addressString,*startDateString,*endDateString,*imageName;
+                NSString *eventID,*titleString,*descriptionString,*latValue,*longValue,*phoneNoString,*addressString,*startDateString,*endDateString,*imageName,*timeValue;
                 if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != (id)[NSNull null])
                     eventID = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"];
                 
@@ -729,7 +730,11 @@
                 if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"] != (id)[NSNull null])
                     imageName = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"];
                 
-                NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO events (eventId, eventTitle, eventDescription, eventLat, eventlong, eventPhone, eventAddress, eventStartDate, eventEndDate, eventImageName) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\")", eventID,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,imageName];
+                if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"timeText"] != (id)[NSNull null])
+                        timeValue = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"timeText"];
+
+                
+                NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO events (eventId, eventTitle, eventDescription, eventLat, eventlong, eventPhone, eventAddress, eventStartDate, eventEndDate, eventImageName, eventTime) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\",, \"%@\")", eventID,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,imageName,timeValue];
                 const char *insert_stmt = [insertSQL UTF8String];
                 
                 DebugLog(@"Insert query %@",insertSQL);
@@ -1008,6 +1013,127 @@
     
     return favouriteArray;
 }
+
+
+
+//*************** Method To Insert Favourite Items
+
+- (int) checkNotificationReadStatus:(NSInteger) notificationID {
+    
+    
+    sqlite3_stmt    *statement;
+    int recordCount =0;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        NSString *searchQuery = [NSString stringWithFormat: @"SELECT COUNT(*) FROM notifications_read WHERE notif_id=\"%ld\"",(long)notificationID];
+        
+        const char *query_stmt = [searchQuery UTF8String];
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                recordCount = sqlite3_column_int(statement, 0);
+            }
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+    return recordCount;
+}
+
+
+//*************** Method To Insert Favourite Items
+
+- (void) insertNotificationReadStatus:(NSInteger) notificationID {
+    
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        int recordCount =0;
+        NSString *searchQuery = [NSString stringWithFormat: @"SELECT COUNT(*) FROM notifications_read WHERE notif_id=\"%ld\"",(long)notificationID];
+        
+        const char *query_stmt = [searchQuery UTF8String];
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                recordCount = sqlite3_column_int(statement, 0);
+            }
+        }
+        
+        
+        if (recordCount==0) {
+            
+            NSString *insertSQL = [NSString stringWithFormat: @"INSERT OR IGNORE INTO notifications_read (notif_id) VALUES (\"%ld\")",(long)notificationID];
+            const char *insert_stmt = [insertSQL UTF8String];
+            
+            DebugLog(@"Insert query %@",insertSQL);
+            
+            sqlite3_prepare_v2(database, insert_stmt, -1, &statement, NULL);
+            if (sqlite3_step(statement) == SQLITE_DONE)
+            {
+                DebugLog(@"Row inserted");
+            }
+            
+            else {
+                DebugLog(@"Failed to insert row");
+            }
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+}
+
+
+//*************** Method To Insert WLS Site Data In Sqlite
+
+- (void) removeNotificationsReadData {
+    
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        NSString *truncateTableSQL = [NSString stringWithFormat: @"DELETE FROM notifications_read"];
+        const char *truncate_stmt = [truncateTableSQL UTF8String];
+        
+        sqlite3_prepare_v2(database, truncate_stmt, -1, &statement, NULL);
+        if (sqlite3_step(statement) == SQLITE_DONE)
+        {
+            DebugLog(@"Table Truncated");
+            
+        }
+        
+        else {
+            DebugLog(@"Failed to truncate table");
+        }
+        
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+}
+
 
 
 

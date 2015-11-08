@@ -39,7 +39,7 @@
     BOOL isAlreadyFav,isSubscribing,isUnsubscribing;
 }
 
-@property (nonatomic, strong) NSString *eventID,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*startDateString,*endDateString,*websiteString,*imageName;
+@property (nonatomic, strong) NSString *eventID,*imageUrl,*titleString,*descriptionString,*phoneNoString,*addressString,*startDateString,*endDateString,*websiteString,*imageName,*timeValueString;
 @property (nonatomic, assign) double latValue,longValue;
 @property (nonatomic, assign) BOOL isSubscribed;
 

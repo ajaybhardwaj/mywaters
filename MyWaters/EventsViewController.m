@@ -320,8 +320,12 @@
                     return NSOrderedSame;
             }];
             
-            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,sortByName,sortByDistance,nil]];
-            
+            if (selectedFilterIndex==0)
+                [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,nil]];
+            else if (selectedFilterIndex==1)
+                [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
+            else
+                [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             // Temp commented for UAT
             //            if (appDelegate.EVENTS_LISTING_ARRAY.count!=0)
             //                [self performSelectorInBackground:@selector(saveEventsData) withObject:nil];
@@ -360,54 +364,65 @@
         float titleHeight = 0.0;
         float subTitleHeight = 0.0;
         float dateHeight = 0.0;
+        float timeHeight = 0.0;
         int subtractComponent = 0;
         
         if (isFiltered) {
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null]) {
                 titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:eventsListingTableView.bounds.size.width-85];
-                subtractComponent = subtractComponent + 25;
+                subtractComponent = subtractComponent + 30;
             }
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
-                subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:eventsListingTableView.bounds.size.width-90];
-                subtractComponent = subtractComponent + 25;
+                subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:12.0] withinWidth:eventsListingTableView.bounds.size.width-90];
+                subtractComponent = subtractComponent + 30;
             }
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
-                dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"]]] font:[UIFont fontWithName:ROBOTO_REGULAR size:13.0] withinWidth:eventsListingTableView.bounds.size.width-85];
-                subtractComponent = subtractComponent + 25;
+                dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"]]] font:[UIFont fontWithName:ROBOTO_REGULAR size:12.0] withinWidth:eventsListingTableView.bounds.size.width-85];
+                subtractComponent = subtractComponent + 30;
+            }
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"] != (id)[NSNull null]) {
+                timeHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateWithoutTimeString:[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"]]] font:[UIFont fontWithName:ROBOTO_REGULAR size:12.0] withinWidth:eventsListingTableView.bounds.size.width-85];
+                subtractComponent = subtractComponent + 30;
             }
             
-            if ((titleHeight+subTitleHeight+dateHeight) < 100) {
+            if ((titleHeight+subTitleHeight+dateHeight+timeHeight) < 100) {
                 return 100.0f;
             }
             
-            return titleHeight+subTitleHeight+dateHeight-subtractComponent;
+            return titleHeight+subTitleHeight+dateHeight+timeHeight-subtractComponent;
             
         }
         else {
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null]) {
                 titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:eventsListingTableView.bounds.size.width-85];
-                subtractComponent = subtractComponent + 25;
+                subtractComponent = subtractComponent + 30;
             }
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
-                subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:eventsListingTableView.bounds.size.width-90];
-                subtractComponent = subtractComponent + 25;
+                subTitleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:12.0] withinWidth:eventsListingTableView.bounds.size.width-90];
+                subtractComponent = subtractComponent + 30;
             }
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
-                dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"]]] font:[UIFont fontWithName:ROBOTO_REGULAR size:13.0] withinWidth:eventsListingTableView.bounds.size.width-85];
-                subtractComponent = subtractComponent + 25;
+                dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"]]] font:[UIFont fontWithName:ROBOTO_REGULAR size:12.0] withinWidth:eventsListingTableView.bounds.size.width-85];
+                subtractComponent = subtractComponent + 30;
             }
             
-            if ((titleHeight+subTitleHeight+dateHeight) < 100) {
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"] != (id)[NSNull null]) {
+                timeHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateWithoutTimeString:[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"]]] font:[UIFont fontWithName:ROBOTO_REGULAR size:12.0] withinWidth:eventsListingTableView.bounds.size.width-85];
+                subtractComponent = subtractComponent + 30;
+            }
+            
+            
+            if ((titleHeight+subTitleHeight+dateHeight+timeHeight) < 100) {
                 return 100.0f;
             }
             
-            return titleHeight+subTitleHeight+dateHeight-subtractComponent;
+            return titleHeight+subTitleHeight+dateHeight+timeHeight-subtractComponent;
         }
         
     }
@@ -456,6 +471,11 @@
             }];
             
             [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,sortByName,sortByDistance,nil]];
+            
+            [self animateFilterTable];
+            [filterTableView reloadData];
+            [eventsListingTableView reloadData];
+            [eventsListingTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
         }
         else if (indexPath.row==1) {
             NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
@@ -472,28 +492,42 @@
             }];
             
             [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDate,sortByDistance,nil]];
+            
+            [self animateFilterTable];
+            [filterTableView reloadData];
+            [eventsListingTableView reloadData];
+            [eventsListingTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
         }
         else if (indexPath.row==2) {
-            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
-            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-                float v1 = [left floatValue];
-                float v2 = [right floatValue];
-                if (v1 < v2)
-                    return NSOrderedAscending;
-                else if (v1 > v2)
-                    return NSOrderedDescending;
-                else
-                    return NSOrderedSame;
-            }];
             
-            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByDate,sortByName,nil]];
+            if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+                NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+                NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                    float v1 = [left floatValue];
+                    float v2 = [right floatValue];
+                    if (v1 < v2)
+                        return NSOrderedAscending;
+                    else if (v1 > v2)
+                        return NSOrderedDescending;
+                    else
+                        return NSOrderedSame;
+                }];
+                
+                [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByDate,sortByName,nil]];
+                
+                [self animateFilterTable];
+                [filterTableView reloadData];
+                [eventsListingTableView reloadData];
+                [eventsListingTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+            }
+            else {
+                [self animateFilterTable];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Turn on location to filter by distance." cancel:@"OK" otherButton:nil];
+            }
         }
         
-        [self animateFilterTable];
-        [filterTableView reloadData];
-        [eventsListingTableView reloadData];
-        [eventsListingTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+        
         
     }
     else if (tableView==eventsListingTableView) {
@@ -531,12 +565,12 @@
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
                 viewObj.startDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"];
-                viewObj.startDateString = [CommonFunctions dateTimeFromString:viewObj.startDateString];
+                viewObj.startDateString = [CommonFunctions dateWithoutTimeString:viewObj.startDateString];
             }
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
                 viewObj.endDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"];
-                viewObj.endDateString = [CommonFunctions dateTimeFromString:viewObj.endDateString];
+                viewObj.endDateString = [CommonFunctions dateWithoutTimeString:viewObj.endDateString];
             }
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
@@ -546,6 +580,9 @@
             
             if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
                 viewObj.isSubscribed = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"] != (id)[NSNull null])
+                viewObj.timeValueString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"];
             
         }
         else {
@@ -588,6 +625,10 @@
             
             if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
                 viewObj.isSubscribed = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"] != (id)[NSNull null])
+                viewObj.timeValueString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"];
+
             
         }
         
@@ -748,10 +789,10 @@
             endDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"];
         }
         
-        startDateString = [CommonFunctions dateTimeFromString:startDateString];
-        endDateString = [CommonFunctions dateTimeFromString:endDateString];
+        startDateString = [CommonFunctions dateWithoutTimeString:startDateString];
+        endDateString = [CommonFunctions dateWithoutTimeString:endDateString];
         
-        UILabel *startDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, titleLabel.bounds.origin.y+titleLabel.bounds.size.height+10, eventsListingTableView.bounds.size.width-110, 40)];
+        UILabel *startDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, eventsListingTableView.bounds.size.width-110, 40)];
         startDateLabel.text = [NSString stringWithFormat:@"Start: %@\nEnd: %@",startDateString,endDateString];
         startDateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         startDateLabel.backgroundColor = [UIColor clearColor];
@@ -766,18 +807,45 @@
         [startDateLabel sizeToFit];
         
         
-//        UILabel *endDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, startDateLabel.bounds.origin.y+startDateLabel.bounds.size.height+10, eventsListingTableView.bounds.size.width-110, 20)];
-//        endDateLabel.text = [NSString stringWithFormat:@"End: %@",endDateString];
-//        endDateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-//        endDateLabel.backgroundColor = [UIColor clearColor];
-//        endDateLabel.textColor = [UIColor darkGrayColor];
-//        endDateLabel.textAlignment = NSTextAlignmentLeft;
-//        
-//        CGRect newEndDateLabelLabelFrame = endDateLabel.frame;
-//        newEndDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",endDateString] font:endDateLabel.font withinWidth:eventsListingTableView.bounds.size.width-110];//expectedDescriptionLabelSize.height;
-//        endDateLabel.frame = newEndDateLabelLabelFrame;
-//        [cell.contentView addSubview:endDateLabel];
-//        [endDateLabel sizeToFit];
+        
+        UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, startDateLabel.frame.origin.y+startDateLabel.bounds.size.height+5, eventsListingTableView.bounds.size.width-110, 20)];
+        if (isFiltered) {
+            timeLabel.text = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"];
+        }
+        else {
+            timeLabel.text = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"];
+
+        }
+        timeLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        timeLabel.backgroundColor = [UIColor clearColor];
+        timeLabel.numberOfLines = 0;
+        timeLabel.textColor = [UIColor darkGrayColor];
+        
+        
+        CGRect newTimeLabelFrame = timeLabel.frame;
+        if (isFiltered) {
+            newTimeLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"]] font:timeLabel.font withinWidth:eventsListingTableView.bounds.size.width-110];//expectedDescriptionLabelSize.height;
+        }
+        else {
+            newTimeLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"]] font:timeLabel.font withinWidth:eventsListingTableView.bounds.size.width-110];//expectedDescriptionLabelSize.height;
+        }
+        timeLabel.frame = newTimeLabelFrame;
+        [cell.contentView addSubview:timeLabel];
+        [timeLabel sizeToFit];
+        
+        
+        //        UILabel *endDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, startDateLabel.bounds.origin.y+startDateLabel.bounds.size.height+10, eventsListingTableView.bounds.size.width-110, 20)];
+        //        endDateLabel.text = [NSString stringWithFormat:@"End: %@",endDateString];
+        //        endDateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        //        endDateLabel.backgroundColor = [UIColor clearColor];
+        //        endDateLabel.textColor = [UIColor darkGrayColor];
+        //        endDateLabel.textAlignment = NSTextAlignmentLeft;
+        //
+        //        CGRect newEndDateLabelLabelFrame = endDateLabel.frame;
+        //        newEndDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",endDateString] font:endDateLabel.font withinWidth:eventsListingTableView.bounds.size.width-110];//expectedDescriptionLabelSize.height;
+        //        endDateLabel.frame = newEndDateLabelLabelFrame;
+        //        [cell.contentView addSubview:endDateLabel];
+        //        [endDateLabel sizeToFit];
         
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -910,7 +978,7 @@
     //    }
     //    else {
     
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(247,196,9) frame:CGRectMake(0, 0, 1, 1)];
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(244,155,0) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];

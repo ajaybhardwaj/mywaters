@@ -1299,7 +1299,7 @@
     [self.view addSubview:badgesBackgroundView];
     badgesBackgroundView.userInteractionEnabled = YES;
     
-    myBadgesLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, 115, 20)];
+    myBadgesLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, 200, 20)];
     myBadgesLabel.text = @"What are my badges";
     myBadgesLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.5];
     myBadgesLabel.textColor = [UIColor blackColor];

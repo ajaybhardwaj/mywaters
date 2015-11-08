@@ -601,8 +601,10 @@
             [appDelegate.CCTV_LISTING_ARRAY setArray:tempArray];
             
             CLLocationCoordinate2D currentLocation;
-            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
-            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+//            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+//            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+            currentLocation.latitude = latValue;
+            currentLocation.longitude = longValue;
             
             
             for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY count];idx++) {

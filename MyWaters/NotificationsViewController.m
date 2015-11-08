@@ -103,12 +103,10 @@
     if ([CommonFunctions hasConnectivity]) {
         
         [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//        appDelegate.hud.labelText = @"Loading...";
         
         NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"pushtoken",@"version", nil];
         NSArray *values = [[NSArray alloc] initWithObjects:@"7",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
+
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
         
         [self pullToRefreshTable];
@@ -137,8 +135,9 @@
         
         if (tempArray.count==0) {
             
-            notificationsTable.hidden = NO;
-            noRecentNotifiactionLabel.hidden = YES;
+            [appDelegate.PUSH_NOTIFICATION_ARRAY removeAllObjects];
+            notificationsTable.hidden = YES;
+            noRecentNotifiactionLabel.hidden = NO;
         }
         else {
             
@@ -147,17 +146,28 @@
             
             [appDelegate.PUSH_NOTIFICATION_ARRAY removeAllObjects];
             [appDelegate.PUSH_NOTIFICATION_ARRAY setArray:tempArray];
-//            [tableDataSource setArray:tempArray];
            
             [tableDataSource removeAllObjects];
+            
             for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
                 [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
             }
             
-            DebugLog(@"New Table Data Source -- %@",tableDataSource);
+            for (int idx = 0; idx<[tableDataSource count];idx++) {
+                
+                NSMutableDictionary *dict = [tableDataSource[idx] mutableCopy];
+                
+                int countValue = [appDelegate checkNotificationReadStatus:[[[tableDataSource objectAtIndex:idx] objectForKey:@"ID"] intValue]];
+                
+                if (countValue==0)
+                    dict[@"Read"] = @"No";
+                else
+                    dict[@"Read"] = @"Yes";
+                
+                tableDataSource[idx] = dict;
+            }
             
             [notificationsTable reloadData];
-
         }
     }
 }
@@ -270,14 +280,6 @@
             
             currentIndex = indexPath.row;
             
-            //            DebugLog(@"%@",[AVSpeechSynthesisVoice speechVoices]);
-            //
-            //            //    if (self.synthesizer.speaking == NO) {
-            //            AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Message"]];
-            //            utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
-            //            AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
-            //            [synth speakUtterance:utterance];
-            
             DebugLog(@"%@",[NSString stringWithFormat:@"%@FloodVoice/%d.mp3",IMAGE_BASE_URL,[[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] intValue]]);
             
             NSData *fetchedData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@FloodVoice/%d.mp3",IMAGE_BASE_URL,[[[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"] intValue]]]];
@@ -298,6 +300,29 @@
                 
             }
         }
+        
+        [appDelegate insertNotificationReadStatus:[[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] intValue]];
+        
+        [tableDataSource removeAllObjects];
+        for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
+            [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
+        }
+        
+        for (int idx = 0; idx<[tableDataSource count];idx++) {
+            
+            NSMutableDictionary *dict = [tableDataSource[idx] mutableCopy];
+            
+            int countValue = [appDelegate checkNotificationReadStatus:[[[tableDataSource objectAtIndex:idx] objectForKey:@"ID"] intValue]];
+            
+            if (countValue==0)
+                dict[@"Read"] = @"No";
+            else
+                dict[@"Read"] = @"Yes";
+            
+            tableDataSource[idx] = dict;
+        }
+        
+        [notificationsTable reloadData];
     }
 }
 
@@ -321,7 +346,7 @@
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     
-    cell.backgroundColor = RGB(247, 247, 247);
+    
     
     if (tableView==filterTableView) {
         
@@ -394,8 +419,15 @@
         [dateLabel sizeToFit];
         
         UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, height-1, notificationsTable.bounds.size.width, 0.5)];
-        [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
+        [seperatorImage setBackgroundColor:[UIColor darkGrayColor]];
         [cell.contentView addSubview:seperatorImage];
+        
+        if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Read"] isEqualToString:@"No"]) {
+            cell.backgroundColor = RGB(230, 230, 230);
+        }
+        else {
+            cell.backgroundColor = [UIColor whiteColor];//RGB(247, 247, 247);
+        }
     }
     
     return cell;

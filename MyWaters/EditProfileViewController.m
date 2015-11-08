@@ -54,6 +54,9 @@
         if ([nameField.text length]==0) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
         }
+        if ([CommonFunctions characterSet1Found:nameField.text]) {
+            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+        }
         else if ([emailField.text length]==0) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
         }
@@ -66,9 +69,9 @@
             [emailField resignFirstResponder];
             
             [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//            appDelegate.hud.labelText = @"Loading...";
+            //            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            //            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+            //            appDelegate.hud.labelText = @"Loading...";
             
             NSMutableArray *parameters = [[NSMutableArray alloc] init];
             NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -206,20 +209,25 @@
     NSString *responseString = [request responseString];
     
     [CommonFunctions dismissGlobalHUD];
-//    [appDelegate.hud hide:YES];
+    //    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
         
-        OTPViewController *viewObj = [[OTPViewController alloc] init];
-        viewObj.emailStringForVerification = emailField.text;
-        viewObj.isChangingEmail = YES;
-        viewObj.isValidatingEmail = NO;
-        viewObj.isResettingPassword = NO;
-        [self.navigationController pushViewController:viewObj animated:YES];
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"isEmailVerified"] intValue] == 1) {
+            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        }
+        else {
+            OTPViewController *viewObj = [[OTPViewController alloc] init];
+            viewObj.emailStringForVerification = emailField.text;
+            viewObj.isChangingEmail = YES;
+            viewObj.isValidatingEmail = NO;
+            viewObj.isResettingPassword = NO;
+            [self.navigationController pushViewController:viewObj animated:YES];
+        }
         
-//        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
         
     }
     else {
@@ -233,7 +241,7 @@
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:[error description] msg:nil cancel:@"OK" otherButton:nil];
     [CommonFunctions dismissGlobalHUD];
-//    [appDelegate.hud hide:YES];
+    //    [appDelegate.hud hide:YES];
 }
 
 
@@ -259,7 +267,7 @@
     self.title = @"Edit Profile";
     self.view.backgroundColor = RGB(247, 247, 247);
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-
+    
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     
@@ -283,7 +291,7 @@
     [self.view addSubview:uploadAvatarLabel];
     
     if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"] length] !=0) {
-    
+        
         uploadAvatarLabel.text = @"Tap To Change Avatar";
         
         NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"]];
@@ -382,7 +390,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [appDelegate setShouldRotate:NO];
-
+    
 }
 
 
@@ -401,13 +409,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

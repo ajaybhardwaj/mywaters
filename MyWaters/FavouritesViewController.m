@@ -450,7 +450,7 @@
     filterTableView.scrollEnabled = NO;
     filterTableView.alwaysBounceVertical = NO;
     
-    filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTVs",@"Event",@"ABC Water Sites",@"Water Level Sensor",@"Distance", nil];
+    filtersArray = [[NSArray alloc] initWithObjects:@"All",@"CCTVs",@"Event",@"Our Waters",@"Water Level Sensor",@"Distance", nil];
     
     selectedFilterIndex = 0;
     
@@ -482,7 +482,7 @@
     [appDelegate setShouldRotate:NO];
     [favouritesListingTableView setEditing:NO];
     
-    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(85,49,118) frame:CGRectMake(0, 0, 1, 1)];
+    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(249,172,0) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
