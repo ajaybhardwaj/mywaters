@@ -53,6 +53,7 @@
 - (int) checkNotificationReadStatus:(NSInteger) notificationID;
 - (void) insertNotificationReadStatus:(NSInteger) notificationID;
 - (void) removeNotificationsReadData;
+- (void) updateWLSFavouriteItemForSubscribe:(NSString*)favouriteID update:(NSString*)updateValue;
 
 //***** Method For Sqlite For Favourites
 - (void) insertFavouriteItems:(NSMutableDictionary*) parametersDict;

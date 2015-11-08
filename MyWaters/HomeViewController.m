@@ -784,10 +784,10 @@
     NSString *url = urlString;//@"https://www.youtube.com/embed/5fDrVA2_nbg";
     url = [NSString stringWithFormat:@"%@?rel=0&showinfo=0&controls=0",url];
     NSString* embedHTML = [NSString stringWithFormat:@"\
-                           <iframe width=\"%f\" height=\"120\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
+                           <iframe width=\"%f\" height=\"80\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
                            ",self.view.bounds.size.width/2-20,url];
     
-    NSString* html = [NSString stringWithFormat:embedHTML, url, self.view.bounds.size.width+10, 120];
+    NSString* html = [NSString stringWithFormat:embedHTML, url, self.view.bounds.size.width+10, 80];
     [tipsWebView loadHTMLString:html baseURL:nil];
     
     tipsVideoTitleLabel.text = titleString;

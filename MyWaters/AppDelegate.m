@@ -444,6 +444,63 @@
 
 //*************** Method To Insert Favourite Items
 
+- (void) updateWLSFavouriteItemForSubscribe:(NSString*)favouriteID update:(NSString*)updateValue {
+    
+    
+    // Fav Types:
+    // 1- CCTV, 2- Events, 3-ABC, 4-WLS
+    
+    sqlite3_stmt    *statement;
+    
+    NSString *destinationPath = [self getdestinationPath];
+    
+    const char *dbpath = [destinationPath UTF8String];
+    
+    if (sqlite3_open(dbpath, &database) == SQLITE_OK)
+    {
+        
+        int recordCount =0;
+        NSString *searchQuery = [NSString stringWithFormat: @"SELECT COUNT(*) FROM favourites WHERE fav_type=\"4\" AND fav_id=\"%@\"",favouriteID];
+        
+        const char *query_stmt = [searchQuery UTF8String];
+        if (sqlite3_prepare_v2(database, query_stmt, -1, &statement, NULL) == SQLITE_OK)
+        {
+            while (sqlite3_step(statement) == SQLITE_ROW)
+            {
+                recordCount = sqlite3_column_int(statement, 0);
+            }
+        }
+        
+        
+        if (recordCount!=0) {
+            
+            NSString *updateSQL = [NSString stringWithFormat: @"UPDATE favourites SET isWlsSubscribed=\"%@\" WHERE fav_type=\"4\" AND fav_id=\"%@\"",updateValue,favouriteID];
+            
+            const char *update_stmt = [updateSQL UTF8String];
+            
+            DebugLog(@"Insert query %@",updateSQL);
+            
+            sqlite3_prepare_v2(database, update_stmt, -1, &statement, NULL);
+            if (sqlite3_step(statement) == SQLITE_DONE)
+            {
+                DebugLog(@"Row updated");
+            }
+            
+            else {
+                DebugLog(@"Failed to update row");
+            }
+            
+        }
+        sqlite3_finalize(statement);
+        sqlite3_close(database);
+    }
+    
+}
+
+
+
+//*************** Method To Insert Favourite Items
+
 - (void) insertFavouriteItems:(NSMutableDictionary*) parametersDict {
     
     

@@ -3007,8 +3007,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3033,7 +3033,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3055,8 +3055,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -3074,7 +3074,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3086,8 +3086,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3099,7 +3099,7 @@
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -3110,8 +3110,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3123,7 +3123,7 @@
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
@@ -3133,8 +3133,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3148,7 +3148,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Debug;
@@ -3158,8 +3158,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3169,7 +3169,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Release;

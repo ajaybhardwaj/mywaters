@@ -32,7 +32,7 @@
     BOOL isFetchingImages,isUploadingImage,isFetchingPOI,isShowingPictureOptions;
     UITableView *imageUploadOptionsTable;
     
-    NSInteger poiID,poiType;
+    NSInteger poiID,poiType,selectedMarkerTag;
     
     FGalleryViewController *networkGallery;
     NSMutableArray *pictureDataSourceForGallery;

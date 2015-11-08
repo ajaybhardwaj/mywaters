@@ -168,14 +168,14 @@
     else
         [parametersDict setValue:@"NA" forKey:@"website_event"];
     
-    [parametersDict setValue:@"NA" forKey:@"isCertified_ABC"];
+    [parametersDict setValue:@"0" forKey:@"isCertified_ABC"];
     [parametersDict setValue:@"NA" forKey:@"water_level_wls"];
     [parametersDict setValue:@"NA" forKey:@"drain_depth_wls"];
     [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
     [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
     [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
-    [parametersDict setValue:@"NO" forKey:@"isWlsSubscribed"];
-    [parametersDict setValue:@"NO" forKey:@"hasPOI"];
+    [parametersDict setValue:@"0" forKey:@"isWlsSubscribed"];
+    [parametersDict setValue:@"0" forKey:@"hasPOI"];
     
     [appDelegate insertFavouriteItems:parametersDict];
     

@@ -147,18 +147,15 @@
         isSubscribingForAlert = YES;
         
         [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//        appDelegate.hud.labelText = @"Loading...";
-        
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+
         NSArray *parameters,*values;
         
         isSubscribed = YES;
         [self hideAlertOptionsView];
         
         parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
-        values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
+        values = [[NSArray alloc] initWithObjects:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
+//        values = [[NSArray alloc] initWithObjects:@"12345",@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
         
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
     }
@@ -205,6 +202,7 @@
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
 
     NSArray *values = [[NSArray alloc] initWithObjects:@"6",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
+//    NSArray *values = [[NSArray alloc] initWithObjects:@"6",@"12345",[CommonFunctions getAppVersionNumber], nil];
 
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
@@ -469,7 +467,7 @@
     [parametersDict setValue:@"NA" forKey:@"start_date_event"];
     [parametersDict setValue:@"NA" forKey:@"end_date_event"];
     [parametersDict setValue:@"NA" forKey:@"website_event"];
-    [parametersDict setValue:@"NA" forKey:@"isCertified_ABC"];
+    [parametersDict setValue:@"0" forKey:@"isCertified_ABC"];
     
     
     if (waterLevelValue != (id)[NSNull null] && [waterLevelValue length] !=0)
@@ -498,12 +496,12 @@
         [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
     
     if (isSubscribed) {
-        [parametersDict setValue:@"YES" forKey:@"isWlsSubscribed"];
+        [parametersDict setValue:@"1" forKey:@"isWlsSubscribed"];
     }
     else {
-        [parametersDict setValue:@"NO" forKey:@"isWlsSubscribed"];
+        [parametersDict setValue:@"0" forKey:@"isWlsSubscribed"];
     }
-    [parametersDict setValue:@"NO" forKey:@"hasPOI"];
+    [parametersDict setValue:@"0" forKey:@"hasPOI"];
     
     [appDelegate insertFavouriteItems:parametersDict];
     
@@ -983,11 +981,15 @@
                 notifiyButton.hidden = YES;
                 unsubscribeButton.hidden = NO;
                 
+                [appDelegate updateWLSFavouriteItemForSubscribe:wlsID update:@"1"];
+                
             }
             else {
                 selectedAlertType = -1;
                 notifiyButton.hidden = NO;
                 unsubscribeButton.hidden = YES;
+                
+                [appDelegate updateWLSFavouriteItemForSubscribe:wlsID update:@"0"];
             }
             
             [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];

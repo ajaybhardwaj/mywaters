@@ -145,18 +145,23 @@
     [parametersDict setValue:@"NA" forKey:@"website_event"];
     [parametersDict setValue:@"NA" forKey:@"end_date_event"];
     [parametersDict setValue:@"NA" forKey:@"start_date_event"];
-    [parametersDict setValue:@"NA" forKey:@"isCertified_ABC"];
+    if (isHavingPOI) {
+        [parametersDict setValue:@"1" forKey:@"isCertified_ABC"];;
+    }
+    else {
+        [parametersDict setValue:@"0" forKey:@"isCertified_ABC"];;
+    }
     [parametersDict setValue:@"NA" forKey:@"water_level_wls"];
     [parametersDict setValue:@"NA" forKey:@"drain_depth_wls"];
     [parametersDict setValue:@"NA" forKey:@"water_level_percentage_wls"];
     [parametersDict setValue:@"NA" forKey:@"water_level_type_wls"];
     [parametersDict setValue:@"NA" forKey:@"observation_time_wls"];
-    [parametersDict setValue:@"NO" forKey:@"isWlsSubscribed"];
+    [parametersDict setValue:@"0" forKey:@"isWlsSubscribed"];
     if (isHavingPOI) {
-        [parametersDict setValue:@"YES" forKey:@"hasPOI"];
+        [parametersDict setValue:@"1" forKey:@"hasPOI"];
     }
     else {
-        [parametersDict setValue:@"NO" forKey:@"hasPOI"];
+        [parametersDict setValue:@"0" forKey:@"hasPOI"];
     }
     
     [appDelegate insertFavouriteItems:parametersDict];

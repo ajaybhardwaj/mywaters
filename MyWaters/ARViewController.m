@@ -358,7 +358,7 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
-//    [CommonFunctions dismissGlobalHUD];
+    [CommonFunctions dismissGlobalHUD];
 
     DebugLog(@"%@",responseString);
     
@@ -403,7 +403,7 @@
         else if (isUploadingImage) {
             
             [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
-            [self fetchABCWaterPOIImage:poiID];
+            [self fetchABCWaterPOIImage:selectedMarkerTag];
         }
     }
 //    [appDelegate.hud hide:YES];
@@ -524,7 +524,7 @@
     [overlayScrollview addSubview:closeButton];
     
     NSLog(@"%ld",markerView.tag);
-    
+    selectedMarkerTag = markerView.tag;
     [self fetchABCWaterPOIImage:markerView.tag];
 }
 
@@ -661,6 +661,7 @@
 //            picker.view.frame = self.view.frame;
 //            picker.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 //            [picker didMoveToParentViewController:self];
+            
             [self presentViewController:picker animated:YES completion:NULL];
         }
         else {
@@ -933,11 +934,10 @@
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-//    if (isShowingImagePicker) {
-//        isShowingImagePicker = NO;
-//        return UIInterfaceOrientationPortrait;
-//    }
-//    return UIInterfaceOrientationMaskLandscapeRight;
+    if (isShowingImagePicker) {
+        isShowingImagePicker = NO;
+        return UIInterfaceOrientationPortrait;
+    }
     
     return UIInterfaceOrientationMaskLandscapeRight;
 }
