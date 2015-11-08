@@ -804,6 +804,7 @@
     [_locationManager startUpdatingLocation];
     
     self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
+
     if(!_arController) {
         _arController = [[AugmentedRealityController alloc] initWithView:[self view] parentViewController:self withDelgate:self];
     }
@@ -881,6 +882,10 @@
 
 
 - (void)viewWillAppear:(BOOL)animated {
+    
+    NSLog(@"Crashed here 1");
+    self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height+100, self.view.bounds.size.width);
+    NSLog(@"Crashed here 2");
     
 //    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
 //    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];

@@ -10,7 +10,7 @@
 
 #import "ARGeoCoordinate.h"
 
-const float kWidth = 250.0f;
+const float kWidth = 260.0f;
 const float kHeight = 100.0f;
 
 @interface MarkerView ()
@@ -55,7 +55,7 @@ const float kHeight = 100.0f;
         NSString *imageFullUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,imageURLString];
         
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        activityIndicator.center = CGPointMake(_cellImage.bounds.size.width/2, _cellImage.bounds.size.height/2);
+        activityIndicator.center = CGPointMake(15, 15);
         [_cellImage addSubview:activityIndicator];
         [activityIndicator startAnimating];
         
