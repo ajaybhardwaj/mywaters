@@ -30,6 +30,7 @@
     
     
     if (pictureDataSourceForGallery.count!=0) {
+        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
         networkGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
         [self.navigationController pushViewController:networkGallery animated:YES];
     }
@@ -76,6 +77,10 @@
 //*************** Method To Dismiss ARView
 
 - (void) dismissARView {
+    
+//    [appDelegate setShouldRotate:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
     
     [self.navigationController dismissViewControllerAnimated:NO completion:nil];
     [self.navigationController popViewControllerAnimated:NO];
@@ -772,10 +777,19 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor blackColor];
+    
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     appDelegate.IS_ARVIEW_CUSTOM_LABEL = YES;
-    [appDelegate setShouldRotate:YES];
-
+    
+//    [appDelegate setShouldRotate:YES];
+//    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:)
+//                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
+    
+    [appDelegate setShouldRotate:NO];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:)
+                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
+    
     pictureDataSourceForGallery = [[NSMutableArray alloc] init];
     
     _locations = [[NSArray alloc] init];
@@ -821,7 +835,7 @@
     [toolBar setItems:[NSArray arrayWithObjects:doneButton,flexibleSpace, nil]];
     [self.view addSubview:toolBar];
     
-    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
+    
     
 //    CGAffineTransform rotationTransform = CGAffineTransformIdentity;
 //    rotationTransform = CGAffineTransformRotate(rotationTransform, degreesToRadians(90));
@@ -848,6 +862,7 @@
     
 //    imageUploadOptionsTable.transform = rotationTransform;
     
+    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
     
     [self fetchABCWaterSitePOI];
     
@@ -870,10 +885,13 @@
 //    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
 //    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     
+//    [appDelegate setShouldRotate:NO];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:)
+//                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
     [appDelegate setShouldRotate:NO];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:)
-                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
-    
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:)
+//                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
 
     [self.navigationController setNavigationBarHidden:YES];
 //    self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
@@ -884,9 +902,8 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
-    [appDelegate setShouldRotate:NO];
-    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
+//    [appDelegate setShouldRotate:NO];
+//    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
 
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {
@@ -911,10 +928,12 @@
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    if (isShowingImagePicker) {
-        isShowingImagePicker = NO;
-        return UIInterfaceOrientationPortrait;
-    }
+//    if (isShowingImagePicker) {
+//        isShowingImagePicker = NO;
+//        return UIInterfaceOrientationPortrait;
+//    }
+//    return UIInterfaceOrientationMaskLandscapeRight;
+    
     return UIInterfaceOrientationMaskLandscapeRight;
 }
 
@@ -924,7 +943,7 @@
 }
 
 //- (NSUInteger)supportedInterfaceOrientations {
-//    return UIInterfaceOrientationMaskLandscapeRight + UIInterfaceOrientationMaskLandscapeLeft;
+//    return UIInterfaceOrientationMaskLandscapeRight;
 //}
 
 /*

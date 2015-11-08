@@ -979,28 +979,28 @@
 }
 
 
--(BOOL)shouldAutorotate{
-    return YES;
-}
-
--(NSUInteger)supportedInterfaceOrientations{
-    
-    //    UIInterfaceOrientationMaskLandscape;
-    //    24
-    //
-    //    UIInterfaceOrientationMaskLandscapeLeft;
-    //    16
-    //
-    //    UIInterfaceOrientationMaskLandscapeRight;
-    //    8
-    //
-    //    UIInterfaceOrientationMaskPortrait;
-    //    2
-    
-    //    return UIInterfaceOrientationMaskPortrait;
-    //    or
-    return 2;
-}
+//-(BOOL)shouldAutorotate{
+//    return YES;
+//}
+//
+//-(NSUInteger)supportedInterfaceOrientations{
+//    
+//    //    UIInterfaceOrientationMaskLandscape;
+//    //    24
+//    //
+//    //    UIInterfaceOrientationMaskLandscapeLeft;
+//    //    16
+//    //
+//    //    UIInterfaceOrientationMaskLandscapeRight;
+//    //    8
+//    //
+//    //    UIInterfaceOrientationMaskPortrait;
+//    //    2
+//    
+//    //    return UIInterfaceOrientationMaskPortrait;
+//    //    or
+//    return 2;
+//}
 
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
