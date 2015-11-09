@@ -1495,6 +1495,22 @@
     
     [locationManager stopMonitoringSignificantLocationChanges];
     [locationManager startUpdatingLocation];
+    
+    
+    //***** Code To Exclude MyWaters Document Directory From Being Synced With iCloud
+    NSString *documentDirectoryUrl = [[NSHomeDirectory() stringByAppendingString:@"/Documents/"] stringByAppendingPathComponent:[NSString stringWithFormat:@"/MyWaters/"]];
+    NSURL *url = [NSURL fileURLWithPath:documentDirectoryUrl];
+    assert([[NSFileManager defaultManager] fileExistsAtPath:documentDirectoryUrl]);
+    
+    NSError *error = nil;
+    BOOL success = [url setResourceValue: [NSNumber numberWithBool: YES]
+                                  forKey: NSURLIsExcludedFromBackupKey error: &error];
+    if(!success){
+        NSLog(@"Error excluding %@ from backup %@", [url lastPathComponent], error);
+    }
+    else {
+        NSLog(@"Excluded");
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

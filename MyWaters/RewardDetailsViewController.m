@@ -69,7 +69,7 @@
     
     NSArray *pathsArray=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
     NSString *doumentDirectoryPath=[pathsArray objectAtIndex:0];
-    NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"Events"]];
+    NSString *destinationPath=[doumentDirectoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"Rewards"]];
     
     NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
     

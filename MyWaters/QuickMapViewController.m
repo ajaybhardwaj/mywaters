@@ -736,7 +736,7 @@
 
             }
             else {
-                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"No CCTVs data available." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -793,7 +793,7 @@
 
             }
             else {
-                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"No water level sensors data available." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -811,9 +811,9 @@
             }
             else {
                 if (!appDelegate.IS_SKIPPING_USER_LOGIN)
-                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No data available.\nTo submit flood information, long press on map to drop pin."] cancel:@"OK" otherButton:nil];
+                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No user feedbacks data available.\nTo submit flood information, long press on map to drop pin."] cancel:@"OK" otherButton:nil];
                 else
-                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No data available."] cancel:@"OK" otherButton:nil];
+                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No user feedbacks data available."] cancel:@"OK" otherButton:nil];
 //                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
             }
         }
@@ -827,7 +827,7 @@
                 [self generatePUBFloodSubmissionAnnotations];
             }
             else {
-                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"No floods data available." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -1981,10 +1981,6 @@
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
     
     self.title = @"Quick Map";
-    
-    //        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
-    
-    //    }
     
     
     if (longPressLocationAnnotation) {

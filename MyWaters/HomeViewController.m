@@ -1180,7 +1180,7 @@
                 
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
                     
-//                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, columnView.bounds.size.height-55)];
+                    //                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, columnView.bounds.size.height-55)];
                     tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, 78)];
                     tipsWebView.backgroundColor = [UIColor colorWithRed:28.0/256.0 green:27.0/256.0 blue:28.0/256.0 alpha:1.0];
                     [columnView addSubview:tipsWebView];
@@ -1546,7 +1546,7 @@
                 
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
                     
-//                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, columnView.bounds.size.height-55)];
+                    //                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, columnView.bounds.size.height-55)];
                     tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, 78)];
                     tipsWebView.backgroundColor = [UIColor colorWithRed:28.0/256.0 green:27.0/256.0 blue:28.0/256.0 alpha:1.0];
                     [columnView addSubview:tipsWebView];
@@ -1811,7 +1811,7 @@
     //        annotation1.subtitle = @"";
     //        [quickMap addAnnotation:annotation1];
     //    }
-//    [quickMap setRegion:MKCoordinateRegionMake(appDelegate.USER_CURRENT_LOCATION_COORDINATE, MKCoordinateSpanMake(0.1f, 0.1f)) animated:YES];
+    //    [quickMap setRegion:MKCoordinateRegionMake(appDelegate.USER_CURRENT_LOCATION_COORDINATE, MKCoordinateSpanMake(0.1f, 0.1f)) animated:YES];
     
     
 }
@@ -2068,8 +2068,8 @@
     
     if (appDelegate.IS_COMING_AFTER_LOGIN) {
         appDelegate.IS_COMING_AFTER_LOGIN = NO;
-//        self.view.alpha = 0.5;
-//        self.navigationController.navigationBar.alpha = 0.5;
+        //        self.view.alpha = 0.5;
+        //        self.navigationController.navigationBar.alpha = 0.5;
     }
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
