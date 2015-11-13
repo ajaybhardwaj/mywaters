@@ -33,6 +33,7 @@
     NSInteger selectedFilterIndex;
     
     NSMutableArray *filteredDataSource;
+    UIButton *hideFilterButton;
 }
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 

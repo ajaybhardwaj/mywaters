@@ -309,7 +309,15 @@
 	if (*centerAzimuth > M_2PI) 
 		*centerAzimuth = *centerAzimuth - M_2PI;
 	
-	double deltaAzimuth = ABS(pointAzimuth - *centerAzimuth);
+    
+    // Changed by Ajay To Avoid Nan Crash
+    double deltaAzimuth;// = ABS(pointAzimuth - *centerAzimuth);
+    if (isnan(ABS(pointAzimuth - *centerAzimuth))) {
+        deltaAzimuth = 0.0;
+    }
+    else {
+        deltaAzimuth = ABS(pointAzimuth - *centerAzimuth);
+    }
 	*isBetweenNorth		= NO;
 
 	// If values are on either side of the Azimuth of North we need to adjust it.  Only check the degree range
@@ -387,28 +395,20 @@
 			[markerView setFrame:CGRectMake(loc.x - width / 2.0, loc.y, width, height)];
             [markerView setNeedsDisplay];
 			
-			CATransform3D transform = CATransform3DIdentity;
-
-			// Set the scale if it needs it. Scale the perspective transform if we have one.
-			if ([self scaleViewsBasedOnDistance]) 
-				transform = CATransform3DScale(transform, scaleFactor, scaleFactor, scaleFactor);
-		
-			if ([self rotateViewsBasedOnPerspective]) {
-				transform.m34 = 1.0 / 300.0;
-		/*		
-				double itemAzimuth		= [item azimuth];
-				double centerAzimuth	= [[self centerCoordinate] azimuth];
-				
-				if (itemAzimuth - centerAzimuth > M_PI) 
-					centerAzimuth += M_2PI;
-				
-				if (itemAzimuth - centerAzimuth < -M_PI) 
-					itemAzimuth  += M_2PI;
-		*/		
-		//		double angleDifference	= itemAzimuth - centerAzimuth;
-		//		transform				= CATransform3DRotate(transform, [self maximumRotationAngle] * angleDifference / 0.3696f , 0, 1, 0);
-			}
-			[[markerView layer] setTransform:transform];
+            
+            //--- Commented By Ajay for Nan Crash
+            
+//			CATransform3D transform = CATransform3DIdentity;
+//
+//			// Set the scale if it needs it. Scale the perspective transform if we have one.
+//			if ([self scaleViewsBasedOnDistance]) 
+//				transform = CATransform3DScale(transform, scaleFactor, scaleFactor, scaleFactor);
+//		
+//			if ([self rotateViewsBasedOnPerspective]) {
+//				transform.m34 = 1.0 / 300.0;
+//		
+//            }
+//			[[markerView layer] setTransform:transform];
 			
 			//if marker is not already set then insert it
 			if (!([markerView superview])) {
@@ -465,6 +465,7 @@
     
     [self currentDeviceOrientation];
 	
+    
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 	
     if (orientation != UIDeviceOrientationUnknown && orientation != UIDeviceOrientationFaceUp && orientation != UIDeviceOrientationFaceDown) {

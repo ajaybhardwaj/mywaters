@@ -23,6 +23,18 @@
 }
 
 
+//*************** Method To Move To Map Direction View
+
+- (void) moveToDirectionView {
+        
+    QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
+    viewObj.isShowingRoute = YES;
+    viewObj.destinationLat = latValue;
+    viewObj.destinationLong = longValue;
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
+
 
 //*************** Method To Show Menu On Left To Right Swipe
 
@@ -47,6 +59,7 @@
 
 - (void) redeemReward {
     
+
     [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
 //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
@@ -56,6 +69,7 @@
     NSArray *values = [[NSArray alloc] initWithObjects:@"8",rewardID,@"2",[CommonFunctions getAppVersionNumber], nil];
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+    
 }
 
 
@@ -120,6 +134,7 @@
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     directionButton.frame = CGRectMake(0, rewardImageView.frame.origin.y+rewardImageView.bounds.size.height, bgScrollView.bounds.size.width, 40);
     [directionButton setBackgroundColor:[UIColor whiteColor]];
+    [directionButton addTarget:self action:@selector(moveToDirectionView) forControlEvents:UIControlEventTouchUpInside];
     [bgScrollView addSubview:directionButton];
     
     directionIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 22, 22)];
@@ -325,9 +340,9 @@
     [redeemNowButton addTarget:self action:@selector(redeemReward) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:redeemNowButton];
     
-    if ([pointsValueString intValue] > [currentPointsString intValue]) {
-        redeemNowButton.userInteractionEnabled = NO;
-    }
+//    if ([pointsValueString intValue] > [currentPointsString intValue]) {
+//        redeemNowButton.userInteractionEnabled = NO;
+//    }
     
 }
 

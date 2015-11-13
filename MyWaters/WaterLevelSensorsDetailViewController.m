@@ -155,7 +155,6 @@
         
         parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSAlertLevel",@"WLSID", nil];
         values = [[NSArray alloc] initWithObjects:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
-//        values = [[NSArray alloc] initWithObjects:@"12345",@"2", @"1", [NSString stringWithFormat:@"%d",selectedAlertType], wlsID, nil];
         
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_FOR_SUBSCRIPTION]];
     }
@@ -166,10 +165,7 @@
         isSubscribed = NO;
         
         [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//        appDelegate.hud.labelText = @"Loading...";
-        
+
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         NSArray *parameters,*values;
         parameters = [[NSArray alloc] initWithObjects:@"Token",@"SubscriptionType",@"SubscriptionMode",@"WLSID", nil];
@@ -188,21 +184,12 @@
 
 - (void) fetchWLSListing {
     
-//    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-    
-//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//    appDelegate.hud.labelText = @"Loading...";
-    
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
     
     isSubscribingForAlert = NO;
     
-    //    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
-    //    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
-
     NSArray *values = [[NSArray alloc] initWithObjects:@"6",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
-//    NSArray *values = [[NSArray alloc] initWithObjects:@"6",@"12345",[CommonFunctions getAppVersionNumber], nil];
 
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
@@ -529,27 +516,8 @@
     [self.view addSubview:topMenu];
     
     
-//    //    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2)-10, 35)];
-//    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2)+30, 35)];
-//    searchField.textColor = RGB(35, 35, 35);
-//    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-//    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-//    searchField.leftViewMode = UITextFieldViewModeAlways;
-//    searchField.borderStyle = UITextBorderStyleNone;
-//    searchField.textAlignment=NSTextAlignmentLeft;
-//    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-//    searchField.placeholder = @"Search...";
-//    searchField.layer.borderWidth = 0.5;
-//    searchField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-//    [topMenu addSubview:searchField];
-//    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-//    searchField.delegate = self;
-//    searchField.keyboardType = UIKeyboardTypeEmailAddress;
-//    searchField.backgroundColor = [UIColor whiteColor];
-//    searchField.returnKeyType = UIReturnKeyNext;
-//    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-    
-    
+    // Old Code Supporting Three Menu Items
+    /*
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2), 35)];
     listinSearchBar.delegate = self;
     listinSearchBar.placeholder = @"Search...";
@@ -576,24 +544,6 @@
     }
     
     
-    //    //    iAlertLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+10, 40, (topMenu.bounds.size.width/2)/3, 10)];
-    //    iAlertLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2), 32, (topMenu.bounds.size.width/2)/3, 10)];
-    //    iAlertLabel.backgroundColor = [UIColor clearColor];
-    //    iAlertLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    //    iAlertLabel.text = @"iAlert";
-    //    iAlertLabel.textAlignment = NSTextAlignmentCenter;
-    //    iAlertLabel.textColor = [UIColor whiteColor];
-    //    [topMenu addSubview:iAlertLabel];
-    //
-    //    alertButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    //    alertButton.frame = CGRectMake((topMenu.bounds.size.width/2)+10, 10, 25, 25);
-    //    alertButton.frame = CGRectMake((topMenu.bounds.size.width/2)/3/2 - 10 + (topMenu.bounds.size.width/2), 5, 20, 20);
-    //    [alertButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_ialert_disabled.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    //    [alertButton addTarget:self action:@selector(animateTopMenu) forControlEvents:UIControlEventTouchUpInside];
-    //    [topMenu addSubview:alertButton];
-    
-    
-    //    addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)-1.5, 40, (topMenu.bounds.size.width/2)/3, 10)];
     addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)+50, 30, topMenu.bounds.size.width/3, 10)];
     addToFavLabel.backgroundColor = [UIColor clearColor];
     addToFavLabel.textAlignment = NSTextAlignmentCenter;
@@ -606,7 +556,6 @@
     [topMenu addSubview:addToFavLabel];
     
     addToFavButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    addToFavButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)+15, 10, 25, 25);
     addToFavButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*2)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (50), 5, 20, 20);
     if (isAlreadyFav)
         [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -615,7 +564,6 @@
     [topMenu addSubview:addToFavButton];
     
     
-    //    refreshLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)*2+2, 40, (topMenu.bounds.size.width/2)/3, 10)];
     refreshLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2+10, 30, topMenu.bounds.size.width/3, 10)];
     refreshLabel.backgroundColor = [UIColor clearColor];
     refreshLabel.textAlignment = NSTextAlignmentCenter;
@@ -625,7 +573,6 @@
     [topMenu addSubview:refreshLabel];
     
     refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    refreshButton.frame = CGRectMake((topMenu.bounds.size.width/2)+((topMenu.bounds.size.width/2)/3)*2+18, 10, 25, 25);
     refreshButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (10), 5, 20, 20);
     [refreshButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [refreshButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
@@ -641,11 +588,58 @@
     addRefreshOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)*2+10, 0, topMenu.bounds.size.width/3, 45);
     [addRefreshOverlayButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addRefreshOverlayButton];
+    */
     
-    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
-    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)+35+topMenu.bounds.size.width/3 - 1, 0, 0.5, 45)];
-    //    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
-    //    [topMenu addSubview:seperatorOne];
+    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(10, 5, topMenu.bounds.size.width-(topMenu.bounds.size.width/3), 35)];
+    listinSearchBar.delegate = self;
+    listinSearchBar.placeholder = @"Search...";
+    [listinSearchBar setBackgroundImage:[[UIImage alloc] init]];
+    listinSearchBar.backgroundColor = [UIColor whiteColor];
+    [topMenu addSubview:listinSearchBar];
+    
+    for (id object in [listinSearchBar subviews]) {
+        
+        if ([object isKindOfClass:[UITextField class]]) {
+            
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setFont:[UIFont fontWithName:ROBOTO_REGULAR size:14]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftViewMode:UITextFieldViewModeAlways];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBorderStyle:UITextBorderStyleNone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextAlignment:NSTextAlignmentLeft];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setPlaceholder:@"Search..."];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setClearButtonMode:UITextFieldViewModeWhileEditing];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setReturnKeyType:UIReturnKeyDone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDelegate:self];
+        }
+    }
+    
+    
+    addToFavLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2+10, 30, topMenu.bounds.size.width/3, 10)];
+    addToFavLabel.backgroundColor = [UIColor clearColor];
+    addToFavLabel.textAlignment = NSTextAlignmentCenter;
+    addToFavLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    if (isAlreadyFav)
+        addToFavLabel.text = @"Favourite";
+    else
+        addToFavLabel.text = @"Favourite";
+    addToFavLabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:addToFavLabel];
+    
+    addToFavButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addToFavButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (10), 5, 20, 20);
+    if (isAlreadyFav)
+        [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [addToFavButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];    [addToFavButton addTarget:self action:@selector(addWLSToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addToFavButton];
+    
+    
+    UIButton *addFavOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addFavOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)*2+10, 0, topMenu.bounds.size.width/3, 45);
+    [addFavOverlayButton addTarget:self action:@selector(addWLSToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addFavOverlayButton];
     
 }
 
@@ -744,16 +738,16 @@
     
     
     if (drainDepthType==1) {
-        depthValueLabel.text = @"Drain Below 75% Full";
+        depthValueLabel.text = @"Drain 0%-75% full";
     }
     else if (drainDepthType==2) {
-        depthValueLabel.text = @"Drain 75%-90% Full";
+        depthValueLabel.text = @"Drain 75%-90% full";
     }
     else if (drainDepthType==3) {
-        depthValueLabel.text = @"Drain Above 90% Full";
+        depthValueLabel.text = @"Drain 90%-100% full";
     }
     else {
-        depthValueLabel.text = @"";
+        depthValueLabel.text = @"Station under maintenance";
     }
     
     directionButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -806,7 +800,13 @@
         directionButton.enabled = NO;
     }
     
-    wlsListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+75))];
+    wlsListingTable = [[UITableView alloc] init];
+    if (IS_IPHONE_4_OR_LESS) {
+        wlsListingTable.frame = CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+185));
+    }
+    else {
+        wlsListingTable.frame = CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+75));
+    }
     wlsListingTable.delegate = self;
     wlsListingTable.dataSource = self;
     [self.view addSubview:wlsListingTable];
@@ -1039,8 +1039,6 @@
             }];
             [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
 
-            DebugLog(@"%@",appDelegate.WLS_LISTING_ARRAY);
-            //            [tempNearByArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             if (!tempNearByArray) {
                 tempNearByArray = [[NSMutableArray alloc] init];
             }
@@ -1061,7 +1059,6 @@
             
             [wlsListingTable reloadData];
         }
-//        [appDelegate.hud hide:YES];
     }
 }
 
@@ -1171,6 +1168,40 @@
         drainDepthValue = [NSString stringWithFormat:@"%d",[[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"drainDepth"] intValue]];
         isSubscribed = [[[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
         
+        
+        CLLocationCoordinate2D currentLocation;
+        //            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+        //            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+        currentLocation.latitude = latValue;
+        currentLocation.longitude = longValue;
+        
+        for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY count];idx++) {
+            
+            NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY[idx] mutableCopy];
+            
+            CLLocationCoordinate2D desinationLocation;
+            desinationLocation.latitude = [dict[@"latitude"] doubleValue];
+            desinationLocation.longitude = [dict[@"longitude"] doubleValue];
+            
+            DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+            
+            dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+            appDelegate.WLS_LISTING_ARRAY[idx] = dict;
+            
+        }
+        
+        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            float v1 = [left floatValue];
+            float v2 = [right floatValue];
+            if (v1 < v2)
+                return NSOrderedAscending;
+            else if (v1 > v2)
+                return NSOrderedDescending;
+            else
+                return NSOrderedSame;
+        }];
+        [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        
         int count = 0;
         [tempNearByArray removeAllObjects];
         
@@ -1209,12 +1240,46 @@
         isSubscribed = [[[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
         
         
+        CLLocationCoordinate2D currentLocation;
+        //            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+        //            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+        currentLocation.latitude = latValue;
+        currentLocation.longitude = longValue;
+        
+        for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY count];idx++) {
+            
+            NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY[idx] mutableCopy];
+            
+            CLLocationCoordinate2D desinationLocation;
+            desinationLocation.latitude = [dict[@"latitude"] doubleValue];
+            desinationLocation.longitude = [dict[@"longitude"] doubleValue];
+            
+            DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+            
+            dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+            appDelegate.WLS_LISTING_ARRAY[idx] = dict;
+            
+        }
+        
+        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            float v1 = [left floatValue];
+            float v2 = [right floatValue];
+            if (v1 < v2)
+                return NSOrderedAscending;
+            else if (v1 > v2)
+                return NSOrderedDescending;
+            else
+                return NSOrderedSame;
+        }];
+        [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        
         if (!tempNearByArray) {
             tempNearByArray = [[NSMutableArray alloc] init];
         }
         
         int count = 0;
         [tempNearByArray removeAllObjects];
+        
         for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
             if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != wlsID) {
                 if (count!=3) {
@@ -1404,6 +1469,7 @@
     
     self.title = @"Water Level Sensor";
     self.view.backgroundColor = RGB(247, 247, 247);
+    [appDelegate.locationManager startUpdatingLocation];
     
     selectedAlertType = -1;
     
@@ -1451,10 +1517,10 @@
 //    }
 //    else {
         if ([CommonFunctions hasConnectivity]) {
-            [self fetchWLSListing];
+            [self performSelector:@selector(fetchWLSListing) withObject:nil afterDelay:1.0];
         }
         else {
-            [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
             return;
         }
 //    }

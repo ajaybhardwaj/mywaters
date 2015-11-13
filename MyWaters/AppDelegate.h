@@ -21,7 +21,7 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate,IIViewDeckControllerDelegate,CLLocationManagerDelegate,UIAlertViewDelegate> {
     
     NSString *DATABASE_PATH;
-    CLLocationManager *locationManager;
+    
     UIBackgroundTaskIdentifier bgTask;
     
     UIAlertView *notificationAlert;
@@ -44,6 +44,7 @@
 @property (nonatomic, assign) BOOL shouldRotate,IS_PUSH_NOTIFICATION_RECEIVED,IS_CREATING_ACCOUNT;
 @property (nonatomic, assign) NSInteger RECEIVED_NOTIFICATION_TYPE;
 @property (nonatomic, strong) NSString *PUSH_NOTIFICATION_ALERT_MESSAGE;
+@property (nonatomic, strong) CLLocationManager *locationManager;
 
 - (void) createViewDeckController;
 - (void) retrieveDashboardPreferences;

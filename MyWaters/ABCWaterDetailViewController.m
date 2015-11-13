@@ -245,9 +245,6 @@
     }
     
     [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//        appDelegate.hud.labelText = @"Loading...";
     
     isFetchingGalleryImages = YES;
     
@@ -553,6 +550,8 @@
                 
                 
                 networkGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
+                networkGallery.isComingFromARView = NO;
+                networkGallery.abcSiteID = abcSiteId;
                 [self.navigationController pushViewController:networkGallery animated:YES];
                 //                GalleryViewController *viewObj = [[GalleryViewController alloc] init];
                 //                viewObj.isABCGallery = YES;
@@ -787,6 +786,8 @@
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     isAlreadyFav = [appDelegate checkItemForFavourite:@"3" idValue:abcSiteId];
     
+    [appDelegate.locationManager startUpdatingLocation];
+    
     self.view.backgroundColor = RGB(242, 242, 242);
     self.title = @"Our Waters Info";
     
@@ -811,12 +812,13 @@
     //***** Bottom Control Parameters
     
     arViewButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    arViewButton.frame = CGRectMake((self.view.bounds.size.width/3-30)/2, bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+10, 30, 30);
+//    arViewButton.frame = CGRectMake((self.view.bounds.size.width/3-30)/2, bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+10, 30, 30);
+    arViewButton.frame = CGRectMake((self.view.bounds.size.width/2)-(self.view.bounds.size.width/2)/2-15, bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+10, 30, 30);
     [arViewButton addTarget:self action:@selector(moveToARView) forControlEvents:UIControlEventTouchUpInside];
     [arViewButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_ARview.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [self.view addSubview:arViewButton];
     
-    arViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, arViewButton.frame.origin.y+arViewButton.bounds.size.height+3, self.view.bounds.size.width/3, 15)];
+    arViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, arViewButton.frame.origin.y+arViewButton.bounds.size.height+3, self.view.bounds.size.width/2, 15)];
     arViewLabel.backgroundColor = [UIColor clearColor];
     arViewLabel.textAlignment = NSTextAlignmentCenter;
     arViewLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
@@ -831,18 +833,20 @@
     
     
     bookingFormButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    bookingFormButton.frame = CGRectMake(((self.view.bounds.size.width/3)+(self.view.bounds.size.width/3-30)/2), bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+10, 30, 30);
+    bookingFormButton.frame = CGRectMake(self.view.bounds.size.width-(self.view.bounds.size.width/2)/2 -15, bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+10, 30, 30);
     [bookingFormButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_abc_gallery.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [bookingFormButton addTarget:self action:@selector(moveToGalleryView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:bookingFormButton];
     
-    bookingFormLabel = [[UILabel alloc] initWithFrame:CGRectMake((self.view.bounds.size.width/3), bookingFormButton.frame.origin.y+bookingFormButton.bounds.size.height+3, self.view.bounds.size.width/3, 15)];
+    bookingFormLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2, bookingFormButton.frame.origin.y+bookingFormButton.bounds.size.height+3, self.view.bounds.size.width/2, 15)];
     bookingFormLabel.backgroundColor = [UIColor clearColor];
     bookingFormLabel.textAlignment = NSTextAlignmentCenter;
     bookingFormLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
     bookingFormLabel.text = @"Gallery";
     [self.view addSubview:bookingFormLabel];
     
+    // Old Code Supporting Three Menu Items
+    /*
     contactUsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     contactUsButton.frame = CGRectMake(((self.view.bounds.size.width/3)*2+(self.view.bounds.size.width/3-30)/2), bgScrollView.frame.origin.y+bgScrollView.bounds.size.height+12, 25, 25);
     [contactUsButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_call_blue.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -861,6 +865,7 @@
         contactUsLabel.alpha = 0.4;
         contactUsButton.enabled = NO;
     }
+    */
     
     //Top Menu Item
     
@@ -868,6 +873,9 @@
     topMenu.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
     [self.view addSubview:topMenu];
     
+    
+    // Old Code Supporting Three Menu Items
+    /*
     addPhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];
     addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     //    addPhotoButton.frame = CGRectMake(topMenu.bounds.size.width/4-10, 5, 20, 20);
@@ -899,6 +907,24 @@
     addPhotoLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:addPhotoLabel];
     
+    favouriteLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
+    favouriteLabel.backgroundColor = [UIColor clearColor];
+    favouriteLabel.textAlignment = NSTextAlignmentCenter;
+    favouriteLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    if (isAlreadyFav)
+        favouriteLabel.text = @"Favourite";
+    else
+        favouriteLabel.text = @"Favourite";
+    favouriteLabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:favouriteLabel];
+    
+    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
+    shareLabel.backgroundColor = [UIColor clearColor];
+    shareLabel.textAlignment = NSTextAlignmentCenter;
+    shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    shareLabel.text = @"Share";
+    shareLabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:shareLabel];
     
     UIButton *addPhotoOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
     addPhotoOverlayButton.frame = CGRectMake(0, 0, topMenu.bounds.size.width/3, 45);
@@ -914,14 +940,35 @@
     addShareOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)*2, 0, topMenu.bounds.size.width/3, 45);
     [addShareOverlayButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addShareOverlayButton];
-    
-    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
-    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2-1, 0, 0.5, 45)];
-    //    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
-    //    [topMenu addSubview:seperatorOne];
+    */
     
     
-    favouriteLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3), 32, topMenu.bounds.size.width/3, 10)];
+    addPhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addPhotoButton.frame = CGRectMake((topMenu.bounds.size.width/2)-(topMenu.bounds.size.width/2)/2 -10, 5, 20, 20);
+    [addPhotoButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_call_abcwaters.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [addPhotoButton addTarget:self action:@selector(callPUB) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addPhotoButton];
+    
+    favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    favouritesButton.frame = CGRectMake(topMenu.bounds.size.width-(topMenu.bounds.size.width/2)/2 -10, 5, 20, 20);
+    if (isAlreadyFav)
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [favouritesButton addTarget:self action:@selector(addABCWaterToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:favouritesButton];
+
+    
+    addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/2, 10)];
+    addPhotoLabel.backgroundColor = [UIColor clearColor];
+    addPhotoLabel.textAlignment = NSTextAlignmentCenter;
+    addPhotoLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    addPhotoLabel.text = @"Contact Us";
+    addPhotoLabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:addPhotoLabel];
+    
+    
+    favouriteLabel = [[UILabel alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2, 32, topMenu.bounds.size.width/2, 10)];
     favouriteLabel.backgroundColor = [UIColor clearColor];
     favouriteLabel.textAlignment = NSTextAlignmentCenter;
     favouriteLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
@@ -931,19 +978,25 @@
         favouriteLabel.text = @"Favourite";
     favouriteLabel.textColor = [UIColor whiteColor];
     [topMenu addSubview:favouriteLabel];
+
     
-    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
-    //    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(topMenu.bounds.size.width/2, 32, topMenu.bounds.size.width/2, 10)];
-    shareLabel.backgroundColor = [UIColor clearColor];
-    shareLabel.textAlignment = NSTextAlignmentCenter;
-    shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
-    shareLabel.text = @"Share";
-    shareLabel.textColor = [UIColor whiteColor];
-    [topMenu addSubview:shareLabel];
+    UIButton *addPhotoOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addPhotoOverlayButton.frame = CGRectMake(0, 0, topMenu.bounds.size.width/2, 45);
+    [addPhotoOverlayButton addTarget:self action:@selector(callPUB) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addPhotoOverlayButton];
+    
+    UIButton *addFavOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addFavOverlayButton.frame = CGRectMake(topMenu.bounds.size.width/2, 0, topMenu.bounds.size.width/2, 45);
+    [addFavOverlayButton addTarget:self action:@selector(addABCWaterToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addFavOverlayButton];
     
     
-    //    networkImages = [[NSArray alloc] initWithObjects:@"http://farm6.static.flickr.com/5042/5323996646_9c11e1b2f6_b.jpg", @"http://farm6.static.flickr.com/5007/5311573633_3cae940638.jpg",nil];
-    
+    if ([phoneNoString length]==0) {
+        addPhotoButton.alpha = 0.4;
+        addPhotoLabel.alpha = 0.4;
+        addPhotoButton.enabled = NO;
+        addPhotoOverlayButton.enabled = NO;
+    }
 }
 
 

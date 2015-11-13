@@ -53,15 +53,19 @@
         
         if ([nameField.text length]==0) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+            return;
         }
         if ([CommonFunctions characterSet1Found:nameField.text]) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+            return;
         }
         else if ([emailField.text length]==0) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
+            return;
         }
         else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
             [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+            return;
         }
         else {
             
@@ -189,13 +193,14 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
-    [UIView beginAnimations:@"topMenu" context:NULL];
-    [UIView setAnimationDuration:0.5];
-    CGPoint pos = self.view.center;
-    pos.y = 200;
-    self.view.center = pos;
-    [UIView commitAnimations];
-    
+    if (IS_IPHONE_4_OR_LESS || IS_IPHONE_5) {
+        [UIView beginAnimations:@"topMenu" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint pos = self.view.center;
+        pos.y = 200;
+        self.view.center = pos;
+        [UIView commitAnimations];
+    }
     return YES;
 }
 
@@ -216,7 +221,7 @@
         [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
         
         if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"isEmailVerified"] intValue] == 1) {
-            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
         }
         else {
             OTPViewController *viewObj = [[OTPViewController alloc] init];
@@ -226,9 +231,6 @@
             viewObj.isResettingPassword = NO;
             [self.navigationController pushViewController:viewObj animated:YES];
         }
-        
-        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
-        
     }
     else {
         [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];

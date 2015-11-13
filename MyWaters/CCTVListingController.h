@@ -24,6 +24,8 @@
     UISearchBar *listinSearchBar;
 
     NSInteger cctvPageCount;
+    UIButton *hideFilterButton;
+
 }
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 

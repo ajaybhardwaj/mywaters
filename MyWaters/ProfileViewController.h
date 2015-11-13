@@ -36,7 +36,7 @@
     UIView *tabsBackground;
     UIButton *badgesButton,*pointsButton,*rewardsButton,*photosButton;
     UIButton *badgesIcon,*pointsIcon,*rewardsIcon,*photosIcon;
-    UILabel *badgesLabel,*pointsLabel,*rewardsLabel,*photosLabel;
+    UILabel *badgesLabel,*pointsLabel,*rewardsLabel,*photosLabel,*pointsValueLabel;
     
     
     //===== Badges Controls

@@ -25,6 +25,8 @@
     BOOL isFiltered;
     NSMutableArray *filteredDataSource;
     NSInteger eventsPageCount,eventsTotalCount;
+    
+    UIButton *hideFilterButton;
         
     //*************** Demo App Variables
     UIButton *eventDetailButton;

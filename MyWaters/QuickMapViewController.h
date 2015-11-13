@@ -82,6 +82,9 @@
     NSString *meteorologicalDisclaimerString,*userSubmissionFinePrintString;
     BOOL isShowingMeteorologicalDisclaimer,isShwoingFinePrint;
     
+    
+    UIButton *hideFilterButton;
+    
 }
 @property (nonatomic, strong) id currentPopTipViewTarget;
 @property (nonatomic, strong) NSMutableArray	*visiblePopTipViews;

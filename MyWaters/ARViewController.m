@@ -32,6 +32,7 @@
     if (pictureDataSourceForGallery.count!=0) {
         [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
         networkGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
+        networkGallery.isComingFromARView = YES;
         [self.navigationController pushViewController:networkGallery animated:YES];
     }
     
@@ -66,7 +67,14 @@
     }
     else {
         isShowingPictureOptions = YES;
-        pos.y = self.view.bounds.size.width-340;
+        if (IS_IPHONE_4_OR_LESS)
+            pos.y = self.view.bounds.size.width-260;
+        else if (IS_IPHONE_5)
+            pos.y = self.view.bounds.size.width-340;
+        else if (IS_IPHONE_6)
+            pos.y = self.view.bounds.size.width-390;
+        else if (IS_IPHONE_6P)
+            pos.y = self.view.bounds.size.width-420;
         
     }
     imageUploadOptionsTable.center = pos;
@@ -251,7 +259,7 @@
             ARGeoCoordinate *coordinate = [ARGeoCoordinate coordinateWithLocation:locationValue locationTitle:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"Name"]];
             [coordinate calibrateUsingOrigin:[_userLocation location]];
             MarkerView *markerView = [[MarkerView alloc] initWithCoordinate:coordinate delegate:self image:[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"MainImage"]];
-            DebugLog(@"Marker view %@", markerView);
+//            DebugLog(@"Marker view %@", markerView);
             markerView.tag = i; //[[[appDelegate.POI_ARRAY objectAtIndex:i] objectForKey:@"ID"] intValue];
             
             [coordinate setDisplayView:markerView];
@@ -874,6 +882,13 @@
     NSArray *values = [[NSArray alloc] initWithObjects:@"4",abcWaterSiteID,@"1",[CommonFunctions getAppVersionNumber], nil];
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+    
+//    UIButton *tempButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    tempButton.frame = CGRectMake(100, 100, 50, 50);
+//    [tempButton setTitle:@"Options" forState:UIControlStateNormal];
+//    [tempButton addTarget:self action:@selector(animatePictureOptionsTable) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:tempButton];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -884,9 +899,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    NSLog(@"Crashed here 1");
     self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height+100, self.view.bounds.size.width);
-    NSLog(@"Crashed here 2");
     
 //    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
 //    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];

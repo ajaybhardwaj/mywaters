@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "UILabel + Extension.h"
+#import "QuickMapViewController.h"
 
 @interface RewardDetailsViewController : UIViewController {
     

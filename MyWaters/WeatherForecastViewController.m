@@ -172,11 +172,13 @@
             iconImageName = @"TS.png";
         }
         [threeHourBigIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,iconImageName]]];
-        threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@ @ %@",issueDate,[[twelveHourWeatherData objectForKey:@"forecastIssue"] objectForKey:@"_time"]];
+//        threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@ @ %@",issueDate,[[twelveHourWeatherData objectForKey:@"forecastIssue"] objectForKey:@"_time"]];
+        
+        threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@ - %@",[[twelveHourWeatherData objectForKey:@"forecastValidityFrom"] objectForKey:@"_time"],[[twelveHourWeatherData objectForKey:@"forecastValidityTill"] objectForKey:@"_time"]];
 
     }
     
-    twelveHourTempLabel.text = [NSString stringWithFormat:@"%@°C",[[twelveHourWeatherData objectForKey:@"temperature"] objectForKey:@"_high"]];
+    twelveHourTempLabel.text = [NSString stringWithFormat:@"%@-%@°C",[[twelveHourWeatherData objectForKey:@"temperature"] objectForKey:@"_low"],[[twelveHourWeatherData objectForKey:@"temperature"] objectForKey:@"_high"]];
     
     [self getThreeDaysWeatherData];
 }
@@ -211,11 +213,14 @@
     [scanner scanString:match intoString:nil];
     postString = [nowcastTimeString substringFromIndex:scanner.scanLocation];
     
-    nowcastTimeString = [postString substringToIndex:8];
+//    nowcastTimeString = [postString substringToIndex:8];
     nowcastDateString = [postString substringWithRange:NSMakeRange(12, 10)];
     
+    nowcastTimeString = [nowcastTimeString substringWithRange:NSMakeRange(4, 20)];
+    nowcastTimeString = [nowcastTimeString stringByReplacingOccurrencesOfString:@"TO" withString:@"-"];
+    
     NSString *issueDate = [CommonFunctions dateFromString:nowcastDateString];
-    threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@ @ %@",issueDate,nowcastTimeString];
+    threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@\n%@",issueDate,nowcastTimeString];
     
     
     CLLocationCoordinate2D currentLocation;
@@ -303,10 +308,11 @@
 
 - (void) createUI {
     
-    threeHourDateTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.view.bounds.size.width, 20)];
+    threeHourDateTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.view.bounds.size.width, 50)];
     threeHourDateTimeLabel.textAlignment = NSTextAlignmentCenter;
     threeHourDateTimeLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:16.0];
     threeHourDateTimeLabel.backgroundColor = [UIColor clearColor];
+    threeHourDateTimeLabel.numberOfLines = 0;
     [self.view addSubview:threeHourDateTimeLabel];
     
     threeHourBigIcon = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2 - 45, threeHourDateTimeLabel.frame.origin.y+threeHourDateTimeLabel.bounds.size.height+15, 90, 90)];

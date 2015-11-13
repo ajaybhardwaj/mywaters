@@ -31,6 +31,10 @@
 
 - (void) setTableEditMode {
     
+    if (isShowingFilter) {
+        [self animateFilterTable];
+    }
+    
     if (!isEditingTable) {
         isEditingTable = YES;
         [favouritesListingTableView setEditing:YES animated:YES];
@@ -75,6 +79,18 @@
 }
 
 
+
+//*************** Method For Removing Filter Table For WLS
+
+- (void) hideFilterTable {
+    
+    if (isShowingFilter) {
+        [self animateFilterTable];
+    }
+}
+
+
+
 //*************** Method To Animate Filter Table
 
 - (void) animateFilterTable {
@@ -87,6 +103,7 @@
         
         isShowingFilter = NO;
         pos.y = -320;
+        hideFilterButton.hidden = YES;
         
         favouritesListingTableView.alpha = 1.0;
         favouritesListingTableView.userInteractionEnabled = YES;
@@ -98,15 +115,26 @@
 //        filterTableView.hidden = NO;
         isShowingFilter = YES;
         pos.y = 110;
+        hideFilterButton.hidden = NO;
         
         favouritesListingTableView.alpha = 0.5;
-        favouritesListingTableView.userInteractionEnabled = NO;
+//        favouritesListingTableView.userInteractionEnabled = NO;
         filterTableView.center = pos;
         [UIView commitAnimations];
 
     }
     
 }
+
+
+////*************** Method To Hide Filter Table On Touch In Other UI
+//
+//- (void) hideFilterTable  {
+//    
+//    if (isShowingFilter) {
+//        [self animateFilterTable];
+//    }
+//}
 
 
 
@@ -419,7 +447,7 @@
     [btnEdit setFrame:CGRectMake(44, 0, 32, 32)];
     
     UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
+    [btnfilter setImage:[UIImage imageNamed:@"icn_filter1"] forState:UIControlStateNormal];
     [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
     [btnfilter setFrame:CGRectMake(0, 0, 32, 32)];
     
@@ -429,6 +457,11 @@
 
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
 
+    
+//    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideFilterTable)];
+//    tapGesture.cancelsTouchesInView = NO;
+//    tapGesture.numberOfTapsRequired = 1;
+//    [self.view addGestureRecognizer:tapGesture];
     
     favouritesListingTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     favouritesListingTableView.delegate = self;
@@ -455,13 +488,15 @@
     selectedFilterIndex = 0;
     
     noFavFoundLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height/2 - 40, self.view.bounds.size.width-20, 20)];
-    noFavFoundLabel.text = @"No favourites found.";
+    noFavFoundLabel.text = @"No favourites selected.";
     noFavFoundLabel.textAlignment = NSTextAlignmentCenter;
     noFavFoundLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
     noFavFoundLabel.backgroundColor = [UIColor clearColor];
     noFavFoundLabel.textColor = [UIColor lightGrayColor];
     [self.view addSubview:noFavFoundLabel];
     noFavFoundLabel.hidden = YES;
+    
+    
     
     // Initialize the refresh control.
     self.refreshControl = [[UIRefreshControl alloc] init];
@@ -471,6 +506,12 @@
                             action:@selector(getFavouritesListing)
                   forControlEvents:UIControlEventValueChanged];
     [favouritesListingTableView addSubview:self.refreshControl];
+    
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
 }
 
 
@@ -481,6 +522,7 @@
     
     [appDelegate setShouldRotate:NO];
     [favouritesListingTableView setEditing:NO];
+    [appDelegate.locationManager startUpdatingLocation];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(249,172,0) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

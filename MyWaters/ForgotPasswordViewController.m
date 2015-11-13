@@ -74,7 +74,7 @@
         }
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet Connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -156,7 +156,7 @@
     [hideKeypadButton addTarget:self action:@selector(hideAllKeypads) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:hideKeypadButton];
     
-    emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, 40, self.view.bounds.size.width-20, 40)];
+    emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, 100, self.view.bounds.size.width-20, 40)];
     emailField.textColor = RGB(61, 71, 94);
     emailField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];

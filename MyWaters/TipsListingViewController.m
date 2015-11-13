@@ -44,7 +44,7 @@
         [self pullToRefreshTable];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -96,6 +96,10 @@
         else {
             [appDelegate.TIPS_VIDEOS_ARRAY removeAllObjects];
             [appDelegate.TIPS_VIDEOS_ARRAY setArray:tempArray];
+            
+            NSSortDescriptor *sortByPosition = [NSSortDescriptor sortDescriptorWithKey:@"Position" ascending:YES];
+            [appDelegate.TIPS_VIDEOS_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByPosition,nil]];
+            
             tipsListingTableView.hidden = NO;
             noDataLabel.hidden = YES;
         }

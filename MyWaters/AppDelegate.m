@@ -26,16 +26,14 @@
 @synthesize DASHBOARD_PREFERENCES_CHANGED,IS_USER_LOCATION_SELECTED_BY_LONG_PRESS;
 @synthesize RECEIVED_NOTIFICATION_TYPE,IS_PUSH_NOTIFICATION_RECEIVED,PUSH_NOTIFICATION_ALERT_MESSAGE;
 @synthesize IS_CREATING_ACCOUNT;
-
+@synthesize locationManager;
 
 //*************** Method To Register Device Toke For Push Notifications
 
 - (void) registerDeviceToken {
     
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"Token", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"], nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"], nil];
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,REGISTER_PUSH_TOKEN]];
 }
@@ -45,7 +43,8 @@
 
 - (void) getConfigData {
     
-    [CommonFunctions grabGetRequest:@"ConfigData/" delegate:self isNSData:NO accessToken:@"NA"];
+//    [CommonFunctions grabGetRequest:@"ConfigData/" delegate:self isNSData:NO accessToken:@"NA"];
+    [CommonFunctions grabGetRequest:@"ConfigData" delegate:self isNSData:NO accessToken:@"NA"];
 }
 
 
@@ -1292,6 +1291,9 @@
     {
         // ...
     }
+    
+    [locationManager stopUpdatingLocation];
+
 }
 
 
@@ -1307,6 +1309,7 @@
     
     locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
+    locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     
     DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
     ABC_WATERS_LISTING_ARRAY = [[NSMutableArray alloc] init];
@@ -1409,7 +1412,7 @@
             [self getConfigData];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
     return YES;
 }
@@ -1463,7 +1466,9 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
-    [locationManager startMonitoringSignificantLocationChanges];
+    
+    // Commented Out For Version 2.0 AS no flood notifications
+//    [locationManager startMonitoringSignificantLocationChanges];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -1475,10 +1480,11 @@
     if ([CommonFunctions hasConnectivity]) {
         [self getConfigData];
         // Register Device Token
-        [self registerDeviceToken];
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"] length] !=0)
+            [self registerDeviceToken];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -1494,7 +1500,6 @@
     [FBAppCall handleDidBecomeActive];
     
     [locationManager stopMonitoringSignificantLocationChanges];
-    [locationManager startUpdatingLocation];
     
     
     //***** Code To Exclude MyWaters Document Directory From Being Synced With iCloud

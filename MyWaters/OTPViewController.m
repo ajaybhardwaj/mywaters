@@ -115,7 +115,7 @@
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,VERIFICATION_API_URL]];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -133,7 +133,7 @@
     
     
 //    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
-    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width-20, 40)];
+    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+50, self.view.bounds.size.width-20, 40)];
     otpField1.textColor = RGB(61, 71, 94);
     otpField1.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     otpField1.leftViewMode = UITextFieldViewModeAlways;

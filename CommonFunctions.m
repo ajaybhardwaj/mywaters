@@ -435,6 +435,21 @@ static UIWindow *window;
 }
 
 
+//*************** Method For Converting Date String To Required Format String Without Date
+
++ (NSString *)timeWithoutDateString:(NSString *)dateTimeString {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    
+    NSDate *result = [dateFormatter dateFromString:dateTimeString];
+    [dateFormatter setDateFormat:@"hh:mm a"];
+    
+    NSString *resultStrig = [dateFormatter stringFromDate:result];
+    return resultStrig;
+}
+
+
 
 //*************** Method For Converting Date String To NSDate
 
@@ -478,7 +493,8 @@ static UIWindow *window;
         url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@?accessToken=%@&ClientTag=%@",API_BASE_URL,apiName,token,API_CLIENT_TAG_VALUE]];
     
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    [request setName:apiName];
+    if (!IOS7)
+        [request setName:apiName];
     [request setDelegate:viewObj];
     [request startAsynchronous];
 }

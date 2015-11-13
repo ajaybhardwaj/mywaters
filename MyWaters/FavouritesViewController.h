@@ -25,6 +25,8 @@
 
     UILabel *noFavFoundLabel;
     
+    UIButton *hideFilterButton;
+    
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

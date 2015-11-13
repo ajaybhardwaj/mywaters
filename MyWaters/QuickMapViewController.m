@@ -36,6 +36,15 @@
 }
 
 
+//*************** Method For Removing Filter Table For WLS
+
+- (void) hideFilterTable {
+    
+    if (isShowingFilter) {
+        [self animateFilterTable];
+    }
+}
+
 
 //*************** Method For Setting MKMapview Region To Normal
 
@@ -43,8 +52,8 @@
     
     MKCoordinateRegion mapRegion;
     mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
-    mapRegion.span.latitudeDelta = 0.08f;
-    mapRegion.span.longitudeDelta = 0.08f;
+    mapRegion.span.latitudeDelta = 0.013f;
+    mapRegion.span.longitudeDelta = 0.013f;
     [quickMap setRegion:mapRegion animated: YES];
 }
 
@@ -261,6 +270,11 @@
     CGPoint pos = filterTableView.center;
     
     if (isShowingFilter) {
+        
+        hideFilterButton.hidden = YES;
+        if (isShwoingFinePrint) {
+            meteorologicalDisclaimerLabel.hidden = NO;
+        }
         isShowingFilter = NO;
         pos.y = -270;
         
@@ -269,6 +283,10 @@
         
     }
     else {
+        hideFilterButton.hidden = NO;
+        if (isShwoingFinePrint) {
+            meteorologicalDisclaimerLabel.hidden = YES;
+        }
         isShowingFilter = YES;
         pos.y = 100;
         
@@ -438,30 +456,32 @@
                 annotationRegion.span.latitudeDelta = 0.02f;
                 annotationRegion.span.longitudeDelta = 0.02f;
                 
-                NSString *waterLevelTypeValue,*percentageValue;
+                NSString *waterLevelTypeValue,*percentageValue,*updateTimeString;
+                
+                updateTimeString = [CommonFunctions timeWithoutDateString:[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"observationTime"]];
                 
 //                if ([[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevelType"] intValue] == 1) {
                 if (selectedFilterIndex == 1) {
-                    percentageValue = @">50%";
+                    percentageValue = @"Drain 0%-75% full";
                     waterLevelTypeValue = @"Low Flood Risk";
                 }
                 else if (selectedFilterIndex==2) {
-                    percentageValue = @"50%-75%";
+                    percentageValue = @"Drain 75%-90% full";
                     waterLevelTypeValue = @"Moderate Flood Risk";
                 }
                 else if (selectedFilterIndex==3) {
-                    percentageValue = @"75%-90%";
+                    percentageValue = @"Drain 90%-100% full";
                     waterLevelTypeValue = @"High Flood Risk";
                 }
                 else if (selectedFilterIndex==4) {
-                    percentageValue = @"";
+                    percentageValue = @"Station under maintenance";
                     waterLevelTypeValue = @"Under Maintenance";
                 }
                 
-                wlsAnnotation = [[WLSMapAnnotations alloc] initWithTitle:[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"] AndCoordinates:annotationRegion.center type:@"WLS" tag:i+1 subtitleValue:[NSString stringWithFormat:@"%@\n%@",percentageValue,waterLevelTypeValue] level:[[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevelType"] intValue] image:nil]; //Setting Sample location Annotation
+                wlsAnnotation = [[WLSMapAnnotations alloc] initWithTitle:[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"] AndCoordinates:annotationRegion.center type:@"WLS" tag:i+1 subtitleValue:[NSString stringWithFormat:@"%@\n%@\n%@",percentageValue,waterLevelTypeValue,updateTimeString] level:[[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevelType"] intValue] image:nil]; //Setting Sample location Annotation
                 wlsAnnotation.annotationTitle = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"];
 //                wlsAnnotation.annotationSubtitle = [NSString stringWithFormat:@"%@\n%@",percentageValue,waterLevelTypeValue];
-                wlsAnnotation.annotationSubtitle = [NSString stringWithFormat:@"%@",percentageValue];
+                wlsAnnotation.annotationSubtitle = [NSString stringWithFormat:@"%@\n%@\n%@",percentageValue,waterLevelTypeValue,updateTimeString];//[NSString stringWithFormat:@"%@",percentageValue];
                 wlsAnnotation.waterLevel = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevelType"] intValue];
                 wlsAnnotation.annotationType = @"WLS";
                 wlsAnnotation.annotationTag = i+1;
@@ -542,10 +562,10 @@
             annotationRegion.span.longitudeDelta = 0.02f;
             
             
-            userFloodAnnotation = [[FeedbackMapAnnotations alloc] initWithTitle:[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"LocationName"] AndCoordinates:annotationRegion.center type:@"FEEDBACK" tag:i+1 subtitleValue:[NSString stringWithFormat:@"Submitted by: %@",[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"Comment"]] level:0 image:[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"Image"]]; //Setting Sample location Annotation
+            userFloodAnnotation = [[FeedbackMapAnnotations alloc] initWithTitle:[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"LocationName"] AndCoordinates:annotationRegion.center type:@"FEEDBACK" tag:i+1 subtitleValue:[NSString stringWithFormat:@"%@\n%@",[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"Comment"],[CommonFunctions dateForRFC3339DateTimeString:[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"CreatedDate"]]] level:0 image:[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"Image"]]; //Setting Sample location Annotation
             //            cctvAnnotation = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
             userFloodAnnotation.annotationTitle = [[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"LocationName"];
-            userFloodAnnotation.annotationSubtitle = [NSString stringWithFormat:@"Submitted by: %@\n%@",[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"Comment"],[CommonFunctions dateForRFC3339DateTimeString:[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"CreatedDate"]]];
+            userFloodAnnotation.annotationSubtitle = [NSString stringWithFormat:@"%@\n%@",[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"Comment"],[CommonFunctions dateForRFC3339DateTimeString:[[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"CreatedDate"]]];
             userFloodAnnotation.annotationType = @"FEEDBACK";
             userFloodAnnotation.annotationTag = i+1;
             userFloodAnnotation.annotationImageName = [[appDelegate.USER_FLOOD_SUBMISSION_ARRAY objectAtIndex:i] objectForKey:@"Image"];
@@ -623,9 +643,6 @@
 - (void) sendRouteRequest {
     
     [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//    appDelegate.hud.labelText = @"Loading...";
     
     CLLocationCoordinate2D destinationCoords = CLLocationCoordinate2DMake(destinationLat,destinationLong);
     MKPlacemark *destinationPlacemark = [[MKPlacemark alloc] initWithCoordinate:destinationCoords addressDictionary:nil];
@@ -644,11 +661,9 @@
             _currentRoute = [response.routes firstObject];
             [self plotRouteOnMap:_currentRoute];
             
-            //            self.navigationItem.rightBarButtonItem = routesButton;
-            //            [stepsTableView reloadData];
             [CommonFunctions dismissGlobalHUD];
-//            [appDelegate.hud hide:YES];
-            
+            [quickMap setVisibleMapRect:[_routeOverlay boundingMapRect] edgePadding:UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0) animated:YES];
+
             //            for (MKRoute *route in [response routes]) {
             //                [directionMapView addOverlay:[route polyline] level:MKOverlayLevelAboveRoads]; // Draws the route above roads, but below labels.
             //                // You can also get turn-by-turn steps, distance, advisory notices, ETA, etc by accessing various route properties.
@@ -666,7 +681,7 @@
 
 - (void)popTipViewWasDismissedByUser:(CMPopTipView *)popTipView
 {
-//    [self.visiblePopTipViews removeObject:popTipView];
+
     [self.visiblePopTipViews removeAllObjects];
     self.currentPopTipViewTarget = nil;
 }
@@ -813,7 +828,7 @@
                 if (!appDelegate.IS_SKIPPING_USER_LOGIN)
                     [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No user feedbacks data available.\nTo submit flood information, long press on map to drop pin."] cancel:@"OK" otherButton:nil];
                 else
-                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No user feedbacks data available."] cancel:@"OK" otherButton:nil];
+                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No user feedbacks data available.\nLogin to submit flood information."] cancel:@"OK" otherButton:nil];
 //                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
             }
         }
@@ -1081,27 +1096,28 @@
         calloutView.layer.cornerRadius = 10.0f;
         calloutView.userInteractionEnabled = YES;
         
-        UIImageView *locationNameImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 20, 20)];
-        [locationNameImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_grey_quickmap.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        [calloutView addSubview:locationNameImageView];
+//        UIImageView *locationNameImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 20, 20)];
+//        [locationNameImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location_grey_quickmap.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//        [calloutView addSubview:locationNameImageView];
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 10, 110, 50)];
-        titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.text = temp.annotationTitle;
-        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-        titleLabel.numberOfLines = 0;
+//        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 130, 50)];
+//        titleLabel.backgroundColor = [UIColor clearColor];
+//        titleLabel.text = temp.annotationTitle;
+//        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+//        titleLabel.numberOfLines = 0;
+//        
+//        CGRect newTitleLabelFrame = titleLabel.frame;
+//        newTitleLabelFrame.size.height = [CommonFunctions heightForText:titleLabel.text font:titleLabel.font withinWidth:110];//expectedDescriptionLabelSize.height;
+//        titleLabel.frame = newTitleLabelFrame;
+//        [calloutView addSubview:titleLabel];
+//        [titleLabel sizeToFit];
         
-        CGRect newTitleLabelFrame = titleLabel.frame;
-        newTitleLabelFrame.size.height = [CommonFunctions heightForText:titleLabel.text font:titleLabel.font withinWidth:110];//expectedDescriptionLabelSize.height;
-        titleLabel.frame = newTitleLabelFrame;
-        [calloutView addSubview:titleLabel];
-        [titleLabel sizeToFit];
+//        UIImageView *distanceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(7, titleLabel.frame.origin.y+titleLabel.bounds.size.height + 5, 20, 20)];
+//        [distanceImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_distance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//        [calloutView addSubview:distanceImageView];
         
-        UIImageView *distanceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(7, titleLabel.frame.origin.y+titleLabel.bounds.size.height + 5, 20, 20)];
-        [distanceImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_distance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        [calloutView addSubview:distanceImageView];
-        
-        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 110, 40)];
+//        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 130, 40)];
+        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 130, 40)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
         subTitleLabel.text = temp.annotationSubtitle;
         subTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
@@ -1115,7 +1131,8 @@
         
         
         CGRect newCalloutFrame = calloutView.frame;
-        newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+20;//expectedDescriptionLabelSize.height;
+//        newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+20;//expectedDescriptionLabelSize.height;
+        newCalloutFrame.size.height = subTitleLabel.bounds.size.height+20;//expectedDescriptionLabelSize.height;
         calloutView.frame = newCalloutFrame;
         
         CGPoint p = [quickMap convertCoordinate:temp.coordinate toPointToView:quickMap];
@@ -1153,11 +1170,15 @@
         titleLabel.text = temp.annotationTitle;
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.numberOfLines = 0;
+        
+        CGRect newTitleLabelFrame = titleLabel.frame;
+        newTitleLabelFrame.size.height = [CommonFunctions heightForText:titleLabel.text font:titleLabel.font withinWidth:100];//expectedDescriptionLabelSize.height;
+        titleLabel.frame = newTitleLabelFrame;
         [calloutView addSubview:titleLabel];
         [titleLabel sizeToFit];
         
         UIImageView *distanceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(7, titleLabel.frame.origin.y+titleLabel.bounds.size.height + 5, 20, 20)];
-        [distanceImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/callout_icn_distance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [distanceImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_callout_distance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         [calloutView addSubview:distanceImageView];
         
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 120, 20)];
@@ -1165,8 +1186,12 @@
         subTitleLabel.text = temp.annotationSubtitle;
         subTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
         subTitleLabel.numberOfLines = 0;
+
+        CGRect newSubTitleLabelFrame = subTitleLabel.frame;
+        newSubTitleLabelFrame.size.height = [CommonFunctions heightForText:subTitleLabel.text font:subTitleLabel.font withinWidth:100];//expectedDescriptionLabelSize.height;
+        subTitleLabel.frame = newSubTitleLabelFrame;
         [calloutView addSubview:subTitleLabel];
-        
+        [subTitleLabel sizeToFit];
         
         CGRect newCalloutFrame = calloutView.frame;
         newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+20;//expectedDescriptionLabelSize.height;
@@ -1205,7 +1230,7 @@
         calloutView.layer.cornerRadius = 10.0f;
         calloutView.userInteractionEnabled = YES;
         
-        UIImageView *locationNameImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 70, 70)];
+        UIImageView *locationNameImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 70, 70)];
         [calloutView addSubview:locationNameImageView];
         
         NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,temp.annotationImageName];
@@ -1220,10 +1245,7 @@
                 
                 locationNameImageView.image = image;
             }
-            else {
-                DebugLog(@"Image Loading Failed..!!");
-                locationNameImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
-            }
+            
             [activityIndicator stopAnimating];
         }];
         
@@ -1234,6 +1256,10 @@
         titleLabel.text = temp.annotationTitle;
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.numberOfLines = 0;
+        
+        CGRect newtitleLabelFrame = titleLabel.frame;
+        newtitleLabelFrame.size.height = [CommonFunctions heightForText:titleLabel.text font:titleLabel.font withinWidth:150];//expectedDescriptionLabelSize.height;
+        titleLabel.frame = newtitleLabelFrame;
         [calloutView addSubview:titleLabel];
         [titleLabel sizeToFit];
         
@@ -1242,7 +1268,13 @@
         subTitleLabel.text = temp.annotationSubtitle;
         subTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
         subTitleLabel.numberOfLines = 0;
+
+        CGRect newSubTitleLabelFrame = subTitleLabel.frame;
+        newSubTitleLabelFrame.size.height = [CommonFunctions heightForText:subTitleLabel.text font:subTitleLabel.font withinWidth:150];//expectedDescriptionLabelSize.height;
+        subTitleLabel.frame = newSubTitleLabelFrame;
         [calloutView addSubview:subTitleLabel];
+        [subTitleLabel sizeToFit];
+        
         
         
         CGRect newCalloutFrame = calloutView.frame;
@@ -1288,47 +1320,49 @@
         [calloutView addSubview:titleLabel];
         [titleLabel sizeToFit];
         
-        UIImageView *dropIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 15, 15)];
-        [dropIconImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_drop_quickmap.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-        [calloutView addSubview:dropIconImageView];
+//        UIImageView *dropIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 15, 15)];
+//        [dropIconImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_drop_quickmap.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//        [calloutView addSubview:dropIconImageView];
         
-        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 110, 40)];
+//        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 110, 40)];
+        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 130, 40)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
         subTitleLabel.text = temp.annotationSubtitle;
         subTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
         subTitleLabel.numberOfLines = 0;
         
         CGRect newSubTitleLabelFrame = subTitleLabel.frame;
-        newSubTitleLabelFrame.size.height = [CommonFunctions heightForText:subTitleLabel.text font:subTitleLabel.font withinWidth:110];//expectedDescriptionLabelSize.height;
+        newSubTitleLabelFrame.size.height = [CommonFunctions heightForText:subTitleLabel.text font:subTitleLabel.font withinWidth:120];//expectedDescriptionLabelSize.height;
         subTitleLabel.frame = newSubTitleLabelFrame;
         [calloutView addSubview:subTitleLabel];
         [subTitleLabel sizeToFit];
         
-        UILabel *waterLevelTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, subTitleLabel.frame.origin.y+subTitleLabel.bounds.size.height+5, 130, 40)];
-        waterLevelTypeLabel.backgroundColor = [UIColor clearColor];
-        if (temp.waterLevel==1) {
-            waterLevelTypeLabel.text = @"Low Flood Risk";
-        }
-        else if (temp.waterLevel==2) {
-            waterLevelTypeLabel.text = @"Moderate Flood Risk";
-        }
-        else if (temp.waterLevel==3) {
-            waterLevelTypeLabel.text = @"High Flood Risk";
-        }
-        else {
-            waterLevelTypeLabel.text = @"Under Maintenance";
-        }
-        waterLevelTypeLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
-        waterLevelTypeLabel.numberOfLines = 0;
-        
-        CGRect newWaterLevelTypeLabelFrame = waterLevelTypeLabel.frame;
-        newWaterLevelTypeLabelFrame.size.height = [CommonFunctions heightForText:waterLevelTypeLabel.text font:waterLevelTypeLabel.font withinWidth:120];//expectedDescriptionLabelSize.height;
-        waterLevelTypeLabel.frame = newWaterLevelTypeLabelFrame;
-        [calloutView addSubview:waterLevelTypeLabel];
-        [waterLevelTypeLabel sizeToFit];
+//        UILabel *waterLevelTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, subTitleLabel.frame.origin.y+subTitleLabel.bounds.size.height+5, 130, 40)];
+//        waterLevelTypeLabel.backgroundColor = [UIColor clearColor];
+//        if (temp.waterLevel==1) {
+//            waterLevelTypeLabel.text = @"Low Flood Risk";
+//        }
+//        else if (temp.waterLevel==2) {
+//            waterLevelTypeLabel.text = @"Moderate Flood Risk";
+//        }
+//        else if (temp.waterLevel==3) {
+//            waterLevelTypeLabel.text = @"High Flood Risk";
+//        }
+//        else {
+//            waterLevelTypeLabel.text = @"Under Maintenance";
+//        }
+//        waterLevelTypeLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+//        waterLevelTypeLabel.numberOfLines = 0;
+//        
+//        CGRect newWaterLevelTypeLabelFrame = waterLevelTypeLabel.frame;
+//        newWaterLevelTypeLabelFrame.size.height = [CommonFunctions heightForText:waterLevelTypeLabel.text font:waterLevelTypeLabel.font withinWidth:120];//expectedDescriptionLabelSize.height;
+//        waterLevelTypeLabel.frame = newWaterLevelTypeLabelFrame;
+//        [calloutView addSubview:waterLevelTypeLabel];
+//        [waterLevelTypeLabel sizeToFit];
         
         CGRect newCalloutFrame = calloutView.frame;
-        newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+waterLevelTypeLabel.bounds.size.height+30;//expectedDescriptionLabelSize.height;
+//        newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+waterLevelTypeLabel.bounds.size.height+30;//expectedDescriptionLabelSize.height;
+        newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+30;//expectedDescriptionLabelSize.height;
         calloutView.frame = newCalloutFrame;
         
         CGPoint p = [quickMap convertCoordinate:temp.coordinate toPointToView:quickMap];
@@ -1399,6 +1433,11 @@
 - (void)stackMenu:(UPStackMenu *)menu didTouchItem:(UPStackMenuItem *)item atIndex:(NSUInteger)index {
     
     selectedAnnotationButton = index;
+    
+    if (isShowingCallout) {
+        isShowingCallout = NO;
+        [calloutView removeFromSuperview];
+    }
     
     if (index==4) {
         
@@ -1572,7 +1611,12 @@
     }
     else if (index==0) {
         
+        [CommonFunctions showAlertView:nil title:@"Rain Map will be coming soon." msg:nil cancel:@"OK" otherButton:nil];
+        
+        // Commented Out As This Feature Wil Be Available in Release 2.0
+        /*
         if (!isShowingRain) {
+            
             
             isShowingRain = YES;
             
@@ -1581,6 +1625,7 @@
             isLoadingCCTV = NO;
             isLoadingFeedback = NO;
             isLoadingRainMap = YES;
+            
             
             meteorologicalDisclaimerLabel.hidden = NO;
             isShowingMeteorologicalDisclaimer = YES;
@@ -1609,9 +1654,11 @@
             
             
             [rainMapStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-            
+         
         }
         else {
+            
+            
             isShowingRain = NO;
             
             if (isShwoingFinePrint) {
@@ -1632,6 +1679,7 @@
             [rainMapStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
             
         }
+        */
     }
 }
 
@@ -1656,7 +1704,7 @@
     
     
     btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnfilter setImage:[UIImage imageNamed:@"icn_filter"] forState:UIControlStateNormal];
+    [btnfilter setImage:[UIImage imageNamed:@"icn_filter1"] forState:UIControlStateNormal];
     [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
     [btnfilter setFrame:CGRectMake(0, 0, 32, 32)];
     
@@ -1703,18 +1751,21 @@
     zoomOutMapGesture.numberOfTapsRequired = 2;
     [quickMap addGestureRecognizer:zoomOutMapGesture];
     
-    
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
     MKCoordinateRegion mapRegion;
     mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
-    mapRegion.span.latitudeDelta = 0.08f;
-    mapRegion.span.longitudeDelta = 0.08f;
+    mapRegion.span.latitudeDelta = 0.013f;
+    mapRegion.span.longitudeDelta = 0.013f;
     [quickMap setRegion:mapRegion animated: YES];
+    }
     
     if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
         UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
         lpgr.minimumPressDuration = 1.0; //user needs to press for 2 seconds
         [quickMap addGestureRecognizer:lpgr];
     }
+    
+    
     
     isShowingFlood = YES;
     isShowingUserFeedback = NO;
@@ -1754,11 +1805,11 @@
         currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-65, 40, 40);
     }
     else if (IS_IPHONE_6) {
-        menuContentView.frame = CGRectMake(quickMap.bounds.size.width-65, quickMap.bounds.size.height-75, 45, 45);
+        menuContentView.frame = CGRectMake(quickMap.bounds.size.width-55, quickMap.bounds.size.height-75, 45, 45);
         currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-75, 40, 40);
     }
     else if (IS_IPHONE_6P) {
-        menuContentView.frame = CGRectMake(quickMap.bounds.size.width-75, quickMap.bounds.size.height-85, 50, 50);
+        menuContentView.frame = CGRectMake(quickMap.bounds.size.width-55, quickMap.bounds.size.height-85, 50, 50);
         currentLocationButton.frame = CGRectMake(15, quickMap.bounds.size.height-85, 40, 40);
     }
     [quickMap addSubview:menuContentView];
@@ -1804,6 +1855,12 @@
     [stack addItems:items];
     [quickMap addSubview:stack];
     
+    
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
 
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -270, self.view.bounds.size.width, 200) style:UITableViewStylePlain];
     filterTableView.delegate = self;
@@ -1817,7 +1874,7 @@
     filterTableView.alwaysBounceVertical = NO;
 
     
-    filterDataSource = [[NSArray alloc] initWithObjects:@"Drain 0-75% Full",@"Drain 75%-90% Full",@"Drain 90%-100 Full",@"Station under maintenance", nil];
+    filterDataSource = [[NSArray alloc] initWithObjects:@"Drain 0-75% Full",@"Drain 75%-90% Full",@"Drain 90%-100% Full",@"Station under maintenance", nil];
     
     isLoadingFloods = YES;
     
@@ -1828,6 +1885,7 @@
     meteorologicalDisclaimerLabel.numberOfLines = 0;
     [self.view addSubview:meteorologicalDisclaimerLabel];
     meteorologicalDisclaimerLabel.hidden = YES;
+    
     
     
     helpScreenImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, quickMap.bounds.size.width, quickMap.bounds.size.height)];
@@ -1874,7 +1932,7 @@
     
     rainAreaHelpLabel = [[UILabel alloc] init];
     if (IS_IPHONE_6 || IS_IPHONE_6P) {
-        rainAreaHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, menuHelpLabel.frame.origin.y-50, 160, 20);
+        rainAreaHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-240, menuHelpLabel.frame.origin.y-50, 160, 20);
     }
     else {
         rainAreaHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, menuHelpLabel.frame.origin.y-50, 160, 20);
@@ -1890,7 +1948,7 @@
     
     floodByUsersHelpLabel = [[UILabel alloc] init];
     if (IS_IPHONE_6 || IS_IPHONE_6P) {
-        floodByUsersHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, rainAreaHelpLabel.frame.origin.y-50, 160, 20);
+        floodByUsersHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-240, rainAreaHelpLabel.frame.origin.y-50, 160, 20);
     }
     else {
         floodByUsersHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, rainAreaHelpLabel.frame.origin.y-50, 160, 20);
@@ -1906,7 +1964,7 @@
     
     cctvHelpLabel = [[UILabel alloc] init];
     if (IS_IPHONE_6 || IS_IPHONE_6P) {
-        cctvHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, floodByUsersHelpLabel.frame.origin.y-50, 160, 20);
+        cctvHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-240, floodByUsersHelpLabel.frame.origin.y-50, 160, 20);
     }
     else {
         cctvHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, floodByUsersHelpLabel.frame.origin.y-50, 160, 20);
@@ -1922,7 +1980,7 @@
     
     wlsHelpLabel = [[UILabel alloc] init];
     if (IS_IPHONE_6 || IS_IPHONE_6P) {
-        wlsHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, cctvHelpLabel.frame.origin.y-50, 160, 20);
+        wlsHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-240, cctvHelpLabel.frame.origin.y-50, 160, 20);
     }
     else {
         wlsHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, cctvHelpLabel.frame.origin.y-50, 160, 20);
@@ -1938,7 +1996,7 @@
     
     floodByPUBHelpLabel = [[UILabel alloc] init];
     if (IS_IPHONE_6 || IS_IPHONE_6P) {
-        floodByPUBHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, wlsHelpLabel.frame.origin.y-50, 160, 20);
+        floodByPUBHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-240, wlsHelpLabel.frame.origin.y-50, 160, 20);
     }
     else {
         floodByPUBHelpLabel.frame = CGRectMake(quickMap.bounds.size.width-230, wlsHelpLabel.frame.origin.y-50, 160, 20);
@@ -1953,8 +2011,17 @@
     floodByPUBHelpLabel.hidden = YES;
     
     
+    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"quickMapHelp"] length] == 0) {
+        [self showHideHelpScreen];
+        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+        [prefs setObject:@"Yes" forKey:@"quickMapHelp"];
+        [prefs synchronize];
+    }
     
-    [self fetchPUBFloodSubmissionListing];
+    if (!isShowingRoute)
+        [self fetchPUBFloodSubmissionListing];
+    
+    
 }
 
 
@@ -1963,6 +2030,8 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
+    
+    [appDelegate.locationManager startUpdatingLocation];
     
     if (appDelegate.IS_COMING_FROM_DASHBOARD) {
         appDelegate.IS_COMING_FROM_DASHBOARD = NO;
@@ -1988,9 +2057,42 @@
     }
     
     if (isShowingRoute) {
-        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
+        
         isShowingRoute = NO;
+
+        if (isShowingCallout) {
+            isShowingCallout = NO;
+            [calloutView removeFromSuperview];
+        }
+        
+        isShowingFlood = NO;
+        isShowingUserFeedback = NO;
+        isShowingRain = NO;
+        isShowingCamera = NO;
+        isShowingDrain = NO;
+        
+        [floodStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [wlsStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [cctvStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [userFeedbackStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [rainMapStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_rainarea_small_greyout.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        
+        [stack closeStack];
+        
+        [quickMap removeAnnotations: pubFloodAnnotationsArray];
+        [quickMap removeAnnotations: userFeedbackAnnotationsArray];
+        [quickMap removeAnnotations: cctvAnnotationsArray];
+        [quickMap removeAnnotations: wlsAnnotationsArray];
+        
+        if(_routeOverlay) {
+            [quickMap removeOverlay:_routeOverlay];
+        }
+        
+        [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
         [self sendRouteRequest];
+        
+        [quickMap setVisibleMapRect:[_routeOverlay boundingMapRect] edgePadding:UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0) animated:YES];
+        
     }
     else {
         if(_routeOverlay) {
@@ -2017,16 +2119,6 @@
 //    }
 }
 
-
-- (void) viewDidAppear:(BOOL)animated {
-    
-//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-//    swipeGesture.numberOfTouchesRequired = 1;
-//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-//    
-//    [self.view addGestureRecognizer:swipeGesture];
-    
-}
 
 
 - (void) viewWillDisappear:(BOOL)animated {

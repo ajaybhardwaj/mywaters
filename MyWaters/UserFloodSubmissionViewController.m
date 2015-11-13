@@ -101,7 +101,7 @@
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_FLOOD_SUBMISSION]];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
     
 }
@@ -511,7 +511,7 @@
     submitButton.frame = CGRectMake(0, self.view.bounds.size.height-114, self.view.bounds.size.width, 50);
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
+    [submitButton setTitle:@"USE THIS LOCATION" forState:UIControlStateNormal];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:18];
     [submitButton addTarget:self action:@selector(submitUserFloodSubmissionFeedback) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:submitButton];

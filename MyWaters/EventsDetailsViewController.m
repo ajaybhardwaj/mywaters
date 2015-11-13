@@ -590,7 +590,10 @@
     topMenu = [[UIView alloc] initWithFrame:CGRectMake(0, -60, self.view.bounds.size.width, 45)];
     topMenu.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
     [self.view addSubview:topMenu];
+ 
     
+    // Old Code Supporting Three Menu Items
+    /*
     notifyButton = [UIButton buttonWithType:UIButtonTypeCustom];
     notifyButton.frame = CGRectMake((topMenu.bounds.size.width/3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
     [notifyButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_notifyme.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -659,20 +662,80 @@
     addShareOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)*2, 0, topMenu.bounds.size.width/3, 45);
     [addShareOverlayButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addShareOverlayButton];
+    */
     
-    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
-//    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)-1, 0, 0.5, 45)];
-//    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
-//    [topMenu addSubview:seperatorOne];
-//    
-//    UIImageView *seperatorTwo =[[UIImageView alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2-1, 0, 0.5, 45)];
-//    [seperatorTwo setBackgroundColor:[UIColor lightGrayColor]];
-//    [topMenu addSubview:seperatorTwo];
+    
+    notifyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    notifyButton.frame = CGRectMake((topMenu.bounds.size.width/2)-(topMenu.bounds.size.width/2)/2 -10 , 5, 20, 20);
+    [notifyButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_notifyme.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [notifyButton addTarget:self action:@selector(registerForEventNotification) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:notifyButton];
+    
+    favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    favouritesButton.frame = CGRectMake(topMenu.bounds.size.width-(topMenu.bounds.size.width/2)/2 -10, 5, 20, 20);
+    if (isAlreadyFav)
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [favouritesButton addTarget:self action:@selector(addEventsToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:favouritesButton];
+    
+//    shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    shareButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5, 5, 20, 20);
+//    [shareButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_share.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+//    [shareButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
+//    [topMenu addSubview:shareButton];
+    
+    notifyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, topMenu.bounds.size.width/2, 10)];
+    notifyLabel.backgroundColor = [UIColor clearColor];
+    notifyLabel.textAlignment = NSTextAlignmentCenter;
+    notifyLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    if (isSubscribed) {
+        notifyLabel.text = @"Unsubscribe Me";
+    }
+    else {
+        notifyLabel.text = @"Notify Me";
+    }
+    notifyLabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:notifyLabel];
+    
+    addToFavlabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/2), 32, topMenu.bounds.size.width/2, 10)];
+    addToFavlabel.backgroundColor = [UIColor clearColor];
+    addToFavlabel.textAlignment = NSTextAlignmentCenter;
+    addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    if (isAlreadyFav)
+        addToFavlabel.text = @"Favourite";
+    else
+        addToFavlabel.text = @"Favourite";
+    addToFavlabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:addToFavlabel];
+    
+//    shareLabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2, 32, topMenu.bounds.size.width/3, 10)];
+//    shareLabel.backgroundColor = [UIColor clearColor];
+//    shareLabel.textAlignment = NSTextAlignmentCenter;
+//    shareLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+//    shareLabel.text = @"Share";
+//    shareLabel.textColor = [UIColor whiteColor];
+//    [topMenu addSubview:shareLabel];
+    
+    
+    UIButton *addNotifyOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addNotifyOverlayButton.frame = CGRectMake(0, 0, topMenu.bounds.size.width/2, 45);
+    [addNotifyOverlayButton addTarget:self action:@selector(registerForEventNotification) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addNotifyOverlayButton];
+    
+    UIButton *addFavOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addFavOverlayButton.frame = CGRectMake(topMenu.bounds.size.width/2, 0, topMenu.bounds.size.width/2, 45);
+    [addFavOverlayButton addTarget:self action:@selector(addEventsToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addFavOverlayButton];
+    
+    
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     
     [appDelegate setShouldRotate:NO];
+    [appDelegate.locationManager startUpdatingLocation];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(244,155,0) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

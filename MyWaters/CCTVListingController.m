@@ -59,12 +59,10 @@
 - (void) fetchCCTVListing {
     
     [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-    //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    //    appDelegate.hud.labelText = @"Loading...";
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
     NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
+    
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
     
     [self pullToRefreshTable];
@@ -82,7 +80,7 @@
     if (isShowingFilter) {
         isShowingFilter = NO;
         pos.y = -300;
-        
+        hideFilterButton.hidden = YES;
         cctvListingTable.alpha = 1.0;
         cctvListingTable.userInteractionEnabled = YES;
         
@@ -90,18 +88,29 @@
     else {
         isShowingFilter = YES;
         pos.y = 128;
-        
+        hideFilterButton.hidden = NO;
         if (isShowingSearchBar) {
             [self animateSearchBar];
         }
         
         cctvListingTable.alpha = 0.5;
-        cctvListingTable.userInteractionEnabled = NO;
+        //        cctvListingTable.userInteractionEnabled = NO;
     }
     filterTableView.center = pos;
     [UIView commitAnimations];
     
 }
+
+
+//*************** Method For Removing Filter Table For WLS
+
+- (void) hideFilterTable {
+    
+    if (isShowingFilter) {
+        [self animateFilterTable];
+    }
+}
+
 
 
 //*************** Method To Animate Search Bar
@@ -137,7 +146,6 @@
     listinSearchBar.center = pos;
     [UIView commitAnimations];
 }
-
 
 
 
@@ -252,7 +260,7 @@
             if (selectedFilterIndex==0)
                 [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
             else
-               [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+                [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             // Temp commented for UAT
             //            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
             //                [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
@@ -371,34 +379,36 @@
             [self animateSearchBar];
         }
         
-        CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
+            CCTVDetailViewController *viewObj = [[CCTVDetailViewController alloc] init];
+            
+            if (isFiltered) {
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
+                    viewObj.imageUrl = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"];
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null])
+                    viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"];
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] != (id)[NSNull null])
+                    viewObj.cctvID = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"];
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Lat"] != (id)[NSNull null])
+                    viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Lat"] doubleValue];
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Lon"] != (id)[NSNull null])
+                    viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
+            }
+            else {
+                if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
+                    viewObj.imageUrl = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"];
+                if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null])
+                    viewObj.titleString = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Name"];
+                if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"] != (id)[NSNull null])
+                    viewObj.cctvID = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"];
+                if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lat"] != (id)[NSNull null])
+                    viewObj.latValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lat"] doubleValue];
+                if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lon"] != (id)[NSNull null])
+                    viewObj.longValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
+            }
+            [self.navigationController pushViewController:viewObj animated:YES];
+        }
         
-        if (isFiltered) {
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
-                viewObj.imageUrl = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"];
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null])
-                viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"];
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"] != (id)[NSNull null])
-                viewObj.cctvID = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"];
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Lat"] != (id)[NSNull null])
-                viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Lat"] doubleValue];
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Lon"] != (id)[NSNull null])
-                viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
-        }
-        else {
-            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"] != (id)[NSNull null])
-                viewObj.imageUrl = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"];
-            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null])
-                viewObj.titleString = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Name"];
-            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"] != (id)[NSNull null])
-                viewObj.cctvID = [[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"ID"];
-            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lat"] != (id)[NSNull null])
-                viewObj.latValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lat"] doubleValue];
-            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lon"] != (id)[NSNull null])
-                viewObj.longValue = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"Lon"] doubleValue];
-        }
-        [self.navigationController pushViewController:viewObj animated:YES];
-    }
+    
 }
 
 
@@ -606,6 +616,12 @@
                   forControlEvents:UIControlEventValueChanged];
     [cctvListingTable addSubview:self.refreshControl];
     
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
+    
 }
 
 
@@ -615,6 +631,8 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
+    
+    [appDelegate.locationManager startUpdatingLocation];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(33, 131, 142) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
@@ -628,7 +646,7 @@
         [self fetchCCTVListing];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 

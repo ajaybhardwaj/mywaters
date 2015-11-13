@@ -18,7 +18,7 @@
 		<string>Icon_58.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.iapps.pubenterprise</string>
+	<string>com.iapps.pubdevelopment</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

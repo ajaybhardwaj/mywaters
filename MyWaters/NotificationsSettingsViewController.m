@@ -98,9 +98,9 @@
             values = [[NSArray alloc] initWithObjects:[prefs stringForKey:@"device_token"],@"1", @"2", nil];
         }
         else {
-            locationManager = [[CLLocationManager alloc] init];
-            if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-                [locationManager requestAlwaysAuthorization];
+//            locationManager = [[CLLocationManager alloc] init];
+            if ([appDelegate.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                [appDelegate.locationManager requestAlwaysAuthorization];
             }
             
             isFloodAlertsTurningOff = NO;
@@ -118,7 +118,7 @@
         else {
             [floodAlertsSwitch setOn:NO animated:YES];
         }
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -159,7 +159,7 @@
             [generalNotificationSwitch setOn:NO animated:YES];
         }
         
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -279,23 +279,27 @@
         
         cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
     }
+    
+    // Commented Out For Version 2.0
+    
+//    else if (indexPath.row==1) {
+//        
+//        floodAlertsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
+//        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"floodAlert"] isEqualToString:@"YES"]) {
+//            [floodAlertsSwitch setOn:YES];
+//            isFloodAlertOff = YES;
+//        }
+//        else {
+//            [floodAlertsSwitch setOn:NO];
+//            isFloodAlertOff = NO;
+//        }
+//        [floodAlertsSwitch addTarget:self action:@selector(registerForFloodALerts:) forControlEvents:UIControlEventValueChanged];
+//        cell.accessoryView = floodAlertsSwitch;
+//        
+//        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
+//    }
+    
     else if (indexPath.row==1) {
-        
-        floodAlertsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
-        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"floodAlert"] isEqualToString:@"YES"]) {
-            [floodAlertsSwitch setOn:YES];
-            isFloodAlertOff = YES;
-        }
-        else {
-            [floodAlertsSwitch setOn:NO];
-            isFloodAlertOff = NO;
-        }
-        [floodAlertsSwitch addTarget:self action:@selector(registerForFloodALerts:) forControlEvents:UIControlEventValueChanged];
-        cell.accessoryView = floodAlertsSwitch;
-        
-        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
-    }
-    else if (indexPath.row==2) {
         
         systemNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
         if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"systemNotifications"] isEqualToString:@"YES"]) {
@@ -358,8 +362,10 @@
     //    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications",@"Read Out Message", nil];
     //    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance",@"Notifications will be read out when received.", nil];
     
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications", nil];
-    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance", nil];
+//    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications", nil];
+//    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance", nil];
+    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"System Notifications", nil];
+    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"An in-app notification to notify user of app updates or maintenance", nil];
     
     
     notificationSettingsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];

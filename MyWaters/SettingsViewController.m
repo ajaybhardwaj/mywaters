@@ -87,24 +87,24 @@
     cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.numberOfLines = 0;
     
-    if (indexPath.row!=0) {
+//    if (indexPath.row!=0) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
-    else {
-        NSString *hintStatus = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"quickMapHints"];
-        hintsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
-        [hintsSwitch addTarget:self action:@selector(registerForHints:) forControlEvents:UIControlEventValueChanged];
-        cell.accessoryView = hintsSwitch;
-        
-        if ([hintStatus isEqualToString:@"YES"]) {
-            isHintsOn = YES;
-            [hintsSwitch setOn:YES];
-        }
-        else {
-            isHintsOn = NO;
-            [hintsSwitch setOn:NO];
-        }
-    }
+//    }
+//    else {
+//        NSString *hintStatus = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"quickMapHints"];
+//        hintsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
+//        [hintsSwitch addTarget:self action:@selector(registerForHints:) forControlEvents:UIControlEventValueChanged];
+//        cell.accessoryView = hintsSwitch;
+//        
+//        if ([hintStatus isEqualToString:@"YES"]) {
+//            isHintsOn = YES;
+//            [hintsSwitch setOn:YES];
+//        }
+//        else {
+//            isHintsOn = NO;
+//            [hintsSwitch setOn:NO];
+//        }
+//    }
     
     UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, cell.bounds.size.height-0.5, settingsTableView.bounds.size.width, 0.5)];
     [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
@@ -120,15 +120,15 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
-    if (indexPath.row==1) {
+    if (indexPath.row==0) {
         DashboardSettingsViewController *viewObj = [[DashboardSettingsViewController alloc] init];
         [self.navigationController pushViewController:viewObj animated:YES];
     }
-    else if (indexPath.row==2) {
+    else if (indexPath.row==1) {
         NotificationsSettingsViewController *viewObj = [[NotificationsSettingsViewController alloc] init];
         [self.navigationController pushViewController:viewObj animated:YES];
     }
-    else if (indexPath.row==3) {
+    else if (indexPath.row==2) {
         
         WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
         for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
@@ -156,9 +156,10 @@
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     
     
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Quick Map Hints",@"Dashboard",@"Notifications",@"Terms and Conditions", nil];
+//    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Quick Map Hints",@"Dashboard",@"Notifications",@"Terms and Conditions", nil];
 //    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"App will remember where you last left off",@"",@"",@"",@"", nil];
-    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"",@"",@"",@"", nil];
+    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"Dashboard",@"Notifications",@"Terms and Conditions", nil];
+    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"",@"",@"", nil];
     
     settingsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
     settingsTableView.delegate = self;

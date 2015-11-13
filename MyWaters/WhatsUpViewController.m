@@ -108,12 +108,14 @@
         }
         else if (sender.selectedSegmentIndex==1) {
             
-            if (isShowingHelpScreen) {
-                [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(showHideHelpScreen) withIconName:@"icn_help_closebutton"]];
-            }
-            else {
-                [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(showHideHelpScreen) withIconName:@"icn_helpicon"]];
-            }
+            self.navigationItem.rightBarButtonItem = nil;
+
+//            if (isShowingHelpScreen) {
+//                [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(showHideHelpScreen) withIconName:@"icn_help_closebutton"]];
+//            }
+//            else {
+//                [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(showHideHelpScreen) withIconName:@"icn_helpicon"]];
+//            }
             
             isShowingFeedTable = YES;
             isShowingChatterTable = NO;
@@ -153,7 +155,7 @@
         [self pullToRefreshTable];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -387,8 +389,8 @@
     if (tableView==exploreTableView) {
         
         SWTableViewCell *customCell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"customCell"];
-        customCell.rightUtilityButtons = [self rightButtons];
-        customCell.delegate = self;
+//        customCell.rightUtilityButtons = [self rightButtons];
+//        customCell.delegate = self;
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, exploreTableView.bounds.size.width-20, 40)];
         
@@ -696,25 +698,25 @@
     isShowingChatterTable = NO;
     
     
-    helpScreenImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
-    helpScreenImageView.backgroundColor = [UIColor blackColor];
-    helpScreenImageView.alpha = 0.7;
-    [self.view addSubview:helpScreenImageView];
-    helpScreenImageView.hidden = YES;
-    helpScreenImageView.userInteractionEnabled = YES;
-    
-    UITapGestureRecognizer* zoomedTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeHepImageView:)];
-    zoomedTap.numberOfTapsRequired = 1;
-    [helpScreenImageView addGestureRecognizer:zoomedTap];
-    
-    helpLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 90, self.view.bounds.size.width-30, 20)];
-    helpLabel.backgroundColor = [UIColor clearColor];
-    helpLabel.textColor = [UIColor whiteColor];
-    helpLabel.textAlignment = NSTextAlignmentRight;
-    helpLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
-    helpLabel.text = @"<--- Swipe left to report chatter";
-    [self.view addSubview:helpLabel];
-    helpLabel.hidden = YES;
+//    helpScreenImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+//    helpScreenImageView.backgroundColor = [UIColor blackColor];
+//    helpScreenImageView.alpha = 0.7;
+//    [self.view addSubview:helpScreenImageView];
+//    helpScreenImageView.hidden = YES;
+//    helpScreenImageView.userInteractionEnabled = YES;
+//    
+//    UITapGestureRecognizer* zoomedTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeHepImageView:)];
+//    zoomedTap.numberOfTapsRequired = 1;
+//    [helpScreenImageView addGestureRecognizer:zoomedTap];
+//    
+//    helpLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 90, self.view.bounds.size.width-30, 20)];
+//    helpLabel.backgroundColor = [UIColor clearColor];
+//    helpLabel.textColor = [UIColor whiteColor];
+//    helpLabel.textAlignment = NSTextAlignmentRight;
+//    helpLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+//    helpLabel.text = @"<--- Swipe left to report chatter";
+//    [self.view addSubview:helpLabel];
+//    helpLabel.hidden = YES;
     
     // Initialize the refresh control.
     self.refreshControlFeeds = [[UIRefreshControl alloc] init];

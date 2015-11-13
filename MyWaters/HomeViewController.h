@@ -21,6 +21,7 @@
 #import "EventsDetailsViewController.h"
 #import "CommonFunctions.h"
 #import "ABCWaterDetailViewController.h"
+#import "TipsListingViewController.h"
 
 @interface HomeViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,CLLocationManagerDelegate> {
     
@@ -70,6 +71,7 @@
     
     UIWebView *tipsWebView;
     UILabel *tipsVideoTitleLabel;
+    UIImageView *videoThumbnailView;
 }
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, assign) MKCoordinateRegion region;

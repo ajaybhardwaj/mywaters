@@ -29,6 +29,7 @@
 }
 
 
+
 //*************** Method To Move To Profile View
 
 - (void) moveToProfileView {
@@ -118,7 +119,8 @@
     NSString *highTemString = [[twelveHourForecastDictionary objectForKey:@"temperature"] objectForKey:@"_high"];
     highTemString = [highTemString stringByReplacingOccurrencesOfString:@" " withString:@""];
     
-    bigWeatherTempTitle.text = [NSString stringWithFormat:@"%@°C - %@°C",lowTemString,highTemString];
+    //    bigWeatherTempTitle.text = [NSString stringWithFormat:@"%@°C - %@°C",lowTemString,highTemString];
+    bigWeatherTempTitle.text = [NSString stringWithFormat:@"%@ - %@°C",lowTemString,highTemString];
 }
 
 
@@ -464,6 +466,10 @@
         viewObj.isNotEventController = YES;
         [self.navigationController pushViewController:viewObj animated:YES];
     }
+    else if (touchedView.tag==7) {
+        TipsListingViewController *viewObj = [[TipsListingViewController alloc] init];
+        [self.navigationController pushViewController:viewObj animated:YES];
+    }
     else if (touchedView.tag==8) {
         
         if (abcWatersDataArray != (id)[NSNull null]  && abcWatersDataArray.count!=0) {
@@ -562,24 +568,29 @@
 
 - (void) fetchDashboardData {
     
-    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-    //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-    //    appDelegate.hud.labelText = @"Loading...";
-    
-    NSArray *parameters,*values;
-    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
-        parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon", nil];
-        values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], nil];
+    if ([CommonFunctions hasConnectivity]) {
+        
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+        
+        backgroundScrollView.userInteractionEnabled = NO;
+        
+        NSArray *parameters,*values;
+        
+        if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+            parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon",@"pushtoken", nil];
+            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], [[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],nil];
+        }
+        else {
+            parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"pushtoken", nil];
+            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"], nil];
+        }
+        
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
     }
     else {
-        parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version", nil];
-        values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber], nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        return;
     }
-    
-    
-    
-    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
 
@@ -770,28 +781,60 @@
     // Events Content Refresh
     [eventsListingTable reloadData];
     
+    
+    //    NSString *urlString,*titleString;
+    //    for (int i=0; i<tipsDataArray.count; i++) {
+    //        if ([[[tipsDataArray objectAtIndex:i] objectForKey:@"Media"] intValue] == 4) {
+    //            urlString = [[tipsDataArray objectAtIndex:i] objectForKey:@"EmbedURL"];
+    //            titleString = [[tipsDataArray objectAtIndex:i] objectForKey:@"FeedText"];
+    //            break;
+    //        }
+    //    }
+    //    // iframe
+    //    NSString *url = urlString;//@"https://www.youtube.com/embed/5fDrVA2_nbg";
+    //    url = [NSString stringWithFormat:@"%@?rel=0&showinfo=0&controls=0",url];
+    //    NSString* embedHTML = [NSString stringWithFormat:@"\
+    //                           <iframe width=\"%f\" height=\"90\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
+    //                           ",self.view.bounds.size.width/2-20,url];
+    //
+    //    NSString* html = [NSString stringWithFormat:embedHTML, url, self.view.bounds.size.width+10, 90];
+    //    [tipsWebView loadHTMLString:html baseURL:nil];
+    
+    
+    
     // Tips Content Refresh
     
-    NSString *urlString,*titleString;
-    for (int i=0; i<tipsDataArray.count; i++) {
-        if ([[[tipsDataArray objectAtIndex:i] objectForKey:@"Media"] intValue] == 4) {
-            urlString = [[tipsDataArray objectAtIndex:i] objectForKey:@"EmbedURL"];
-            titleString = [[tipsDataArray objectAtIndex:i] objectForKey:@"FeedText"];
-            break;
+    if (tipsDataArray != (id)[NSNull null] && tipsDataArray.count!=0) {
+        
+        for (int i=0; i<tipsDataArray.count; i++) {
+            
+            if ([[[tipsDataArray objectAtIndex:i] objectForKey:@"Media"] intValue] == 4) {
+                
+                NSString *imageURLString = [NSString stringWithFormat:@"%@",[[tipsDataArray objectAtIndex:i] objectForKey:@"ImageURL"]];
+                
+                UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                activityIndicator.center = CGPointMake(videoThumbnailView.bounds.size.width/2, videoThumbnailView.bounds.size.height/2);
+                [videoThumbnailView addSubview:activityIndicator];
+                [activityIndicator startAnimating];
+                
+                [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                    if (succeeded) {
+                        
+                        videoThumbnailView.image = image;
+                        
+                    }
+                    
+                    [activityIndicator stopAnimating];
+                }];
+                
+                tipsVideoTitleLabel.text = [NSString stringWithFormat:@"%@",[[tipsDataArray objectAtIndex:i] objectForKey:@"FeedText"]];
+                break;
+            }
         }
     }
-    // iframe
-    NSString *url = urlString;//@"https://www.youtube.com/embed/5fDrVA2_nbg";
-    url = [NSString stringWithFormat:@"%@?rel=0&showinfo=0&controls=0",url];
-    NSString* embedHTML = [NSString stringWithFormat:@"\
-                           <iframe width=\"%f\" height=\"80\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
-                           ",self.view.bounds.size.width/2-20,url];
     
-    NSString* html = [NSString stringWithFormat:embedHTML, url, self.view.bounds.size.width+10, 80];
-    [tipsWebView loadHTMLString:html baseURL:nil];
     
-    tipsVideoTitleLabel.text = titleString;
-    [tipsVideoTitleLabel sizeToFit];
+    backgroundScrollView.userInteractionEnabled = YES;
 }
 
 
@@ -916,7 +959,7 @@
     reportIncidentButton = [UIButton buttonWithType:UIButtonTypeCustom];
     reportIncidentButton.frame = CGRectMake(10, welcomeView.frame.origin.y + welcomeView.bounds.size.height + 10, self.view.bounds.size.width-20, 40);
     [reportIncidentButton setBackgroundColor:RGB(242, 47, 56)];
-    [reportIncidentButton setTitle:@"Report Incident" forState:UIControlStateNormal];
+    [reportIncidentButton setTitle:@"Report an Incident" forState:UIControlStateNormal];
     reportIncidentButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
     [reportIncidentButton setTintColor:[UIColor whiteColor]];
     reportIncidentButton.layer.cornerRadius = 10;
@@ -998,19 +1041,21 @@
                     quickMap.userTrackingMode = MKUserTrackingModeFollow;
                     [columnView addSubview:quickMap];
                     
-                    MKCoordinateRegion mapRegion;
-                    mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
-                    mapRegion.span.latitudeDelta = 0.08f;
-                    mapRegion.span.longitudeDelta = 0.08f;
-                    [quickMap setRegion:mapRegion animated: YES];
+                    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+                        MKCoordinateRegion mapRegion;
+                        mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
+                        mapRegion.span.latitudeDelta = 0.013f;
+                        mapRegion.span.longitudeDelta = 0.013f;
+                        [quickMap setRegion:mapRegion animated: YES];
+                    }
                     
                     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
                     lpgr.minimumPressDuration = 2.0; //user needs to press for 2 seconds
                     [quickMap addGestureRecognizer:lpgr];
                     //                    }
                     
-                    if (!locationManager) {
-                        locationManager = [[CLLocationManager alloc] init];
+                    if (!appDelegate.locationManager) {
+                        appDelegate.locationManager = [[CLLocationManager alloc] init];
                     }
                     BOOL locationAllowed = [CLLocationManager locationServicesEnabled];
                     if (locationAllowed == NO){
@@ -1020,18 +1065,18 @@
                     else{
                         if(IS_IOS8()){
                             if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied) {
-                                if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-                                    [locationManager requestWhenInUseAuthorization];
+                                if ([appDelegate.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                                    [appDelegate.locationManager requestWhenInUseAuthorization];
                                 }
                             }
                             //[locationManager requestAlwaysAuthorization];
                         }
-                        if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-                            [locationManager requestWhenInUseAuthorization];
+                        if ([appDelegate.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                            [appDelegate.locationManager requestWhenInUseAuthorization];
                         }
-                        locationManager.delegate = self;
-                        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-                        [locationManager startUpdatingLocation];
+                        //                        locationManager.delegate = self;
+                        //                        appDelegate.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+                        //                        [locationManager startUpdatingLocation];
                     }
                     
                 }
@@ -1180,29 +1225,21 @@
                 
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
                     
-                    //                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, columnView.bounds.size.height-55)];
-                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, 78)];
-                    tipsWebView.backgroundColor = [UIColor colorWithRed:28.0/256.0 green:27.0/256.0 blue:28.0/256.0 alpha:1.0];
-                    [columnView addSubview:tipsWebView];
-                    tipsWebView.scrollView.scrollEnabled = NO;
-                    tipsWebView.scrollView.bounces = NO;
+                    //                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, 78)];
+                    //                    tipsWebView.backgroundColor = [UIColor colorWithRed:28.0/256.0 green:27.0/256.0 blue:28.0/256.0 alpha:1.0];
+                    //                    [columnView addSubview:tipsWebView];
+                    //                    tipsWebView.scrollView.scrollEnabled = NO;
+                    //                    tipsWebView.scrollView.bounces = NO;
                     
-                    tipsVideoTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(6, tipsWebView.frame.origin.y+tipsWebView.bounds.size.height+5, columnView.bounds.size.width-12, columnView.bounds.size.height-tipsWebView.bounds.size.height+25)];
+                    videoThumbnailView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, 78)];
+                    [columnView addSubview:videoThumbnailView];
+                    
+                    tipsVideoTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(6, videoThumbnailView.frame.origin.y+videoThumbnailView.bounds.size.height+5, columnView.bounds.size.width-12, columnView.bounds.size.height-(videoThumbnailView.bounds.size.height+25))];
                     tipsVideoTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
                     tipsVideoTitleLabel.backgroundColor = [UIColor clearColor];
                     tipsVideoTitleLabel.numberOfLines = 0;
                     [columnView addSubview:tipsVideoTitleLabel];
                     
-                    
-                    //                    // iframe
-                    //                    NSString *url = [[tipsDataArray objectAtIndex:0] objectForKey:@"EmbedURL"];//@"https://www.youtube.com/embed/5fDrVA2_nbg";
-                    //                    url = [NSString stringWithFormat:@"%@?rel=0&showinfo=0&controls=0",url];
-                    //                    NSString* embedHTML = [NSString stringWithFormat:@"\
-                    //                                           <iframe width=\"330\" height=\"150\" src=\"%@\" frameborder=\"0\" allowfullscreen></iframe>\
-                    //                                           ",url];
-                    //
-                    //                    NSString* html = [NSString stringWithFormat:embedHTML, url, self.view.bounds.size.width+10, 150];
-                    //                    [tipsWebView loadHTMLString:html baseURL:nil];
                     
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==8) {
@@ -1245,7 +1282,7 @@
                 }
                 
                 
-                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
+                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
                     
                 }
                 else {
@@ -1290,19 +1327,21 @@
                     quickMap.userTrackingMode = MKUserTrackingModeFollow;
                     [columnView addSubview:quickMap];
                     
-                    MKCoordinateRegion mapRegion;
-                    mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
-                    mapRegion.span.latitudeDelta = 0.08f;
-                    mapRegion.span.longitudeDelta = 0.08f;
-                    [quickMap setRegion:mapRegion animated: YES];
+                    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+                        MKCoordinateRegion mapRegion;
+                        mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
+                        mapRegion.span.latitudeDelta = 0.013f;
+                        mapRegion.span.longitudeDelta = 0.013f;
+                        [quickMap setRegion:mapRegion animated: YES];
+                    }
                     
                     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
                     lpgr.minimumPressDuration = 2.0; //user needs to press for 2 seconds
                     [quickMap addGestureRecognizer:lpgr];
                     //                    }
                     
-                    if (!locationManager) {
-                        locationManager = [[CLLocationManager alloc] init];
+                    if (!appDelegate.locationManager) {
+                        appDelegate.locationManager = [[CLLocationManager alloc] init];
                     }
                     BOOL locationAllowed = [CLLocationManager locationServicesEnabled];
                     if (locationAllowed == NO){
@@ -1312,18 +1351,18 @@
                     else{
                         if(IS_IOS8()){
                             if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied) {
-                                if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-                                    [locationManager requestWhenInUseAuthorization];
+                                if ([appDelegate.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                                    [appDelegate.locationManager requestWhenInUseAuthorization];
                                 }
                             }
                             
                         }
-                        if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-                            [locationManager requestWhenInUseAuthorization];
+                        if ([appDelegate.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+                            [appDelegate.locationManager requestWhenInUseAuthorization];
                         }
-                        locationManager.delegate = self;
-                        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-                        [locationManager startUpdatingLocation];
+                        //                        locationManager.delegate = self;
+                        //                        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+                        //                        [locationManager startUpdatingLocation];
                     }
                     
                 }
@@ -1546,14 +1585,10 @@
                 
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
                     
-                    //                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, columnView.bounds.size.height-55)];
-                    tipsWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 19.8, columnView.bounds.size.width-5, 78)];
-                    tipsWebView.backgroundColor = [UIColor colorWithRed:28.0/256.0 green:27.0/256.0 blue:28.0/256.0 alpha:1.0];
-                    [columnView addSubview:tipsWebView];
-                    tipsWebView.scrollView.scrollEnabled = NO;
-                    tipsWebView.scrollView.bounces = NO;
+                    videoThumbnailView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, 78)];
+                    [columnView addSubview:videoThumbnailView];
                     
-                    tipsVideoTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(6, tipsWebView.frame.origin.y+tipsWebView.bounds.size.height+5, columnView.bounds.size.width-12, columnView.bounds.size.height-tipsWebView.bounds.size.height+25)];
+                    tipsVideoTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(6, videoThumbnailView.frame.origin.y+videoThumbnailView.bounds.size.height+5, columnView.bounds.size.width-12, columnView.bounds.size.height-(videoThumbnailView.bounds.size.height+25))];
                     tipsVideoTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
                     tipsVideoTitleLabel.backgroundColor = [UIColor clearColor];
                     tipsVideoTitleLabel.numberOfLines = 0;
@@ -1599,7 +1634,7 @@
                 }
                 
                 
-                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
+                if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==5 || [[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==6) {
                     
                 }
                 else {
@@ -1918,7 +1953,10 @@
     
     if (tableView==whatsUpListingTable) {
         
-        UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 10, tableView.bounds.size.width-10, 30)];
+        UIImageView *cellImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 45, 45)];
+        [cell.contentView addSubview:cellImageView];
+        
+        UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, tableView.bounds.size.width-65, 45)];
         cellTitleLabel.backgroundColor = [UIColor clearColor];
         cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:11.0];
         cellTitleLabel.numberOfLines = 0;
@@ -1927,18 +1965,40 @@
         
         cellTitleLabel.text = [[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"FeedText"];
         
-        UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        socialButton.frame = CGRectMake(whatsUpListingTable.bounds.size.width-15, cellTitleLabel.frame.origin.y+cellTitleLabel.bounds.size.height+3, 12, 12);
-        if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 1) {
-            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_facebook_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        //        UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        //        socialButton.frame = CGRectMake(whatsUpListingTable.bounds.size.width-15, cellTitleLabel.frame.origin.y+cellTitleLabel.bounds.size.height+3, 12, 12);
+        //        if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 1) {
+        //            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_facebook_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        //        }
+        //        else if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 2) {
+        //            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_twitter_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        //        }
+        //        else if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 3) {
+        //            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        //        }
+        //        [cell.contentView addSubview:socialButton];
+        
+        
+        if ([[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"ImageURL"] != (id)[NSNull null] && [[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"ImageURL"] length] != 0) {
+            NSString *imageURLString = [NSString stringWithFormat:@"%@",[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"ImageURL"]];
+            
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            activityIndicator.center = CGPointMake(cellImageView.bounds.size.width/2, cellImageView.bounds.size.height/2);
+            [cellImageView addSubview:activityIndicator];
+            [activityIndicator startAnimating];
+            
+            [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                if (succeeded) {
+                    
+                    cellImageView.image = image;
+                }
+                
+                [activityIndicator stopAnimating];
+            }];
         }
-        else if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 2) {
-            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_twitter_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        else {
+            cellImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/Icon_180.png",appDelegate.RESOURCE_FOLDER_PATH]];
         }
-        else if ([[[feedsDataArray objectAtIndex:indexPath.row] objectForKey:@"Media"] intValue] == 3) {
-            [socialButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_instagram_whatsup.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-        }
-        [cell.contentView addSubview:socialButton];
         
     }
     else if (tableView==eventsListingTable) {
@@ -2033,6 +2093,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeStarted:) name:@"UIMoviePlayerControllerDidEnterFullscreenNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeFinished:) name:@"UIMoviePlayerControllerDidExitFullscreenNotification" object:nil];
     
+    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
+    [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(fetchDashboardData) withIconName:@"icn_refresh_home"]];
+    
     backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     backgroundScrollView.showsHorizontalScrollIndicator = NO;
     backgroundScrollView.showsVerticalScrollIndicator = NO;
@@ -2053,6 +2116,7 @@
     tipsDataArray = [[NSMutableArray alloc] init];
     abcWatersDataArray = [[NSMutableArray alloc] init];
     
+    [self fetchDashboardData];
     [self createDynamicUIColumns];
     
 }
@@ -2062,6 +2126,7 @@
     [backgroundScrollView setContentOffset:CGPointZero animated:NO];
     
     [appDelegate setShouldRotate:NO];
+    [appDelegate.locationManager startUpdatingLocation];
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
@@ -2072,7 +2137,7 @@
         //        self.navigationController.navigationBar.alpha = 0.5;
     }
     
-    [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu"]];
+    
     
     //    UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(65,73,74) frame:CGRectMake(0, 0, 1, 1)];
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(242,242,242) frame:CGRectMake(0, 0, 1, 1)];
@@ -2083,15 +2148,6 @@
     //    [titleBarAttributes setValue:RGB(255, 255, 255) forKey:NSForegroundColorAttributeName];
     [titleBarAttributes setValue:RGB(93, 93, 93) forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:titleBarAttributes];
-    
-    
-    if ([CommonFunctions hasConnectivity]) {
-        [self fetchDashboardData];
-    }
-    else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
-        return;
-    }
     
     
     if (appDelegate.IS_PUSH_NOTIFICATION_RECEIVED) {
@@ -2128,6 +2184,63 @@
         [self createDynamicUIColumns];
     }
     
+    
+    if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
+        
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"] length] !=0) {
+            
+            NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"]];
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            activityIndicator.center = CGPointMake(profileImageView.bounds.size.width/2, profileImageView.bounds.size.height/2);
+            [profileImageView addSubview:activityIndicator];
+            [activityIndicator startAnimating];
+            
+            [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+                if (succeeded) {
+                    profileImageView.image = image;
+                }
+                else {
+                    [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+                }
+                [activityIndicator stopAnimating];
+            }];
+        }
+        else {
+            [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        }
+    }
+    else {
+        [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+    [dateFormatter setDateFormat:@"HH:mm"];
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *components = [calendar components:(NSCalendarUnitHour | NSCalendarUnitMinute) fromDate:[NSDate date]];
+    NSInteger hour = [components hour];
+    
+    if (hour < 12) {
+        if (appDelegate.IS_SKIPPING_USER_LOGIN)
+            welcomeUserLabel.text = [NSString stringWithFormat:@"Good Morning"];
+        else
+            welcomeUserLabel.text = [NSString stringWithFormat:@"Good Morning, %@",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"]];
+    }
+    else if (hour >= 12 && hour <= 16) {
+        if (appDelegate.IS_SKIPPING_USER_LOGIN)
+            welcomeUserLabel.text = [NSString stringWithFormat:@"Good Afternoon"];
+        else
+            welcomeUserLabel.text = [NSString stringWithFormat:@"Good Afternoon, %@",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"]];
+        
+    }
+    else if (hour > 16) {
+        if (appDelegate.IS_SKIPPING_USER_LOGIN)
+            welcomeUserLabel.text = [NSString stringWithFormat:@"Good Evening"];
+        else
+            welcomeUserLabel.text = [NSString stringWithFormat:@"Good Evening, %@",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"]];
+        
+    }
 }
 
 

@@ -1,4 +1,4 @@
-    //
+//
 //  FGalleryViewController.m
 //  FGallery
 //
@@ -77,34 +77,35 @@
 @synthesize startingIndex = _startingIndex;
 @synthesize beginsInThumbnailView = _beginsInThumbnailView;
 @synthesize hideTitle = _hideTitle;
+@synthesize abcSiteID,isShowingGallery,isComingFromARView;
 
 #pragma mark - Public Methods
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-	if((self = [super initWithNibName:nil bundle:nil])) {
-	
-		// init gallery id with our memory address
-		self.galleryID						= [NSString stringWithFormat:@"%p", self];
-
+    if((self = [super initWithNibName:nil bundle:nil])) {
+        
+        // init gallery id with our memory address
+        self.galleryID						= [NSString stringWithFormat:@"%p", self];
+        
         // configure view controller
-		self.hidesBottomBarWhenPushed		= YES;
+        self.hidesBottomBarWhenPushed		= YES;
         
         // set defaults
         _useThumbnailView                   = YES;
-		_prevStatusStyle					= [[UIApplication sharedApplication] statusBarStyle];
+        _prevStatusStyle					= [[UIApplication sharedApplication] statusBarStyle];
         _hideTitle                          = NO;
-		
-		// create storage objects
-		_currentIndex						= 0;
+        
+        // create storage objects
+        _currentIndex						= 0;
         _startingIndex                      = 0;
-		_photoLoaders						= [[NSMutableDictionary alloc] init];
-		_photoViews							= [[NSMutableArray alloc] init];
-		_photoThumbnailViews				= [[NSMutableArray alloc] init];
-		_barItems							= [[NSMutableArray alloc] init];
+        _photoLoaders						= [[NSMutableDictionary alloc] init];
+        _photoViews							= [[NSMutableArray alloc] init];
+        _photoThumbnailViews				= [[NSMutableArray alloc] init];
+        _barItems							= [[NSMutableArray alloc] init];
         
         /*
-         // debugging: 
+         // debugging:
          _container.layer.borderColor = [[UIColor yellowColor] CGColor];
          _container.layer.borderWidth = 1.0;
          
@@ -114,54 +115,54 @@
          _scroller.layer.borderColor = [[UIColor redColor] CGColor];
          _scroller.layer.borderWidth = 2.0;
          */
-	}
-	return self;
+    }
+    return self;
 }
 
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
-	self = [super initWithCoder:aDecoder];
-	
-	if (self != nil) {
-		self.galleryID						= [NSString stringWithFormat:@"%p", self];
-		
+    self = [super initWithCoder:aDecoder];
+    
+    if (self != nil) {
+        self.galleryID						= [NSString stringWithFormat:@"%p", self];
+        
         // configure view controller
-		self.hidesBottomBarWhenPushed		= YES;
+        self.hidesBottomBarWhenPushed		= YES;
         
         // set defaults
         _useThumbnailView                   = YES;
-		_prevStatusStyle					= [[UIApplication sharedApplication] statusBarStyle];
+        _prevStatusStyle					= [[UIApplication sharedApplication] statusBarStyle];
         _hideTitle                          = NO;
-		
-		// create storage objects
-		_currentIndex						= 0;
+        
+        // create storage objects
+        _currentIndex						= 0;
         _startingIndex                      = 0;
-		_photoLoaders						= [[NSMutableDictionary alloc] init];
-		_photoViews							= [[NSMutableArray alloc] init];
-		_photoThumbnailViews				= [[NSMutableArray alloc] init];
-		_barItems							= [[NSMutableArray alloc] init];
-	}
-	
-	return self;
+        _photoLoaders						= [[NSMutableDictionary alloc] init];
+        _photoViews							= [[NSMutableArray alloc] init];
+        _photoThumbnailViews				= [[NSMutableArray alloc] init];
+        _barItems							= [[NSMutableArray alloc] init];
+    }
+    
+    return self;
 }
 
 - (id)initWithPhotoSource:(NSObject<FGalleryViewControllerDelegate>*)photoSrc
 {
-	if((self = [self initWithNibName:nil bundle:nil])) {
-		
-		_photoSource = photoSrc;
-	}
-	return self;
+    if((self = [self initWithNibName:nil bundle:nil])) {
+        
+        _photoSource = photoSrc;
+    }
+    return self;
 }
 
 
 - (id)initWithPhotoSource:(NSObject<FGalleryViewControllerDelegate>*)photoSrc barItems:(NSArray*)items
 {
-	if((self = [self initWithPhotoSource:photoSrc])) {
-		
-		[_barItems addObjectsFromArray:items];
-	}
-	return self;
+    if((self = [self initWithPhotoSource:photoSrc])) {
+        
+        [_barItems addObjectsFromArray:items];
+    }
+    return self;
 }
 
 
@@ -169,7 +170,12 @@
 
 - (void) pop2Dismiss:(id) sender {
     
-    [self.navigationController popViewControllerAnimated:YES];
+    if (_isThumbViewShowing) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else {
+        [self toggleThumbnailViewWithAnimation:YES];
+    }
 }
 
 - (void)loadView
@@ -221,33 +227,33 @@
     _thumbsView.hidden							= YES;
     _thumbsView.contentInset					= UIEdgeInsetsMake( kThumbnailSpacing, kThumbnailSpacing, kThumbnailSpacing, kThumbnailSpacing);
     
-	// set view
-	self.view                                   = _container;
-	
-	// add items to their containers
-	[_container addSubview:_innerContainer];
-	[_container addSubview:_thumbsView];
-	
-	[_innerContainer addSubview:_scroller];
-	[_innerContainer addSubview:_toolbar];
-	
-	[_toolbar addSubview:_captionContainer];
-	[_captionContainer addSubview:_caption];
-	
-	// create buttons for toolbar
-	UIImage *leftIcon = [UIImage imageNamed:@"photo-gallery-left.png"];
-	UIImage *rightIcon = [UIImage imageNamed:@"photo-gallery-right.png"];
-	_nextButton = [[UIBarButtonItem alloc] initWithImage:rightIcon style:UIBarButtonItemStylePlain target:self action:@selector(next)];
-	_prevButton = [[UIBarButtonItem alloc] initWithImage:leftIcon style:UIBarButtonItemStylePlain target:self action:@selector(previous)];
-	
-	// add prev next to front of the array
-	[_barItems insertObject:_nextButton atIndex:0];
-	[_barItems insertObject:_prevButton atIndex:0];
-	
-	_prevNextButtonSize = leftIcon.size.width;
-	
-	// set buttons on the toolbar.
-	[_toolbar setItems:_barItems animated:NO];
+    // set view
+    self.view                                   = _container;
+    
+    // add items to their containers
+    [_container addSubview:_innerContainer];
+    [_container addSubview:_thumbsView];
+    
+    [_innerContainer addSubview:_scroller];
+    [_innerContainer addSubview:_toolbar];
+    
+    [_toolbar addSubview:_captionContainer];
+    [_captionContainer addSubview:_caption];
+    
+    // create buttons for toolbar
+    UIImage *leftIcon = [UIImage imageNamed:@"photo-gallery-left.png"];
+    UIImage *rightIcon = [UIImage imageNamed:@"photo-gallery-right.png"];
+    _nextButton = [[UIBarButtonItem alloc] initWithImage:rightIcon style:UIBarButtonItemStylePlain target:self action:@selector(next)];
+    _prevButton = [[UIBarButtonItem alloc] initWithImage:leftIcon style:UIBarButtonItemStylePlain target:self action:@selector(previous)];
+    
+    // add prev next to front of the array
+    [_barItems insertObject:_nextButton atIndex:0];
+    [_barItems insertObject:_prevButton atIndex:0];
+    
+    _prevNextButtonSize = leftIcon.size.width;
+    
+    // set buttons on the toolbar.
+    [_toolbar setItems:_barItems animated:NO];
     
     // build stuff
     [self reloadGallery];
@@ -342,11 +348,11 @@
     if (UIInterfaceOrientationIsLandscape(orientation)) {
         //        self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width);
         [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
-
+        
     }
     else {
         //        self.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-//        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
+        //        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
     }
     
     
@@ -355,34 +361,34 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
- 
+    
     AppDelegate *appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate setShouldRotate:NO];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:)
                                                  name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
-
+    
     
     [super viewWillAppear:animated];
-	self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     _isActive = YES;
     
     self.useThumbnailView = _useThumbnailView;
-	
+    
     // toggle into the thumb view if we should start there
     if (_beginsInThumbnailView && _useThumbnailView) {
         [self showThumbnailViewWithAnimation:NO];
         [self loadAllThumbViewPhotos];
     }
     
-	[self layoutViews];
-	
-	// update status bar to be see-through
-	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
-	
-	// init with next on first run.
-	if( _currentIndex == -1 ) [self next];
-	else [self gotoImageByIndex:_currentIndex animated:NO];
+    [self layoutViews];
+    
+    // update status bar to be see-through
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
+    
+    // init with next on first run.
+    if( _currentIndex == -1 ) [self next];
+    else [self gotoImageByIndex:_currentIndex animated:NO];
 }
 
 
@@ -390,125 +396,141 @@
 {
     [super viewWillDisappear:animated];
     
-	_isActive = NO;
-
-	[[UIApplication sharedApplication] setStatusBarStyle:_prevStatusStyle animated:animated];
+    _isActive = NO;
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:_prevStatusStyle animated:animated];
 }
 
 
 - (void)resizeImageViewsWithRect:(CGRect)rect
 {
-	// resize all the image views
-	NSUInteger i, count = [_photoViews count];
-	float dx = 0;
-	for (i = 0; i < count; i++) {
-		FGalleryPhotoView * photoView = [_photoViews objectAtIndex:i];
-		photoView.frame = CGRectMake(dx, 0, rect.size.width, rect.size.height );
-		dx += rect.size.width;
-	}
+    // resize all the image views
+    NSUInteger i, count = [_photoViews count];
+    float dx = 0;
+    for (i = 0; i < count; i++) {
+        FGalleryPhotoView * photoView = [_photoViews objectAtIndex:i];
+        photoView.frame = CGRectMake(dx, 0, rect.size.width, rect.size.height );
+        dx += rect.size.width;
+    }
 }
 
 
 - (void)resetImageViewZoomLevels
 {
-	// resize all the image views
-	NSUInteger i, count = [_photoViews count];
-	for (i = 0; i < count; i++) {
-		FGalleryPhotoView * photoView = [_photoViews objectAtIndex:i];
-		[photoView resetZoom];
-	}
+    // resize all the image views
+    NSUInteger i, count = [_photoViews count];
+    for (i = 0; i < count; i++) {
+        FGalleryPhotoView * photoView = [_photoViews objectAtIndex:i];
+        [photoView resetZoom];
+    }
 }
 
 
 - (void)removeImageAtIndex:(NSUInteger)index
 {
-	// remove the image and thumbnail at the specified index.
-	FGalleryPhotoView *imgView = [_photoViews objectAtIndex:index];
- 	FGalleryPhotoView *thumbView = [_photoThumbnailViews objectAtIndex:index];
-	FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i",index]];
-	
-	[photo unloadFullsize];
-	[photo unloadThumbnail];
-	
-	[imgView removeFromSuperview];
-	[thumbView removeFromSuperview];
-	
-	[_photoViews removeObjectAtIndex:index];
-	[_photoThumbnailViews removeObjectAtIndex:index];
-	[_photoLoaders removeObjectForKey:[NSString stringWithFormat:@"%i",index]];
-	
-	[self layoutViews];
-	[self updateButtons];
+    // remove the image and thumbnail at the specified index.
+    FGalleryPhotoView *imgView = [_photoViews objectAtIndex:index];
+    FGalleryPhotoView *thumbView = [_photoThumbnailViews objectAtIndex:index];
+    FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i",index]];
+    
+    [photo unloadFullsize];
+    [photo unloadThumbnail];
+    
+    [imgView removeFromSuperview];
+    [thumbView removeFromSuperview];
+    
+    [_photoViews removeObjectAtIndex:index];
+    [_photoThumbnailViews removeObjectAtIndex:index];
+    [_photoLoaders removeObjectForKey:[NSString stringWithFormat:@"%i",index]];
+    
+    [self layoutViews];
+    [self updateButtons];
     [self updateTitle];
 }
 
 
 - (void)next
 {
-	NSUInteger numberOfPhotos = [_photoSource numberOfPhotosForPhotoGallery:self];
-	NSUInteger nextIndex = _currentIndex+1;
-	
-	// don't continue if we're out of images.
-	if( nextIndex <= numberOfPhotos )
-	{
-		[self gotoImageByIndex:nextIndex animated:NO];
-	}
+    NSUInteger numberOfPhotos = [_photoSource numberOfPhotosForPhotoGallery:self];
+    NSUInteger nextIndex = _currentIndex+1;
+    
+    // don't continue if we're out of images.
+    if( nextIndex <= numberOfPhotos )
+    {
+        [self gotoImageByIndex:nextIndex animated:NO];
+    }
 }
 
 
 
 - (void)previous
 {
-	NSUInteger prevIndex = _currentIndex-1;
-	[self gotoImageByIndex:prevIndex animated:NO];
+    NSUInteger prevIndex = _currentIndex-1;
+    [self gotoImageByIndex:prevIndex animated:NO];
 }
 
 
 
 - (void)gotoImageByIndex:(NSUInteger)index animated:(BOOL)animated
 {
-	NSUInteger numPhotos = [_photoSource numberOfPhotosForPhotoGallery:self];
-	
-	// constrain index within our limits
+    NSUInteger numPhotos = [_photoSource numberOfPhotosForPhotoGallery:self];
+    
+    // constrain index within our limits
     if( index >= numPhotos ) index = numPhotos - 1;
-	
-	
-	if( numPhotos == 0 ) {
-		
-		// no photos!
-		_currentIndex = -1;
-	}
-	else {
-		
-		// clear the fullsize image in the old photo
-		[self unloadFullsizeImageWithIndex:_currentIndex];
-		
-		_currentIndex = index;
-		[self moveScrollerToCurrentIndexWithAnimation:animated];
-		[self updateTitle];
-		
-		if( !animated )	{
-			[self preloadThumbnailImages];
-			[self loadFullsizeImageWithIndex:index];
-		}
-	}
-	[self updateButtons];
-	[self updateCaption];
+    
+    
+    if( numPhotos == 0 ) {
+        
+        // no photos!
+        _currentIndex = -1;
+    }
+    else {
+        
+        // clear the fullsize image in the old photo
+        [self unloadFullsizeImageWithIndex:_currentIndex];
+        
+        _currentIndex = index;
+        [self moveScrollerToCurrentIndexWithAnimation:animated];
+        [self updateTitle];
+        
+        if( !animated )	{
+            [self preloadThumbnailImages];
+            [self loadFullsizeImageWithIndex:index];
+        }
+    }
+    [self updateButtons];
+    [self updateCaption];
 }
 
 
 - (void)layoutViews
 {
-	[self positionInnerContainer];
-	[self positionScroller];
-	[self resizeThumbView];
-	[self positionToolbar];
-	[self updateScrollSize];
-	[self updateCaption];
-	[self resizeImageViewsWithRect:_scroller.frame];
-	[self layoutButtons];
-	[self arrangeThumbs];
-	[self moveScrollerToCurrentIndexWithAnimation:NO];
+    [self positionInnerContainer];
+    [self positionScroller];
+    [self resizeThumbView];
+    [self positionToolbar];
+    [self updateScrollSize];
+    [self updateCaption];
+    [self resizeImageViewsWithRect:_scroller.frame];
+    [self layoutButtons];
+    [self arrangeThumbs];
+    [self moveScrollerToCurrentIndexWithAnimation:NO];
+}
+
+
+//*************** Method To Add Photo To Site
+
+- (void) addPhotoToSite {
+    
+    if (!isComingFromARView) {
+        AppDelegate *appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+        if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
+            [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
+        }
+        else {
+            [CommonFunctions showAlertView:nil title:nil msg:@"To upload photo, Please login." cancel:nil otherButton:@"OK",nil];
+        }
+    }
 }
 
 
@@ -522,11 +544,18 @@
     _useThumbnailView = useThumbnailView;
     if( self.navigationController ) {
         if (_useThumbnailView) {
-            UIBarButtonItem *btn = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"See all", @"") style:UIBarButtonItemStylePlain target:self action:@selector(handleSeeAllTouch:)] autorelease];
-            [self.navigationItem setRightBarButtonItem:btn animated:YES];
+            isShowingGallery = YES;
+            
+            if (!isComingFromARView) {
+                UIBarButtonItem *btn = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"See all", @"") style:UIBarButtonItemStylePlain target:self action:@selector(handleSeeAllTouch:)] autorelease];
+                [self.navigationItem setRightBarButtonItem:btn animated:YES];
+            }
         }
         else {
-            [self.navigationItem setRightBarButtonItem:nil animated:NO];
+            UIBarButtonItem *btn = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Photo", @"") style:UIBarButtonItemStylePlain target:self action:@selector(addPhotoToSite)] autorelease];
+            [self.navigationItem setRightBarButtonItem:btn animated:YES];
+            
+            //            [self.navigationItem setRightBarButtonItem:nil animated:NO];
         }
     }
 }
@@ -536,52 +565,52 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if([keyPath isEqualToString:@"frame"]) 
-	{
-		[self layoutViews];
-	}
+    if([keyPath isEqualToString:@"frame"])
+    {
+        [self layoutViews];
+    }
 }
 
 
 - (void)positionInnerContainer
 {
-	CGRect screenFrame = [[UIScreen mainScreen] bounds];
-	CGRect innerContainerRect;
-	
-	if( self.interfaceOrientation == UIInterfaceOrientationPortrait || self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown )
-	{//portrait
-		innerContainerRect = CGRectMake( 0, _container.frame.size.height - screenFrame.size.height, _container.frame.size.width, screenFrame.size.height );
-	}
-	else 
-	{// landscape
-		innerContainerRect = CGRectMake( 0, _container.frame.size.height - screenFrame.size.width, _container.frame.size.width, screenFrame.size.width );
-	}
-	
-	_innerContainer.frame = innerContainerRect;
+    CGRect screenFrame = [[UIScreen mainScreen] bounds];
+    CGRect innerContainerRect;
+    
+    if( self.interfaceOrientation == UIInterfaceOrientationPortrait || self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown )
+    {//portrait
+        innerContainerRect = CGRectMake( 0, _container.frame.size.height - screenFrame.size.height, _container.frame.size.width, screenFrame.size.height );
+    }
+    else
+    {// landscape
+        innerContainerRect = CGRectMake( 0, _container.frame.size.height - screenFrame.size.width, _container.frame.size.width, screenFrame.size.width );
+    }
+    
+    _innerContainer.frame = innerContainerRect;
 }
 
 
 - (void)positionScroller
 {
-	CGRect screenFrame = [[UIScreen mainScreen] bounds];
-	CGRect scrollerRect;
-	
-	if( self.interfaceOrientation == UIInterfaceOrientationPortrait || self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown )
-	{//portrait
-		scrollerRect = CGRectMake( 0, 0, screenFrame.size.width, screenFrame.size.height );
-	}
-	else
-	{//landscape
-		scrollerRect = CGRectMake( 0, 0, screenFrame.size.height, screenFrame.size.width );
-	}
-	
-	_scroller.frame = scrollerRect;
+    CGRect screenFrame = [[UIScreen mainScreen] bounds];
+    CGRect scrollerRect;
+    
+    if( self.interfaceOrientation == UIInterfaceOrientationPortrait || self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown )
+    {//portrait
+        scrollerRect = CGRectMake( 0, 0, screenFrame.size.width, screenFrame.size.height );
+    }
+    else
+    {//landscape
+        scrollerRect = CGRectMake( 0, 0, screenFrame.size.height, screenFrame.size.width );
+    }
+    
+    _scroller.frame = scrollerRect;
 }
 
 
 - (void)positionToolbar
 {
-	_toolbar.frame = CGRectMake( 0, _scroller.frame.size.height-kToolbarHeight, _scroller.frame.size.width, kToolbarHeight );
+    _toolbar.frame = CGRectMake( 0, _scroller.frame.size.height-kToolbarHeight, _scroller.frame.size.width, kToolbarHeight );
 }
 
 
@@ -591,7 +620,7 @@
     if (self.navigationController.navigationBar.barStyle == UIBarStyleBlackTranslucent) {
         barHeight = self.navigationController.navigationBar.frame.size.height;
     }
-	_thumbsView.frame = CGRectMake( 0, barHeight, _container.frame.size.width, _container.frame.size.height-barHeight );
+    _thumbsView.frame = CGRectMake( 0, barHeight, _container.frame.size.width, _container.frame.size.height-barHeight );
 }
 
 
@@ -607,9 +636,9 @@
         if ([application respondsToSelector: @selector(setStatusBarHidden:withAnimation:)]) {
             [[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation: UIStatusBarAnimationFade]; // 3.2+
         } else {
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
             [[UIApplication sharedApplication] setStatusBarHidden: YES animated:YES]; // 2.0 - 3.2
-    #pragma GCC diagnostic warning "-Wdeprecated-declarations"
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
         }
         
         [self.navigationController setNavigationBarHidden:YES animated:YES];
@@ -627,100 +656,100 @@
 
 - (void)exitFullscreen
 {
-	_isFullscreen = NO;
+    _isFullscreen = NO;
     
-	[self disableApp];
+    [self disableApp];
     
-	UIApplication* application = [UIApplication sharedApplication];
-	if ([application respondsToSelector: @selector(setStatusBarHidden:withAnimation:)]) {
-		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade]; // 3.2+
-	} else {
+    UIApplication* application = [UIApplication sharedApplication];
+    if ([application respondsToSelector: @selector(setStatusBarHidden:withAnimation:)]) {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade]; // 3.2+
+    } else {
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-		[[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // 2.0 - 3.2
+        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // 2.0 - 3.2
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
-	}
+    }
     
-	[self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
     
-	[UIView beginAnimations:@"galleryIn" context:nil];
-	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(enableApp)];
-	_toolbar.alpha = 1.0;
-	_captionContainer.alpha = 1.0;
-	[UIView commitAnimations];
+    [UIView beginAnimations:@"galleryIn" context:nil];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(enableApp)];
+    _toolbar.alpha = 1.0;
+    _captionContainer.alpha = 1.0;
+    [UIView commitAnimations];
 }
 
 
 
 - (void)enableApp
 {
-	[[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
 
 - (void)disableApp
 {
-	[[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 }
 
 
 - (void)didTapPhotoView:(FGalleryPhotoView*)photoView
 {
-	// don't change when scrolling
-	if( _isScrolling || !_isActive ) return;
-	
-	// toggle fullscreen.
-	if( _isFullscreen == NO ) {
-		
-		[self enterFullscreen];
-	}
-	else {
-		
-		[self exitFullscreen];
-	}
-
+    // don't change when scrolling
+    if( _isScrolling || !_isActive ) return;
+    
+    // toggle fullscreen.
+    if( _isFullscreen == NO ) {
+        
+        [self enterFullscreen];
+    }
+    else {
+        
+        [self exitFullscreen];
+    }
+    
 }
 
 
 - (void)updateCaption
 {
-	if([_photoSource numberOfPhotosForPhotoGallery:self] > 0 )
-	{
-		if([_photoSource respondsToSelector:@selector(photoGallery:captionForPhotoAtIndex:)])
-		{
-			NSString *caption = [_photoSource photoGallery:self captionForPhotoAtIndex:_currentIndex];
-			
-			if([caption length] > 0 )
-			{
-				float captionWidth = _container.frame.size.width-kCaptionPadding*2;
-				CGSize textSize = [caption sizeWithFont:_caption.font];
-				NSUInteger numLines = ceilf( textSize.width / captionWidth );
-				NSInteger height = ( textSize.height + kCaptionPadding ) * numLines;
-				
-				_caption.numberOfLines = numLines;
-				_caption.text = caption;
-				
-				NSInteger containerHeight = height+kCaptionPadding*2;
-				_captionContainer.frame = CGRectMake(0, -containerHeight, _container.frame.size.width, containerHeight );
-				_caption.frame = CGRectMake(kCaptionPadding, kCaptionPadding, captionWidth, height );
-				
-				// show caption bar
-				_captionContainer.hidden = NO;
-			}
-			else {
-				
-				// hide it if we don't have a caption.
-				_captionContainer.hidden = YES;
-			}
-		}
-	}
+    if([_photoSource numberOfPhotosForPhotoGallery:self] > 0 )
+    {
+        if([_photoSource respondsToSelector:@selector(photoGallery:captionForPhotoAtIndex:)])
+        {
+            NSString *caption = [_photoSource photoGallery:self captionForPhotoAtIndex:_currentIndex];
+            
+            if([caption length] > 0 )
+            {
+                float captionWidth = _container.frame.size.width-kCaptionPadding*2;
+                CGSize textSize = [caption sizeWithFont:_caption.font];
+                NSUInteger numLines = ceilf( textSize.width / captionWidth );
+                NSInteger height = ( textSize.height + kCaptionPadding ) * numLines;
+                
+                _caption.numberOfLines = numLines;
+                _caption.text = caption;
+                
+                NSInteger containerHeight = height+kCaptionPadding*2;
+                _captionContainer.frame = CGRectMake(0, -containerHeight, _container.frame.size.width, containerHeight );
+                _caption.frame = CGRectMake(kCaptionPadding, kCaptionPadding, captionWidth, height );
+                
+                // show caption bar
+                _captionContainer.hidden = NO;
+            }
+            else {
+                
+                // hide it if we don't have a caption.
+                _captionContainer.hidden = YES;
+            }
+        }
+    }
 }
 
 
 - (void)updateScrollSize
 {
-	float contentWidth = _scroller.frame.size.width * [_photoSource numberOfPhotosForPhotoGallery:self];
-	[_scroller setContentSize:CGSizeMake(contentWidth, _scroller.frame.size.height)];
+    float contentWidth = _scroller.frame.size.width * [_photoSource numberOfPhotosForPhotoGallery:self];
+    [_scroller setContentSize:CGSizeMake(contentWidth, _scroller.frame.size.height)];
 }
 
 
@@ -736,92 +765,92 @@
 
 - (void)updateButtons
 {
-	_prevButton.enabled = ( _currentIndex <= 0 ) ? NO : YES;
-	_nextButton.enabled = ( _currentIndex >= [_photoSource numberOfPhotosForPhotoGallery:self]-1 ) ? NO : YES;
+    _prevButton.enabled = ( _currentIndex <= 0 ) ? NO : YES;
+    _nextButton.enabled = ( _currentIndex >= [_photoSource numberOfPhotosForPhotoGallery:self]-1 ) ? NO : YES;
 }
 
 
 - (void)layoutButtons
 {
-	NSUInteger buttonWidth = roundf( _toolbar.frame.size.width / [_barItems count] - _prevNextButtonSize * .5);
-	
-	// loop through all the button items and give them the same width
-	NSUInteger i, count = [_barItems count];
-	for (i = 0; i < count; i++) {
-		UIBarButtonItem *btn = [_barItems objectAtIndex:i];
-		btn.width = buttonWidth;
-	}
-	[_toolbar setNeedsLayout];
+    NSUInteger buttonWidth = roundf( _toolbar.frame.size.width / [_barItems count] - _prevNextButtonSize * .5);
+    
+    // loop through all the button items and give them the same width
+    NSUInteger i, count = [_barItems count];
+    for (i = 0; i < count; i++) {
+        UIBarButtonItem *btn = [_barItems objectAtIndex:i];
+        btn.width = buttonWidth;
+    }
+    [_toolbar setNeedsLayout];
 }
 
 
 - (void)moveScrollerToCurrentIndexWithAnimation:(BOOL)animation
 {
-	int xp = _scroller.frame.size.width * _currentIndex;
-	[_scroller scrollRectToVisible:CGRectMake(xp, 0, _scroller.frame.size.width, _scroller.frame.size.height) animated:animation];
-	_isScrolling = animation;
+    int xp = _scroller.frame.size.width * _currentIndex;
+    [_scroller scrollRectToVisible:CGRectMake(xp, 0, _scroller.frame.size.width, _scroller.frame.size.height) animated:animation];
+    _isScrolling = animation;
 }
 
 
 // creates all the image views for this gallery
 - (void)buildViews
 {
-	NSUInteger i, count = [_photoSource numberOfPhotosForPhotoGallery:self];
-	for (i = 0; i < count; i++) {
-		FGalleryPhotoView *photoView = [[FGalleryPhotoView alloc] initWithFrame:CGRectZero];
-		photoView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-		photoView.autoresizesSubviews = YES;
-		photoView.photoDelegate = self;
-		[_scroller addSubview:photoView];
-		[_photoViews addObject:photoView];
-		[photoView release];
-	}
+    NSUInteger i, count = [_photoSource numberOfPhotosForPhotoGallery:self];
+    for (i = 0; i < count; i++) {
+        FGalleryPhotoView *photoView = [[FGalleryPhotoView alloc] initWithFrame:CGRectZero];
+        photoView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        photoView.autoresizesSubviews = YES;
+        photoView.photoDelegate = self;
+        [_scroller addSubview:photoView];
+        [_photoViews addObject:photoView];
+        [photoView release];
+    }
 }
 
 
 - (void)buildThumbsViewPhotos
 {
-	NSUInteger i, count = [_photoSource numberOfPhotosForPhotoGallery:self];
-	for (i = 0; i < count; i++) {
-		
-		FGalleryPhotoView *thumbView = [[FGalleryPhotoView alloc] initWithFrame:CGRectZero target:self action:@selector(handleThumbClick:)];
-		[thumbView setContentMode:UIViewContentModeScaleAspectFill];
-		[thumbView setClipsToBounds:YES];
-		[thumbView setTag:i];
-		[_thumbsView addSubview:thumbView];
-		[_photoThumbnailViews addObject:thumbView];
-		[thumbView release];
-	}
+    NSUInteger i, count = [_photoSource numberOfPhotosForPhotoGallery:self];
+    for (i = 0; i < count; i++) {
+        
+        FGalleryPhotoView *thumbView = [[FGalleryPhotoView alloc] initWithFrame:CGRectZero target:self action:@selector(handleThumbClick:)];
+        [thumbView setContentMode:UIViewContentModeScaleAspectFill];
+        [thumbView setClipsToBounds:YES];
+        [thumbView setTag:i];
+        [_thumbsView addSubview:thumbView];
+        [_photoThumbnailViews addObject:thumbView];
+        [thumbView release];
+    }
 }
 
 
 
 - (void)arrangeThumbs
 {
-	float dx = 0.0;
-	float dy = 0.0;
-	// loop through all thumbs to size and place them
-	NSUInteger i, count = [_photoThumbnailViews count];
-	for (i = 0; i < count; i++) {
-		FGalleryPhotoView *thumbView = [_photoThumbnailViews objectAtIndex:i];
-		[thumbView setBackgroundColor:[UIColor grayColor]];
-		
-		// create new frame
-		thumbView.frame = CGRectMake( dx, dy, kThumbnailSize, kThumbnailSize);
-		
-		// increment position
-		dx += kThumbnailSize + kThumbnailSpacing;
-		
-		// check if we need to move to a different row
-		if( dx + kThumbnailSize + kThumbnailSpacing > _thumbsView.frame.size.width - kThumbnailSpacing )
-		{
-			dx = 0.0;
-			dy += kThumbnailSize + kThumbnailSpacing;
-		}
-	}
-	
-	// set the content size of the thumb scroller
-	[_thumbsView setContentSize:CGSizeMake( _thumbsView.frame.size.width - ( kThumbnailSpacing*2 ), dy + kThumbnailSize + kThumbnailSpacing )];
+    float dx = 0.0;
+    float dy = 0.0;
+    // loop through all thumbs to size and place them
+    NSUInteger i, count = [_photoThumbnailViews count];
+    for (i = 0; i < count; i++) {
+        FGalleryPhotoView *thumbView = [_photoThumbnailViews objectAtIndex:i];
+        [thumbView setBackgroundColor:[UIColor grayColor]];
+        
+        // create new frame
+        thumbView.frame = CGRectMake( dx, dy, kThumbnailSize, kThumbnailSize);
+        
+        // increment position
+        dx += kThumbnailSize + kThumbnailSpacing;
+        
+        // check if we need to move to a different row
+        if( dx + kThumbnailSize + kThumbnailSpacing > _thumbsView.frame.size.width - kThumbnailSpacing )
+        {
+            dx = 0.0;
+            dy += kThumbnailSize + kThumbnailSpacing;
+        }
+    }
+    
+    // set the content size of the thumb scroller
+    [_thumbsView setContentSize:CGSizeMake( _thumbsView.frame.size.width - ( kThumbnailSpacing*2 ), dy + kThumbnailSize + kThumbnailSpacing )];
 }
 
 
@@ -841,7 +870,14 @@
     _isThumbViewShowing = YES;
     
     [self arrangeThumbs];
-    [self.navigationItem.rightBarButtonItem setTitle:NSLocalizedString(@"Close", @"")];
+    // Code Change For PUB App
+    //    [self.navigationItem.rightBarButtonItem setTitle:NSLocalizedString(@"Close", @"")];
+    
+    isShowingGallery = NO;
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+    if (!isComingFromARView)
+        [self.navigationItem.rightBarButtonItem setTitle:NSLocalizedString(@"Add Photo", @"")];
+    
     
     if (animation) {
         // do curl animation
@@ -859,8 +895,21 @@
 
 - (void)hideThumbnailViewWithAnimation:(BOOL)animation
 {
+    /*
+     _isThumbViewShowing = NO;
+     AppDelegate *appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+     
+     if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
+     [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
+     }
+     else {
+     [CommonFunctions showAlertView:nil title:nil msg:@"To upload photo, Please login." cancel:nil otherButton:@"OK",nil];
+     }
+     */
+    
     _isThumbViewShowing = NO;
-    [self.navigationItem.rightBarButtonItem setTitle:NSLocalizedString(@"See all", @"")];
+    [self.navigationItem.rightBarButtonItem setTitle:NSLocalizedString(@"", @"")];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
     
     if (animation) {
         // do curl animation
@@ -873,6 +922,7 @@
     else {
         [_thumbsView setHidden:NO];
     }
+    
 }
 
 
@@ -883,191 +933,314 @@
         [self toggleThumbnailViewWithAnimation:NO];
     }
     else {
-        [self toggleThumbnailViewWithAnimation:YES];
+        if (_isThumbViewShowing)
+            [self addPhotoToSite];
+        else
+            [self toggleThumbnailViewWithAnimation:YES];
     }
-	// show thumb view
-	
-	// tell thumbs that havent loaded to load
-	[self loadAllThumbViewPhotos];
+    // show thumb view
+    
+    // tell thumbs that havent loaded to load
+    [self loadAllThumbViewPhotos];
 }
 
 
 - (void)handleThumbClick:(id)sender
 {
-	FGalleryPhotoView *photoView = (FGalleryPhotoView*)[(UIButton*)sender superview];
-	[self hideThumbnailViewWithAnimation:YES];
-	[self gotoImageByIndex:photoView.tag animated:NO];
+    FGalleryPhotoView *photoView = (FGalleryPhotoView*)[(UIButton*)sender superview];
+    [self hideThumbnailViewWithAnimation:YES];
+    [self gotoImageByIndex:photoView.tag animated:NO];
+}
+
+
+
+# pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag==1) {
+        
+        if (buttonIndex==0) {
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }
+        else if (buttonIndex==1) {
+            
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                picker.delegate = self;
+                picker.allowsEditing = YES;
+                picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                
+                [self presentViewController:picker animated:YES completion:NULL];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }
+    }
+}
+
+
+
+# pragma mark - UIImagePickerControllerDelegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    [self showThumbnailViewWithAnimation:NO];
+    
+    NSData* data = UIImageJPEGRepresentation(chosenImage, 0.5f);
+    NSString *base64ImageString = [Base64 encode:data];
+    
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+    
+    NSMutableArray *parameters = [[NSMutableArray alloc] init];
+    NSMutableArray *values = [[NSMutableArray alloc] init];
+    
+    
+    [parameters addObject:@"ABCPOIImage.Image"];
+    [values addObject:base64ImageString];
+    
+    [parameters addObject:@"ABCPOIImage.ABCID"];
+    [values addObject:abcSiteID];
+    
+    [parameters addObject:@"ABCPOIImage.UserProfileID"];
+    [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userID"]];
+    
+    [parameters addObject:@"ABCPOIImage.UserProfileName"];
+    [values addObject:[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"]];
+    
+    [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,ABC_WATERS_UPLOAD_USER_IMAGE]];
+    
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    [self showThumbnailViewWithAnimation:NO];
+}
+
+
+
+
+# pragma mark - ASIHTTPRequestDelegate Methods
+
+- (void) requestFinished:(ASIHTTPRequest *)request {
+    
+    // Use when fetching text data
+    NSString *responseString = [request responseString];
+    [CommonFunctions dismissGlobalHUD];
+    //    [appDelegate.hud hide:YES];
+    
+    DebugLog(@"%@",responseString);
+    
+    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [CommonFunctions showAlertView:self title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
+    }
+}
+
+- (void) requestFailed:(ASIHTTPRequest *)request {
+    
+    NSError *error = [request error];
+    [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"Ok" otherButton:nil];
+    [CommonFunctions dismissGlobalHUD];
+}
+
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 
 #pragma mark - Image Loading
 
-
 - (void)preloadThumbnailImages
 {
-	NSUInteger index = _currentIndex;
-	NSUInteger count = [_photoViews count];
+    NSUInteger index = _currentIndex;
+    NSUInteger count = [_photoViews count];
     
-	// make sure the images surrounding the current index have thumbs loading
-	NSUInteger nextIndex = index + 1;
-	NSUInteger prevIndex = index - 1;
-	
-	// the preload count indicates how many images surrounding the current photo will get preloaded.
-	// a value of 2 at maximum would preload 4 images, 2 in front of and two behind the current image.
-	NSUInteger preloadCount = 1;
-	
-	FGalleryPhoto *photo;
-	
-	// check to see if the current image thumb has been loaded
-	photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
-	
-	if( !photo )
-	{
-		[self loadThumbnailImageWithIndex:index];
-		photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
-	}
-	
-	if( !photo.hasThumbLoaded && !photo.isThumbLoading )
-	{
-		[photo loadThumbnail];
-	}
-	
-	NSUInteger curIndex = prevIndex;
-	while( curIndex > -1 && curIndex > prevIndex - preloadCount )
-	{
-		photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
-		
-		if( !photo ) {
-			[self loadThumbnailImageWithIndex:curIndex];
-			photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
-		}
-		
-		if( !photo.hasThumbLoaded && !photo.isThumbLoading )
-		{
-			[photo loadThumbnail];
-		}
-		
-		curIndex--;
-	}
-	
-	curIndex = nextIndex;
-	while( curIndex < count && curIndex < nextIndex + preloadCount )
-	{
-		photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
-		
-		if( !photo ) {
-			[self loadThumbnailImageWithIndex:curIndex];
-			photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
-		}
-		
-		if( !photo.hasThumbLoaded && !photo.isThumbLoading )
-		{
-			[photo loadThumbnail];
-		}
-		
-		curIndex++;
-	}
+    // make sure the images surrounding the current index have thumbs loading
+    NSUInteger nextIndex = index + 1;
+    NSUInteger prevIndex = index - 1;
+    
+    // the preload count indicates how many images surrounding the current photo will get preloaded.
+    // a value of 2 at maximum would preload 4 images, 2 in front of and two behind the current image.
+    NSUInteger preloadCount = 1;
+    
+    FGalleryPhoto *photo;
+    
+    // check to see if the current image thumb has been loaded
+    photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
+    
+    if( !photo )
+    {
+        [self loadThumbnailImageWithIndex:index];
+        photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
+    }
+    
+    if( !photo.hasThumbLoaded && !photo.isThumbLoading )
+    {
+        [photo loadThumbnail];
+    }
+    
+    NSUInteger curIndex = prevIndex;
+    while( curIndex > -1 && curIndex > prevIndex - preloadCount )
+    {
+        photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
+        
+        if( !photo ) {
+            [self loadThumbnailImageWithIndex:curIndex];
+            photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
+        }
+        
+        if( !photo.hasThumbLoaded && !photo.isThumbLoading )
+        {
+            [photo loadThumbnail];
+        }
+        
+        curIndex--;
+    }
+    
+    curIndex = nextIndex;
+    while( curIndex < count && curIndex < nextIndex + preloadCount )
+    {
+        photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
+        
+        if( !photo ) {
+            [self loadThumbnailImageWithIndex:curIndex];
+            photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", curIndex]];
+        }
+        
+        if( !photo.hasThumbLoaded && !photo.isThumbLoading )
+        {
+            [photo loadThumbnail];
+        }
+        
+        curIndex++;
+    }
 }
 
 
 - (void)loadAllThumbViewPhotos
 {
-	NSUInteger i, count = [_photoSource numberOfPhotosForPhotoGallery:self];
-	for (i=0; i < count; i++) {
-		
-		[self loadThumbnailImageWithIndex:i];
-	}
+    NSUInteger i, count = [_photoSource numberOfPhotosForPhotoGallery:self];
+    for (i=0; i < count; i++) {
+        
+        [self loadThumbnailImageWithIndex:i];
+    }
 }
 
 
 - (void)loadThumbnailImageWithIndex:(NSUInteger)index
 {
-	FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
-	
-	if( photo == nil )
-		photo = [self createGalleryPhotoForIndex:index];
-	
-	[photo loadThumbnail];
+    FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
+    
+    if( photo == nil )
+        photo = [self createGalleryPhotoForIndex:index];
+    
+    [photo loadThumbnail];
 }
 
 
 - (void)loadFullsizeImageWithIndex:(NSUInteger)index
 {
-	FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
-	
-	if( photo == nil )
-		photo = [self createGalleryPhotoForIndex:index];
-	
-	[photo loadFullsize];
+    FGalleryPhoto *photo = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
+    
+    if( photo == nil )
+        photo = [self createGalleryPhotoForIndex:index];
+    
+    [photo loadFullsize];
 }
 
 
 - (void)unloadFullsizeImageWithIndex:(NSUInteger)index
 {
-	if (index < [_photoViews count]) {		
-		FGalleryPhoto *loader = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
-		[loader unloadFullsize];
-		
-		FGalleryPhotoView *photoView = [_photoViews objectAtIndex:index];
-		photoView.imageView.image = loader.thumbnail;
-	}
+    if (index < [_photoViews count]) {
+        FGalleryPhoto *loader = [_photoLoaders objectForKey:[NSString stringWithFormat:@"%i", index]];
+        [loader unloadFullsize];
+        
+        FGalleryPhotoView *photoView = [_photoViews objectAtIndex:index];
+        photoView.imageView.image = loader.thumbnail;
+    }
 }
 
 
 - (FGalleryPhoto*)createGalleryPhotoForIndex:(NSUInteger)index
 {
-	FGalleryPhotoSourceType sourceType = [_photoSource photoGallery:self sourceTypeForPhotoAtIndex:index];
-	FGalleryPhoto *photo;
-	NSString *thumbPath;
-	NSString *fullsizePath;
-	
-	if( sourceType == FGalleryPhotoSourceTypeLocal )
-	{
-		thumbPath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
-		fullsizePath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeFullsize atIndex:index];
-		photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
-	}
-	else if( sourceType == FGalleryPhotoSourceTypeNetwork )
-	{
-		thumbPath = [_photoSource photoGallery:self urlForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
-		fullsizePath = [_photoSource photoGallery:self urlForPhotoSize:FGalleryPhotoSizeFullsize atIndex:index];
-		photo = [[[FGalleryPhoto alloc] initWithThumbnailUrl:thumbPath fullsizeUrl:fullsizePath delegate:self] autorelease];
-	}
-	else 
-	{
-		// invalid source type, throw an error.
-		[NSException raise:@"Invalid photo source type" format:@"The specified source type of %d is invalid", sourceType];
-	}
+    FGalleryPhotoSourceType sourceType = [_photoSource photoGallery:self sourceTypeForPhotoAtIndex:index];
+    FGalleryPhoto *photo;
+    NSString *thumbPath;
+    NSString *fullsizePath;
     
-	// assign the photo index
-	photo.tag = index;
-	
-	// store it
-	[_photoLoaders setObject:photo forKey: [NSString stringWithFormat:@"%i", index]];
-	
-	return photo;
+    if( sourceType == FGalleryPhotoSourceTypeLocal )
+    {
+        thumbPath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
+        fullsizePath = [_photoSource photoGallery:self filePathForPhotoSize:FGalleryPhotoSizeFullsize atIndex:index];
+        photo = [[[FGalleryPhoto alloc] initWithThumbnailPath:thumbPath fullsizePath:fullsizePath delegate:self] autorelease];
+    }
+    else if( sourceType == FGalleryPhotoSourceTypeNetwork )
+    {
+        thumbPath = [_photoSource photoGallery:self urlForPhotoSize:FGalleryPhotoSizeThumbnail atIndex:index];
+        fullsizePath = [_photoSource photoGallery:self urlForPhotoSize:FGalleryPhotoSizeFullsize atIndex:index];
+        photo = [[[FGalleryPhoto alloc] initWithThumbnailUrl:thumbPath fullsizeUrl:fullsizePath delegate:self] autorelease];
+    }
+    else
+    {
+        // invalid source type, throw an error.
+        [NSException raise:@"Invalid photo source type" format:@"The specified source type of %d is invalid", sourceType];
+    }
+    
+    // assign the photo index
+    photo.tag = index;
+    
+    // store it
+    [_photoLoaders setObject:photo forKey: [NSString stringWithFormat:@"%i", index]];
+    
+    return photo;
 }
 
 
 - (void)scrollingHasEnded {
-	
-	_isScrolling = NO;
-	
-	NSUInteger newIndex = floor( _scroller.contentOffset.x / _scroller.frame.size.width );
-	
-	// don't proceed if the user has been scrolling, but didn't really go anywhere.
-	if( newIndex == _currentIndex )
-		return;
-	
-	// clear previous
-	[self unloadFullsizeImageWithIndex:_currentIndex];
-	
-	_currentIndex = newIndex;
-	[self updateCaption];
-	[self updateTitle];
-	[self updateButtons];
-	[self loadFullsizeImageWithIndex:_currentIndex];
-	[self preloadThumbnailImages];
+    
+    _isScrolling = NO;
+    
+    NSUInteger newIndex = floor( _scroller.contentOffset.x / _scroller.frame.size.width );
+    
+    // don't proceed if the user has been scrolling, but didn't really go anywhere.
+    if( newIndex == _currentIndex )
+        return;
+    
+    // clear previous
+    [self unloadFullsizeImageWithIndex:_currentIndex];
+    
+    _currentIndex = newIndex;
+    [self updateCaption];
+    [self updateTitle];
+    [self updateButtons];
+    [self loadFullsizeImageWithIndex:_currentIndex];
+    [self preloadThumbnailImages];
 }
 
 
@@ -1076,61 +1249,61 @@
 
 - (void)galleryPhoto:(FGalleryPhoto*)photo willLoadThumbnailFromPath:(NSString*)path
 {
-	// show activity indicator for large photo view
-	FGalleryPhotoView *photoView = [_photoViews objectAtIndex:photo.tag];
-	[photoView.activity startAnimating];
-	
-	// show activity indicator for thumbail 
-	if( _isThumbViewShowing ) {
-		FGalleryPhotoView *thumb = [_photoThumbnailViews objectAtIndex:photo.tag];
-		[thumb.activity startAnimating];
-	}
+    // show activity indicator for large photo view
+    FGalleryPhotoView *photoView = [_photoViews objectAtIndex:photo.tag];
+    [photoView.activity startAnimating];
+    
+    // show activity indicator for thumbail
+    if( _isThumbViewShowing ) {
+        FGalleryPhotoView *thumb = [_photoThumbnailViews objectAtIndex:photo.tag];
+        [thumb.activity startAnimating];
+    }
 }
 
 
 - (void)galleryPhoto:(FGalleryPhoto*)photo willLoadThumbnailFromUrl:(NSString*)url
 {
-	// show activity indicator for large photo view
-	FGalleryPhotoView *photoView = [_photoViews objectAtIndex:photo.tag];
-	[photoView.activity startAnimating];
-	
-	// show activity indicator for thumbail 
-	if( _isThumbViewShowing ) {
-		FGalleryPhotoView *thumb = [_photoThumbnailViews objectAtIndex:photo.tag];
-		[thumb.activity startAnimating];
-	}
+    // show activity indicator for large photo view
+    FGalleryPhotoView *photoView = [_photoViews objectAtIndex:photo.tag];
+    [photoView.activity startAnimating];
+    
+    // show activity indicator for thumbail
+    if( _isThumbViewShowing ) {
+        FGalleryPhotoView *thumb = [_photoThumbnailViews objectAtIndex:photo.tag];
+        [thumb.activity startAnimating];
+    }
 }
 
 
 - (void)galleryPhoto:(FGalleryPhoto*)photo didLoadThumbnail:(UIImage*)image
 {
-	// grab the associated image view
-	FGalleryPhotoView *photoView = [_photoViews objectAtIndex:photo.tag];
-	
-	// if the gallery photo hasn't loaded the fullsize yet, set the thumbnail as its image.
-	if( !photo.hasFullsizeLoaded )
-		photoView.imageView.image = photo.thumbnail;
-
-	[photoView.activity stopAnimating];
-	
-	// grab the thumbail view and set its image
-	FGalleryPhotoView *thumbView = [_photoThumbnailViews objectAtIndex:photo.tag];
-	thumbView.imageView.image = image;
-	[thumbView.activity stopAnimating];
+    // grab the associated image view
+    FGalleryPhotoView *photoView = [_photoViews objectAtIndex:photo.tag];
+    
+    // if the gallery photo hasn't loaded the fullsize yet, set the thumbnail as its image.
+    if( !photo.hasFullsizeLoaded )
+        photoView.imageView.image = photo.thumbnail;
+    
+    [photoView.activity stopAnimating];
+    
+    // grab the thumbail view and set its image
+    FGalleryPhotoView *thumbView = [_photoThumbnailViews objectAtIndex:photo.tag];
+    thumbView.imageView.image = image;
+    [thumbView.activity stopAnimating];
 }
 
 
 
 - (void)galleryPhoto:(FGalleryPhoto*)photo didLoadFullsize:(UIImage*)image
 {
-	// only set the fullsize image if we're currently on that image
-	if( _currentIndex == photo.tag )
-	{
-		FGalleryPhotoView *photoView = [_photoViews objectAtIndex:photo.tag];
-		photoView.imageView.image = photo.fullsize;
-	}
-	// otherwise, we don't need to keep this image around
-	else [photo unloadFullsize];
+    // only set the fullsize image if we're currently on that image
+    if( _currentIndex == photo.tag )
+    {
+        FGalleryPhotoView *photoView = [_photoViews objectAtIndex:photo.tag];
+        photoView.imageView.image = photo.fullsize;
+    }
+    // otherwise, we don't need to keep this image around
+    else [photo unloadFullsize];
 }
 
 
@@ -1139,22 +1312,22 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-	_isScrolling = YES;
+    _isScrolling = YES;
 }
- 
+
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-	if( !decelerate )
-	{
-		[self scrollingHasEnded];
-	}
+    if( !decelerate )
+    {
+        [self scrollingHasEnded];
+    }
 }
 
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-	[self scrollingHasEnded];
+    [self scrollingHasEnded];
 }
 
 
@@ -1165,11 +1338,11 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
-	
-	NSLog(@"[FGalleryViewController] didReceiveMemoryWarning! clearing out cached images...");
-	// unload fullsize and thumbnail images for all our images except at the current index.
-	NSArray *keys = [_photoLoaders allKeys];
-	NSUInteger i, count = [keys count];
+    
+    NSLog(@"[FGalleryViewController] didReceiveMemoryWarning! clearing out cached images...");
+    // unload fullsize and thumbnail images for all our images except at the current index.
+    NSArray *keys = [_photoLoaders allKeys];
+    NSUInteger i, count = [keys count];
     if (_isThumbViewShowing==YES) {
         for (i = 0; i < count; i++)
         {
@@ -1203,69 +1376,69 @@
 
 
 - (void)dealloc {
-	
-	// remove KVO listener
-	[_container removeObserver:self forKeyPath:@"frame"];
-	
-	// Cancel all photo loaders in progress
-	NSArray *keys = [_photoLoaders allKeys];
-	NSUInteger i, count = [keys count];
-	for (i = 0; i < count; i++) {
-		FGalleryPhoto *photo = [_photoLoaders objectForKey:[keys objectAtIndex:i]];
-		photo.delegate = nil;
-		[photo unloadThumbnail];
-		[photo unloadFullsize];
-	}
-	
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
-	self.galleryID = nil;
-	
-	_photoSource = nil;
-	
+    
+    // remove KVO listener
+    [_container removeObserver:self forKeyPath:@"frame"];
+    
+    // Cancel all photo loaders in progress
+    NSArray *keys = [_photoLoaders allKeys];
+    NSUInteger i, count = [keys count];
+    for (i = 0; i < count; i++) {
+        FGalleryPhoto *photo = [_photoLoaders objectForKey:[keys objectAtIndex:i]];
+        photo.delegate = nil;
+        [photo unloadThumbnail];
+        [photo unloadFullsize];
+    }
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    
+    self.galleryID = nil;
+    
+    _photoSource = nil;
+    
     [_caption release];
     _caption = nil;
-	
+    
     [_captionContainer release];
     _captionContainer = nil;
-	
+    
     [_container release];
     _container = nil;
-	
+    
     [_innerContainer release];
     _innerContainer = nil;
-	
+    
     [_toolbar release];
     _toolbar = nil;
-	
+    
     [_thumbsView release];
     _thumbsView = nil;
-	
+    
     [_scroller release];
     _scroller = nil;
-	
-	[_photoLoaders removeAllObjects];
+    
+    [_photoLoaders removeAllObjects];
     [_photoLoaders release];
     _photoLoaders = nil;
-	
-	[_barItems removeAllObjects];
-	[_barItems release];
-	_barItems = nil;
-	
-	[_photoThumbnailViews removeAllObjects];
+    
+    [_barItems removeAllObjects];
+    [_barItems release];
+    _barItems = nil;
+    
+    [_photoThumbnailViews removeAllObjects];
     [_photoThumbnailViews release];
     _photoThumbnailViews = nil;
-	
-	[_photoViews removeAllObjects];
+    
+    [_photoViews removeAllObjects];
     [_photoViews release];
     _photoViews = nil;
-	
+    
     [_nextButton release];
     _nextButton = nil;
-	
+    
     [_prevButton release];
     _prevButton = nil;
-	
+    
     [super dealloc];
 }
 
@@ -1282,7 +1455,7 @@
 
 
 /**
- *	This section overrides the auto-rotate methods for UINaviationController and UITabBarController 
+ *	This section overrides the auto-rotate methods for UINaviationController and UITabBarController
  *	to allow the tab bar to rotate only when a FGalleryController is the visible controller. Sweet.
  */
 
@@ -1294,40 +1467,40 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-	if([self.visibleViewController isKindOfClass:[FGalleryViewController class]]) 
-	{
+    if([self.visibleViewController isKindOfClass:[FGalleryViewController class]])
+    {
         return YES;
-	}
-
-	// To preserve the UINavigationController's defined behavior,
-	// walk its stack.  If all of the view controllers in the stack
-	// agree they can rotate to the given orientation, then allow it.
-	BOOL supported = YES;
-	for(UIViewController *sub in self.viewControllers)
-	{
-		if(![sub shouldAutorotateToInterfaceOrientation:interfaceOrientation])
-		{
-			supported = NO;
-			break;
-		}
-	}	
-	if(supported)
-		return YES;
-	
-	// we need to support at least one type of auto-rotation we'll get warnings.
-	// so, we'll just support the basic portrait.
-	return ( interfaceOrientation == UIInterfaceOrientationPortrait ) ? YES : NO;
+    }
+    
+    // To preserve the UINavigationController's defined behavior,
+    // walk its stack.  If all of the view controllers in the stack
+    // agree they can rotate to the given orientation, then allow it.
+    BOOL supported = YES;
+    for(UIViewController *sub in self.viewControllers)
+    {
+        if(![sub shouldAutorotateToInterfaceOrientation:interfaceOrientation])
+        {
+            supported = NO;
+            break;
+        }
+    }
+    if(supported)
+        return YES;
+    
+    // we need to support at least one type of auto-rotation we'll get warnings.
+    // so, we'll just support the basic portrait.
+    return ( interfaceOrientation == UIInterfaceOrientationPortrait ) ? YES : NO;
 }
 
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-	// see if the current controller in the stack is a gallery
-	if([self.visibleViewController isKindOfClass:[FGalleryViewController class]])
-	{
-		FGalleryViewController *galleryController = (FGalleryViewController*)self.visibleViewController;
-		[galleryController resetImageViewZoomLevels];
-	}
+    // see if the current controller in the stack is a gallery
+    if([self.visibleViewController isKindOfClass:[FGalleryViewController class]])
+    {
+        FGalleryViewController *galleryController = (FGalleryViewController*)self.visibleViewController;
+        [galleryController resetImageViewZoomLevels];
+    }
 }
 
 @end
@@ -1351,26 +1524,26 @@
             return YES;
         }
     }
-	
-	// we need to support at least one type of auto-rotation we'll get warnings.
-	// so, we'll just support the basic portrait.
-	return ( interfaceOrientation == UIInterfaceOrientationPortrait ) ? YES : NO;
+    
+    // we need to support at least one type of auto-rotation we'll get warnings.
+    // so, we'll just support the basic portrait.
+    return ( interfaceOrientation == UIInterfaceOrientationPortrait ) ? YES : NO;
 }
 
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-	if([self.selectedViewController isKindOfClass:[UINavigationController class]])
-	{
-		UINavigationController *navController = (UINavigationController*)self.selectedViewController;
-		
-		// see if the current controller in the stack is a gallery
-		if([navController.visibleViewController isKindOfClass:[FGalleryViewController class]])
-		{
-			FGalleryViewController *galleryController = (FGalleryViewController*)navController.visibleViewController;
-			[galleryController resetImageViewZoomLevels];
-		}
-	}
+    if([self.selectedViewController isKindOfClass:[UINavigationController class]])
+    {
+        UINavigationController *navController = (UINavigationController*)self.selectedViewController;
+        
+        // see if the current controller in the stack is a gallery
+        if([navController.visibleViewController isKindOfClass:[FGalleryViewController class]])
+        {
+            FGalleryViewController *galleryController = (FGalleryViewController*)navController.visibleViewController;
+            [galleryController resetImageViewZoomLevels];
+        }
+    }
 }
 
 

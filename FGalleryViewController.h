@@ -27,7 +27,7 @@ typedef enum
 
 @protocol FGalleryViewControllerDelegate;
 
-@interface FGalleryViewController : UIViewController <UIScrollViewDelegate,FGalleryPhotoDelegate,FGalleryPhotoViewDelegate> {
+@interface FGalleryViewController : UIViewController <UIScrollViewDelegate,FGalleryPhotoDelegate,FGalleryPhotoViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate> {
 	
 	BOOL _isActive;
 	BOOL _isFullscreen;
@@ -83,6 +83,10 @@ typedef enum
 @property (nonatomic) BOOL useThumbnailView;
 @property (nonatomic) BOOL beginsInThumbnailView;
 @property (nonatomic) BOOL hideTitle;
+
+// Properties Added For PUB App
+@property (nonatomic, strong) NSString *abcSiteID;
+@property (nonatomic, assign) BOOL isShowingGallery,isComingFromARView;
 
 @end
 

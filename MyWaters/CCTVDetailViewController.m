@@ -110,12 +110,10 @@
 - (void) fetchCCTVListing {
     
     [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//    appDelegate.hud.labelText = @"Loading...";
     
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"1",[CommonFunctions getAppVersionNumber], nil];
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
+
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -270,26 +268,8 @@
     topMenu.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
     [self.view addSubview:topMenu];
     
-    //    UITextField *searchField = [[UITextField alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2), 35)];
-    //    searchField.textColor = RGB(35, 35, 35);
-    //    searchField.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
-    //    searchField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
-    //    searchField.leftViewMode = UITextFieldViewModeAlways;
-    //    searchField.borderStyle = UITextBorderStyleNone;
-    //    searchField.textAlignment=NSTextAlignmentLeft;
-    //    [searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    //    searchField.placeholder = @"Search...";
-    //    searchField.layer.borderWidth = 0.5;
-    //    searchField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-    //    [topMenu addSubview:searchField];
-    //    searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    //    searchField.delegate = self;
-    //    searchField.keyboardType = UIKeyboardTypeEmailAddress;
-    //    searchField.backgroundColor = [UIColor whiteColor];
-    //    searchField.returnKeyType = UIReturnKeyDone;
-    //    [searchField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
-    
-    
+    // Old Code Supporting Three Menu Items
+    /*
     listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(10, 5, (topMenu.bounds.size.width/2), 35)];
     listinSearchBar.delegate = self;
     listinSearchBar.placeholder = @"Search...";
@@ -362,11 +342,65 @@
     addShareOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)*2+10, 0, topMenu.bounds.size.width/3, 45);
     [addShareOverlayButton addTarget:self action:@selector(shareSiteOnSocialNetwork) forControlEvents:UIControlEventTouchUpInside];
     [topMenu addSubview:addShareOverlayButton];
+    */
     
-    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake(addPhotoLabel.frame.origin.x+addPhotoLabel.bounds.size.width-1, 0, 0.5, 45)];
-    //    UIImageView *seperatorOne =[[UIImageView alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)+35+topMenu.bounds.size.width/3 - 1, 0, 0.5, 45)];
-    //    [seperatorOne setBackgroundColor:[UIColor lightGrayColor]];
-    //    [topMenu addSubview:seperatorOne];
+    
+    
+    listinSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(10, 5, topMenu.bounds.size.width-(topMenu.bounds.size.width/3), 35)];
+    listinSearchBar.delegate = self;
+    listinSearchBar.placeholder = @"Search...";
+    [listinSearchBar setBackgroundImage:[[UIImage alloc] init]];
+    listinSearchBar.backgroundColor = [UIColor whiteColor];
+    [topMenu addSubview:listinSearchBar];
+    
+    for (id object in [listinSearchBar subviews]) {
+        
+        if ([object isKindOfClass:[UITextField class]]) {
+            
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setFont:[UIFont fontWithName:ROBOTO_REGULAR size:14]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftViewMode:UITextFieldViewModeAlways];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBorderStyle:UITextBorderStyleNone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextAlignment:NSTextAlignmentLeft];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setPlaceholder:@"Search..."];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setClearButtonMode:UITextFieldViewModeWhileEditing];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setReturnKeyType:UIReturnKeyDone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDelegate:self];
+        }
+    }
+    
+    
+    favouritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    favouritesButton.frame = CGRectMake(((topMenu.bounds.size.width/3)*3)-(topMenu.bounds.size.width/3)+(topMenu.bounds.size.width/3)/2 - 12.5 + (10), 5, 20, 20);
+    if (isAlreadyFav)
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_fav.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    else
+        [favouritesButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_addtofavorites.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [favouritesButton addTarget:self action:@selector(addCCTVToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:favouritesButton];
+    
+    
+    addToFavlabel = [[UILabel alloc] initWithFrame:CGRectMake((topMenu.bounds.size.width/3)*2+10, 30, topMenu.bounds.size.width/3, 10)];
+    addToFavlabel.backgroundColor = [UIColor clearColor];
+    addToFavlabel.textAlignment = NSTextAlignmentCenter;
+    addToFavlabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10];
+    if (isAlreadyFav) {
+        addToFavlabel.text = @"Favourite";
+    }
+    else {
+        addToFavlabel.text = @"Favourite";
+    }
+    addToFavlabel.textColor = [UIColor whiteColor];
+    [topMenu addSubview:addToFavlabel];
+    
+    
+    UIButton *addFavOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addFavOverlayButton.frame = CGRectMake((topMenu.bounds.size.width/3)*2+10, 0, topMenu.bounds.size.width/3, 45);
+    [addFavOverlayButton addTarget:self action:@selector(addCCTVToFavourites) forControlEvents:UIControlEventTouchUpInside];
+    [topMenu addSubview:addFavOverlayButton];
+
     
     
     dimmedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
@@ -386,8 +420,14 @@
     
     
     fullImageScrollView = [[UIScrollView alloc] init];
-    if (IS_IPHONE_6P) {
+    if (IS_IPHONE_4_OR_LESS) {
+        fullImageScrollView.frame = CGRectMake(-80, 80, self.view.bounds.size.height, self.view.bounds.size.width);
+    }
+    else if (IS_IPHONE_6P) {
         fullImageScrollView.frame = CGRectMake(-162, 162, self.view.bounds.size.height, self.view.bounds.size.width);
+    }
+    else if (IS_IPHONE_6) {
+        fullImageScrollView.frame = CGRectMake(-147, 147, self.view.bounds.size.height, self.view.bounds.size.width);
     }
     else {
         fullImageScrollView.frame = CGRectMake(-124, 124, self.view.bounds.size.height, self.view.bounds.size.width);
@@ -762,6 +802,42 @@
         titleString = [[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"];
         cctvID = [[filterDataSource objectAtIndex:indexPath.row] objectForKey:@"ID"];
         
+        CLLocationCoordinate2D currentLocation;
+        //            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+        //            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+        currentLocation.latitude = latValue;
+        currentLocation.longitude = longValue;
+        
+        
+        for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY count];idx++) {
+            
+            NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY[idx] mutableCopy];
+            
+            CLLocationCoordinate2D desinationLocation;
+            desinationLocation.latitude = [dict[@"Lat"] doubleValue];
+            desinationLocation.longitude = [dict[@"Lon"] doubleValue];
+            
+            DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+            
+            dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+            appDelegate.CCTV_LISTING_ARRAY[idx] = dict;
+            
+        }
+        
+        
+        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            float v1 = [left floatValue];
+            float v2 = [right floatValue];
+            if (v1 < v2)
+                return NSOrderedAscending;
+            else if (v1 > v2)
+                return NSOrderedDescending;
+            else
+                return NSOrderedSame;
+        }];
+        
+        [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        
         int count = 0;
         [tempNearByArray removeAllObjects];
         
@@ -791,6 +867,42 @@
         imageUrl = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"CCTVImageURL"];
         titleString = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"Name"];
         cctvID = [[tempNearByArray objectAtIndex:indexPath.row] objectForKey:@"ID"];
+        
+        CLLocationCoordinate2D currentLocation;
+        //            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+        //            currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+        currentLocation.latitude = latValue;
+        currentLocation.longitude = longValue;
+        
+        
+        for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY count];idx++) {
+            
+            NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY[idx] mutableCopy];
+            
+            CLLocationCoordinate2D desinationLocation;
+            desinationLocation.latitude = [dict[@"Lat"] doubleValue];
+            desinationLocation.longitude = [dict[@"Lon"] doubleValue];
+            
+            DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
+            
+            dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+            appDelegate.CCTV_LISTING_ARRAY[idx] = dict;
+            
+        }
+        
+        
+        NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            float v1 = [left floatValue];
+            float v2 = [right floatValue];
+            if (v1 < v2)
+                return NSOrderedAscending;
+            else if (v1 > v2)
+                return NSOrderedDescending;
+            else
+                return NSOrderedSame;
+        }];
+        
+        [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
         
         int count = 0;
         [tempNearByArray removeAllObjects];
@@ -968,11 +1080,14 @@
 //        
 //    }
 //    else {
+    
+    [appDelegate.locationManager startUpdatingLocation];
+    
     if ([CommonFunctions hasConnectivity]) {
-        [self fetchCCTVListing];
+        [self performSelector:@selector(fetchCCTVListing) withObject:nil afterDelay:1.0];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
         return;
     }
     //    }
@@ -983,6 +1098,7 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
+    
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

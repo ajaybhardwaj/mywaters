@@ -162,6 +162,7 @@
     if (isShowingFilter) {
         isShowingFilter = NO;
         pos.y = -130;
+        hideFilterButton.hidden = YES;
         
         listTabeView.alpha = 1.0;
         listTabeView.userInteractionEnabled = YES;
@@ -170,13 +171,14 @@
     else {
         isShowingFilter = YES;
         pos.y = 45;
+        hideFilterButton.hidden = NO;
         
         if (isShowingSearchBar) {
             [self animateSearchBar];
         }
         
         listTabeView.alpha = 0.5;
-        listTabeView.userInteractionEnabled = NO;
+//        listTabeView.userInteractionEnabled = NO;
     }
     filterTableView.center = pos;
     [UIView commitAnimations];
@@ -189,91 +191,98 @@
     
     UIButton *button = (id) sender;
     
-    ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
     
-    //    viewObj.abcSiteId = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"id"];
-    //    viewObj.titleString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"siteName"];
-    //    viewObj.descriptionString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"description"];
-    //    viewObj.latValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLatitude"] doubleValue];
-    //    viewObj.longValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLongitude"] doubleValue];
-    //    viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"phoneNo"];
-    //    viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"address"];
-    //    viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"]];
-    //    viewObj.imageName = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"];
-    //    viewObj.isCertified = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"isCertified"] intValue];
-    
-    if (isFiltered) {
+    if (!isShowingFilter) {
+        ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
         
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"id"] != (id)[NSNull null])
-            viewObj.abcSiteId = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"id"];
-        
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"siteName"] != (id)[NSNull null])
-            viewObj.titleString = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"siteName"];
-        
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"description"] != (id)[NSNull null])
-            viewObj.descriptionString = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"description"];
-        
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-            viewObj.latValue = [[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"locationLatitude"] doubleValue];
-        
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-            viewObj.longValue = [[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"locationLongitude"] doubleValue];
-        
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"phoneNo"] != (id)[NSNull null])
-            viewObj.phoneNoString = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"phoneNo"];
-        
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"address"] != (id)[NSNull null])
-            viewObj.addressString = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"address"];
-        
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"image"] != (id)[NSNull null]) {
-            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"image"]];
-            viewObj.imageName = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"image"];
+        if (isFiltered) {
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"id"] != (id)[NSNull null])
+                viewObj.abcSiteId = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"id"];
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"siteName"] != (id)[NSNull null])
+                viewObj.titleString = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"siteName"];
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"description"] != (id)[NSNull null])
+                viewObj.descriptionString = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"description"];
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+                viewObj.latValue = [[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"locationLatitude"] doubleValue];
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+                viewObj.longValue = [[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"locationLongitude"] doubleValue];
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"phoneNo"] != (id)[NSNull null])
+                viewObj.phoneNoString = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"phoneNo"];
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"address"] != (id)[NSNull null])
+                viewObj.addressString = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"address"];
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"image"] != (id)[NSNull null]) {
+                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"image"]];
+                viewObj.imageName = [[filteredDataSource objectAtIndex:button.tag] objectForKey:@"image"];
+            }
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"isCertified"] != (id)[NSNull null])
+                viewObj.isCertified = [[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"isCertified"] intValue];
+            
+            if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"hasPOI"] != (id)[NSNull null])
+                viewObj.isHavingPOI = [[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"hasPOI"] intValue];
+            
+        }
+        else {
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"id"] != (id)[NSNull null])
+                viewObj.abcSiteId = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"id"];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"siteName"] != (id)[NSNull null])
+                viewObj.titleString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"siteName"];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"description"] != (id)[NSNull null])
+                viewObj.descriptionString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"description"];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+                viewObj.latValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLatitude"] doubleValue];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+                viewObj.longValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLongitude"] doubleValue];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"phoneNo"] != (id)[NSNull null])
+                viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"phoneNo"];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"address"] != (id)[NSNull null])
+                viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"address"];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"] != (id)[NSNull null]) {
+                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"]];
+                viewObj.imageName = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"];
+            }
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"isCertified"] != (id)[NSNull null])
+                viewObj.isCertified = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"isCertified"] intValue];
+            
+            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"hasPOI"] != (id)[NSNull null])
+                viewObj.isHavingPOI = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"hasPOI"] intValue];
+            
         }
         
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"isCertified"] != (id)[NSNull null])
-            viewObj.isCertified = [[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"isCertified"] intValue];
-        
-        if ([[filteredDataSource objectAtIndex:button.tag] objectForKey:@"hasPOI"] != (id)[NSNull null])
-            viewObj.isHavingPOI = [[[filteredDataSource objectAtIndex:button.tag] objectForKey:@"hasPOI"] intValue];
-        
+        [self.navigationController pushViewController:viewObj animated:YES];
     }
     else {
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"id"] != (id)[NSNull null])
-            viewObj.abcSiteId = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"id"];
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"siteName"] != (id)[NSNull null])
-            viewObj.titleString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"siteName"];
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"description"] != (id)[NSNull null])
-            viewObj.descriptionString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"description"];
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-            viewObj.latValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLatitude"] doubleValue];
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-            viewObj.longValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"locationLongitude"] doubleValue];
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"phoneNo"] != (id)[NSNull null])
-            viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"phoneNo"];
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"address"] != (id)[NSNull null])
-            viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"address"];
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"] != (id)[NSNull null]) {
-            viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"]];
-            viewObj.imageName = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"image"];
-        }
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"isCertified"] != (id)[NSNull null])
-            viewObj.isCertified = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"isCertified"] intValue];
-        
-        if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"hasPOI"] != (id)[NSNull null])
-            viewObj.isHavingPOI = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:button.tag] objectForKey:@"hasPOI"] intValue];
-        
+        [self animateFilterTable];
     }
+}
+
+
+
+
+//*************** Method For Removing Filter Table For WLS
+
+- (void) hideFilterTable {
     
-    [self.navigationController pushViewController:viewObj animated:YES];
+    if (isShowingFilter) {
+        [self animateFilterTable];
+    }
 }
 
 
@@ -717,80 +726,86 @@
             [self animateSearchBar];
         }
         
-        ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
         
-        if (isFiltered) {
+        if (!isShowingFilter) {
+            ABCWaterDetailViewController *viewObj = [[ABCWaterDetailViewController alloc] init];
             
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
-                viewObj.abcSiteId = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"id"];
-            
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"] != (id)[NSNull null])
-                viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"];
-            
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
-                viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
-            
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-                viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
-            
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-                viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
-            
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
-                viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
-            
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
-                viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"];
-            
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
-                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
-                viewObj.imageName = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"];
+            if (isFiltered) {
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
+                    viewObj.abcSiteId = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"id"];
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"] != (id)[NSNull null])
+                    viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"];
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
+                    viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+                    viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+                    viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
+                    viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
+                    viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"address"];
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
+                    viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
+                    viewObj.imageName = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"];
+                }
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
+                    viewObj.isCertified = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
+                
+                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] != (id)[NSNull null])
+                    viewObj.isHavingPOI = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] intValue];
+                
+            }
+            else {
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
+                    viewObj.abcSiteId = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"];
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"] != (id)[NSNull null])
+                    viewObj.titleString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"];
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
+                    viewObj.descriptionString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+                    viewObj.latValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+                    viewObj.longValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
+                    viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
+                    viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"];
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
+                    viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+                    viewObj.imageName = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
+                }
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
+                    viewObj.isCertified = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
+                
+                if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] != (id)[NSNull null])
+                    viewObj.isHavingPOI = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] intValue];
+                
             }
             
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
-                viewObj.isCertified = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
-            
-            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] != (id)[NSNull null])
-                viewObj.isHavingPOI = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] intValue];
-            
+            [self.navigationController pushViewController:viewObj animated:YES];
         }
         else {
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
-                viewObj.abcSiteId = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"];
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"] != (id)[NSNull null])
-                viewObj.titleString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"siteName"];
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
-                viewObj.descriptionString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-                viewObj.latValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-                viewObj.longValue = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
-                viewObj.phoneNoString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"] != (id)[NSNull null])
-                viewObj.addressString = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"address"];
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
-                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
-                viewObj.imageName = [[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
-            }
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] != (id)[NSNull null])
-                viewObj.isCertified = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue];
-            
-            if ([[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] != (id)[NSNull null])
-                viewObj.isHavingPOI = [[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"hasPOI"] intValue];
-            
+            [self animateFilterTable];
         }
-        
-        [self.navigationController pushViewController:viewObj animated:YES];
     }
 }
 
@@ -911,7 +926,7 @@
         
         
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 10, listTabeView.bounds.size.width-100, 50)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, listTabeView.bounds.size.width-100, 50)];
         if (isFiltered) {
             titleLabel.text = [NSString stringWithFormat:@"%@",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"siteName"]];
         }
@@ -922,6 +937,22 @@
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.numberOfLines = 0;
         [cell.contentView addSubview:titleLabel];
+        
+        
+        UIImageView *certifiedLogo = [[UIImageView alloc] initWithFrame:CGRectMake(80, 55, 42.5, 20.5)];
+        [certifiedLogo setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/abcwater_certified_logo.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [cell.contentView addSubview:certifiedLogo];
+        
+        if (isFiltered) {
+            if (![[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue]) {
+                certifiedLogo.hidden = YES;
+            }
+        }
+        else {
+            if (![[[appDelegate.ABC_WATERS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isCertified"] intValue]) {
+                certifiedLogo.hidden = YES;
+            }
+        }
         
         
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, listTabeView.bounds.size.width-100, 20)];
@@ -1104,6 +1135,11 @@
                   forControlEvents:UIControlEventValueChanged];
     [listTabeView addSubview:self.refreshControl];
     
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
 }
 
 
@@ -1114,6 +1150,7 @@
     [self.navigationController setNavigationBarHidden:NO];
     
     [appDelegate setShouldRotate:NO];
+    [appDelegate.locationManager startUpdatingLocation];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(76,175,238) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
@@ -1128,7 +1165,7 @@
         [self fetchABCWaterSites];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
     
 }

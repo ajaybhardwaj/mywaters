@@ -34,7 +34,7 @@
     CLLocationCoordinate2D currentLocation;
 }
 
-@property (nonatomic, assign) BOOL isNotFeedbackController,isReportingForChatter;
+@property (nonatomic, assign) BOOL isNotFeedbackController,isReportingForChatter,isEditingComment;
 @property (nonatomic, strong) NSString *chatterID,*chatterText;
 
 // Temp String Variables For Table Scroll

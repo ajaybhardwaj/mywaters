@@ -78,6 +78,7 @@
     if (isShowingFilter) {
         isShowingFilter = NO;
         pos.y = -320;
+        hideFilterButton.hidden = YES;
         
         notificationsTable.alpha = 1.0;
         notificationsTable.userInteractionEnabled = YES;
@@ -86,6 +87,7 @@
     else {
         isShowingFilter = YES;
         pos.y = 135;
+        hideFilterButton.hidden = NO;
         
         notificationsTable.alpha = 0.5;
         notificationsTable.userInteractionEnabled = NO;
@@ -93,6 +95,16 @@
     filterTableView.center = pos;
     [UIView commitAnimations];
     
+}
+
+
+//*************** Method For Removing Filter Table For WLS
+
+- (void) hideFilterTable {
+    
+    if (isShowingFilter) {
+        [self animateFilterTable];
+    }
 }
 
 
@@ -112,9 +124,20 @@
         [self pullToRefreshTable];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
+
+
+////*************** Method To Hide Filter Table On Touch In Other UI
+//
+//- (void) hideFilterTable  {
+//    
+//    if (isShowingFilter) {
+//        [self animateFilterTable];
+//    }
+//}
+
 
 
 # pragma mark - ASIHTTPRequestDelegate Methods
@@ -200,8 +223,8 @@
             subtractComponent = subtractComponent + 30;
         }
         
-        if ([[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"] != (id)[NSNull null]) {
-            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:notificationsTable.bounds.size.width-80];
+        if ([[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"] != (id)[NSNull null]) {
+            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:notificationsTable.bounds.size.width-80];
             subtractComponent = subtractComponent + 30;
         }
         
@@ -404,16 +427,15 @@
         [titleLabel sizeToFit];
         
         
-        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 60, notificationsTable.bounds.size.width-80, 20)];
-        dateLabel.text = [CommonFunctions dateTimeFromString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"]];
+        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, notificationsTable.bounds.size.width-80, 20)];
+        dateLabel.text = [CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]];
         dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         dateLabel.backgroundColor = [UIColor clearColor];
         dateLabel.textColor = [UIColor lightGrayColor];
         dateLabel.numberOfLines = 0;
-        dateLabel.textAlignment = NSTextAlignmentRight;
         
         CGRect newDateLabelLabelFrame = dateLabel.frame;
-        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[CommonFunctions dateTimeFromString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"notificationDate"]] font:dateLabel.font withinWidth:notificationsTable.bounds.size.width-80];//expectedDescriptionLabelSize.height;
+        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]] font:dateLabel.font withinWidth:notificationsTable.bounds.size.width-80];//expectedDescriptionLabelSize.height;
         dateLabel.frame = newDateLabelLabelFrame;
         [cell.contentView addSubview:dateLabel];
         [dateLabel sizeToFit];
@@ -470,7 +492,7 @@
     
     
     UIButton *btnfilter =  [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnfilter setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_filter.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [btnfilter setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_filter1.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [btnfilter addTarget:self action:@selector(animateFilterTable) forControlEvents:UIControlEventTouchUpInside];
     [btnfilter setFrame:CGRectMake(0, 0, 32, 32)];
     
@@ -485,6 +507,11 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
     
+    
+//    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideFilterTable)];
+//    tapGesture.cancelsTouchesInView = NO;
+//    tapGesture.numberOfTapsRequired = 1;
+//    [self.view addGestureRecognizer:tapGesture];
     
     notificationsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     notificationsTable.delegate = self;
@@ -531,6 +558,12 @@
                             action:@selector(fetchNotificationListing)
                   forControlEvents:UIControlEventValueChanged];
     [notificationsTable addSubview:self.refreshControl];
+    
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
 }
 
 - (void) viewWillAppear:(BOOL)animated {

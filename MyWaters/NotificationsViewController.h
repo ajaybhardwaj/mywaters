@@ -24,6 +24,7 @@
     NSInteger selectedFilterIndex,previousIndex,currentIndex;
     
     UILabel *noRecentNotifiactionLabel;
+    UIButton *hideFilterButton;
     
     //*************** Demo App Variables
     UIImageView *bgImageView;

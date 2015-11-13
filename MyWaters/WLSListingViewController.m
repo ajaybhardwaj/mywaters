@@ -40,21 +40,18 @@
 - (void) fetchWLSListing {
     
     if ([CommonFunctions hasConnectivity]) {
-        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-        //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        //    appDelegate.hud.labelText = @"Loading...";
         
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
         
         NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
         NSArray *values = [[NSArray alloc] initWithObjects:@"6",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
-//            NSArray *values = [[NSArray alloc] initWithObjects:@"6",@"12345",[CommonFunctions getAppVersionNumber], nil];
+
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
         
         [self pullToRefreshTable];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -398,6 +395,30 @@
     titleLabel.numberOfLines = 0;
     [cell.contentView addSubview:titleLabel];
     
+    UILabel *subscribedLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 60, wlsListingtable.bounds.size.width-90, 20)];
+    subscribedLabel.textColor = [UIColor lightGrayColor];
+    if (isFiltered) {
+        if ([[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue]) {
+            subscribedLabel.text = @"Subscribed";
+        }
+        else {
+            subscribedLabel.text = @"";
+        }
+    }
+    else {
+        if ([[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue]) {
+            subscribedLabel.text = @"Subscribed";
+        }
+        else {
+            subscribedLabel.text = @"";
+            
+        }
+    }
+    subscribedLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
+    subscribedLabel.backgroundColor = [UIColor clearColor];
+    subscribedLabel.numberOfLines = 0;
+    [cell.contentView addSubview:subscribedLabel];
+    
     UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 60, wlsListingtable.bounds.size.width-100, 20)];
     subTitleLabel.textColor = [UIColor lightGrayColor];
     if (isFiltered)
@@ -409,6 +430,7 @@
     subTitleLabel.numberOfLines = 0;
     subTitleLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:subTitleLabel];
+    
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         
         subTitleLabel.text = @"";
@@ -496,6 +518,7 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
+    [appDelegate.locationManager startUpdatingLocation];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(51,148,228) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

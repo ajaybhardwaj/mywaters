@@ -112,28 +112,27 @@
             [emailField resignFirstResponder];
             [passField resignFirstResponder];
             
-            if (IS_IPHONE_4_OR_LESS || IS_IPHONE_6P) {
-                
-                
+            [UIView beginAnimations:@"emailField" context:NULL];
+            [UIView setAnimationDuration:0.5];
+            CGPoint viewPOS = self.view.center;
+            
+            if (IS_IPHONE_4_OR_LESS) {
+                viewPOS.y = self.view.bounds.size.height-250;
+            }
+            else if (IS_IPHONE_5) {
+                viewPOS.y = self.view.bounds.size.height-294;
+            }
+            else if (IS_IPHONE_6) {
+                viewPOS.y = self.view.bounds.size.height-344;
             }
             else {
-                [UIView beginAnimations:@"emailField" context:NULL];
-                [UIView setAnimationDuration:0.5];
-                CGPoint viewPOS = self.view.center;
-                viewPOS.y = self.view.bounds.size.height-294;
-                backgroundScrollView.center = viewPOS;
-                [UIView commitAnimations];
+                viewPOS.y = self.view.bounds.size.height-377;
             }
             
-            //        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-            //        [prefs setObject:emailField.text forKey:@"userEmail"];
-            //        [prefs setObject:passField.text forKey:@"userPassword"];
-            //        [prefs synchronize];
+            backgroundScrollView.center = viewPOS;
+            [UIView commitAnimations];
             
             [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//            appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//            appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//            appDelegate.hud.labelText = @"Loading...";
             
             NSMutableArray *parameters = [[NSMutableArray alloc] init];
             NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -150,7 +149,7 @@
         }
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -456,24 +455,26 @@
     else {
         [textField resignFirstResponder];
         
+        [UIView beginAnimations:@"emailField" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = self.view.center;
+        
         if (IS_IPHONE_4_OR_LESS) {
-            
-            [UIView beginAnimations:@"emailField" context:NULL];
-            [UIView setAnimationDuration:0.5];
-            CGPoint viewPOS = self.view.center;
             viewPOS.y = self.view.bounds.size.height-250;
-            backgroundScrollView.center = viewPOS;
-            [UIView commitAnimations];
-            
+        }
+        else if (IS_IPHONE_5) {
+            viewPOS.y = self.view.bounds.size.height-294;
+        }
+        else if (IS_IPHONE_6) {
+            viewPOS.y = self.view.bounds.size.height-344;
         }
         else {
-            [UIView beginAnimations:@"emailField" context:NULL];
-            [UIView setAnimationDuration:0.5];
-            CGPoint viewPOS = self.view.center;
-            viewPOS.y = self.view.bounds.size.height-294;
-            backgroundScrollView.center = viewPOS;
-            [UIView commitAnimations];
+            viewPOS.y = self.view.bounds.size.height-377;
         }
+        
+        backgroundScrollView.center = viewPOS;
+        [UIView commitAnimations];
+        
     }
     return YES;
 }

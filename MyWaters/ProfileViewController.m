@@ -24,6 +24,7 @@
     
     if (photoDataSourceForGallery.count!=0) {
         networkGallery = [[FGalleryViewController alloc] initWithPhotoSource:self];
+        networkGallery.isComingFromARView = YES;
         [self.navigationController pushViewController:networkGallery animated:YES];
     }
     
@@ -43,15 +44,17 @@
     UIButton *button = (id) sender;
     //    NSString *alertTitle = [[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"Name"];
     NSString *alertMessage = [[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"Description"];
+  
+    // Share has been removed for version 2.0
     
-    if ([[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"UnlockedAt"] != (id)[NSNull null]) {
-        isBadgeUnlocked = YES;
-        [CommonFunctions showAlertView:self title:nil msg:alertMessage cancel:nil otherButton:@"Share on Facebook",@"Cancel",nil];
-    }
-    else {
-        isBadgeUnlocked = NO;
+//    if ([[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"UnlockedAt"] != (id)[NSNull null]) {
+//        isBadgeUnlocked = YES;
+//        [CommonFunctions showAlertView:self title:nil msg:alertMessage cancel:nil otherButton:@"Share on Facebook",@"Cancel",nil];
+//    }
+//    else {
+//        isBadgeUnlocked = NO;
         [CommonFunctions showAlertView:self title:nil msg:alertMessage cancel:@"OK" otherButton:nil];
-    }
+//    }
 }
 
 
@@ -789,9 +792,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     
-    if (tableView==pointsTableView) {
-        return 90.0f;
-    }
+//    if (tableView==pointsTableView) {
+//        return 90.0f;
+//    }
     
     return 0.0f;
 }
@@ -799,30 +802,30 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
-    if (tableView==pointsTableView) {
-        
-        UIView *sectionHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, pointsTableView.bounds.size.width, 90)];
-        sectionHeaderView.backgroundColor = RGB(255, 255, 255);
-        
-        UILabel *pointsTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, sectionHeaderView.bounds.size.width, 16)];
-        pointsTitleLabel.backgroundColor = [UIColor clearColor];
-        pointsTitleLabel.textColor = RGB(58, 58, 58);
-        pointsTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
-        pointsTitleLabel.text = @"Current points:";
-        pointsTitleLabel.textAlignment = NSTextAlignmentCenter;
-        [sectionHeaderView addSubview:pointsTitleLabel];
-        
-        
-        UILabel *pointsValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, sectionHeaderView.bounds.size.width, 30)];
-        pointsValueLabel.backgroundColor = [UIColor clearColor];
-        pointsValueLabel.textColor = RGB(82, 82, 82);
-        pointsValueLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:28.0];
-        pointsValueLabel.text = pointsValue;
-        pointsValueLabel.textAlignment = NSTextAlignmentCenter;
-        [sectionHeaderView addSubview:pointsValueLabel];
-        
-        return sectionHeaderView;
-    }
+//    if (tableView==pointsTableView) {
+//        
+//        UIView *sectionHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, pointsTableView.bounds.size.width, 90)];
+//        sectionHeaderView.backgroundColor = RGB(255, 255, 255);
+//        
+//        UILabel *pointsTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, sectionHeaderView.bounds.size.width, 16)];
+//        pointsTitleLabel.backgroundColor = [UIColor clearColor];
+//        pointsTitleLabel.textColor = RGB(58, 58, 58);
+//        pointsTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:13.0];
+//        pointsTitleLabel.text = @"Current points:";
+//        pointsTitleLabel.textAlignment = NSTextAlignmentCenter;
+//        [sectionHeaderView addSubview:pointsTitleLabel];
+//        
+//        
+//        UILabel *pointsValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, sectionHeaderView.bounds.size.width, 30)];
+//        pointsValueLabel.backgroundColor = [UIColor clearColor];
+//        pointsValueLabel.textColor = RGB(82, 82, 82);
+//        pointsValueLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:28.0];
+//        pointsValueLabel.text = pointsValue;
+//        pointsValueLabel.textAlignment = NSTextAlignmentCenter;
+//        [sectionHeaderView addSubview:pointsValueLabel];
+//        
+//        return sectionHeaderView;
+//    }
     
     return nil;
 }
@@ -1182,12 +1185,23 @@
     [self.view addSubview:profileImageView];
     
     
-    userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(150, 10, self.view.bounds.size.width-150, 70)];
+    userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(140, 20, self.view.bounds.size.width-150, 60)];
     userNameLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:16];
     userNameLabel.textColor = RGB(85,49,118);
     userNameLabel.backgroundColor = [UIColor clearColor];
     userNameLabel.numberOfLines = 0;
     [self.view addSubview:userNameLabel];
+    
+    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userRewardPoints"] length] !=0)
+        pointsValue = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userRewardPoints"];
+    else
+        pointsValue = @"0";
+    pointsValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(140, userNameLabel.frame.origin.y+userNameLabel.bounds.size.height, self.view.bounds.size.width-140, 20)];
+    pointsValueLabel.backgroundColor = [UIColor clearColor];
+    pointsValueLabel.textColor = RGB(82, 82, 82);
+    pointsValueLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:14.0];
+    pointsValueLabel.text = [NSString stringWithFormat:@"Points: %@",pointsValue];
+    [self.view addSubview:pointsValueLabel];
     
     
     
@@ -1300,7 +1314,7 @@
     badgesBackgroundView.userInteractionEnabled = YES;
     
     myBadgesLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, 200, 20)];
-    myBadgesLabel.text = @"What are my badges";
+    myBadgesLabel.text = @"My badges";
     myBadgesLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.5];
     myBadgesLabel.textColor = [UIColor blackColor];
     myBadgesLabel.backgroundColor = [UIColor clearColor];
@@ -1383,11 +1397,20 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [appDelegate setShouldRotate:NO];
+    [appDelegate.locationManager startUpdatingLocation];
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     
-    userNameLabel.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
+    if (!appDelegate.IS_SKIPPING_USER_LOGIN) {
+        userNameLabel.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
+        if ([pointsValue length] !=0)
+            pointsValueLabel.text = [NSString stringWithFormat:@"Points: %@",pointsValue];
+        else
+            pointsValueLabel.text = [NSString stringWithFormat:@"Points: 0"];
+        
+        pointsValueLabel.frame = CGRectMake(140, userNameLabel.frame.origin.y+userNameLabel.bounds.size.height, self.view.bounds.size.width-140, 20);
+    }
     
     if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"] length] !=0) {
         
