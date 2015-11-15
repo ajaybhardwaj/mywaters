@@ -696,15 +696,21 @@
     
     
     termsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [termsButton setTitle:@"I would like to sign up as a Friend of Water.  (?)" forState:UIControlStateNormal];
+    [termsButton setTitle:@"I would like to sign up as a Friend of Water." forState:UIControlStateNormal];
     [termsButton setTitleColor:RGB(22, 25, 62) forState:UIControlStateNormal];
     termsButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12];
     termsButton.tag = 3;
     termsButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     termsButton.contentEdgeInsets = UIEdgeInsetsMake(0, 45, 0, 0);
     termsButton.frame = CGRectMake(0, retypePassField.frame.origin.y+retypePassField.bounds.size.height+20, self.view.bounds.size.width, 20);
-    [termsButton addTarget:self action:@selector(moveToFowWebView) forControlEvents:UIControlEventTouchUpInside];
+//    [termsButton addTarget:self action:@selector(moveToFowWebView) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:termsButton];
+    
+    UIButton *fowButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    fowButton.frame = CGRectMake(termsButton.frame.origin.x+termsButton.bounds.size.width-40, termsButton.frame.origin.y, 20, 20);
+    [fowButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_blue",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [fowButton addTarget:self action:@selector(moveToFowWebView) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundScrollView addSubview:fowButton];
     
     
     checkboxButton = [UIButton buttonWithType:UIButtonTypeCustom];

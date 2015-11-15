@@ -472,6 +472,13 @@
     favouritesListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     favouritesListingTableView.hidden = YES;
     
+    
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
+    
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -320, self.view.bounds.size.width, 220) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
@@ -507,11 +514,6 @@
                   forControlEvents:UIControlEventValueChanged];
     [favouritesListingTableView addSubview:self.refreshControl];
     
-    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:hideFilterButton];
-    hideFilterButton.hidden = YES;
 }
 
 

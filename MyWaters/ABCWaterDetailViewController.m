@@ -803,7 +803,7 @@
     bgScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:bgScrollView];
     bgScrollView.backgroundColor = [UIColor whiteColor];
-    
+    bgScrollView.userInteractionEnabled = YES;
     
     [self createUI];
     

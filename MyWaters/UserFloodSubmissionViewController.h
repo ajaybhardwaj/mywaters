@@ -8,18 +8,21 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "SAMTextView.h"
 
-@interface UserFloodSubmissionViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UITextViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate> {
+@interface UserFloodSubmissionViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UITextViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIGestureRecognizerDelegate> {
     
     AppDelegate *appDelegate;
     UITableView *floodSubmissionTableView;
     
     UITextField *locationField;
-    UITextView *commentField;
     UIImageView *picUploadImageView;
     BOOL isFeedbackImageAvailable;
     
+    UIScrollView *backgroundScrollView;
+    UIButton *hideKeyPadsButton;
     CLLocationCoordinate2D currentLocation;
+    SAMTextView *commentField;
 }
 @property (nonatomic, strong) NSString *tempLocationString,*tempCommentString;
 @property (nonatomic, assign) double floodSubmissionLat,floodSubmissionLon;

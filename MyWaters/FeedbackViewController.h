@@ -11,8 +11,9 @@
 #import <CoreLocation/CoreLocation.h>
 #import "Base64.h"
 #import "LongPressUserLocationViewController.h"
+#import "SAMTextView.h"
 
-@interface FeedbackViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate,UITextViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate> {
+@interface FeedbackViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate,UITextViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIGestureRecognizerDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -21,7 +22,7 @@
     
     NSArray *feedbackTypeArray,*severityTypeArray;
     UITextField *feedbackTypeField,*locationField,*nameField,*phoneField,*emailField;
-    UITextView *commentField;
+    SAMTextView *commentField;
     
     NSInteger fieldIndex;
     UIView *pickerbackground;
@@ -29,9 +30,13 @@
     NSInteger selectedPickerIndex;
     
     UIImageView *picUploadImageView;
-    BOOL isFeedbackImageAvailable;
+    BOOL isFeedbackImageAvailable,_moveToBottom;
     
     CLLocationCoordinate2D currentLocation;
+    
+    //----- New Feedback UI Components
+    UIScrollView *backgroundScrollView;
+    UIButton *hideKeyPadsButton;
 }
 
 @property (nonatomic, assign) BOOL isNotFeedbackController,isReportingForChatter,isEditingComment;

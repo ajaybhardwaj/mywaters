@@ -574,11 +574,14 @@
         
         backgroundScrollView.userInteractionEnabled = NO;
         
+        DebugLog(@"%f---%f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
+        
         NSArray *parameters,*values;
         
         if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
             parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon",@"pushtoken", nil];
-            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], [[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],nil];
+//            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], [[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],nil];
+            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], @"12345",nil];
         }
         else {
             parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"pushtoken", nil];
@@ -1360,9 +1363,6 @@
                         if ([appDelegate.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
                             [appDelegate.locationManager requestWhenInUseAuthorization];
                         }
-                        //                        locationManager.delegate = self;
-                        //                        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-                        //                        [locationManager startUpdatingLocation];
                     }
                     
                 }
@@ -1374,19 +1374,6 @@
                     drainDepthValueLabel.textColor = [UIColor blackColor];//RGB(26, 158, 241);
                     drainDepthValueLabel.backgroundColor = [UIColor clearColor];
                     drainDepthValueLabel.numberOfLines = 0;
-                    //                    if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
-                    //                        drainDepthValueLabel.text = @"Low Flood Risk";
-                    //                    }
-                    //                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==2) {
-                    //                        drainDepthValueLabel.text = @"Moderate Flood Risk";
-                    //                    }
-                    //                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==3) {
-                    //                        drainDepthValueLabel.text = @"High Flood Risk";
-                    //                    }
-                    //                    else {
-                    //                        drainDepthValueLabel.text = @"Under Maintenance";
-                    //                    }
-                    //                    [drainDepthValueLabel sizeToFit];
                     [columnView addSubview:drainDepthValueLabel];
                     
                     
@@ -1411,42 +1398,16 @@
                     waterSensorLocationLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     waterSensorLocationLabel.backgroundColor = [UIColor clearColor];
                     waterSensorLocationLabel.numberOfLines = 0;
-                    //                    [waterSensorLocationLabel sizeToFit];
                     [columnView addSubview:waterSensorLocationLabel];
                     
                     
-                    //                    CLLocationCoordinate2D currentLocation;
-                    //                    CLLocationCoordinate2D desinationLocation;
-                    //
-                    //                    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
-                    //                    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
-                    //
-                    //                    desinationLocation.latitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
-                    //                    desinationLocation.longitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
-                    
                     waterSensorDrainDepthLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 125, columnView.bounds.size.width-40, 25)];
-                    //                    waterSensorDrainDepthLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
                     waterSensorDrainDepthLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:11];
                     waterSensorDrainDepthLabel.textColor = [UIColor colorWithHexString:[NSString stringWithFormat:@"%@",[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"color"]]];
                     waterSensorDrainDepthLabel.backgroundColor = [UIColor clearColor];
-                    //                    [waterSensorDrainDepthLabel sizeToFit];
                     [columnView addSubview:waterSensorDrainDepthLabel];
                     
-                    
-                    
-                    //                    if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
-                    //                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_below75_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-                    //                    }
-                    //                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==2) {
-                    //                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_75-90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-                    //                    }
-                    //                    else if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==3) {
-                    //                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_90_big.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-                    //                    }
-                    //                    else {
-                    //                        [waterLevelImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_undermaintenance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
-                    //                    }
-                    
+
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==3) {
                     
@@ -2089,6 +2050,7 @@
     
     self.view.backgroundColor = RGB(213, 213, 213);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.locationManager startUpdatingLocation];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeStarted:) name:@"UIMoviePlayerControllerDidEnterFullscreenNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(youTubeFinished:) name:@"UIMoviePlayerControllerDidExitFullscreenNotification" object:nil];

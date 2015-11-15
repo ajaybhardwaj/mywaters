@@ -655,6 +655,10 @@
         
         selectedFilterIndex = indexPath.row;
         
+        if (isShowingFilter) {
+            [self animateFilterTable];
+        }
+        
         if (indexPath.row==0) {
             
             NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"siteName" ascending:YES];
@@ -672,7 +676,7 @@
             //            [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDistance,nil]];
             [appDelegate.ABC_WATERS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
             
-            [self animateFilterTable];
+            
             [filterTableView reloadData];
             
             if (isShowingGrid) {
@@ -1077,6 +1081,12 @@
     listTabeView.hidden = YES;
     listTabeView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
+    
     
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -150, self.view.bounds.size.width, 90) style:UITableViewStylePlain];
     filterTableView.delegate = self;
@@ -1135,11 +1145,7 @@
                   forControlEvents:UIControlEventValueChanged];
     [listTabeView addSubview:self.refreshControl];
     
-    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:hideFilterButton];
-    hideFilterButton.hidden = YES;
+    
 }
 
 

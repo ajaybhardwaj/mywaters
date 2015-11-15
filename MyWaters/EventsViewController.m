@@ -677,11 +677,6 @@
     
     if (tableView==filterTableView) {
         
-        //        cell = [tableView dequeueReusableCellWithIdentifier:@"filterCells"];
-        //
-        //        if (cell==nil) {
-        //            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"filter
-        
         cell.backgroundColor = [UIColor blackColor];//RGB(247, 247, 247);
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, filterTableView.bounds.size.width-10, cell.bounds.size.height)];
@@ -859,6 +854,22 @@
         //        [cell.contentView addSubview:endDateLabel];
         //        [endDateLabel sizeToFit];
         
+        UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, startDateLabel.frame.origin.y+startDateLabel.bounds.size.height+5, eventsListingTableView.bounds.size.width-100, 20)];
+        distanceLabel.textColor = [UIColor blackColor];
+        if (isFiltered)
+            distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+        else
+            distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"distance"]];
+        distanceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+        distanceLabel.backgroundColor = [UIColor clearColor];
+        distanceLabel.textAlignment = NSTextAlignmentRight;
+        [cell.contentView addSubview:distanceLabel];
+        
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+            
+            distanceLabel.text = @"";
+        }
+        
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
@@ -922,6 +933,11 @@
     eventsListingTableView.backgroundView = nil;
     eventsListingTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
     
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -200, self.view.bounds.size.width, 128) style:UITableViewStylePlain];
     filterTableView.delegate = self;
@@ -973,12 +989,6 @@
                   forControlEvents:UIControlEventValueChanged];
     [eventsListingTableView addSubview:self.refreshControl];
     
-    
-    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:hideFilterButton];
-    hideFilterButton.hidden = YES;
     
     [self fetchEventsListing];
     

@@ -525,6 +525,12 @@
     tableDataSource = [[NSMutableArray alloc] init];
     
     
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
+    
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -456, self.view.bounds.size.width, 276) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
@@ -559,11 +565,7 @@
                   forControlEvents:UIControlEventValueChanged];
     [notificationsTable addSubview:self.refreshControl];
     
-    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:hideFilterButton];
-    hideFilterButton.hidden = YES;
+    
 }
 
 - (void) viewWillAppear:(BOOL)animated {

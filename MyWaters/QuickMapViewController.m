@@ -198,8 +198,8 @@
 
 - (void) fetchCCTVListing {
     
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[CommonFunctions getAppVersionNumber], nil];
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -465,23 +465,22 @@
                     percentageValue = @"Drain 0%-75% full";
                     waterLevelTypeValue = @"Low Flood Risk";
                 }
-                else if (selectedFilterIndex==2) {
+                else if (selectedFilterIndex == 2) {
                     percentageValue = @"Drain 75%-90% full";
                     waterLevelTypeValue = @"Moderate Flood Risk";
                 }
-                else if (selectedFilterIndex==3) {
+                else if (selectedFilterIndex == 3) {
                     percentageValue = @"Drain 90%-100% full";
                     waterLevelTypeValue = @"High Flood Risk";
                 }
-                else if (selectedFilterIndex==4) {
+                else if (selectedFilterIndex == 4) {
                     percentageValue = @"Station under maintenance";
                     waterLevelTypeValue = @"Under Maintenance";
                 }
                 
                 wlsAnnotation = [[WLSMapAnnotations alloc] initWithTitle:[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"] AndCoordinates:annotationRegion.center type:@"WLS" tag:i+1 subtitleValue:[NSString stringWithFormat:@"%@\n%@\n%@",percentageValue,waterLevelTypeValue,updateTimeString] level:[[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevelType"] intValue] image:nil]; //Setting Sample location Annotation
                 wlsAnnotation.annotationTitle = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"];
-//                wlsAnnotation.annotationSubtitle = [NSString stringWithFormat:@"%@\n%@",percentageValue,waterLevelTypeValue];
-                wlsAnnotation.annotationSubtitle = [NSString stringWithFormat:@"%@\n%@\n%@",percentageValue,waterLevelTypeValue,updateTimeString];//[NSString stringWithFormat:@"%@",percentageValue];
+                wlsAnnotation.annotationSubtitle = [NSString stringWithFormat:@"%@\n%@\n%@",percentageValue,waterLevelTypeValue,updateTimeString];
                 wlsAnnotation.waterLevel = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"waterLevelType"] intValue];
                 wlsAnnotation.annotationType = @"WLS";
                 wlsAnnotation.annotationTag = i+1;
@@ -588,7 +587,7 @@
         
         isShowingHelpScreen = NO;
         [btnHints setImage:[UIImage imageNamed:@"icn_helpicon"] forState:UIControlStateNormal];
- 
+        stack.userInteractionEnabled = YES;
         helpScreenImageView.hidden = YES;
         locationHelpLabel.hidden = YES;
         menuHelpLabel.hidden = YES;
@@ -605,7 +604,7 @@
         isShowingHelpScreen = YES;
         [btnHints setImage:[UIImage imageNamed:@"icn_help_closebutton"] forState:UIControlStateNormal];
         
-        
+        stack.userInteractionEnabled = NO;
         helpScreenImageView.hidden = NO;
         locationHelpLabel.hidden = NO;
         menuHelpLabel.hidden = NO;
@@ -889,12 +888,12 @@
         
         [quickMap removeAnnotations: wlsAnnotationsArray];
         
-        if (appDelegate.WLS_LISTING_ARRAY.count!=0) {
-            [self generateWLSAnnotations];
-        }
-        else {
+//        if (appDelegate.WLS_LISTING_ARRAY.count!=0) {
+//            [self generateWLSAnnotations];
+//        }
+//        else {
             [self fetchWLSListing];
-        }
+//        }
     }
 }
 
@@ -1083,7 +1082,7 @@
     }
     else if ([view.annotation isKindOfClass:[FloodMapAnnotations class]]) {
         
-        FloodMapAnnotations *temp = (FloodMapAnnotations*)view.annotation;
+        FloodMapAnnotations *tempFlood = (FloodMapAnnotations*)view.annotation;
         
         [calloutView removeFromSuperview];
         
@@ -1117,9 +1116,10 @@
 //        [calloutView addSubview:distanceImageView];
         
 //        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 130, 40)];
+        
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 130, 40)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
-        subTitleLabel.text = temp.annotationSubtitle;
+        subTitleLabel.text = tempFlood.annotationSubtitle;
         subTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
         subTitleLabel.numberOfLines = 0;
         
@@ -1135,7 +1135,7 @@
         newCalloutFrame.size.height = subTitleLabel.bounds.size.height+20;//expectedDescriptionLabelSize.height;
         calloutView.frame = newCalloutFrame;
         
-        CGPoint p = [quickMap convertCoordinate:temp.coordinate toPointToView:quickMap];
+        CGPoint p = [quickMap convertCoordinate:tempFlood.coordinate toPointToView:quickMap];
         CGRect frame = CGRectMake(p.x - (calloutView.frame.size.width/2 - 30),
                                   p.y- (calloutView.frame.size.height / 2 + 30),
                                   calloutView.frame.size.width,
@@ -1148,7 +1148,7 @@
     }
     else if ([view.annotation isKindOfClass:[CCTVMapAnnoations class]]) {
         
-        CCTVMapAnnoations *temp = (CCTVMapAnnoations*)view.annotation;
+        CCTVMapAnnoations *tempCCTV = (CCTVMapAnnoations*)view.annotation;
         
         [calloutView removeFromSuperview];
         
@@ -1167,7 +1167,7 @@
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 10, 110, 50)];
         titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.text = temp.annotationTitle;
+        titleLabel.text = tempCCTV.annotationTitle;
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.numberOfLines = 0;
         
@@ -1183,7 +1183,7 @@
         
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 120, 20)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
-        subTitleLabel.text = temp.annotationSubtitle;
+        subTitleLabel.text = tempCCTV.annotationSubtitle;
         subTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
         subTitleLabel.numberOfLines = 0;
 
@@ -1197,27 +1197,27 @@
         newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+20;//expectedDescriptionLabelSize.height;
         calloutView.frame = newCalloutFrame;
         
-        CGPoint p = [quickMap convertCoordinate:temp.coordinate toPointToView:quickMap];
+        CGPoint p = [quickMap convertCoordinate:tempCCTV.coordinate toPointToView:quickMap];
         CGRect frame = CGRectMake(p.x - (calloutView.frame.size.width/2 - 30),
-                                  p.y- (calloutView.frame.size.height / 2 + 30),
+                                  p.y - (calloutView.frame.size.height/2 + 30),
                                   calloutView.frame.size.width,
                                   calloutView.frame.size.height);
         
         calloutView.frame = frame;
+
         
-        
-        UIButton *overlayButon = [UIButton buttonWithType:UIButtonTypeCustom];
-        overlayButon.frame = CGRectMake(0, 0, calloutView.bounds.size.width, calloutView.bounds.size.height);
-        overlayButon.tag = temp.annotationTag;
-        [overlayButon addTarget:self action:@selector(handleCCTVCalloutTap:) forControlEvents:UIControlEventTouchUpInside];
-        [calloutView addSubview:overlayButon];
+        cctvCalloutOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        cctvCalloutOverlayButton.frame = CGRectMake(0, 0, calloutView.bounds.size.width, calloutView.bounds.size.height);
+        cctvCalloutOverlayButton.tag = tempCCTV.annotationTag;
+        [cctvCalloutOverlayButton addTarget:self action:@selector(handleCCTVCalloutTap:) forControlEvents:UIControlEventTouchUpInside];
+        [calloutView addSubview:cctvCalloutOverlayButton];
         
         [quickMap addSubview:calloutView];
         
     }
     else if ([view.annotation isKindOfClass:[FeedbackMapAnnotations class]]) {
         
-        FeedbackMapAnnotations *temp = (FeedbackMapAnnotations*) view.annotation;
+        FeedbackMapAnnotations *tempUserFeedback = (FeedbackMapAnnotations*) view.annotation;
         
         [calloutView removeFromSuperview];
         
@@ -1233,7 +1233,7 @@
         UIImageView *locationNameImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 70, 70)];
         [calloutView addSubview:locationNameImageView];
         
-        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,temp.annotationImageName];
+        NSString *imageURLString = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,tempUserFeedback.annotationImageName];
         
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         activityIndicator.center = CGPointMake(locationNameImageView.bounds.size.width/2, locationNameImageView.bounds.size.height/2);
@@ -1253,7 +1253,7 @@
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, 160, 50)];
         titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.text = temp.annotationTitle;
+        titleLabel.text = tempUserFeedback.annotationTitle;
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.numberOfLines = 0;
         
@@ -1265,7 +1265,7 @@
         
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 160, 40)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
-        subTitleLabel.text = temp.annotationSubtitle;
+        subTitleLabel.text = tempUserFeedback.annotationSubtitle;
         subTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
         subTitleLabel.numberOfLines = 0;
 
@@ -1281,7 +1281,7 @@
         newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+20;//expectedDescriptionLabelSize.height;
         calloutView.frame = newCalloutFrame;
         
-        CGPoint p = [quickMap convertCoordinate:temp.coordinate toPointToView:quickMap];
+        CGPoint p = [quickMap convertCoordinate:tempUserFeedback.coordinate toPointToView:quickMap];
         CGRect frame = CGRectMake(p.x - (calloutView.frame.size.width/2 - 30),
                                   p.y- (calloutView.frame.size.height / 2 + 30),
                                   calloutView.frame.size.width,
@@ -1294,7 +1294,7 @@
     }
     else if ([view.annotation isKindOfClass:[WLSMapAnnotations class]]) {
         
-        WLSMapAnnotations *temp = (WLSMapAnnotations*)view.annotation;
+        WLSMapAnnotations *tempWls = (WLSMapAnnotations*)view.annotation;
         
         [calloutView removeFromSuperview];
         
@@ -1310,7 +1310,7 @@
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 130, 50)];
         titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.text = temp.annotationTitle;
+        titleLabel.text = tempWls.annotationTitle;
         titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         titleLabel.numberOfLines = 0;
         
@@ -1327,7 +1327,7 @@
 //        UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 110, 40)];
         UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, 130, 40)];
         subTitleLabel.backgroundColor = [UIColor clearColor];
-        subTitleLabel.text = temp.annotationSubtitle;
+        subTitleLabel.text = tempWls.annotationSubtitle;
         subTitleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
         subTitleLabel.numberOfLines = 0;
         
@@ -1365,7 +1365,7 @@
         newCalloutFrame.size.height = titleLabel.bounds.size.height+subTitleLabel.bounds.size.height+30;//expectedDescriptionLabelSize.height;
         calloutView.frame = newCalloutFrame;
         
-        CGPoint p = [quickMap convertCoordinate:temp.coordinate toPointToView:quickMap];
+        CGPoint p = [quickMap convertCoordinate:tempWls.coordinate toPointToView:quickMap];
         CGRect frame = CGRectMake(p.x - (calloutView.frame.size.width/2 - 30),
                                   p.y- (calloutView.frame.size.height / 2 + 30),
                                   calloutView.frame.size.width,
@@ -1374,11 +1374,11 @@
         calloutView.frame = frame;
         
         
-        UIButton *overlayButon = [UIButton buttonWithType:UIButtonTypeCustom];
-        overlayButon.frame = CGRectMake(0, 0, calloutView.bounds.size.width, calloutView.bounds.size.height);
-        overlayButon.tag = temp.annotationTag;
-        [overlayButon addTarget:self action:@selector(handleWLSCalloutTap:) forControlEvents:UIControlEventTouchUpInside];
-        [calloutView addSubview:overlayButon];
+        wlsCalloutOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        wlsCalloutOverlayButton.frame = CGRectMake(0, 0, calloutView.bounds.size.width, calloutView.bounds.size.height);
+        wlsCalloutOverlayButton.tag = tempWls.annotationTag;
+        [wlsCalloutOverlayButton addTarget:self action:@selector(handleWLSCalloutTap:) forControlEvents:UIControlEventTouchUpInside];
+        [calloutView addSubview:wlsCalloutOverlayButton];
         
         [quickMap addSubview:calloutView];
         
@@ -1481,8 +1481,8 @@
             
             btnfilter.hidden = NO;
             
-            if (appDelegate.WLS_LISTING_ARRAY.count==0) {
-                
+//            if (appDelegate.WLS_LISTING_ARRAY.count==0) {
+            
                 isLoadingFloods = NO;
                 isLoadingWLS = YES;
                 isLoadingCCTV = NO;
@@ -1492,11 +1492,11 @@
                 [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
                 
                 [self fetchWLSListing];
-            }
-            else {
-                
-                [self generateWLSAnnotations];
-            }
+//            }
+//            else {
+//                
+//                [self generateWLSAnnotations];
+//            }
             
             [wlsStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         }

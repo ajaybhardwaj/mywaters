@@ -87,6 +87,7 @@
 		FE714D811BD62CAD00DD78F6 /* icn_trash@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE714D801BD62CAD00DD78F6 /* icn_trash@3x.png */; };
 		FE73E5681AC11B84007B2179 /* circle_background@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E5661AC11B84007B2179 /* circle_background@3x.png */; };
 		FE73E5691AC11B84007B2179 /* icn_info_purple@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE73E5671AC11B84007B2179 /* icn_info_purple@3x.png */; };
+		FE76B43E1BF82DAB00250067 /* SAMTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76B43D1BF82DAB00250067 /* SAMTextView.m */; };
 		FE78C2FB1B0ED75500D909FD /* default_no_image.png in Resources */ = {isa = PBXBuildFile; fileRef = FE78C2FA1B0ED75500D909FD /* default_no_image.png */; };
 		FE78C3031B0F17E900D909FD /* icn_menu@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE78C3021B0F17E900D909FD /* icn_menu@3x.png */; };
 		FE7C6CBE1AC8FA4C00912145 /* AboutMyWatersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7C6CBD1AC8FA4C00912145 /* AboutMyWatersViewController.m */; };
@@ -706,6 +707,8 @@
 		FE714D801BD62CAD00DD78F6 /* icn_trash@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_trash@3x.png"; sourceTree = "<group>"; };
 		FE73E5661AC11B84007B2179 /* circle_background@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "circle_background@3x.png"; sourceTree = "<group>"; };
 		FE73E5671AC11B84007B2179 /* icn_info_purple@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_info_purple@3x.png"; sourceTree = "<group>"; };
+		FE76B43C1BF82DAB00250067 /* SAMTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAMTextView.h; sourceTree = "<group>"; };
+		FE76B43D1BF82DAB00250067 /* SAMTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMTextView.m; sourceTree = "<group>"; };
 		FE78C2FA1B0ED75500D909FD /* default_no_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = default_no_image.png; sourceTree = "<group>"; };
 		FE78C3021B0F17E900D909FD /* icn_menu@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_menu@3x.png"; sourceTree = "<group>"; };
 		FE7C6CBC1AC8FA4C00912145 /* AboutMyWatersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutMyWatersViewController.h; sourceTree = "<group>"; };
@@ -1600,6 +1603,15 @@
 			name = Profile;
 			sourceTree = "<group>";
 		};
+		FE76B43B1BF82D9800250067 /* Custom TextView */ = {
+			isa = PBXGroup;
+			children = (
+				FE76B43C1BF82DAB00250067 /* SAMTextView.h */,
+				FE76B43D1BF82DAB00250067 /* SAMTextView.m */,
+			);
+			name = "Custom TextView";
+			sourceTree = "<group>";
+		};
 		FE822B501BD5E409007845E7 /* Tips */ = {
 			isa = PBXGroup;
 			children = (
@@ -1907,6 +1919,7 @@
 		FEA730431A7733BD00D274A6 /* ThirdPartyLibs */ = {
 			isa = PBXGroup;
 			children = (
+				FE76B43B1BF82D9800250067 /* Custom TextView */,
 				FE57505F1BDE504C0068E4F6 /* Custom Alert */,
 				FE36EB871BDDD0A40012F3C3 /* CMPopTipView */,
 				FE41D5021BDD2C40008834EF /* FGallery */,
@@ -3289,6 +3302,7 @@
 				FE82BF431BDFB17F005A2BF3 /* FloodMapAnnotations.m in Sources */,
 				FECE02F11BDC124700AA6A2C /* AKETooltip.m in Sources */,
 				FEFB4CCB1BB931330040F105 /* OTPViewController.m in Sources */,
+				FE76B43E1BF82DAB00250067 /* SAMTextView.m in Sources */,
 				FEC84B6A1BE749CD00269BC1 /* SWTableViewCell.m in Sources */,
 				FED999B81BAAAC65007BEE55 /* UIImageView+WebCache.m in Sources */,
 				FED999B71BAAAC65007BEE55 /* UIImageView+HighlightedWebCache.m in Sources */,
@@ -3395,8 +3409,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3421,7 +3435,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3443,8 +3457,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -3462,7 +3476,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3474,8 +3488,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3487,7 +3501,7 @@
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -3498,8 +3512,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3511,7 +3525,7 @@
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
@@ -3521,8 +3535,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3536,7 +3550,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Debug;
@@ -3546,8 +3560,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3557,7 +3571,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Release;

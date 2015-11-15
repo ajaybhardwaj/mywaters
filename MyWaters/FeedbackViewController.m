@@ -19,6 +19,15 @@
 @synthesize tempLocationString,tempCommentString,tempNameString,tempPhoneString,tempEmailString;
 @synthesize isReportingForChatter,chatterID,chatterText,isEditingComment;
 
+
+//*************** Method To Pop View Controller To Parent Controller
+
+- (void) pop2Dismiss:(id) sender {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
 //*************** Method To Show UIActionSheet
 
 - (void) showActionSheet {
@@ -74,16 +83,43 @@
          }
          
          CLPlacemark *placemark = [placemarks objectAtIndex:0];
-//         DebugLog(@"placemark --  %@",placemark);
-//         DebugLog(@"placemark.ISOcountryCode %@",placemark.ISOcountryCode);
-//         DebugLog(@"locality %@",placemark.locality);
-//         DebugLog(@"postalCode %@",placemark.postalCode);
+         //         DebugLog(@"placemark --  %@",placemark);
+         //         DebugLog(@"placemark.ISOcountryCode %@",placemark.ISOcountryCode);
+         //         DebugLog(@"locality %@",placemark.locality);
+         //         DebugLog(@"postalCode %@",placemark.postalCode);
+         
+         NSString *subThoroughFareString,*thoroughFareString,*localityString;
+         if (placemark.subThoroughfare != (id)[NSNull null] && [placemark.subThoroughfare length] !=0) {
+             subThoroughFareString = placemark.subThoroughfare;
+         }
+         else {
+             subThoroughFareString = @"";
+         }
+         if (placemark.thoroughfare != (id)[NSNull null] && [placemark.thoroughfare length] !=0) {
+             thoroughFareString = placemark.thoroughfare;
+         }
+         else {
+             thoroughFareString = @"";
+         }
+         if (placemark.locality != (id)[NSNull null] && [placemark.locality length] !=0) {
+             localityString = placemark.locality;
+         }
+         else {
+             localityString = @"";
+         }
+         //         if (placemark.postalCode != (id)[NSNull null] && [placemark.postalCode length] !=0) {
+         //             postalString = placemark.postalCode;
+         //         }
+         //         else {
+         //             postalString = @"";
+         //         }
          
          if (!tempLocationString)
-             tempLocationString = [[NSString alloc] initWithFormat:@"%@ %@, %@ - %@",placemark.subThoroughfare,placemark.thoroughfare,placemark.locality,placemark.postalCode];
+             tempLocationString = [[NSString alloc] initWithFormat:@"%@ %@, %@",subThoroughFareString,thoroughFareString,localityString];
          else
-             tempLocationString = [NSString stringWithFormat:@"%@ %@, %@ - %@",placemark.subThoroughfare,placemark.thoroughfare,placemark.locality,placemark.postalCode];
-         locationField.text = [NSString stringWithFormat:@"%@ %@, %@ - %@",placemark.subThoroughfare,placemark.thoroughfare,placemark.locality,placemark.postalCode];
+             tempLocationString = [NSString stringWithFormat:@"%@ %@, %@",subThoroughFareString,thoroughFareString,localityString];
+         
+         locationField.text = [NSString stringWithFormat:@"%@ %@, %@",subThoroughFareString,thoroughFareString,localityString];
      }];
 }
 
@@ -205,10 +241,6 @@
     else {
         [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
-    //    }
-    //    else {
-    //        [CommonFunctions showAlertView:nil title:nil msg:@"Please login to submit the feedback." cancel:@"OK" otherButton:nil];
-    //    }
 }
 
 
@@ -323,6 +355,32 @@
 }
 
 
+//*************** Method For Removing Key Pads
+
+- (void) hideKeyPads {
+    
+    hideKeyPadsButton.hidden = YES;
+    
+    [commentField resignFirstResponder];
+    [nameField resignFirstResponder];
+    [locationField resignFirstResponder];
+    [phoneField resignFirstResponder];
+    [emailField resignFirstResponder];
+}
+
+
+
+//*************** Method To Detect Touch In UITextView
+
+-(void) handleSingleTap:(UITapGestureRecognizer *)gesture {
+    
+    hideKeyPadsButton.hidden = NO;
+    [commentField becomeFirstResponder];
+}
+
+
+
+
 # pragma mark - UIAlertViewDelegate Methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -346,12 +404,14 @@
     [CommonFunctions dismissGlobalHUD];
     //    [appDelegate.hud hide:YES];
     
+    [backgroundScrollView setContentOffset:CGPointZero animated:NO];
+    
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
         [CommonFunctions showAlertView:self title:[[responseString JSONValue] objectForKey:@"Message"] msg:nil cancel:@"OK" otherButton:nil];
         
         isFeedbackImageAvailable = NO;
-        [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/feedback_table_header.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_feedback_new.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         commentField.text = @"";
         emailField.text = @"";
         phoneField.text = @"";
@@ -584,18 +644,18 @@
         
         if (indexPath.row==0) {
             
-            commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, 120)];
+            commentField = [[SAMTextView alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, 120)];
             commentField.returnKeyType = UIReturnKeyDefault;
             commentField.delegate = self;
             commentField.text = @" Comments *";
             commentField.textColor = [UIColor lightGrayColor];
             commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
             commentField.backgroundColor = [UIColor clearColor];
-            [commentField setUserInteractionEnabled:YES];
-            [commentField setScrollEnabled:YES];
-            [commentField setSelectedRange:NSMakeRange(0, [[commentField textStorage] length])];
-            [commentField insertText:@""];
-            [commentField setText:@""];
+            //            [commentField setUserInteractionEnabled:YES];
+            //            [commentField setScrollEnabled:YES];
+            //            [commentField setSelectedRange:NSMakeRange(0, [[commentField textStorage] length])];
+            //            [commentField insertText:@""];
+            //            [commentField setText:@""];
             
             [cell.contentView addSubview:commentField];
             if ([chatterText length]!=0) {
@@ -719,7 +779,7 @@
         }
         else if (indexPath.row==1) {
             
-            commentField = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, 120)];
+            commentField = [[SAMTextView alloc] initWithFrame:CGRectMake(0, 0, feedbackTableView.bounds.size.width, 120)];
             commentField.returnKeyType = UIReturnKeyDefault;
             commentField.delegate = self;
             commentField.text = @" Comments *";
@@ -727,6 +787,12 @@
             commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
             commentField.backgroundColor = [UIColor clearColor];
             [cell.contentView addSubview:commentField];
+            //            [commentField setUserInteractionEnabled:YES];
+            //            [commentField setScrollEnabled:YES];
+            //            [commentField setSelectedRange:NSMakeRange(0, [[commentField textStorage] length])];
+            //            [commentField insertText:@""];
+            //            [commentField setText:@""];
+            
             
             UIImageView *cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, commentField.bounds.size.height-0.5, feedbackTableView.bounds.size.width, 0.5)];
             [cellSeperator setBackgroundColor:[UIColor lightGrayColor]];
@@ -824,106 +890,40 @@
 }
 
 
-
 # pragma mark - UITextViewDelegate Methods
 
-- (BOOL)textViewShouldEndEditing:(UITextView *)textView{
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
     
-    //    [commentField resignFirstResponder];
-    if ([commentField.text length]!=0) {
-        if (!tempCommentString)
-            tempCommentString = [[NSString alloc] initWithFormat:@"%@",commentField.text];
-        else
-            tempCommentString = commentField.text;
-    }
+    hideKeyPadsButton.hidden = NO;
     return YES;
 }
-
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    
-    if([text isEqualToString:@"\n"]) {
-        //        [commentField resignFirstResponder];
-        if(commentField.text.length == 0){
-            commentField.textColor = [UIColor lightGrayColor];
-            //            commentField.text = @"Comments";
-            //            [commentField resignFirstResponder];
-        }
-        else {
-            commentField.text = [NSString stringWithFormat:@"%@\n",commentField.text];
-            commentField.textColor = [UIColor blackColor];
-        }
-        return NO;
-    }
-    
-    return YES;
-}
-
-
-- (BOOL) textViewShouldBeginEditing:(UITextView *)textView
-{
-    if ([tempCommentString length]==0) {
-        commentField.text = @"";
-        commentField.textColor = RGB(35, 35, 35);
-    }
-    
-//    CGPoint origin = textView.frame.origin;
-//    CGPoint point = [textView.superview convertPoint:origin toView:self.view];
-//    float navBarHeight = self.navigationController.navigationBar.frame.size.height;
-//    CGPoint offset = feedbackTableView.contentOffset;
-//    
-//    // Adjust the below value as you need
-//    offset.y += (point.y - navBarHeight -50);
-//    [feedbackTableView setContentOffset:offset animated:YES];
-    
-    return YES;
-}
-
--(void) textViewDidChange:(UITextView *)textView
-{
-    if(commentField.text.length == 0){
-        commentField.textColor = [UIColor lightGrayColor];
-        //        commentField.text = @"Comments";
-        [commentField resignFirstResponder];
-    }
-}
-
-
-- (void)textViewDidEndEditing:(UITextView *)textView {
-    
-    CGPoint offset;
-    offset.x = 0.0;
-    offset.y = 0.0;
-    [feedbackTableView setContentOffset:offset animated:YES];
-    
-    if ([commentField.text length]!=0) {
-        if (!tempCommentString)
-            tempCommentString = [[NSString alloc] initWithFormat:@"%@",commentField.text];
-        else
-            tempCommentString = commentField.text;
-    }
-}
-
 
 # pragma mark - UITextFieldDelegate Methods
 
-
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     
-    if (textField==locationField || textField==nameField || textField==phoneField || textField==emailField) {
-        
-        CGPoint origin = textField.frame.origin;
-        CGPoint point = [textField.superview convertPoint:origin toView:self.view];
-        float navBarHeight = self.navigationController.navigationBar.frame.size.height;
-        CGPoint offset = feedbackTableView.contentOffset;
-        
-        // Adjust the below value as you need
-        offset.y += (point.y - navBarHeight -50);
-        [feedbackTableView setContentOffset:offset animated:YES];
-    }
+    hideKeyPadsButton.hidden = NO;
+    
+    CGPoint origin = textField.frame.origin;
+    CGPoint point = [textField.superview convertPoint:origin toView:self.view];
+    float navBarHeight = self.navigationController.navigationBar.frame.size.height;
+    CGPoint offset = backgroundScrollView.contentOffset;
+    
+    // Adjust the below value as you need
+    offset.y += (point.y - navBarHeight -50);
+    [backgroundScrollView setContentOffset:offset animated:NO];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField  {
+    
+    CGPoint origin = textField.frame.origin;
+    CGPoint point = [textField.superview convertPoint:origin toView:self.view];
+    float navBarHeight = self.navigationController.navigationBar.frame.size.height;
+    CGPoint offset = backgroundScrollView.contentOffset;
+    
+    // Adjust the below value as you need
+    offset.y += (point.y - navBarHeight -50);
+    [backgroundScrollView setContentOffset:offset animated:NO];
     
     if (textField==nameField) {
         if ([nameField.text length]!=0) {
@@ -965,54 +965,34 @@
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
     fieldIndex = textField.tag;
-    [commentField resignFirstResponder];
+    //    [commentField resignFirstResponder];
+    hideKeyPadsButton.hidden = NO;
     
-    
-    if (isFloodSubmission) {
-        //        if (textField == feedbackTypeField || textField == commentField) {
-        if (textField == feedbackTypeField) {
-            selectedPickerIndex = 0;
-            [feedbackPickerView reloadComponent:0];
-            [self showPickerView];
-            return NO;
-        }
-        else {
-            return YES;
-        }
+    if (!tempCommentString) {
+        tempCommentString = [[NSString alloc] initWithFormat:@"%@",commentField.text];
     }
     else {
-        if (textField == feedbackTypeField) {
-            selectedPickerIndex = 0;
-            [feedbackPickerView reloadComponent:0];
-            [self showPickerView];
-            
-            return NO;
-        }
-        else {
-            return YES;
-        }
+        tempCommentString = commentField.text;
     }
     
-    
+    return YES;
 }
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
-    CGPoint offset;
-    offset.x = 0.0;
-    offset.y = 0.0;
-    [feedbackTableView setContentOffset:offset animated:YES];
+    hideKeyPadsButton.hidden = YES;
     [textField resignFirstResponder];
     return YES;
 }
 
 
-//*************** Method To Pop View Controller To Parent Controller
 
-- (void) pop2Dismiss:(id) sender {
+# pragma mark - UIGestureDelegate Methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     
-    [self.navigationController popViewControllerAnimated:YES];
+    return YES;
 }
 
 
@@ -1035,17 +1015,137 @@
     fieldIndex = 1;
     
     isFloodSubmission = NO;
-    feedbackTypeArray = [[NSArray alloc] initWithObjects:@"Dirty/Choked Drain",@"Flood Area Submission",@"Water Leak",@"Poor Water Pressure Quality",@"Reports Feeds",@"Sewer Choke/Overflow/Smell",@"Others", nil];
-    severityTypeArray = [[NSArray alloc] initWithObjects:@"Light",@"Heavy",@"Severe", nil];
+    //    feedbackTypeArray = [[NSArray alloc] initWithObjects:@"Dirty/Choked Drain",@"Flood Area Submission",@"Water Leak",@"Poor Water Pressure Quality",@"Reports Feeds",@"Sewer Choke/Overflow/Smell",@"Others", nil];
+    //    severityTypeArray = [[NSArray alloc] initWithObjects:@"Light",@"Heavy",@"Severe", nil];
     
-    feedbackTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-110) style:UITableViewStylePlain];
-    feedbackTableView.delegate = self;
-    feedbackTableView.dataSource = self;
-    [self.view addSubview:feedbackTableView];
-    feedbackTableView.backgroundColor = RGB(247, 247, 247);
-    feedbackTableView.backgroundView = nil;
-    feedbackTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    //    feedbackTableView.scrollEnabled = NO;
+    //    feedbackTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-110) style:UITableViewStylePlain];
+    //    feedbackTableView.delegate = self;
+    //    feedbackTableView.dataSource = self;
+    //    [self.view addSubview:feedbackTableView];
+    //    feedbackTableView.backgroundColor = RGB(247, 247, 247);
+    //    feedbackTableView.backgroundView = nil;
+    //    feedbackTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    
+    backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-114)];
+    backgroundScrollView.backgroundColor = RGB(247, 247, 247);
+    backgroundScrollView.showsHorizontalScrollIndicator = NO;
+    backgroundScrollView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:backgroundScrollView];
+    backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
+    backgroundScrollView.userInteractionEnabled = YES;
+    
+    
+    picUploadImageView =[[UIImageView alloc] initWithFrame:CGRectMake((backgroundScrollView.bounds.size.width/2)-50, 20, 100, 100)];
+    [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_feedback_new.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    [backgroundScrollView addSubview:picUploadImageView];
+    picUploadImageView.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showActionSheet)];
+    [picUploadImageView addGestureRecognizer:tap];
+    
+    
+    
+    locationField = [[UITextField alloc] initWithFrame:CGRectMake(10, picUploadImageView.frame.origin.y+picUploadImageView.bounds.size.height+30, backgroundScrollView.bounds.size.width-20, 40)];
+    locationField.textColor = RGB(35, 35, 35);
+    locationField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+    locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    locationField.leftViewMode = UITextFieldViewModeAlways;
+    locationField.borderStyle = UITextBorderStyleNone;
+    locationField.textAlignment=NSTextAlignmentLeft;
+    [locationField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    locationField.placeholder=@"Location *";
+    [backgroundScrollView addSubview:locationField];
+    locationField.backgroundColor = [UIColor clearColor];
+    [locationField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    locationField.delegate = self;
+    [locationField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    locationField.tag = 2;
+    
+    
+    UIButton *locationButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    locationButton.frame = CGRectMake(backgroundScrollView.bounds.size.width-30, picUploadImageView.frame.origin.y+picUploadImageView.bounds.size.height+40, 20, 20);
+    [locationButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [locationButton addTarget:self action:@selector(moveToLongPressUserLocationView) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundScrollView addSubview:locationButton];
+    
+    
+    commentField = [[SAMTextView alloc] initWithFrame:CGRectMake(10, locationField.frame.origin.y+locationField.bounds.size.height+10, backgroundScrollView.bounds.size.width-20, 120)];
+    commentField.returnKeyType = UIReturnKeyDefault;
+    commentField.placeholder = @"Enter comments here *";
+    commentField.textColor = [UIColor blackColor];
+    commentField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+    commentField.backgroundColor = [UIColor whiteColor];
+    commentField.layer.borderWidth = 1.0;
+    commentField.layer.cornerRadius = 5.0;
+    commentField.layer.borderColor = [[UIColor blackColor] CGColor];
+    commentField.layer.masksToBounds = YES;
+    [backgroundScrollView addSubview:commentField];
+    [commentField setUserInteractionEnabled:YES];
+    [commentField setScrollEnabled:YES];
+    commentField.showsVerticalScrollIndicator = YES;
+    
+    UITapGestureRecognizer *commentTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+    commentTapGesture.delegate = self;
+    [commentField addGestureRecognizer:commentTapGesture];
+    
+    
+    
+    nameField = [[UITextField alloc] initWithFrame:CGRectMake(10, commentField.frame.origin.y+commentField.bounds.size.height+10, backgroundScrollView.bounds.size.width-20, 40)];
+    nameField.textColor = RGB(35, 35, 35);
+    nameField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+    nameField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    nameField.leftViewMode = UITextFieldViewModeAlways;
+    nameField.borderStyle = UITextBorderStyleNone;
+    nameField.textAlignment=NSTextAlignmentLeft;
+    [nameField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    nameField.placeholder=@"Name *";
+    [backgroundScrollView addSubview:nameField];
+    nameField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    nameField.backgroundColor = [UIColor clearColor];
+    [nameField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    nameField.delegate = self;
+    [nameField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    nameField.tag = 4;
+    nameField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userName"];
+    
+    phoneField = [[UITextField alloc] initWithFrame:CGRectMake(10, nameField.frame.origin.y+nameField.bounds.size.height+10, backgroundScrollView.bounds.size.width-20, 40)];
+    phoneField.textColor = RGB(35, 35, 35);
+    phoneField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+    phoneField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    phoneField.leftViewMode = UITextFieldViewModeAlways;
+    phoneField.borderStyle = UITextBorderStyleNone;
+    phoneField.textAlignment=NSTextAlignmentLeft;
+    [phoneField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    phoneField.placeholder=@"Contact No.";
+    [backgroundScrollView addSubview:phoneField];
+    phoneField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    phoneField.backgroundColor = [UIColor clearColor];
+    [phoneField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    phoneField.delegate = self;
+    phoneField.keyboardType = UIKeyboardTypeNumberPad;
+    [phoneField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    phoneField.tag = 5;
+    
+    
+    emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, phoneField.frame.origin.y+phoneField.bounds.size.height+10, backgroundScrollView.bounds.size.width-20, 40)];
+    emailField.textColor = RGB(35, 35, 35);
+    emailField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
+    emailField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
+    emailField.leftViewMode = UITextFieldViewModeAlways;
+    emailField.borderStyle = UITextBorderStyleNone;
+    emailField.textAlignment=NSTextAlignmentLeft;
+    [emailField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+    emailField.placeholder=@"Email";
+    [backgroundScrollView addSubview:emailField];
+    emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    emailField.backgroundColor = [UIColor clearColor];
+    [emailField setBackground:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/textfield_bg.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    emailField.delegate = self;
+    [emailField setValue:[UIColor lightGrayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    emailField.tag = 5;
+    emailField.keyboardType = UIKeyboardTypeEmailAddress;
+    emailField.text = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userEmail"];
     
     
     UIButton *submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -1053,35 +1153,42 @@
     [submitButton setBackgroundColor:RGB(82, 82, 82)];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
-    submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:18];
+    submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:17];
     [submitButton addTarget:self action:@selector(submitUserFeedback) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:submitButton];
     
-    if (!isReportingForChatter)
-        [self createFeedbackTableHeader];
+    hideKeyPadsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideKeyPadsButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideKeyPadsButton addTarget:self action:@selector(hideKeyPads) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundScrollView addSubview:hideKeyPadsButton];
+    [backgroundScrollView sendSubviewToBack:hideKeyPadsButton];
+    hideKeyPadsButton.hidden = YES;
+    
+    //    if (!isReportingForChatter)
+    //        [self createFeedbackTableHeader];
     
     
-//    pickerbackground = [[UIView alloc]initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, 220)];
-//    
-//    UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 40)];
-//    toolBar.barStyle = UIBarStyleBlackOpaque;
-//    
-//    UIBarButtonItem *cancelPicker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelPickerView)];
-//    UIBarButtonItem *selectPicker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(selectPickerViewValue)];
-//    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-//    
-//    [toolBar setItems:[NSArray arrayWithObjects:cancelPicker,flexibleSpace,selectPicker, nil]];
-//    [pickerbackground addSubview:toolBar];
-//    
-//    
-//    feedbackPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 40, self.view.bounds.size.width, 180)];
-//    feedbackPickerView.delegate=self;
-//    feedbackPickerView.dataSource=self;
-//    feedbackPickerView.backgroundColor = RGB(247, 247, 247);
-//    feedbackPickerView.showsSelectionIndicator=YES;
-//    
-//    [pickerbackground addSubview:feedbackPickerView];
-//    [appDelegate.window addSubview:pickerbackground];
+    //    pickerbackground = [[UIView alloc]initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, 220)];
+    //
+    //    UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 40)];
+    //    toolBar.barStyle = UIBarStyleBlackOpaque;
+    //
+    //    UIBarButtonItem *cancelPicker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelPickerView)];
+    //    UIBarButtonItem *selectPicker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(selectPickerViewValue)];
+    //    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+    //
+    //    [toolBar setItems:[NSArray arrayWithObjects:cancelPicker,flexibleSpace,selectPicker, nil]];
+    //    [pickerbackground addSubview:toolBar];
+    //
+    //
+    //    feedbackPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 40, self.view.bounds.size.width, 180)];
+    //    feedbackPickerView.delegate=self;
+    //    feedbackPickerView.dataSource=self;
+    //    feedbackPickerView.backgroundColor = RGB(247, 247, 247);
+    //    feedbackPickerView.showsSelectionIndicator=YES;
+    //
+    //    [pickerbackground addSubview:feedbackPickerView];
+    //    [appDelegate.window addSubview:pickerbackground];
     
 }
 

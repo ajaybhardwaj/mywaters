@@ -109,10 +109,11 @@
 
 - (void) fetchCCTVListing {
     
-    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
+//    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"12345",[CommonFunctions getAppVersionNumber], nil];
 
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
@@ -424,10 +425,10 @@
         fullImageScrollView.frame = CGRectMake(-80, 80, self.view.bounds.size.height, self.view.bounds.size.width);
     }
     else if (IS_IPHONE_6P) {
-        fullImageScrollView.frame = CGRectMake(-162, 162, self.view.bounds.size.height, self.view.bounds.size.width);
+        fullImageScrollView.frame = CGRectMake(-161, 161, self.view.bounds.size.height, self.view.bounds.size.width);
     }
     else if (IS_IPHONE_6) {
-        fullImageScrollView.frame = CGRectMake(-147, 147, self.view.bounds.size.height, self.view.bounds.size.width);
+        fullImageScrollView.frame = CGRectMake(-146, 146, self.view.bounds.size.height, self.view.bounds.size.width);
     }
     else {
         fullImageScrollView.frame = CGRectMake(-124, 124, self.view.bounds.size.height, self.view.bounds.size.width);
@@ -584,12 +585,12 @@
         isFiltered = YES;
         [filterDataSource removeAllObjects];
         
-        for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
+        for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
             
-            NSRange nameRange = [[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"Name"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            NSRange nameRange = [[[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"Name"] rangeOfString:text options:NSCaseInsensitiveSearch];
             if(nameRange.location != NSNotFound)
             {
-                [filterDataSource addObject:[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i]];
+                [filterDataSource addObject:[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
             }
         }
     }
@@ -635,10 +636,10 @@
             //            cctvPageCount = cctvPageCount + 1;
             //            if (appDelegate.CCTV_LISTING_ARRAY.count==0) {
             
-            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
-                [appDelegate.CCTV_LISTING_ARRAY removeAllObjects];
+            if (appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW.count!=0)
+                [appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW removeAllObjects];
             
-            [appDelegate.CCTV_LISTING_ARRAY setArray:tempArray];
+            [appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW setArray:tempArray];
             
             CLLocationCoordinate2D currentLocation;
 //            currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
@@ -647,9 +648,9 @@
             currentLocation.longitude = longValue;
             
             
-            for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY count];idx++) {
+            for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW count];idx++) {
                 
-                NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY[idx] mutableCopy];
+                NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] mutableCopy];
                 
                 CLLocationCoordinate2D desinationLocation;
                 desinationLocation.latitude = [dict[@"Lat"] doubleValue];
@@ -658,7 +659,7 @@
                 DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
                 
                 dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
-                appDelegate.CCTV_LISTING_ARRAY[idx] = dict;
+                appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] = dict;
                 
             }
             
@@ -674,17 +675,17 @@
                     return NSOrderedSame;
             }];
             
-            [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+            [appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
             
             if (!tempNearByArray) {
                 tempNearByArray = [[NSMutableArray alloc] init];
             }
             int count = 0;
 
-            for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
-                if (![[[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"ID"] isEqualToString:cctvID]) {
+            for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
+                if (![[[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"ID"] isEqualToString:cctvID]) {
                     if (count!=3) {
-                        [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i]];
+                        [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                         count++;
                     }
                     else {
@@ -809,9 +810,9 @@
         currentLocation.longitude = longValue;
         
         
-        for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY count];idx++) {
+        for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW count];idx++) {
             
-            NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY[idx] mutableCopy];
+            NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] mutableCopy];
             
             CLLocationCoordinate2D desinationLocation;
             desinationLocation.latitude = [dict[@"Lat"] doubleValue];
@@ -820,7 +821,7 @@
             DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
             
             dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
-            appDelegate.CCTV_LISTING_ARRAY[idx] = dict;
+            appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] = dict;
             
         }
         
@@ -836,7 +837,7 @@
                 return NSOrderedSame;
         }];
         
-        [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        [appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
         
         int count = 0;
         [tempNearByArray removeAllObjects];
@@ -844,10 +845,10 @@
         if (!tempNearByArray) {
             tempNearByArray = [[NSMutableArray alloc] init];
         }
-        for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
-            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"ID"] != cctvID) {
+        for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
+            if ([[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"ID"] != cctvID) {
                 if (count!=3) {
-                    [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i]];
+                    [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                     count++;
                 }
                 else {
@@ -875,9 +876,9 @@
         currentLocation.longitude = longValue;
         
         
-        for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY count];idx++) {
+        for (int idx = 0; idx<[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW count];idx++) {
             
-            NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY[idx] mutableCopy];
+            NSMutableDictionary *dict = [appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] mutableCopy];
             
             CLLocationCoordinate2D desinationLocation;
             desinationLocation.latitude = [dict[@"Lat"] doubleValue];
@@ -886,7 +887,7 @@
             DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
             
             dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
-            appDelegate.CCTV_LISTING_ARRAY[idx] = dict;
+            appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] = dict;
             
         }
         
@@ -902,7 +903,7 @@
                 return NSOrderedSame;
         }];
         
-        [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        [appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
         
         int count = 0;
         [tempNearByArray removeAllObjects];
@@ -910,10 +911,10 @@
         if (!tempNearByArray) {
             tempNearByArray = [[NSMutableArray alloc] init];
         }
-        for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY.count; i++) {
-            if ([[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i] objectForKey:@"ID"] != cctvID) {
+        for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
+            if ([[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"ID"] != cctvID) {
                 if (count!=3) {
-                    [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY objectAtIndex:i]];
+                    [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                     count++;
                 }
                 else {

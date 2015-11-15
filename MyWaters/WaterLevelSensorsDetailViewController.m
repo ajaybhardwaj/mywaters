@@ -91,7 +91,7 @@
     dropDownBg.center = pos;
     [UIView commitAnimations];
     
-    locationField.text = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:pickerSelectedIndex] objectForKey:@"name"];
+    locationField.text = [[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:pickerSelectedIndex] objectForKey:@"name"];
     alertOptionsView.alpha = 1.0;
 }
 
@@ -184,7 +184,7 @@
 
 - (void) fetchWLSListing {
     
-    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+//    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
     
     isSubscribingForAlert = NO;
     
@@ -880,12 +880,12 @@
         isFiltered = YES;
         [filterDataSource removeAllObjects];
         
-        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
+        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
             
-            NSRange nameRange = [[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"name"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            NSRange nameRange = [[[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"name"] rangeOfString:text options:NSCaseInsensitiveSearch];
             if(nameRange.location != NSNotFound)
             {
-                [filterDataSource addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+                [filterDataSource addObject:[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
             }
         }
     }
@@ -936,7 +936,7 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
     
-    return appDelegate.WLS_LISTING_ARRAY.count;
+    return appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW.count;
 }
 
 
@@ -948,7 +948,7 @@
     sitesLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:17.0];
     sitesLabel.backgroundColor = [UIColor clearColor];
     sitesLabel.textAlignment = NSTextAlignmentCenter;
-    sitesLabel.text = [[appDelegate.WLS_LISTING_ARRAY objectAtIndex:row] objectForKey:@"name"];
+    sitesLabel.text = [[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:row] objectForKey:@"name"];
     sitesLabel.textColor = [UIColor blackColor];
     
     return sitesLabel;
@@ -1000,10 +1000,10 @@
         if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
             //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
             
-            [appDelegate.WLS_LISTING_ARRAY removeAllObjects];
+            [appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW removeAllObjects];
             
             NSArray *tempArray = [[responseString JSONValue] objectForKey:WLS_LISTING_RESPONSE_NAME];
-            [appDelegate.WLS_LISTING_ARRAY setArray:tempArray];
+            [appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW setArray:tempArray];
             
             
             CLLocationCoordinate2D currentLocation;
@@ -1012,9 +1012,9 @@
             currentLocation.latitude = latValue;
             currentLocation.longitude = longValue;
             
-            for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY count];idx++) {
+            for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW count];idx++) {
                 
-                NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY[idx] mutableCopy];
+                NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] mutableCopy];
                 
                 CLLocationCoordinate2D desinationLocation;
                 desinationLocation.latitude = [dict[@"latitude"] doubleValue];
@@ -1023,7 +1023,7 @@
                 DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
                 
                 dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
-                appDelegate.WLS_LISTING_ARRAY[idx] = dict;
+                appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] = dict;
                 
             }
             
@@ -1037,7 +1037,7 @@
                 else
                     return NSOrderedSame;
             }];
-            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+            [appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
 
             if (!tempNearByArray) {
                 tempNearByArray = [[NSMutableArray alloc] init];
@@ -1045,10 +1045,10 @@
             
             int count = 0;
             
-            for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
-                if (![[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] isEqualToString:wlsID]) {
+            for (int i=0; i<appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
+                if (![[[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"id"] isEqualToString:wlsID]) {
                     if (count!=3) {
-                        [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+                        [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                         count++;
                     }
                     else {
@@ -1094,12 +1094,12 @@
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
     if (textField==locationField) {
-        if (appDelegate.WLS_LISTING_ARRAY.count==0) {
+        if (appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW.count==0) {
             [self fetchWLSListing];
         }
         else {
             NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-            [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
+            [appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
             
             [self animateOptionsPicker];
         }
@@ -1175,9 +1175,9 @@
         currentLocation.latitude = latValue;
         currentLocation.longitude = longValue;
         
-        for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY count];idx++) {
+        for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW count];idx++) {
             
-            NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY[idx] mutableCopy];
+            NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] mutableCopy];
             
             CLLocationCoordinate2D desinationLocation;
             desinationLocation.latitude = [dict[@"latitude"] doubleValue];
@@ -1186,7 +1186,7 @@
             DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
             
             dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
-            appDelegate.WLS_LISTING_ARRAY[idx] = dict;
+            appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] = dict;
             
         }
         
@@ -1200,7 +1200,7 @@
             else
                 return NSOrderedSame;
         }];
-        [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        [appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
         
         int count = 0;
         [tempNearByArray removeAllObjects];
@@ -1208,10 +1208,10 @@
         if (!tempNearByArray) {
             tempNearByArray = [[NSMutableArray alloc] init];
         }
-        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
-            if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != wlsID) {
+        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
+            if ([[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"id"] != wlsID) {
                 if (count!=3) {
-                    [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+                    [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                     count++;
                 }
                 else {
@@ -1246,9 +1246,9 @@
         currentLocation.latitude = latValue;
         currentLocation.longitude = longValue;
         
-        for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY count];idx++) {
+        for (int idx = 0; idx<[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW count];idx++) {
             
-            NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY[idx] mutableCopy];
+            NSMutableDictionary *dict = [appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] mutableCopy];
             
             CLLocationCoordinate2D desinationLocation;
             desinationLocation.latitude = [dict[@"latitude"] doubleValue];
@@ -1257,7 +1257,7 @@
             DebugLog(@"%f---%f",desinationLocation.latitude,desinationLocation.longitude);
             
             dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
-            appDelegate.WLS_LISTING_ARRAY[idx] = dict;
+            appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW[idx] = dict;
             
         }
         
@@ -1271,7 +1271,7 @@
             else
                 return NSOrderedSame;
         }];
-        [appDelegate.WLS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+        [appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
         
         if (!tempNearByArray) {
             tempNearByArray = [[NSMutableArray alloc] init];
@@ -1280,10 +1280,10 @@
         int count = 0;
         [tempNearByArray removeAllObjects];
         
-        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY.count; i++) {
-            if ([[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"id"] != wlsID) {
+        for (int i=0; i<appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
+            if ([[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"id"] != wlsID) {
                 if (count!=3) {
-                    [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY objectAtIndex:i]];
+                    [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                     count++;
                 }
                 else {

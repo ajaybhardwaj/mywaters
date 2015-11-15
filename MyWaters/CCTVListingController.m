@@ -569,6 +569,12 @@
     cctvListingTable.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
+    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:hideFilterButton];
+    hideFilterButton.hidden = YES;
+    
     filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -386, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
@@ -615,12 +621,6 @@
                             action:@selector(fetchCCTVListing)
                   forControlEvents:UIControlEventValueChanged];
     [cctvListingTable addSubview:self.refreshControl];
-    
-    hideFilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    hideFilterButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    [hideFilterButton addTarget:self action:@selector(hideFilterTable) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:hideFilterButton];
-    hideFilterButton.hidden = YES;
     
 }
 

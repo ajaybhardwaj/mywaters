@@ -98,8 +98,22 @@
     userLocMapView.delegate = self;
     [userLocMapView setMapType:MKMapTypeStandard];
     [userLocMapView setZoomEnabled:YES];
+    [userLocMapView setShowsUserLocation:YES];
     [userLocMapView setScrollEnabled:YES];
     [self.view  addSubview:userLocMapView];
+    
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+        
+        MKCoordinateRegion mapRegion;
+        mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
+        mapRegion.span.latitudeDelta = 0.013f;
+        mapRegion.span.longitudeDelta = 0.013f;
+        [userLocMapView setRegion:mapRegion animated: YES];
+        
+        appDelegate.LONG_PRESS_USER_LOCATION_LAT = appDelegate.CURRENT_LOCATION_LAT;
+        appDelegate.LONG_PRESS_USER_LOCATION_LONG = appDelegate.CURRENT_LOCATION_LONG;
+        appDelegate.LONG_PRESS_USER_LOCATION_COORDINATE = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
+    }
     
     UILabel *instructionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, userLocMapView.bounds.size.width, 20)];
     instructionLabel.backgroundColor = [UIColor lightGrayColor];
@@ -113,7 +127,7 @@
     [userLocMapView addGestureRecognizer:lpgr];
     
     UIButton *submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
+    [submitButton setTitle:@"USE THIS LOCATION" forState:UIControlStateNormal];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
     submitButton.tag = 4;
