@@ -368,6 +368,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:)
                                                  name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
     
+    [CommonFunctions googleAnalyticsTracking:@"Page: Gallery View"];
     
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];

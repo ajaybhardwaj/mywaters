@@ -2031,6 +2031,8 @@
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
     
+    [CommonFunctions googleAnalyticsTracking:@"Page: Quick Map"];
+    
     [appDelegate.locationManager startUpdatingLocation];
     
     if (appDelegate.IS_COMING_FROM_DASHBOARD) {

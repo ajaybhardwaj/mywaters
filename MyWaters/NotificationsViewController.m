@@ -574,7 +574,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
-    
+    [CommonFunctions googleAnalyticsTracking:@"Page: Notifications Listing"];
     [self performSelector:@selector(fetchNotificationListing) withObject:nil afterDelay:1.0];
     
 }

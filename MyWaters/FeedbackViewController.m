@@ -1200,6 +1200,8 @@
     selectedPickerIndex = 0;
     [appDelegate setShouldRotate:NO];
     
+    [CommonFunctions googleAnalyticsTracking:@"Page: Feedback"];
+    
     if (!isNotFeedbackController) {
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];
     }

@@ -1004,6 +1004,8 @@
     
     [appDelegate setShouldRotate:NO];
     
+    [CommonFunctions googleAnalyticsTracking:@"Page: Our Waters Detail"];
+    
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(76,175,238) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];
     

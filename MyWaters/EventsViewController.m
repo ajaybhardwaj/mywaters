@@ -855,7 +855,7 @@
         //        [endDateLabel sizeToFit];
         
         UILabel *distanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, startDateLabel.frame.origin.y+startDateLabel.bounds.size.height+5, eventsListingTableView.bounds.size.width-100, 20)];
-        distanceLabel.textColor = [UIColor blackColor];
+        distanceLabel.textColor = [UIColor lightGrayColor];
         if (isFiltered)
             distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"distance"]];
         else
@@ -1002,7 +1002,7 @@
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
     [appDelegate.locationManager startUpdatingLocation];
-    
+    [CommonFunctions googleAnalyticsTracking:@"Page: Events Listing"];
     //    if (!isNotEventController) {
     
     [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(openDeckMenu:) withIconName:@"icn_menu_white"]];

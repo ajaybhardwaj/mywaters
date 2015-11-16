@@ -120,6 +120,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:NO];
+    [CommonFunctions googleAnalyticsTracking:@"Page: Web View"];
     [appDelegate setShouldRotate:NO];
 }
 

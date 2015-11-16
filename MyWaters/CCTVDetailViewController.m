@@ -112,8 +112,7 @@
 //    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
-//    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"4",@"12345",[CommonFunctions getAppVersionNumber], nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
 
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
@@ -1100,6 +1099,7 @@
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
     
+    [CommonFunctions googleAnalyticsTracking:@"Page: CCTVs Detail"];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(71, 178, 182) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

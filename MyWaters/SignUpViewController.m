@@ -764,6 +764,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:YES];
+    [CommonFunctions googleAnalyticsTracking:@"Page: User Signup View"];
     
     if (isFacebookDataFetchInLogin) {
         

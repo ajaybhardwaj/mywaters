@@ -72,6 +72,8 @@
 		FE5A46A91A8C57AF00517FB5 /* icn_notifyme@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE5A46A51A8C57AF00517FB5 /* icn_notifyme@3x.png */; };
 		FE5A46AA1A8C57AF00517FB5 /* icn_share@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE5A46A61A8C57AF00517FB5 /* icn_share@3x.png */; };
 		FE5C87071BC36467009F1600 /* DirectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE5C87061BC36467009F1600 /* DirectionViewController.m */; };
+		FE5F44F01BF966170024D0AB /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5F44EF1BF966170024D0AB /* CoreData.framework */; };
+		FE5F44F21BF966750024D0AB /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5F44F11BF966750024D0AB /* libGoogleAnalyticsServices.a */; };
 		FE647CEF1BA6AF3D00C436A6 /* UPStackMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = FE647CEC1BA6AF3D00C436A6 /* UPStackMenu.m */; };
 		FE647CF01BA6AF3D00C436A6 /* UPStackMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FE647CEE1BA6AF3D00C436A6 /* UPStackMenuItem.m */; };
 		FE6679B01ACCE2330036198D /* WeatherForecastViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6679AF1ACCE2330036198D /* WeatherForecastViewController.m */; };
@@ -689,6 +691,18 @@
 		FE5A46A61A8C57AF00517FB5 /* icn_share@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_share@3x.png"; sourceTree = "<group>"; };
 		FE5C87051BC36467009F1600 /* DirectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectionViewController.h; sourceTree = "<group>"; };
 		FE5C87061BC36467009F1600 /* DirectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectionViewController.m; sourceTree = "<group>"; };
+		FE5F44E51BF965FC0024D0AB /* GAI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
+		FE5F44E61BF965FC0024D0AB /* GAIDictionaryBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAIDictionaryBuilder.h; sourceTree = "<group>"; };
+		FE5F44E71BF965FC0024D0AB /* GAIEcommerceFields.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAIEcommerceFields.h; sourceTree = "<group>"; };
+		FE5F44E81BF965FC0024D0AB /* GAIEcommerceProduct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAIEcommerceProduct.h; sourceTree = "<group>"; };
+		FE5F44E91BF965FC0024D0AB /* GAIEcommerceProductAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAIEcommerceProductAction.h; sourceTree = "<group>"; };
+		FE5F44EA1BF965FC0024D0AB /* GAIEcommercePromotion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAIEcommercePromotion.h; sourceTree = "<group>"; };
+		FE5F44EB1BF965FC0024D0AB /* GAIFields.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAIFields.h; sourceTree = "<group>"; };
+		FE5F44EC1BF965FC0024D0AB /* GAILogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAILogger.h; sourceTree = "<group>"; };
+		FE5F44ED1BF965FC0024D0AB /* GAITrackedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
+		FE5F44EE1BF965FC0024D0AB /* GAITracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
+		FE5F44EF1BF966170024D0AB /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		FE5F44F11BF966750024D0AB /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
 		FE647CEB1BA6AF3D00C436A6 /* UPStackMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPStackMenu.h; sourceTree = "<group>"; };
 		FE647CEC1BA6AF3D00C436A6 /* UPStackMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UPStackMenu.m; sourceTree = "<group>"; };
 		FE647CED1BA6AF3D00C436A6 /* UPStackMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPStackMenuItem.h; sourceTree = "<group>"; };
@@ -1358,6 +1372,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE5F44F01BF966170024D0AB /* CoreData.framework in Frameworks */,
 				FE41D50F1BDD2D55008834EF /* UIKit.framework in Frameworks */,
 				FE41D50D1BDD2CE7008834EF /* QuartzCore.framework in Frameworks */,
 				FEAA8EF91BD50916007D4C9A /* Social.framework in Frameworks */,
@@ -1365,6 +1380,7 @@
 				FEF12BEF1BD4E8FA00BE2925 /* FacebookSDK.framework in Frameworks */,
 				FEE65A8C1B8ACBE4002C5C6D /* SystemConfiguration.framework in Frameworks */,
 				FEE65A8A1B8ACBCA002C5C6D /* CFNetwork.framework in Frameworks */,
+				FE5F44F21BF966750024D0AB /* libGoogleAnalyticsServices.a in Frameworks */,
 				FE2BED321AD3DBB60039C317 /* AVFoundation.framework in Frameworks */,
 				FE17457C1BBA780F001B231B /* FBSDKCoreKit.framework in Frameworks */,
 				FE1745801BBA780F001B231B /* FBSDKShareKit.framework in Frameworks */,
@@ -1540,6 +1556,24 @@
 				FEC84B581BE7410A00269BC1 /* icn_share@2x.png */,
 			);
 			name = Events;
+			sourceTree = "<group>";
+		};
+		FE5F44E41BF965E10024D0AB /* Google Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				FE5F44F11BF966750024D0AB /* libGoogleAnalyticsServices.a */,
+				FE5F44E51BF965FC0024D0AB /* GAI.h */,
+				FE5F44E61BF965FC0024D0AB /* GAIDictionaryBuilder.h */,
+				FE5F44E71BF965FC0024D0AB /* GAIEcommerceFields.h */,
+				FE5F44E81BF965FC0024D0AB /* GAIEcommerceProduct.h */,
+				FE5F44E91BF965FC0024D0AB /* GAIEcommerceProductAction.h */,
+				FE5F44EA1BF965FC0024D0AB /* GAIEcommercePromotion.h */,
+				FE5F44EB1BF965FC0024D0AB /* GAIFields.h */,
+				FE5F44EC1BF965FC0024D0AB /* GAILogger.h */,
+				FE5F44ED1BF965FC0024D0AB /* GAITrackedViewController.h */,
+				FE5F44EE1BF965FC0024D0AB /* GAITracker.h */,
+			);
+			name = "Google Analytics";
 			sourceTree = "<group>";
 		};
 		FE647CEA1BA6AF3300C436A6 /* UPStackMenu */ = {
@@ -1816,6 +1850,7 @@
 		FEA730111A772FDD00D274A6 = {
 			isa = PBXGroup;
 			children = (
+				FE5F44EF1BF966170024D0AB /* CoreData.framework */,
 				FE41D50E1BDD2D55008834EF /* UIKit.framework */,
 				FE41D50C1BDD2CE7008834EF /* QuartzCore.framework */,
 				FEAA8EF81BD50916007D4C9A /* Social.framework */,
@@ -1919,6 +1954,7 @@
 		FEA730431A7733BD00D274A6 /* ThirdPartyLibs */ = {
 			isa = PBXGroup;
 			children = (
+				FE5F44E41BF965E10024D0AB /* Google Analytics */,
 				FE76B43B1BF82D9800250067 /* Custom TextView */,
 				FE57505F1BDE504C0068E4F6 /* Custom Alert */,
 				FE36EB871BDDD0A40012F3C3 /* CMPopTipView */,
@@ -3409,8 +3445,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3435,7 +3471,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3457,8 +3493,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -3476,7 +3512,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3488,8 +3524,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3500,8 +3536,12 @@
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -3512,8 +3552,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3524,8 +3564,12 @@
 				GCC_PREFIX_HEADER = MyWaters/PrefixHeader.pch;
 				INFOPLIST_FILE = MyWaters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
@@ -3535,8 +3579,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3550,7 +3594,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Debug;
@@ -3560,8 +3604,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: iAPPS PTE LTD";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: iAPPS PTE LTD";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3571,7 +3615,7 @@
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "44486872-10d4-43f9-85e1-0d4385e00955";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Release;

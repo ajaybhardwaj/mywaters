@@ -1155,6 +1155,8 @@
     self.navigationController.navigationBar.alpha = 1.0;
     [self.navigationController setNavigationBarHidden:NO];
     
+    [CommonFunctions googleAnalyticsTracking:@"Page: Our Waters Listing"];
+    
     [appDelegate setShouldRotate:NO];
     [appDelegate.locationManager startUpdatingLocation];
     

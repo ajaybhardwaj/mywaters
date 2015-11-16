@@ -23,6 +23,8 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import <Social/Social.h>
 #import "MBProgressHUD.h"
+#import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
 
 @interface CommonFunctions : NSObject <CLLocationManagerDelegate>
 
@@ -48,6 +50,10 @@
 + (NSMutableDictionary *)extractXML:(NSMutableDictionary *)XMLDictionary;
 + (void) checkForLocationSerives:(NSString*) titleString message:(NSString*) messageString view:(UIViewController*) viewObj;
 + (CLLocationCoordinate2D) getUserCurrentLocation;
+
+
+# pragma mark - Google Analytics Method
++ (void) googleAnalyticsTracking:(NSString*) screenName;
 
 # pragma mark - Server GET & POST Methods
 + (void) grabGetRequest:(NSString*)apiName delegate:(UIViewController*)viewObj isNSData:(BOOL)data accessToken:(NSString*)token;

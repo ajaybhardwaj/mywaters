@@ -17,6 +17,7 @@
 #import "MBProgressHUD.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "ARViewController.h"
+#import "GAI.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,IIViewDeckControllerDelegate,CLLocationManagerDelegate,UIAlertViewDelegate> {
     
@@ -45,6 +46,7 @@
 @property (nonatomic, assign) NSInteger RECEIVED_NOTIFICATION_TYPE;
 @property (nonatomic, strong) NSString *PUSH_NOTIFICATION_ALERT_MESSAGE;
 @property (nonatomic, strong) CLLocationManager *locationManager;
+@property(nonatomic, strong) id<GAITracker> tracker;
 
 - (void) createViewDeckController;
 - (void) retrieveDashboardPreferences;

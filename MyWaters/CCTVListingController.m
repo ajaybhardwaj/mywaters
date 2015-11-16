@@ -87,7 +87,7 @@
     }
     else {
         isShowingFilter = YES;
-        pos.y = 128;
+        pos.y = 40;
         hideFilterButton.hidden = NO;
         if (isShowingSearchBar) {
             [self animateSearchBar];
@@ -575,7 +575,7 @@
     [self.view addSubview:hideFilterButton];
     hideFilterButton.hidden = YES;
     
-    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -386, self.view.bounds.size.width, 256) style:UITableViewStylePlain];
+    filterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -386, self.view.bounds.size.width, 90) style:UITableViewStylePlain];
     filterTableView.delegate = self;
     filterTableView.dataSource = self;
     [self.view addSubview:filterTableView];
@@ -631,6 +631,8 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
+    
+    [CommonFunctions googleAnalyticsTracking:@"Page: CCTVs Listing"];
     
     [appDelegate.locationManager startUpdatingLocation];
     

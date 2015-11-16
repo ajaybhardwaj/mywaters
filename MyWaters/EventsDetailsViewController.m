@@ -736,6 +736,7 @@
     
     [appDelegate setShouldRotate:NO];
     [appDelegate.locationManager startUpdatingLocation];
+    [CommonFunctions googleAnalyticsTracking:@"Page: Events Detail"];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(244,155,0) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

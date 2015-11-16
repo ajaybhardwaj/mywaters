@@ -22,6 +22,8 @@
 #import "CommonFunctions.h"
 #import "ABCWaterDetailViewController.h"
 #import "TipsListingViewController.h"
+#import "FloodMapAnnotations.h"
+#import "WLSMapAnnotations.h"
 
 @interface HomeViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,CLLocationManagerDelegate> {
     
@@ -66,12 +68,19 @@
     NSString *nowcastTimeString,*nowcastDateString;
     NSDictionary *nowCastWeatherData;
     
+    
+    FloodMapAnnotations *pubFloodAnnotation;
+    WLSMapAnnotations *wlsAnnotation;
+    NSMutableArray *pubFloodAnnotationsArray,*wlsAnnotationsArray;
+    
     //*************** Demo App UI Variables
     UIButton *quickMapButton,*whatsUpButton,*cctvButton,*reportButton;
     
     UIWebView *tipsWebView;
     UILabel *tipsVideoTitleLabel;
     UIImageView *videoThumbnailView;
+    
+    
 }
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, assign) MKCoordinateRegion region;

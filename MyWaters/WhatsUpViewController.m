@@ -743,6 +743,7 @@
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
+    [CommonFunctions googleAnalyticsTracking:@"Page: Whats Up Listing"];
     
     if (appDelegate.IS_COMING_FROM_DASHBOARD) {
         

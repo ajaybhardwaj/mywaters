@@ -141,6 +141,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [appDelegate setShouldRotate:NO];
+    [CommonFunctions googleAnalyticsTracking:@"Page: Long Press User Location View"];
 }
 
 

@@ -901,6 +901,8 @@
     
     self.view.frame = CGRectMake(0, 0, self.view.bounds.size.height+100, self.view.bounds.size.width);
     
+    [CommonFunctions googleAnalyticsTracking:@"Page: AR View"];
+    
 //    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
 //    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     

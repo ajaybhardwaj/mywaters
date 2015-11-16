@@ -392,7 +392,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [appDelegate setShouldRotate:NO];
-    
+    [CommonFunctions googleAnalyticsTracking:@"Page: Edit Profile"];
 }
 
 

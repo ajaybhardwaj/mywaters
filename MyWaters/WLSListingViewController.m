@@ -519,6 +519,7 @@
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
     [appDelegate.locationManager startUpdatingLocation];
+    [CommonFunctions googleAnalyticsTracking:@"Page: WLS Listing"];
     
     UIImage *pinkImg = [AuxilaryUIService imageWithColor:RGB(51,148,228) frame:CGRectMake(0, 0, 1, 1)];
     [[[self navigationController] navigationBar] setBackgroundImage:pinkImg forBarMetrics:UIBarMetricsDefault];

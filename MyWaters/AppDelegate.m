@@ -8,7 +8,16 @@
 
 #import "AppDelegate.h"
 
+
+/******* Set your tracking ID here *******/
+static NSString *const kTrackingId = @"UA-69068035-1";
+static NSString *const kAllowTracking = @"allowTracking";
+
 @interface AppDelegate ()
+
+// Used for sending Google Analytics traffic in the background.
+@property(nonatomic, assign) BOOL okToWait;
+@property(nonatomic, copy) void (^dispatchHandler)(GAIDispatchResult result);
 
 @end
 
@@ -1261,6 +1270,36 @@
 }
 
 
+
+// This method sends hits in the background until either we're told to stop background processing,
+// we run into an error, or we run out of hits.  We use this to send any pending Google Analytics
+// data since the app won't get a chance once it's in the background.
+- (void)sendHitsInBackground {
+    
+    self.okToWait = YES;
+    __weak AppDelegate *weakSelf = self;
+    __block UIBackgroundTaskIdentifier backgroundTaskId =
+    [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        weakSelf.okToWait = NO;
+    }];
+    
+    if (backgroundTaskId == UIBackgroundTaskInvalid) {
+        return;
+    }
+    
+    self.dispatchHandler = ^(GAIDispatchResult result) {
+        // If the last dispatch succeeded, and we're still OK to stay in the background then kick off
+        // again.
+        if (result == kGAIDispatchGood && weakSelf.okToWait ) {
+            [[GAI sharedInstance] dispatchWithCompletionHandler:weakSelf.dispatchHandler];
+        } else {
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskId];
+        }
+    };
+    [[GAI sharedInstance] dispatchWithCompletionHandler:self.dispatchHandler];
+}
+
+
 # pragma mark - CLLocationManagerDelegate Methods
 
 -(void) locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
@@ -1268,7 +1307,7 @@
     CURRENT_LOCATION_LAT = newLocation.coordinate.latitude;
     CURRENT_LOCATION_LONG = newLocation.coordinate.longitude;
     
-    DebugLog(@"%f---%f",CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG);
+    DebugLog(@"Current Location Lat & Long %f---%f",CURRENT_LOCATION_LAT,CURRENT_LOCATION_LONG);
     
     USER_CURRENT_LOCATION_COORDINATE = [newLocation coordinate];
     
@@ -1311,6 +1350,7 @@
     locationManager.delegate = self;
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     [locationManager requestWhenInUseAuthorization];
+    [locationManager startUpdatingLocation];
     
     DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
     ABC_WATERS_LISTING_ARRAY = [[NSMutableArray alloc] init];
@@ -1367,24 +1407,6 @@
     [self createViewDeckController];
     [self.window setRootViewController:_rootDeckController];
     
-//    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
-//    {
-//        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-//        [[UIApplication sharedApplication] registerForRemoteNotifications];
-//    }
-//    else
-//    {
-//        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
-//    }
-    
-//    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-//        UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-//        [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
-//        [[UIApplication sharedApplication] registerForRemoteNotifications];
-//    } else {
-//        [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-//    }
-    
     _rootDeckController.navigationController.interactivePopGestureRecognizer.enabled = NO;
     
     
@@ -1404,19 +1426,26 @@
     
     self.window.backgroundColor = RGB(247, 247, 247);
     
-//    UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
-//    
-//    UIUserNotificationSettings *mySettings =
-//    [UIUserNotificationSettings settingsForTypes:types categories:nil];
-//    
-//    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
-    
     if ([CommonFunctions hasConnectivity]) {
             [self getConfigData];
     }
     else {
         [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
     }
+    
+    /////// GOOGLE ANALYTICS ///////
+    NSDictionary *appDefaults = @{kAllowTracking: @(YES)};
+    [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+    // User must be able to opt out of tracking
+    [GAI sharedInstance].optOut =
+    ![[NSUserDefaults standardUserDefaults] boolForKey:kAllowTracking];
+    // Initialize Google Analytics with a 120-second dispatch interval. There is a
+    // tradeoff between battery usage and timely dispatch.
+    [GAI sharedInstance].dispatchInterval = 120;
+    [GAI sharedInstance].trackUncaughtExceptions = YES;
+    self.tracker = [[GAI sharedInstance] trackerWithName:@"MyWaters-iOS"
+                                              trackingId:kTrackingId];
+    
     return YES;
 }
 
@@ -1469,16 +1498,17 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
-    
+    [self sendHitsInBackground];
     // Commented Out For Version 2.0 AS no flood notifications
 //    [locationManager startMonitoringSignificantLocationChanges];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    application.applicationIconBadgeNumber = 0;
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+
+    [locationManager startUpdatingLocation];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
     
     if ([CommonFunctions hasConnectivity]) {
         [self getConfigData];
@@ -1494,10 +1524,13 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    application.applicationIconBadgeNumber = 0;
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     //    [FBSession.activeSession handleDidBecomeActive];
+    
+    [locationManager startUpdatingLocation];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+
+    [GAI sharedInstance].optOut = ![[NSUserDefaults standardUserDefaults] boolForKey:kAllowTracking];
     
     [FBAppEvents activateApp];
     [FBAppCall handleDidBecomeActive];

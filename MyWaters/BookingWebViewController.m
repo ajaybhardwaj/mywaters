@@ -102,6 +102,8 @@
     self.navigationController.navigationBar.alpha = 1.0;
     [appDelegate setShouldRotate:NO];
     
+    [CommonFunctions googleAnalyticsTracking:@"Page: Booking Web View"];
+    
     NSString *bookingUrl;
     
     for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {

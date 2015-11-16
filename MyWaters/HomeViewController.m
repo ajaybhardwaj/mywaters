@@ -570,20 +570,27 @@
     
     if ([CommonFunctions hasConnectivity]) {
         
-        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-        
         backgroundScrollView.userInteractionEnabled = NO;
-        
-        DebugLog(@"%f---%f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
         
         NSArray *parameters,*values;
         
         if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
-            parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon",@"pushtoken", nil];
-//            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], [[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],nil];
-            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], @"12345",nil];
+            
+            if (appDelegate.CURRENT_LOCATION_LAT != 0.0 && appDelegate.CURRENT_LOCATION_LONG != 0.0) {
+                
+                [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+                parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon",@"pushtoken", nil];
+                values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], [[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],nil];
+            }
+            else {
+                [appDelegate.locationManager startUpdatingLocation];
+                [self performSelector:@selector(fetchDashboardData) withObject:nil afterDelay:1.0];
+                return;
+            }
         }
         else {
+            
+            [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
             parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"pushtoken", nil];
             values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"], nil];
         }
@@ -635,6 +642,12 @@
     else {
         [profileImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/image_avatar.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     }
+    
+    
+    // Quick Map Content Refresh
+    [self generatePUBFloodSubmissionAnnotations];
+    [self generateWLSAnnotations];
+    
     
     // WLS Content Refresh
     if (wlsDataArray != (id)[NSNull null] && wlsDataArray.count!=0) {
@@ -1407,7 +1420,7 @@
                     waterSensorDrainDepthLabel.backgroundColor = [UIColor clearColor];
                     [columnView addSubview:waterSensorDrainDepthLabel];
                     
-
+                    
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==3) {
                     
@@ -1620,6 +1633,82 @@
 }
 
 
+
+//*************** Method To Generate PUB Flood Annotations
+
+- (void) generatePUBFloodSubmissionAnnotations {
+    
+    
+    if (floodsDataArray.count != 0) {
+        
+        if (!pubFloodAnnotationsArray) {
+            pubFloodAnnotationsArray = [[NSMutableArray alloc] init];
+        }
+        
+        [pubFloodAnnotationsArray removeAllObjects];
+        
+        for (int i=0; i<floodsDataArray.count; i++) {
+            
+            MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion.center.latitude = [[[floodsDataArray objectAtIndex:i] objectForKey:@"Lat"] doubleValue]; // Make lat dynamic later
+            annotationRegion.center.longitude = [[[floodsDataArray objectAtIndex:i] objectForKey:@"Lon"] doubleValue]; // Make long dynamic later
+            annotationRegion.span.latitudeDelta = 0.02f;
+            annotationRegion.span.longitudeDelta = 0.02f;
+            
+            
+            pubFloodAnnotation = [[FloodMapAnnotations alloc] initWithTitle:[[floodsDataArray objectAtIndex:i] objectForKey:@"LocationName"] AndCoordinates:annotationRegion.center type:@"FLOOD" tag:i+1 subtitleValue:[[floodsDataArray objectAtIndex:i] objectForKey:@"Comment"] level:0 image:nil]; //Setting Sample location Annotation
+            //            cctvAnnotation = [[QuickMapAnnotations alloc] init]; //Setting Sample location Annotation
+            pubFloodAnnotation.annotationTitle = [[floodsDataArray objectAtIndex:i] objectForKey:@"LocationName"];
+            pubFloodAnnotation.annotationSubtitle = [[floodsDataArray objectAtIndex:i] objectForKey:@"Comment"];
+            pubFloodAnnotation.annotationType = @"FLOOD";
+            pubFloodAnnotation.annotationTag = i+1;
+            pubFloodAnnotation.coordinate = annotationRegion.center;
+            [quickMap addAnnotation:pubFloodAnnotation];
+            
+            [pubFloodAnnotationsArray addObject:pubFloodAnnotation];
+            
+        }
+    }
+}
+
+//*************** Method To Generate WLS Annotations
+
+- (void) generateWLSAnnotations {
+    
+    if (wlsDataArray.count != 0) {
+        
+        if (!wlsAnnotationsArray) {
+            wlsAnnotationsArray = [[NSMutableArray alloc] init];
+        }
+        
+        [wlsAnnotationsArray removeAllObjects];
+        
+        
+        for (int i=0; i<wlsDataArray.count; i++) {
+            
+            MKCoordinateRegion annotationRegion = { {0.0, 0.0} , {0.0, 0.0} };
+            annotationRegion.center.latitude = [[[wlsDataArray objectAtIndex:i] objectForKey:@"latitude"] doubleValue]; // Make lat dynamic later
+            annotationRegion.center.longitude = [[[wlsDataArray objectAtIndex:i] objectForKey:@"longitude"] doubleValue]; // Make long dynamic later
+            annotationRegion.span.latitudeDelta = 0.02f;
+            annotationRegion.span.longitudeDelta = 0.02f;
+            
+            wlsAnnotation = [[WLSMapAnnotations alloc] initWithTitle:[[wlsDataArray objectAtIndex:i] objectForKey:@"name"] AndCoordinates:annotationRegion.center type:@"WLS" tag:i+1 subtitleValue:nil level:[[[wlsDataArray objectAtIndex:i] objectForKey:@"waterLevelType"] intValue] image:nil]; //Setting Sample location Annotation
+            wlsAnnotation.annotationTitle = [[wlsDataArray objectAtIndex:i] objectForKey:@"name"];
+            wlsAnnotation.annotationSubtitle = nil;
+            wlsAnnotation.waterLevel = [[[wlsDataArray objectAtIndex:i] objectForKey:@"waterLevelType"] intValue];
+            wlsAnnotation.annotationType = @"WLS";
+            wlsAnnotation.annotationTag = i+1;
+            wlsAnnotation.coordinate = annotationRegion.center;
+            [quickMap addAnnotation:wlsAnnotation];
+            
+            [wlsAnnotationsArray addObject:wlsAnnotation];
+            
+        }
+    }
+}
+
+
+
 # pragma mark - Youtube Video Method For Orientation
 
 - (void)youTubeStarted:(NSNotification *)notification{
@@ -1720,23 +1809,40 @@
 
 # pragma mark - MKMapViewDelegate Methods
 
-
--(MKAnnotationView *)mapView:(MKMapView *)mV viewForAnnotation:(id <MKAnnotation>)annotation {
+- (MKAnnotationView *) mapView:(MKMapView *)mV viewForAnnotation:(id <MKAnnotation>)annotation {
     
     MKAnnotationView *pinView = nil;
+    MKAnnotationView *pinView1,*pinView2;
     
-    if (annotation == longPressLocationAnnotation) {
+    
+    if ([annotation isKindOfClass:[FloodMapAnnotations class]]) {
         
-        static NSString *defaultPinID = @"com.invasivecode.pin";
-        pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
-        if ( pinView == nil )
-            pinView = [[MKAnnotationView alloc]
-                       initWithAnnotation:annotation reuseIdentifier:defaultPinID];
+        FloodMapAnnotations *flood = (FloodMapAnnotations*) annotation;
+        pinView1 = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"FLOOD"];
+        pinView1.tag = flood.annotationTag;
+        pinView1.image = [UIImage imageNamed:@"icn_floodinfo_small.png"];
         
-        pinView.canShowCallout = YES;
-        pinView.image = [UIImage imageNamed:@"current_location_icon.png"];
-        [quickMap.userLocation setTitle:@"You are here..!!"];
+        return pinView1;
+    }
+    else if ([annotation isKindOfClass:[WLSMapAnnotations class]]) {
         
+        WLSMapAnnotations *wls = (WLSMapAnnotations*) annotation;
+        pinView2 = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"WLS"];
+        pinView2.tag = wls.annotationTag;
+        
+        if (wlsAnnotation.waterLevel == 1) {
+            pinView2.image = [UIImage imageNamed:@"icn_waterlevel_below75_big.png"];
+        }
+        else if (wlsAnnotation.waterLevel == 2) {
+            pinView2.image = [UIImage imageNamed:@"icn_waterlevel_75-90_big.png"];
+        }
+        else if (wlsAnnotation.waterLevel == 3) {
+            pinView2.image = [UIImage imageNamed:@"icn_waterlevel_90_big.png"];
+        }
+        else {
+            pinView2.image = [UIImage imageNamed:@"icn_waterlevel_undermaintenance.png"];
+        }
+        return pinView2;
     }
     else  if(annotation != quickMap.userLocation) {
         
@@ -1749,23 +1855,14 @@
         pinView.canShowCallout = YES;
         pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
         [quickMap.userLocation setTitle:@"You are here..!!"];
+        return pinView;
         
     }
-    
     else {
-        //        static NSString *defaultPinID = @"com.invasivecode.pin";
-        //        pinView = (MKAnnotationView *)[quickMap dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
-        //        if ( pinView == nil )
-        //            pinView = [[MKAnnotationView alloc]
-        //                       initWithAnnotation:annotation reuseIdentifier:defaultPinID];
-        //
-        //        pinView.canShowCallout = YES;
-        //        pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
-        //        [quickMap.userLocation setTitle:@"You are here..!!"];
         
         return nil;
     }
-    return pinView;
+    
 }
 
 
@@ -2047,6 +2144,8 @@
     
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [appDelegate.locationManager startUpdatingLocation];
+    
     
     self.view.backgroundColor = RGB(213, 213, 213);
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
@@ -2078,6 +2177,7 @@
     tipsDataArray = [[NSMutableArray alloc] init];
     abcWatersDataArray = [[NSMutableArray alloc] init];
     
+    
     [self fetchDashboardData];
     [self createDynamicUIColumns];
     
@@ -2086,6 +2186,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [backgroundScrollView setContentOffset:CGPointZero animated:NO];
+    [CommonFunctions googleAnalyticsTracking:@"Page: Dashboard"];
     
     [appDelegate setShouldRotate:NO];
     [appDelegate.locationManager startUpdatingLocation];

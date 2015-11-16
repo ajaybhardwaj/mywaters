@@ -282,6 +282,7 @@
     
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
+    [CommonFunctions googleAnalyticsTracking:@"Page: Our Videos View"];
     
     [appDelegate setShouldRotate:NO];
     

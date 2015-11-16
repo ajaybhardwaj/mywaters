@@ -640,6 +640,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [CommonFunctions googleAnalyticsTracking:@"Page: Login View"];
     //    emailField.text = @"";
     //    passField.text = @"";
     
@@ -657,6 +658,8 @@
     //    else {
     //        passField.text = @"";
     //    }
+    
+    [appDelegate.locationManager startUpdatingLocation];
     
     if (appDelegate.IS_RELAUNCHING_APP) {
         

@@ -62,6 +62,15 @@ static UIWindow *window;
 }
 
 
+//*************** Function To Add Google Tracking Code
+
++ (void) googleAnalyticsTracking:(NSString*) screenName {
+    
+    id tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:screenName];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+}
+
 
 //*************** Function To Show Global MBProgressView
 

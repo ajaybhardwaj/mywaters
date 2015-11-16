@@ -1398,7 +1398,7 @@
     
     [appDelegate setShouldRotate:NO];
     [appDelegate.locationManager startUpdatingLocation];
-    
+    [CommonFunctions googleAnalyticsTracking:@"Page: User Profile"];
     self.view.alpha = 1.0;
     self.navigationController.navigationBar.alpha = 1.0;
     
