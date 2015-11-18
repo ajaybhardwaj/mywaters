@@ -66,6 +66,8 @@ static UIWindow *window;
 
 + (void) googleAnalyticsTracking:(NSString*) screenName {
     
+    DebugLog(@"%@",screenName);
+    
     id tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:screenName];
     [tracker send:[[GAIDictionaryBuilder createScreenView] build]];

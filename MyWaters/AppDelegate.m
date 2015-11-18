@@ -211,7 +211,7 @@ static NSString *const kAllowTracking = @"allowTracking";
     
     
     //-- after first time it will flow from this screen...
-    if (![[SharedObject sharedClass] isSSCUserSignedIn]) {
+    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"AccessToken"] length] == 0) {
         
         if (!deckCenterController && ![[(UINavigationController*)deckCenterController topViewController] isKindOfClass:[LoginViewController class]]) {
             
@@ -1347,9 +1347,11 @@ static NSString *const kAllowTracking = @"allowTracking";
     [FBProfilePictureView class];
     
     locationManager = [[CLLocationManager alloc] init];
-    locationManager.delegate = self;
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    [locationManager requestWhenInUseAuthorization];
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8) {
+        [locationManager requestWhenInUseAuthorization];
+    }
+    locationManager.delegate = self;
     [locationManager startUpdatingLocation];
     
     DASHBOARD_PREFERENCES_ARRAY = [[NSMutableArray alloc] init];
@@ -1415,6 +1417,9 @@ static NSString *const kAllowTracking = @"allowTracking";
     if(NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
         UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge|UIUserNotificationTypeSound|UIUserNotificationTypeAlert) categories:nil];
         [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
     }
 #endif
     
@@ -1509,6 +1514,7 @@ static NSString *const kAllowTracking = @"allowTracking";
     [locationManager startUpdatingLocation];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
     
     if ([CommonFunctions hasConnectivity]) {
         [self getConfigData];
@@ -1529,6 +1535,7 @@ static NSString *const kAllowTracking = @"allowTracking";
     [locationManager startUpdatingLocation];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
 
     [GAI sharedInstance].optOut = ![[NSUserDefaults standardUserDefaults] boolForKey:kAllowTracking];
     

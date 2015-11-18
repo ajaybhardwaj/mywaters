@@ -469,20 +469,20 @@
         
         if (indexPath.row==0) {
             
-            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+//            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
             NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
-            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-                float v1 = [left floatValue];
-                float v2 = [right floatValue];
-                if (v1 < v2)
-                    return NSOrderedAscending;
-                else if (v1 > v2)
-                    return NSOrderedDescending;
-                else
-                    return NSOrderedSame;
-            }];
+//            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+//                float v1 = [left floatValue];
+//                float v2 = [right floatValue];
+//                if (v1 < v2)
+//                    return NSOrderedAscending;
+//                else if (v1 > v2)
+//                    return NSOrderedDescending;
+//                else
+//                    return NSOrderedSame;
+//            }];
             
-            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,sortByName,sortByDistance,nil]];
+            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,nil]];
             
             [self animateFilterTable];
             [filterTableView reloadData];
@@ -491,19 +491,19 @@
         }
         else if (indexPath.row==1) {
             NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
-            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-                float v1 = [left floatValue];
-                float v2 = [right floatValue];
-                if (v1 < v2)
-                    return NSOrderedAscending;
-                else if (v1 > v2)
-                    return NSOrderedDescending;
-                else
-                    return NSOrderedSame;
-            }];
+//            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+//            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+//                float v1 = [left floatValue];
+//                float v2 = [right floatValue];
+//                if (v1 < v2)
+//                    return NSOrderedAscending;
+//                else if (v1 > v2)
+//                    return NSOrderedDescending;
+//                else
+//                    return NSOrderedSame;
+//            }];
             
-            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,sortByDate,sortByDistance,nil]];
+            [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
             
             [self animateFilterTable];
             [filterTableView reloadData];
@@ -513,8 +513,8 @@
         else if (indexPath.row==2) {
             
             if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
-                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-                NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+//                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+//                NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
                 NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
                     float v1 = [left floatValue];
                     float v2 = [right floatValue];
@@ -526,7 +526,7 @@
                         return NSOrderedSame;
                 }];
                 
-                [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,sortByDate,sortByName,nil]];
+                [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
                 
                 [self animateFilterTable];
                 [filterTableView reloadData];
@@ -718,8 +718,10 @@
         NSString *localFile = [destinationPath stringByAppendingPathComponent:imageName];
         
         if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) {
-            if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil)
-                cellImage.image = [[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]];
+            if ([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]] != nil) {
+                UIImage *compressedImage = [[UIImage alloc] initWithData:UIImageJPEGRepresentation([[UIImage alloc] initWithContentsOfFile:[destinationPath stringByAppendingPathComponent:imageName]], 0.2f)];
+                cellImage.image = compressedImage;
+            }
         }
         
         else {
@@ -732,7 +734,8 @@
             [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
                 if (succeeded) {
                     
-                    cellImage.image = image;
+                    UIImage *compressedImage = [[UIImage alloc] initWithData:UIImageJPEGRepresentation(image, 0.2f)];
+                    cellImage.image = compressedImage;
                     
                     DebugLog(@"Path %@",destinationPath);
                     

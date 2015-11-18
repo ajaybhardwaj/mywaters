@@ -109,7 +109,7 @@
 
 - (void) fetchCCTVListing {
     
-//    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
     
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
     NSArray *values = [[NSArray alloc] initWithObjects:@"4",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
@@ -466,7 +466,15 @@
 
 - (void) pop2Dismiss:(id) sender {
     
+    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+    {
+        [req cancel];
+        [req clearDelegatesAndCancel];
+        [req setDelegate:nil];
+        [req setQueue:nil];
+    }
     [self.navigationController popViewControllerAnimated:YES];
+    
 }
 
 
@@ -1117,8 +1125,11 @@
     for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
     {
         [req cancel];
+        [req clearDelegatesAndCancel];
         [req setDelegate:nil];
+        [req setQueue:nil];
     }
+    
 }
 
 

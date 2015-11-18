@@ -61,7 +61,7 @@
 		FE4F376B1A8863390028903C /* image_background@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37651A8863390028903C /* image_background@3x.png */; };
 		FE4F376C1A8863390028903C /* image_mywaters@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37661A8863390028903C /* image_mywaters@3x.png */; };
 		FE4F376D1A8863390028903C /* image_waterwally@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37671A8863390028903C /* image_waterwally@3x.png */; };
-		FE4F37721A888A3E0028903C /* image_avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37701A888A3E0028903C /* image_avatar.png */; };
+		FE4F37721A888A3E0028903C /* image_avatar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37701A888A3E0028903C /* image_avatar@3x.png */; };
 		FE4F37731A888A3E0028903C /* icn_facebook@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37711A888A3E0028903C /* icn_facebook@3x.png */; };
 		FE4F37791A88A6DC0028903C /* checkbox@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37771A88A6DC0028903C /* checkbox@3x.png */; };
 		FE4F377A1A88A6DC0028903C /* icon_tick@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4F37781A88A6DC0028903C /* icon_tick@3x.png */; };
@@ -118,6 +118,7 @@
 		FE82BF401BDFB16A005A2BF3 /* CCTVMapAnnoations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82BF3F1BDFB16A005A2BF3 /* CCTVMapAnnoations.m */; };
 		FE82BF431BDFB17F005A2BF3 /* FloodMapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82BF421BDFB17F005A2BF3 /* FloodMapAnnotations.m */; };
 		FE82BF461BDFB192005A2BF3 /* FeedbackMapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FE82BF451BDFB192005A2BF3 /* FeedbackMapAnnotations.m */; };
+		FE83028D1BFC0F08003FF75F /* iApps.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FE83028C1BFC0F08003FF75F /* iApps.gpx */; };
 		FE85F3761BF33010003FE3CD /* icn_filter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE85F3741BF33010003FE3CD /* icn_filter@2x.png */; };
 		FE85F3771BF33010003FE3CD /* icn_filter@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE85F3751BF33010003FE3CD /* icn_filter@3x.png */; };
 		FE85F37E1BF330A5003FE3CD /* icn_notifications@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE85F37C1BF330A5003FE3CD /* icn_notifications@2x.png */; };
@@ -360,6 +361,9 @@
 		FEB13FD51A778D2B0061CE74 /* whatsup_feed.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD31A778D2B0061CE74 /* whatsup_feed.png */; };
 		FEB13FD91A77968B0061CE74 /* quickmap_expanded.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD71A77968B0061CE74 /* quickmap_expanded.png */; };
 		FEB13FDA1A77968B0061CE74 /* quickmap.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD81A77968B0061CE74 /* quickmap.png */; };
+		FEB8BA411BFC7389007959A2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB8BA401BFC7389007959A2 /* Default-568h@2x.png */; };
+		FEB8BA441BFC73F5007959A2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB8BA421BFC73F5007959A2 /* Default.png */; };
+		FEB8BA451BFC73F5007959A2 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB8BA431BFC73F5007959A2 /* Default@2x.png */; };
 		FEBA99701ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEBA996F1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m */; };
 		FEBA99751ADCC62500ED3555 /* icn_meter_line@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA99721ADCC62500ED3555 /* icn_meter_line@3x.png */; };
 		FEBA99761ADCC62500ED3555 /* icn_time@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA99731ADCC62500ED3555 /* icn_time@3x.png */; };
@@ -602,6 +606,19 @@
 		FEFD024F1BC510AB002E2177 /* wls_cross@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFD024C1BC510AB002E2177 /* wls_cross@3x.png */; };
 		FEFD02501BC510AB002E2177 /* wls_radio_selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFD024D1BC510AB002E2177 /* wls_radio_selected@3x.png */; };
 		FEFD02511BC510AB002E2177 /* wls_radio_unselected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFD024E1BC510AB002E2177 /* wls_radio_unselected@3x.png */; };
+		FEFE9AEE1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AE51BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@2x.png */; };
+		FEFE9AEF1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AE61BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@3x.png */; };
+		FEFE9AF01BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AE71BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@2x.png */; };
+		FEFE9AF11BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AE81BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@3x.png */; };
+		FEFE9AF21BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AE91BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@2x.png */; };
+		FEFE9AF31BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AEA1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@3x.png */; };
+		FEFE9AF41BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AEB1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@2x.png */; };
+		FEFE9AF51BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AEC1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@3x.png */; };
+		FEFE9AF71BFAEA7B00FFBD66 /* icn_floodinfo_userfeedback_submission_small_greyout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AF61BFAEA7B00FFBD66 /* icn_floodinfo_userfeedback_submission_small_greyout@2x.png */; };
+		FEFE9AF91BFAEC9300FFBD66 /* icn_floodinfo_small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AF81BFAEC9300FFBD66 /* icn_floodinfo_small@2x.png */; };
+		FEFE9AFD1BFB1D2A00FFBD66 /* image_avatar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AFC1BFB1D2A00FFBD66 /* image_avatar@2x.png */; };
+		FEFE9B001BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AFE1BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@2x.png */; };
+		FEFE9B011BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFE9AFF1BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -678,7 +695,7 @@
 		FE4F37651A8863390028903C /* image_background@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image_background@3x.png"; sourceTree = "<group>"; };
 		FE4F37661A8863390028903C /* image_mywaters@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image_mywaters@3x.png"; sourceTree = "<group>"; };
 		FE4F37671A8863390028903C /* image_waterwally@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image_waterwally@3x.png"; sourceTree = "<group>"; };
-		FE4F37701A888A3E0028903C /* image_avatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image_avatar.png; sourceTree = "<group>"; };
+		FE4F37701A888A3E0028903C /* image_avatar@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image_avatar@3x.png"; sourceTree = "<group>"; };
 		FE4F37711A888A3E0028903C /* icn_facebook@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_facebook@3x.png"; sourceTree = "<group>"; };
 		FE4F37771A88A6DC0028903C /* checkbox@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox@3x.png"; sourceTree = "<group>"; };
 		FE4F37781A88A6DC0028903C /* icon_tick@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_tick@3x.png"; sourceTree = "<group>"; };
@@ -767,6 +784,7 @@
 		FE82BF421BDFB17F005A2BF3 /* FloodMapAnnotations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FloodMapAnnotations.m; sourceTree = "<group>"; };
 		FE82BF441BDFB192005A2BF3 /* FeedbackMapAnnotations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackMapAnnotations.h; sourceTree = "<group>"; };
 		FE82BF451BDFB192005A2BF3 /* FeedbackMapAnnotations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedbackMapAnnotations.m; sourceTree = "<group>"; };
+		FE83028C1BFC0F08003FF75F /* iApps.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = iApps.gpx; sourceTree = "<group>"; };
 		FE85F3741BF33010003FE3CD /* icn_filter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_filter@2x.png"; sourceTree = "<group>"; };
 		FE85F3751BF33010003FE3CD /* icn_filter@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_filter@3x.png"; sourceTree = "<group>"; };
 		FE85F37C1BF330A5003FE3CD /* icn_notifications@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_notifications@2x.png"; sourceTree = "<group>"; };
@@ -1067,6 +1085,9 @@
 		FEB13FD31A778D2B0061CE74 /* whatsup_feed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_feed.png; sourceTree = "<group>"; };
 		FEB13FD71A77968B0061CE74 /* quickmap_expanded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quickmap_expanded.png; sourceTree = "<group>"; };
 		FEB13FD81A77968B0061CE74 /* quickmap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quickmap.png; sourceTree = "<group>"; };
+		FEB8BA401BFC7389007959A2 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		FEB8BA421BFC73F5007959A2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		FEB8BA431BFC73F5007959A2 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		FEBA996E1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterLevelSensorsDetailViewController.h; sourceTree = "<group>"; };
 		FEBA996F1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaterLevelSensorsDetailViewController.m; sourceTree = "<group>"; };
 		FEBA99721ADCC62500ED3555 /* icn_meter_line@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_meter_line@3x.png"; sourceTree = "<group>"; };
@@ -1365,6 +1386,19 @@
 		FEFD024C1BC510AB002E2177 /* wls_cross@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wls_cross@3x.png"; sourceTree = "<group>"; };
 		FEFD024D1BC510AB002E2177 /* wls_radio_selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wls_radio_selected@3x.png"; sourceTree = "<group>"; };
 		FEFD024E1BC510AB002E2177 /* wls_radio_unselected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wls_radio_unselected@3x.png"; sourceTree = "<group>"; };
+		FEFE9AE51BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_waterlevel_75-90_big@2x.png"; sourceTree = "<group>"; };
+		FEFE9AE61BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_waterlevel_75-90_big@3x.png"; sourceTree = "<group>"; };
+		FEFE9AE71BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_waterlevel_90_big@2x.png"; sourceTree = "<group>"; };
+		FEFE9AE81BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_waterlevel_90_big@3x.png"; sourceTree = "<group>"; };
+		FEFE9AE91BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_waterlevel_below75_big@2x.png"; sourceTree = "<group>"; };
+		FEFE9AEA1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_waterlevel_below75_big@3x.png"; sourceTree = "<group>"; };
+		FEFE9AEB1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_waterlevel_undermaintenance@2x.png"; sourceTree = "<group>"; };
+		FEFE9AEC1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_waterlevel_undermaintenance@3x.png"; sourceTree = "<group>"; };
+		FEFE9AF61BFAEA7B00FFBD66 /* icn_floodinfo_userfeedback_submission_small_greyout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_userfeedback_submission_small_greyout@2x.png"; sourceTree = "<group>"; };
+		FEFE9AF81BFAEC9300FFBD66 /* icn_floodinfo_small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_small@2x.png"; sourceTree = "<group>"; };
+		FEFE9AFC1BFB1D2A00FFBD66 /* image_avatar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image_avatar@2x.png"; sourceTree = "<group>"; };
+		FEFE9AFE1BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_floodinfo_small@2x.png"; sourceTree = "<group>"; };
+		FEFE9AFF1BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dashboard_icn_floodinfo_small@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1505,7 +1539,8 @@
 				FE3238F31B576B4F00BB3DA8 /* login_top_volley@3x.png */,
 				FE4F37771A88A6DC0028903C /* checkbox@3x.png */,
 				FE4F37781A88A6DC0028903C /* icon_tick@3x.png */,
-				FE4F37701A888A3E0028903C /* image_avatar.png */,
+				FEFE9AFC1BFB1D2A00FFBD66 /* image_avatar@2x.png */,
+				FE4F37701A888A3E0028903C /* image_avatar@3x.png */,
 				FE4F37711A888A3E0028903C /* icn_facebook@3x.png */,
 				FE3238F71B57809B00BB3DA8 /* welcome_background@3x.png */,
 				FE4F37621A8863390028903C /* btn_blue@3x.png */,
@@ -1850,6 +1885,10 @@
 		FEA730111A772FDD00D274A6 = {
 			isa = PBXGroup;
 			children = (
+				FEB8BA421BFC73F5007959A2 /* Default.png */,
+				FEB8BA431BFC73F5007959A2 /* Default@2x.png */,
+				FEB8BA401BFC7389007959A2 /* Default-568h@2x.png */,
+				FE83028C1BFC0F08003FF75F /* iApps.gpx */,
 				FE5F44EF1BF966170024D0AB /* CoreData.framework */,
 				FE41D50E1BDD2D55008834EF /* UIKit.framework */,
 				FE41D50C1BDD2CE7008834EF /* QuartzCore.framework */,
@@ -2220,6 +2259,7 @@
 		FEA730B11A77394300D274A6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FEFE9AE31BFAD99300FFBD66 /* Dashboard */,
 				FE8652131BC4BE6600BA5689 /* rainmaptemp.png */,
 				FE3238E21B57608C00BB3DA8 /* Icons */,
 				FE9625701B55FF2900A25BCA /* splash_iphone@3x.png */,
@@ -2461,6 +2501,7 @@
 		FED72CD01ADB7FC500C4FDDB /* CCTV */ = {
 			isa = PBXGroup;
 			children = (
+				FEFE9AF81BFAEC9300FFBD66 /* icn_floodinfo_small@2x.png */,
 				FECC28C61BD8A1810000DB0F /* btn_close@3x.png */,
 				FEF51B4B1BF58C7600131021 /* btn_close@2x.png */,
 				FE8691421AE0A05C00EC2A77 /* icn_cctv_small@3x.png */,
@@ -2627,6 +2668,7 @@
 				FE8E1F991BEAF60700E3837A /* icn_waterlevel_drop_quickmap@3x.png */,
 				FEFC8EB21BBBA3E200139944 /* callout_icn_distance@3x.png */,
 				FEFC8EB01BBBA31F00139944 /* callout_icn_location_grey@3x.png */,
+				FEFE9AF61BFAEA7B00FFBD66 /* icn_floodinfo_userfeedback_submission_small_greyout@2x.png */,
 				FE4CD1011B54F1C000A16D02 /* icn_floodinfo_userfeedback_submission_small_greyout@3x.png */,
 				FE4CD1021B54F1C000A16D02 /* icn_floodinfo_userfeedback_submission_small@3x.png */,
 				FEFCD2631B0594F200B7A0DD /* icn_location_quick_map@3x.png */,
@@ -2702,6 +2744,23 @@
 				FEF51B941BF58E5900131021 /* icn_youtube-1@2x.png */,
 			);
 			name = Settings;
+			sourceTree = "<group>";
+		};
+		FEFE9AE31BFAD99300FFBD66 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				FEFE9AFE1BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@2x.png */,
+				FEFE9AFF1BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@3x.png */,
+				FEFE9AE51BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@2x.png */,
+				FEFE9AE61BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@3x.png */,
+				FEFE9AE71BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@2x.png */,
+				FEFE9AE81BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@3x.png */,
+				FEFE9AE91BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@2x.png */,
+				FEFE9AEA1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@3x.png */,
+				FEFE9AEB1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@2x.png */,
+				FEFE9AEC1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@3x.png */,
+			);
+			name = Dashboard;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2848,15 +2907,19 @@
 				FE99BE381A7B7E69000B83E8 /* Roboto-Light.ttf in Resources */,
 				FEC313531B79A35800AC2E08 /* tabbar_bg@3x.png in Resources */,
 				FEF51BA41BF58ECD00131021 /* divider_cctv@2x.png in Resources */,
+				FEFE9AF31BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@3x.png in Resources */,
 				FEF51B9E1BF58E5900131021 /* icn_waterlevel_below75@2x.png in Resources */,
 				FE98D6121BE73CC0003862EA /* icn_weather_big@2x.png in Resources */,
 				FEF51B1E1BF589FC00131021 /* icn_expand@2x.png in Resources */,
 				FEF51B101BF5889900131021 /* icn_money_white@2x.png in Resources */,
 				FE86914A1AE0A05C00EC2A77 /* icn_rainarea_small@3x.png in Resources */,
+				FEFE9AF41BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@2x.png in Resources */,
 				FE6C81D81B155FC300A8FEDB /* pub_temp_event22.jpg in Resources */,
 				FEAC50C71BDA0D9400D4D56E /* icn_share_new@3x.png in Resources */,
 				FEA37B441BBE5E8A006A8514 /* FD@3x.png in Resources */,
+				FEFE9AF01BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@2x.png in Resources */,
 				FE99BE391A7B7E69000B83E8 /* Roboto-LightItalic.ttf in Resources */,
+				FE83028D1BFC0F08003FF75F /* iApps.gpx in Resources */,
 				FEA37B471BBE5E8A006A8514 /* PC@3x.png in Resources */,
 				FEFBFF2B1A80D24E00E485E9 /* icn_arrow_down@3x.png in Resources */,
 				FE98D6031BE73BFF003862EA /* icn_distance_pink@2x.png in Resources */,
@@ -2867,7 +2930,7 @@
 				FEF51B971BF58E5900131021 /* icn_share_new@2x.png in Resources */,
 				FE714D811BD62CAD00DD78F6 /* icn_trash@3x.png in Resources */,
 				FE8C1C391AB292FA009D33E4 /* icn_sunny_small@3x.png in Resources */,
-				FE4F37721A888A3E0028903C /* image_avatar.png in Resources */,
+				FE4F37721A888A3E0028903C /* image_avatar@3x.png in Resources */,
 				FE99BE3B1A7B7E69000B83E8 /* Roboto-MediumItalic.ttf in Resources */,
 				FE4F376B1A8863390028903C /* image_background@3x.png in Resources */,
 				FEF51B7B1BF58D7300131021 /* icn_meter_line@2x.png in Resources */,
@@ -2900,6 +2963,7 @@
 				FE9F9D3F1BE720E90047488A /* image_waterwally@2x.png in Resources */,
 				FE8C1C381AB292FA009D33E4 /* icn_quickmap_car@3x.png in Resources */,
 				FEC631F61B2AC7910006A885 /* temp_feedback@3x.png in Resources */,
+				FEB8BA411BFC7389007959A2 /* Default-568h@2x.png in Resources */,
 				FE99BE3E1A7B7E69000B83E8 /* Roboto-ThinItalic.ttf in Resources */,
 				FE99BE3F1A7B7E69000B83E8 /* RobotoCondensed-Bold.ttf in Resources */,
 				FE6D15151BCB56C500F0A344 /* icn_speaker_mute@3x.png in Resources */,
@@ -2926,6 +2990,7 @@
 				FE6679BE1ACD334A0036198D /* icn_floodinfo_small_greyout@3x.png in Resources */,
 				FE98D5FD1BE73B6E003862EA /* wls_level2@2x.png in Resources */,
 				FEA37B461BBE5E8A006A8514 /* HZ@3x.png in Resources */,
+				FEB8BA451BFC73F5007959A2 /* Default@2x.png in Resources */,
 				FEF51AF31BF587E900131021 /* icn_ARview@2x.png in Resources */,
 				FEF51B801BF58D7300131021 /* wls_cross@2x.png in Resources */,
 				FED72CDA1ADB7FED00C4FDDB /* icn_share_cctv@3x.png in Resources */,
@@ -2936,6 +3001,7 @@
 				FEF51AE51BF586C000131021 /* TS@2x.png in Resources */,
 				FE9FCCEB1BEC61B700AAD893 /* Icon_152.png in Resources */,
 				FEF4C6D21ACBC15A00C57304 /* icn_rainarea_big@3x.png in Resources */,
+				FEFE9AF51BFAD9A500FFBD66 /* dashboard_icn_waterlevel_undermaintenance@3x.png in Resources */,
 				FEBA99761ADCC62500ED3555 /* icn_time@3x.png in Resources */,
 				FE36EB8F1BDDE0120012F3C3 /* wls_detail_1@3x.png in Resources */,
 				FEFCD2741B05A11700B7A0DD /* icn_web_settings@3x.png in Resources */,
@@ -2969,6 +3035,7 @@
 				FEF51B301BF58A8600131021 /* icn_waterlevel_big@2x.png in Resources */,
 				FE99BE431A7B7E69000B83E8 /* RobotoCondensed-LightItalic.ttf in Resources */,
 				FEC84B571BE740EE00269BC1 /* icn_notifyme@2x.png in Resources */,
+				FEFE9AF21BFAD9A500FFBD66 /* dashboard_icn_waterlevel_below75_big@2x.png in Resources */,
 				FEF51BA11BF58E5900131021 /* icn_youtube_settings@2x.png in Resources */,
 				FE99BE441A7B7E69000B83E8 /* RobotoCondensed-Regular.ttf in Resources */,
 				FE99BE171A7B6F5E000B83E8 /* settings_dashboard.png in Resources */,
@@ -2989,6 +3056,7 @@
 				FE9FCCE61BEC61B700AAD893 /* Icon_40.png in Resources */,
 				FE8E8CC01BF44DA600FA79E5 /* icn_call_abcwaters@2x.png in Resources */,
 				FEB13FC81A7766410061CE74 /* icn_profile@3x.png in Resources */,
+				FEFE9AF91BFAEC9300FFBD66 /* icn_floodinfo_small@2x.png in Resources */,
 				FEF51AF61BF587E900131021 /* icn_camera@2x.png in Resources */,
 				FE3239041B57A38F00BB3DA8 /* icn_3dots_horizontal@3x.png in Resources */,
 				FE7FD0891A7F50E5002A05CB /* notifications.png in Resources */,
@@ -3070,6 +3138,7 @@
 				FE7FD08B1A7F5317002A05CB /* whatsup_explore.png in Resources */,
 				FE98D6001BE73B89003862EA /* icn_avatar@2x.png in Resources */,
 				FEF51B0D1BF5889900131021 /* icn_gift_white@2x.png in Resources */,
+				FEFE9B001BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@2x.png in Resources */,
 				FE9F9D4D1BE722190047488A /* icn_events@2x.png in Resources */,
 				FEB13FC61A7766410061CE74 /* icn_home@3x.png in Resources */,
 				FEF51B181BF589CE00131021 /* callout_icn_location_grey@2x.png in Resources */,
@@ -3093,6 +3162,7 @@
 				FEF51B281BF58A5A00131021 /* icn_location_quick_map@2x.png in Resources */,
 				FE8652141BC4BE6600BA5689 /* rainmaptemp.png in Resources */,
 				FE3239021B57980F00BB3DA8 /* icn_location_top@3x.png in Resources */,
+				FEB8BA441BFC73F5007959A2 /* Default.png in Resources */,
 				FEF51B411BF58B2000131021 /* icn_iAlerts_notification@2x.png in Resources */,
 				FE99BE091A7B63FB000B83E8 /* profile_rewards.png in Resources */,
 				FEE04EAF1AD781C900BEA6C6 /* icn_floodinfo_notification@3x.png in Resources */,
@@ -3139,6 +3209,7 @@
 				FED72CDC1ADB7FF500C4FDDB /* divider_cctv@3x.png in Resources */,
 				FEF43C2A1A79F17500237CAD /* events_detail_options.png in Resources */,
 				FEF51BA81BF58EF800131021 /* icn_cctv_small@2x.png in Resources */,
+				FEFE9AEE1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@2x.png in Resources */,
 				FE98D6201BE74016003862EA /* icn_call_yellow@2x.png in Resources */,
 				FEB13FC71A7766410061CE74 /* icn_notifications@3x_old.png in Resources */,
 				FEBA99771ADCC62500ED3555 /* meter_bar@3x.png in Resources */,
@@ -3165,11 +3236,13 @@
 				FE8845E81AB6C24C005537C6 /* icn_arrow_down_field@3x.png in Resources */,
 				FE98D60E1BE73C89003862EA /* icn_sunny_small@2x.png in Resources */,
 				FE9F9D381BE7207B0047488A /* textfield_bg@2x.png in Resources */,
+				FEFE9B011BFB1FA600FFBD66 /* dashboard_icn_floodinfo_small@3x.png in Resources */,
 				FE3238F41B576B4F00BB3DA8 /* login_top_volley@3x.png in Resources */,
 				FEF43C261A79EE9400237CAD /* events_filter.png in Resources */,
 				FEF51B141BF5889900131021 /* tabbar_bg@2x.png in Resources */,
 				FE8845E91AB6C24C005537C6 /* tick@3x.png in Resources */,
 				FE7DC7B71BE9AD5100EEDFCF /* icn_helpicon@3x.png in Resources */,
+				FEFE9AF11BFAD9A500FFBD66 /* dashboard_icn_waterlevel_90_big@3x.png in Resources */,
 				FE7DC7B31BE9A6DC00EEDFCF /* icn_helpicon@2x.png in Resources */,
 				FEF51B321BF58A8600131021 /* icn_waterlevel_small_greyout@2x.png in Resources */,
 				FEF51B791BF58D7300131021 /* icn_ialert_disabled@2x.png in Resources */,
@@ -3197,6 +3270,8 @@
 				FEF51B7D1BF58D7300131021 /* meter_bar@2x.png in Resources */,
 				FECC28C21BD87F370000DB0F /* icn_abc_gallery@3x.png in Resources */,
 				FEE04EB71AD783B000BEA6C6 /* icn_facebook_whatsup@3x.png in Resources */,
+				FEFE9AEF1BFAD9A500FFBD66 /* dashboard_icn_waterlevel_75-90_big@3x.png in Resources */,
+				FEFE9AFD1BFB1D2A00FFBD66 /* image_avatar@2x.png in Resources */,
 				FEF51BB01BF5CC1800131021 /* icn_tips@3x.png in Resources */,
 				FEF51B811BF58D7300131021 /* wls_detail_1@2x.png in Resources */,
 				FE98D6081BE73C45003862EA /* icn_location_blue@2x.png in Resources */,
@@ -3223,6 +3298,7 @@
 				FE98D5EC1BE73A3C003862EA /* icn_3dots@2x.png in Resources */,
 				FE9F9D211BE71F180047488A /* icn_distance_blue_wls@2x.png in Resources */,
 				FEF51B0A1BF5889900131021 /* icn_award_white@2x.png in Resources */,
+				FEFE9AF71BFAEA7B00FFBD66 /* icn_floodinfo_userfeedback_submission_small_greyout@2x.png in Resources */,
 				FE98D5E81BE739FF003862EA /* icn_menu_white@2x.png in Resources */,
 				FE36EB911BDDE0120012F3C3 /* wls_detail_3@3x.png in Resources */,
 				FEF51B761BF58D7300131021 /* blue_wls@2x.png in Resources */,
@@ -3445,8 +3521,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3470,8 +3546,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				ONLY_ACTIVE_ARCH = NO;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3493,8 +3569,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -3504,6 +3580,7 @@
 					"\\\"$(SRCROOT)/../../../FacebookSDK\\\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -3512,7 +3589,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				ONLY_ACTIVE_ARCH = NO;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3524,8 +3602,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3540,8 +3618,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -3552,8 +3631,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3568,8 +3647,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
@@ -3579,8 +3659,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3593,8 +3673,9 @@
 				);
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Debug;
@@ -3604,8 +3685,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3614,8 +3695,9 @@
 				);
 				INFOPLIST_FILE = MyWatersTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Release;

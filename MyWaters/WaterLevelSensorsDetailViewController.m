@@ -184,7 +184,7 @@
 
 - (void) fetchWLSListing {
     
-//    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+    [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
     
     isSubscribingForAlert = NO;
     

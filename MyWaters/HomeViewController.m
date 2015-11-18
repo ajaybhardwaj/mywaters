@@ -581,6 +581,7 @@
                 [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
                 parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon",@"pushtoken", nil];
                 values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], [[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],nil];
+                [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
             }
             else {
                 [appDelegate.locationManager startUpdatingLocation];
@@ -593,9 +594,11 @@
             [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
             parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"pushtoken", nil];
             values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"], nil];
+            
+            [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
         }
         
-        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+        
     }
     else {
         [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
@@ -645,9 +648,38 @@
     
     
     // Quick Map Content Refresh
-    [self generatePUBFloodSubmissionAnnotations];
-    [self generateWLSAnnotations];
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+        
+        MKCoordinateRegion mapRegion;
+        mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
+        mapRegion.span.latitudeDelta = 0.013f;
+        mapRegion.span.longitudeDelta = 0.013f;
+        [quickMap setRegion:mapRegion animated: YES];
+        
+        [quickMap removeAnnotations:pubFloodAnnotationsArray];
+        [quickMap removeAnnotations:wlsAnnotationsArray];
+        
+        [self generatePUBFloodSubmissionAnnotations];
+        [self generateWLSAnnotations];
+        
+    }
+    else {
+        
+        CLLocation *tempLocation = [[CLLocation alloc] initWithLatitude:1.3000 longitude:103.800];
+        
+        MKCoordinateRegion mapRegion;
+        mapRegion.center = [tempLocation coordinate];
+        mapRegion.span.latitudeDelta = 0.5f;
+        mapRegion.span.longitudeDelta = 0.5f;
+        [quickMap setRegion:mapRegion animated: YES];
+        
+        [quickMap removeAnnotations:pubFloodAnnotationsArray];
+        [quickMap removeAnnotations:wlsAnnotationsArray];
+        
+    }
+
     
+
     
     // WLS Content Refresh
     if (wlsDataArray != (id)[NSNull null] && wlsDataArray.count!=0) {
@@ -1051,10 +1083,10 @@
                     quickMap.delegate = self;
                     [quickMap setMapType:MKMapTypeStandard];
                     [quickMap setZoomEnabled:YES];
-                    [quickMap setScrollEnabled:NO];
+//                    [quickMap setScrollEnabled:NO];
                     quickMap.showsUserLocation = YES;
                     quickMap.layer.cornerRadius = 10;
-                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
+//                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
                     [columnView addSubview:quickMap];
                     
                     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
@@ -1062,6 +1094,15 @@
                         mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
                         mapRegion.span.latitudeDelta = 0.013f;
                         mapRegion.span.longitudeDelta = 0.013f;
+                        [quickMap setRegion:mapRegion animated: YES];
+                    }
+                    else {
+                        CLLocation *tempLocation = [[CLLocation alloc] initWithLatitude:1.3000 longitude:103.800];
+                        
+                        MKCoordinateRegion mapRegion;
+                        mapRegion.center = [tempLocation coordinate];
+                        mapRegion.span.latitudeDelta = 0.5f;
+                        mapRegion.span.longitudeDelta = 0.5f;
                         [quickMap setRegion:mapRegion animated: YES];
                     }
                     
@@ -1337,10 +1378,10 @@
                     quickMap.delegate = self;
                     [quickMap setMapType:MKMapTypeStandard];
                     [quickMap setZoomEnabled:YES];
-                    [quickMap setScrollEnabled:NO];
+//                    [quickMap setScrollEnabled:NO];
                     quickMap.showsUserLocation = YES;
                     quickMap.layer.cornerRadius = 10;
-                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
+//                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
                     [columnView addSubview:quickMap];
                     
                     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
@@ -1348,6 +1389,15 @@
                         mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
                         mapRegion.span.latitudeDelta = 0.013f;
                         mapRegion.span.longitudeDelta = 0.013f;
+                        [quickMap setRegion:mapRegion animated: YES];
+                    }
+                    else {
+                        CLLocation *tempLocation = [[CLLocation alloc] initWithLatitude:1.3000 longitude:103.800];
+                        
+                        MKCoordinateRegion mapRegion;
+                        mapRegion.center = [tempLocation coordinate];
+                        mapRegion.span.latitudeDelta = 0.5f;
+                        mapRegion.span.longitudeDelta = 0.5f;
                         [quickMap setRegion:mapRegion animated: YES];
                     }
                     
@@ -1641,6 +1691,8 @@
     
     if (floodsDataArray.count != 0) {
         
+        DebugLog(@"%@",floodsDataArray);
+        
         if (!pubFloodAnnotationsArray) {
             pubFloodAnnotationsArray = [[NSMutableArray alloc] init];
         }
@@ -1756,7 +1808,7 @@
             [wlsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_WLS_RESPONSE_NAME]];
         if ([[responseString JSONValue] objectForKey:DASHBOARD_API_CCTV_RESPONSE_NAME] != (id)[NSNull null])
             [cctvDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_CCTV_RESPONSE_NAME]];
-        if ([[responseString JSONValue] objectForKey:DASHBOARD_API_FLOODS_RESPONSE_NAME] != (id)[NSNull null])
+        if ([[[responseString JSONValue] objectForKey:DASHBOARD_API_FLOODS_RESPONSE_COUNT_NAME] intValue] != 0)
             [floodsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_FLOODS_RESPONSE_NAME]];
         if ([[responseString JSONValue] objectForKey:DASHBOARD_API_TIPS_RESPONSE_NAME] != (id)[NSNull null])
             [tipsDataArray setArray:[[responseString JSONValue] objectForKey:DASHBOARD_API_TIPS_RESPONSE_NAME]];
@@ -1820,7 +1872,7 @@
         FloodMapAnnotations *flood = (FloodMapAnnotations*) annotation;
         pinView1 = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"FLOOD"];
         pinView1.tag = flood.annotationTag;
-        pinView1.image = [UIImage imageNamed:@"icn_floodinfo_small.png"];
+        pinView1.image = [UIImage imageNamed:@"dashboard_icn_floodinfo_small.png"];
         
         return pinView1;
     }
@@ -1831,16 +1883,16 @@
         pinView2.tag = wls.annotationTag;
         
         if (wlsAnnotation.waterLevel == 1) {
-            pinView2.image = [UIImage imageNamed:@"icn_waterlevel_below75_big.png"];
+            pinView2.image = [UIImage imageNamed:@"dashboard_icn_waterlevel_below75_big.png"];
         }
         else if (wlsAnnotation.waterLevel == 2) {
-            pinView2.image = [UIImage imageNamed:@"icn_waterlevel_75-90_big.png"];
+            pinView2.image = [UIImage imageNamed:@"dashboard_icn_waterlevel_75-90_big.png"];
         }
         else if (wlsAnnotation.waterLevel == 3) {
-            pinView2.image = [UIImage imageNamed:@"icn_waterlevel_90_big.png"];
+            pinView2.image = [UIImage imageNamed:@"dashboard_icn_waterlevel_90_big.png"];
         }
         else {
-            pinView2.image = [UIImage imageNamed:@"icn_waterlevel_undermaintenance.png"];
+            pinView2.image = [UIImage imageNamed:@"dashboard_icn_waterlevel_undermaintenance.png"];
         }
         return pinView2;
     }
@@ -1853,7 +1905,6 @@
                        initWithAnnotation:annotation reuseIdentifier:defaultPinID];
         
         pinView.canShowCallout = YES;
-        pinView.image = [UIImage imageNamed:@"icn_waterlevel_75-90.png"];
         [quickMap.userLocation setTitle:@"You are here..!!"];
         return pinView;
         

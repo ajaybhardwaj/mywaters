@@ -28,6 +28,17 @@
 
 
 
+
+//*************** Method For Unhiding CalloutView After Time
+
+- (void) showCalloutView {
+    
+    calloutView.hidden = NO;
+    isShowingCallout = YES;
+}
+
+
+
 //*************** Method For Removing Help Image View
 
 -(void) removeHelpImageView:(UITapGestureRecognizer *)gesture {
@@ -209,8 +220,8 @@
 
 - (void) fetchWLSListing {
     
-    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version", nil];
-    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[CommonFunctions getAppVersionNumber], nil];
+    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"version",@"PushToken", nil];
+    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[CommonFunctions getAppVersionNumber],[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
 }
 
@@ -1084,9 +1095,9 @@
         
         FloodMapAnnotations *tempFlood = (FloodMapAnnotations*)view.annotation;
         
-        [calloutView removeFromSuperview];
-        
-        isShowingCallout = YES;
+        if (calloutView) {
+            [calloutView removeFromSuperview];
+        }
         
         calloutView = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 150, 100)];
         calloutView.backgroundColor = [UIColor whiteColor];
@@ -1136,23 +1147,23 @@
         calloutView.frame = newCalloutFrame;
         
         CGPoint p = [quickMap convertCoordinate:tempFlood.coordinate toPointToView:quickMap];
-        CGRect frame = CGRectMake(p.x - (calloutView.frame.size.width/2 - 30),
-                                  p.y- (calloutView.frame.size.height / 2 + 30),
-                                  calloutView.frame.size.width,
-                                  calloutView.frame.size.height);
-        
+        CLLocationCoordinate2D newCenter=[mapView convertPoint:p toCoordinateFromView:quickMap];
+        [quickMap setCenterCoordinate:newCenter animated:YES];
+        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+12),calloutView.frame.size.width,calloutView.frame.size.height);
         calloutView.frame = frame;
         
         [quickMap addSubview:calloutView];
+        calloutView.hidden = YES;
+        [self performSelector:@selector(showCalloutView) withObject:nil afterDelay:0.5];
         
     }
     else if ([view.annotation isKindOfClass:[CCTVMapAnnoations class]]) {
         
         CCTVMapAnnoations *tempCCTV = (CCTVMapAnnoations*)view.annotation;
         
-        [calloutView removeFromSuperview];
-        
-        isShowingCallout = YES;
+        if (calloutView) {
+            [calloutView removeFromSuperview];
+        }
         
         calloutView = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 150, 100)];
         calloutView.backgroundColor = [UIColor whiteColor];
@@ -1198,11 +1209,9 @@
         calloutView.frame = newCalloutFrame;
         
         CGPoint p = [quickMap convertCoordinate:tempCCTV.coordinate toPointToView:quickMap];
-        CGRect frame = CGRectMake(p.x - (calloutView.frame.size.width/2 - 30),
-                                  p.y - (calloutView.frame.size.height/2 + 30),
-                                  calloutView.frame.size.width,
-                                  calloutView.frame.size.height);
-        
+        CLLocationCoordinate2D newCenter=[mapView convertPoint:p toCoordinateFromView:quickMap];
+        [quickMap setCenterCoordinate:newCenter animated:YES];
+        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+12),calloutView.frame.size.width,calloutView.frame.size.height);
         calloutView.frame = frame;
 
         
@@ -1211,17 +1220,19 @@
         cctvCalloutOverlayButton.tag = tempCCTV.annotationTag;
         [cctvCalloutOverlayButton addTarget:self action:@selector(handleCCTVCalloutTap:) forControlEvents:UIControlEventTouchUpInside];
         [calloutView addSubview:cctvCalloutOverlayButton];
-        
+
         [quickMap addSubview:calloutView];
+        calloutView.hidden = YES;
+        [self performSelector:@selector(showCalloutView) withObject:nil afterDelay:0.5];
         
     }
     else if ([view.annotation isKindOfClass:[FeedbackMapAnnotations class]]) {
         
         FeedbackMapAnnotations *tempUserFeedback = (FeedbackMapAnnotations*) view.annotation;
         
-        [calloutView removeFromSuperview];
-        
-        isShowingCallout = YES;
+        if (calloutView) {
+            [calloutView removeFromSuperview];
+        }
         
         calloutView = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 250, 100)];
         calloutView.backgroundColor = [UIColor whiteColor];
@@ -1282,23 +1293,25 @@
         calloutView.frame = newCalloutFrame;
         
         CGPoint p = [quickMap convertCoordinate:tempUserFeedback.coordinate toPointToView:quickMap];
-        CGRect frame = CGRectMake(p.x - (calloutView.frame.size.width/2 - 30),
-                                  p.y- (calloutView.frame.size.height / 2 + 30),
-                                  calloutView.frame.size.width,
-                                  calloutView.frame.size.height);
-        
+        CLLocationCoordinate2D newCenter=[mapView convertPoint:p toCoordinateFromView:quickMap];
+        [quickMap setCenterCoordinate:newCenter animated:YES];
+        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+12),calloutView.frame.size.width,calloutView.frame.size.height);
         calloutView.frame = frame;
         
+        
         [quickMap addSubview:calloutView];
+        calloutView.hidden = YES;
+        [self performSelector:@selector(showCalloutView) withObject:nil afterDelay:0.5];
         
     }
     else if ([view.annotation isKindOfClass:[WLSMapAnnotations class]]) {
         
         WLSMapAnnotations *tempWls = (WLSMapAnnotations*)view.annotation;
         
-        [calloutView removeFromSuperview];
+        if (calloutView) {
+            [calloutView removeFromSuperview];
+        }
         
-        isShowingCallout = YES;
         
         calloutView = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 150, 100)];
         calloutView.backgroundColor = [UIColor whiteColor];
@@ -1366,11 +1379,9 @@
         calloutView.frame = newCalloutFrame;
         
         CGPoint p = [quickMap convertCoordinate:tempWls.coordinate toPointToView:quickMap];
-        CGRect frame = CGRectMake(p.x - (calloutView.frame.size.width/2 - 30),
-                                  p.y- (calloutView.frame.size.height / 2 + 30),
-                                  calloutView.frame.size.width,
-                                  calloutView.frame.size.height);
-        
+        CLLocationCoordinate2D newCenter=[mapView convertPoint:p toCoordinateFromView:quickMap];
+        [quickMap setCenterCoordinate:newCenter animated:YES];
+        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+12),calloutView.frame.size.width,calloutView.frame.size.height);
         calloutView.frame = frame;
         
         
@@ -1381,6 +1392,8 @@
         [calloutView addSubview:wlsCalloutOverlayButton];
         
         [quickMap addSubview:calloutView];
+        calloutView.hidden = YES;
+        [self performSelector:@selector(showCalloutView) withObject:nil afterDelay:0.5];
         
     }
 }
@@ -2019,7 +2032,7 @@
     }
     
     if (!isShowingRoute)
-        [self fetchPUBFloodSubmissionListing];
+        [self performSelector:@selector(fetchPUBFloodSubmissionListing) withObject:nil afterDelay:0.5];
     
     
 }

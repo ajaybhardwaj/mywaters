@@ -47,13 +47,13 @@
   
     // Share has been removed for version 2.0
     
-//    if ([[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"UnlockedAt"] != (id)[NSNull null]) {
+    if ([[badgesDataSource objectAtIndex:button.tag-1] objectForKey:@"UnlockedAt"] == (id)[NSNull null]) {
 //        isBadgeUnlocked = YES;
-//        [CommonFunctions showAlertView:self title:nil msg:alertMessage cancel:nil otherButton:@"Share on Facebook",@"Cancel",nil];
-//    }
+        [CommonFunctions showAlertView:self title:nil msg:alertMessage cancel:nil otherButton:@"OK",nil];
+    }
 //    else {
 //        isBadgeUnlocked = NO;
-        [CommonFunctions showAlertView:self title:nil msg:alertMessage cancel:@"OK" otherButton:nil];
+//        [CommonFunctions showAlertView:self title:nil msg:alertMessage cancel:@"OK" otherButton:nil];
 //    }
 }
 
