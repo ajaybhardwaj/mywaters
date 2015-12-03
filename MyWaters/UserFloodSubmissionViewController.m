@@ -81,12 +81,12 @@
     
     if ([CommonFunctions hasConnectivity]) {
     if ([locationField.text length] == 0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
     
     if ([commentField.text length] == 0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
     
@@ -209,6 +209,7 @@
     [CommonFunctions dismissGlobalHUD];
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         
+        appDelegate.IS_USER_FLOOD_SUBMISSION_SUCCESS = YES;
         [CommonFunctions showAlertView:self title:[[responseString JSONValue] objectForKey:@"Message"] msg:nil cancel:@"OK" otherButton:nil];
         
         isFeedbackImageAvailable = NO;

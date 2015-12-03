@@ -47,6 +47,7 @@
     UIView *alertOptionsView;
     int selectedAlertType;
     UIButton *level50Button,*level75Button,*level90Button,*level100Button;
+    UIButton *level75OverlayButton,*level90OverlayButton;
     
     UIImageView *dimmedImageView;
     

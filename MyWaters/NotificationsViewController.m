@@ -39,12 +39,12 @@
     // End the refreshing
     if (self.refreshControl) {
         
-//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//        [formatter setDateFormat:@"MMM d, h:mm a"];
-//        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
-//        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
-//                                                                    forKey:NSForegroundColorAttributeName];
-//        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        //        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        //        [formatter setDateFormat:@"MMM d, h:mm a"];
+        //        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        //        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
+        //                                                                    forKey:NSForegroundColorAttributeName];
+        //        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
         //        self.refreshControl.attributedTitle = attributedTitle;
         
         [self.refreshControl endRefreshing];
@@ -57,8 +57,7 @@
 - (void) toggleNotificationSpeech {
     
     if (canReadNotifications) {
-        canReadNotifications = NO;
-        [btnSpeaker setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_speaker_mute.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [CommonFunctions showAlertView:self title:nil msg:@"Would you like to switch off voice notification?" cancel:nil otherButton:@"NO",@"YES",nil];
     }
     else {
         canReadNotifications = YES;
@@ -118,7 +117,7 @@
         
         NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"pushtoken",@"version", nil];
         NSArray *values = [[NSArray alloc] initWithObjects:@"7",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
-
+        
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
         
         [self pullToRefreshTable];
@@ -132,12 +131,22 @@
 ////*************** Method To Hide Filter Table On Touch In Other UI
 //
 //- (void) hideFilterTable  {
-//    
+//
 //    if (isShowingFilter) {
 //        [self animateFilterTable];
 //    }
 //}
 
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex==1) {
+        canReadNotifications = NO;
+        [btnSpeaker setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_speaker_mute.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+}
 
 
 # pragma mark - ASIHTTPRequestDelegate Methods
@@ -169,7 +178,7 @@
             
             [appDelegate.PUSH_NOTIFICATION_ARRAY removeAllObjects];
             [appDelegate.PUSH_NOTIFICATION_ARRAY setArray:tempArray];
-           
+            
             [tableDataSource removeAllObjects];
             
             for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
@@ -201,7 +210,7 @@
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
     [CommonFunctions dismissGlobalHUD];
-//    [appDelegate.hud hide:YES];
+    //    [appDelegate.hud hide:YES];
 }
 
 # pragma mark - UITableViewDelegate Methods
@@ -213,27 +222,32 @@
     }
     else if (tableView==notificationsTable) {
         
-        float titleHeight = 0.0;
-        float dateHeight = 0.0;
-        int subtractComponent = 0;
-        
-        
-        if ([[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"] != (id)[NSNull null]) {
-            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:notificationsTable.bounds.size.width-80];
-            subtractComponent = subtractComponent + 30;
+        if (selectedRowIndexToExpand==indexPath.row) {
+            
+            float titleHeight = 0.0;
+            float dateHeight = 0.0;
+            int subtractComponent = 0;
+            
+            
+            if ([[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"] != (id)[NSNull null]) {
+                titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:notificationsTable.bounds.size.width-80];
+                subtractComponent = subtractComponent + 30;
+            }
+            
+            if ([[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"] != (id)[NSNull null]) {
+                dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:12.0] withinWidth:notificationsTable.bounds.size.width-80];
+                subtractComponent = subtractComponent + 30;
+            }
+            
+            if ((titleHeight+dateHeight) < 80) {
+                return 80.0f;
+            }
+            
+            return titleHeight+dateHeight-subtractComponent;
         }
-        
-        if ([[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"] != (id)[NSNull null]) {
-            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:notificationsTable.bounds.size.width-80];
-            subtractComponent = subtractComponent + 30;
+        else {
+            return 75.0f;
         }
-        
-        if ((titleHeight+dateHeight) < 80) {
-            return 80.0f;
-        }
-        
-        return titleHeight+dateHeight-subtractComponent;
-        
     }
     
     return 0;
@@ -252,7 +266,7 @@
             
             [tableDataSource removeAllObjects];
             for (int i=0; i<appDelegate.PUSH_NOTIFICATION_ARRAY.count; i++) {
-                    [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
+                [tableDataSource addObject:[appDelegate.PUSH_NOTIFICATION_ARRAY objectAtIndex:i]];
             }
         }
         else if (indexPath.row==1) {
@@ -299,6 +313,9 @@
         
     }
     else {
+        
+        selectedRowIndexToExpand = indexPath.row;
+        
         if (canReadNotifications) {
             
             currentIndex = indexPath.row;
@@ -414,35 +431,77 @@
         }
         [cell.contentView addSubview:cellImageView];
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, notificationsTable.bounds.size.width-80, 40)];
-        titleLabel.text = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"];
-        titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
-        titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.numberOfLines = 0;
+        UILabel *titleLabel,*dateLabel;
+        if (selectedRowIndexToExpand==indexPath.row) {
+            
+            titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, notificationsTable.bounds.size.width-80, 40)];
+            titleLabel.text = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"];
+            if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Read"] isEqualToString:@"No"]) {
+                titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+            }
+            else {
+                titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+            }
+            titleLabel.backgroundColor = [UIColor clearColor];
+            titleLabel.numberOfLines = 0;
+            
+            
+            CGRect newTitleLabelLabelFrame = titleLabel.frame;
+            newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"]] font:titleLabel.font withinWidth:notificationsTable.bounds.size.width-80];//expectedDescriptionLabelSize.height;
+            titleLabel.frame = newTitleLabelLabelFrame;
+            [cell.contentView addSubview:titleLabel];
+            [titleLabel sizeToFit];
+
+            
+            dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, notificationsTable.bounds.size.width-80, 20)];
+            dateLabel.text = [CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]];
+            if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Read"] isEqualToString:@"No"]) {
+                dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+            }
+            else {
+                dateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+            }
+            dateLabel.backgroundColor = [UIColor clearColor];
+            dateLabel.textColor = [UIColor lightGrayColor];
+            dateLabel.numberOfLines = 0;
+            
+            CGRect newDateLabelLabelFrame = dateLabel.frame;
+            newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]] font:dateLabel.font withinWidth:notificationsTable.bounds.size.width-80];//expectedDescriptionLabelSize.height;
+            dateLabel.frame = newDateLabelLabelFrame;
+            [cell.contentView addSubview:dateLabel];
+            [dateLabel sizeToFit];
+
+            
+        }
+        else {
+            
+            titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, notificationsTable.bounds.size.width-80, 40)];
+            titleLabel.text = [[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"];
+            if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Read"] isEqualToString:@"No"]) {
+                titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
+            }
+            else {
+                titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
+            }
+            titleLabel.backgroundColor = [UIColor clearColor];
+            titleLabel.numberOfLines = 0;
+            [cell.contentView addSubview:titleLabel];
+            
+            dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, notificationsTable.bounds.size.width-80, 20)];
+            dateLabel.text = [CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]];
+            if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Read"] isEqualToString:@"No"]) {
+                dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+            }
+            else {
+                dateLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:12.0];
+            }
+            dateLabel.backgroundColor = [UIColor clearColor];
+            dateLabel.textColor = [UIColor lightGrayColor];
+            dateLabel.numberOfLines = 0;
+            [cell.contentView addSubview:dateLabel];
+
+        }
         
-        CGRect newTitleLabelLabelFrame = titleLabel.frame;
-        newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Message"]] font:titleLabel.font withinWidth:notificationsTable.bounds.size.width-80];//expectedDescriptionLabelSize.height;
-        titleLabel.frame = newTitleLabelLabelFrame;
-        [cell.contentView addSubview:titleLabel];
-        [titleLabel sizeToFit];
-        
-        
-        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, titleLabel.frame.origin.y+titleLabel.bounds.size.height+5, notificationsTable.bounds.size.width-80, 20)];
-        dateLabel.text = [CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]];
-        dateLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
-        dateLabel.backgroundColor = [UIColor clearColor];
-        dateLabel.textColor = [UIColor lightGrayColor];
-        dateLabel.numberOfLines = 0;
-        
-        CGRect newDateLabelLabelFrame = dateLabel.frame;
-        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[CommonFunctions dateForRFC3339DateTimeString:[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"CreatedDate"]] font:dateLabel.font withinWidth:notificationsTable.bounds.size.width-80];//expectedDescriptionLabelSize.height;
-        dateLabel.frame = newDateLabelLabelFrame;
-        [cell.contentView addSubview:dateLabel];
-        [dateLabel sizeToFit];
-        
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, height-1, notificationsTable.bounds.size.width, 0.5)];
-        [seperatorImage setBackgroundColor:[UIColor darkGrayColor]];
-        [cell.contentView addSubview:seperatorImage];
         
         if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Read"] isEqualToString:@"No"]) {
             cell.backgroundColor = RGB(230, 230, 230);
@@ -450,6 +509,12 @@
         else {
             cell.backgroundColor = [UIColor whiteColor];//RGB(247, 247, 247);
         }
+        
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, height-1, notificationsTable.bounds.size.width, 0.5)];
+        [seperatorImage setBackgroundColor:[UIColor darkGrayColor]];
+        [cell.contentView addSubview:seperatorImage];
+        
+        
     }
     
     return cell;
@@ -480,6 +545,7 @@
     canReadNotifications = YES;
     currentIndex = 0;
     previousIndex = -1;
+    selectedRowIndexToExpand = -1;
     
     NSMutableDictionary *titleBarAttributes = [NSMutableDictionary dictionaryWithDictionary: [[UINavigationBar appearance] titleTextAttributes]];
     [titleBarAttributes setValue:[UIFont fontWithName:ROBOTO_MEDIUM size:19] forKey:NSFontAttributeName];
@@ -508,10 +574,10 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
     
     
-//    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideFilterTable)];
-//    tapGesture.cancelsTouchesInView = NO;
-//    tapGesture.numberOfTapsRequired = 1;
-//    [self.view addGestureRecognizer:tapGesture];
+    //    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideFilterTable)];
+    //    tapGesture.cancelsTouchesInView = NO;
+    //    tapGesture.numberOfTapsRequired = 1;
+    //    [self.view addGestureRecognizer:tapGesture];
     
     notificationsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-64) style:UITableViewStylePlain];
     notificationsTable.delegate = self;

@@ -17,6 +17,7 @@
     UIButton *submitButton;
     
     AppDelegate *appDelegate;
+    UIButton *removeKeypadsButton;
 }
 
 @end

@@ -207,14 +207,14 @@
         [level90Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [level100Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
-    else if (sender==level75Button) {
+    else if (sender==level75Button || sender==level75OverlayButton) {
         selectedAlertType = 2;
         [level50Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_selected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [level90Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [level100Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     }
-    else if (sender==level90Button) {
+    else if (sender==level90Button || sender==level90OverlayButton) {
         selectedAlertType = 3;
         [level50Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
         [level75Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -300,6 +300,12 @@
     level75.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
     [alertOptionsView addSubview:level75];
     
+    level75OverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    level75OverlayButton.frame = CGRectMake(20, headingLabel.frame.origin.y+headingLabel.bounds.size.height+30, alertOptionsView.bounds.size.width-20, 30);
+    level75OverlayButton.tag = 2;
+    [level75OverlayButton addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
+    [alertOptionsView addSubview:level75OverlayButton];
+    
     level90Button = [UIButton buttonWithType:UIButtonTypeCustom];
     level90Button.frame = CGRectMake(20, level75.frame.origin.y+level75.bounds.size.height+20, 25, 25);
     [level90Button setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_radio_unselected.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
@@ -313,6 +319,12 @@
     level90.textColor = RGB(0,0,0);
     level90.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13.0];
     [alertOptionsView addSubview:level90];
+    
+    level90OverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    level90OverlayButton.frame = CGRectMake(20, level75.frame.origin.y+level75.bounds.size.height+20, alertOptionsView.bounds.size.width-20, 30);
+    level90OverlayButton.tag = 3;
+    [level90OverlayButton addTarget:self action:@selector(handleAlertOptions:) forControlEvents:UIControlEventTouchUpInside];
+    [alertOptionsView addSubview:level90OverlayButton];
     
     //    level100Button = [UIButton buttonWithType:UIButtonTypeCustom];
     //    level100Button.frame = CGRectMake(20, level90.frame.origin.y+level90.bounds.size.height+20, 25, 25);
@@ -644,6 +656,84 @@
 }
 
 
+
+//*************** Method For Refreshing UI
+
+- (void) refreshContent {
+    
+    if (isSubscribed) {
+        
+        // selectedAlertType = 5 to unsubscribe only
+        selectedAlertType = 5;
+        notifiyButton.hidden = YES;
+        unsubscribeButton.hidden = NO;
+    }
+    else {
+        selectedAlertType = -1;
+        notifiyButton.hidden = NO;
+        unsubscribeButton.hidden = YES;
+    }
+    
+    if (drainDepthType==1) {
+        riskLabel.text = @"Low Flood Risk";
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_3.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    else if (drainDepthType==2) {
+        riskLabel.text = @"Moderate Flood Risk";
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_1.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    else if (drainDepthType==3) {
+        riskLabel.text = @"High Flood Risk";
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_2.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    else {
+        riskLabel.text = @"Under Maintenance";
+        [topImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_maintenance.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+    }
+    [riskLabel sizeToFit];
+    
+    timeLabel.text = observedTime;
+    
+    if (drainDepthType==1) {
+        depthValueLabel.text = @"Drain 0%-75% full";
+    }
+    else if (drainDepthType==2) {
+        depthValueLabel.text = @"Drain 75%-90% full";
+    }
+    else if (drainDepthType==3) {
+        depthValueLabel.text = @"Drain 90%-100% full";
+    }
+    else {
+        depthValueLabel.text = @"Station under maintenance";
+    }
+    
+    
+    cctvTitleLabel.text = wlsName;
+    
+    //----- Change Current Location With Either Current Location Value or Default Location Value
+    CLLocationCoordinate2D currentLocation;
+    CLLocationCoordinate2D desinationLocation;
+    
+    currentLocation.latitude = appDelegate.CURRENT_LOCATION_LAT;
+    currentLocation.longitude = appDelegate.CURRENT_LOCATION_LONG;
+    
+    desinationLocation.latitude = latValue;
+    desinationLocation.longitude = longValue;
+    
+    distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+    
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+        
+        distanceLabel.text = @"";
+        arrowIcon.hidden = YES;
+        directionButton.enabled = NO;
+    }
+    
+    [wlsListingTable reloadData];
+    
+}
+
+
 //*************** Method For Creating UI
 
 - (void) createUI {
@@ -802,10 +892,12 @@
     
     wlsListingTable = [[UITableView alloc] init];
     if (IS_IPHONE_4_OR_LESS) {
-        wlsListingTable.frame = CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+185));
+//        wlsListingTable.frame = CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+185));
+        wlsListingTable.frame = CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+184));
     }
     else {
-        wlsListingTable.frame = CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+75));
+//        wlsListingTable.frame = CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+75));
+        wlsListingTable.frame = CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+184));
     }
     wlsListingTable.delegate = self;
     wlsListingTable.dataSource = self;
@@ -1047,7 +1139,7 @@
             
             for (int i=0; i<appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
                 if (![[[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"id"] isEqualToString:wlsID]) {
-                    if (count!=3) {
+                    if (count!=5) {
                         [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                         count++;
                     }
@@ -1210,7 +1302,7 @@
         }
         for (int i=0; i<appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
             if ([[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"id"] != wlsID) {
-                if (count!=3) {
+                if (count!=5) {
                     [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                     count++;
                 }
@@ -1282,7 +1374,7 @@
         
         for (int i=0; i<appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
             if ([[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"id"] != wlsID) {
-                if (count!=3) {
+                if (count!=5) {
                     [tempNearByArray addObject:[appDelegate.WLS_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                     count++;
                 }
@@ -1294,8 +1386,8 @@
     }
     
     
-    [self createUI];
-    [wlsListingTable reloadData];
+    [self refreshContent];
+//    [wlsListingTable reloadData];
 }
 
 
@@ -1305,7 +1397,7 @@
     
     if (tableView==wlsListingTable) {
         if (tempNearByArray.count!=0)
-            return 3;
+            return 5;
     }
     else if (tableView==searchTableView) {
         return filterDataSource.count;
@@ -1467,7 +1559,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.title = @"Water Level Sensor";
+    self.title = @"WLS Details";
     self.view.backgroundColor = RGB(247, 247, 247);
     [appDelegate.locationManager startUpdatingLocation];
     

@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import <AVFoundation/AVFoundation.h>
 
-@interface NotificationsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,AVAudioPlayerDelegate> {
+@interface NotificationsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,AVAudioPlayerDelegate,UIAlertViewDelegate> {
     
     AppDelegate *appDelegate;
     
@@ -21,7 +21,7 @@
     
     BOOL isShowingFilter,canReadNotifications,isPlayingNotification;
     UIButton *btnSpeaker;
-    NSInteger selectedFilterIndex,previousIndex,currentIndex;
+    NSInteger selectedFilterIndex,previousIndex,currentIndex,selectedRowIndexToExpand;
     
     UILabel *noRecentNotifiactionLabel;
     UIButton *hideFilterButton;

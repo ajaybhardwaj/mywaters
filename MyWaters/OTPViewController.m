@@ -80,7 +80,12 @@
 
 - (void) pop2Dismiss:(id) sender {
     
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    if (isValidatingEmail) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
 }
 
 
@@ -124,7 +129,7 @@
 
 - (void) createUI {
     
-    instructionLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 50, self.view.bounds.size.width-20, 20)];
+    instructionLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 70, self.view.bounds.size.width-20, 20)];
     instructionLabel.text = @"Kindly key in the OTP sent to your email.";
     instructionLabel.textColor = RGB(22, 25, 62);
     instructionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
@@ -133,7 +138,7 @@
     
     
 //    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+10, self.view.bounds.size.width/6-8, 40)];
-    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+50, self.view.bounds.size.width-20, 40)];
+    otpField1 = [[UITextField alloc] initWithFrame:CGRectMake(10, instructionLabel.frame.origin.y+instructionLabel.bounds.size.height+90, self.view.bounds.size.width-20, 40)];
     otpField1.textColor = RGB(61, 71, 94);
     otpField1.font = [UIFont fontWithName:ROBOTO_REGULAR size:14.0];
     otpField1.leftViewMode = UITextFieldViewModeAlways;

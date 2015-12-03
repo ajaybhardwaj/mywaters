@@ -28,7 +28,7 @@
     BOOL isTermsAgree,isProfilePictureSelected,isSigningUpViaFacebook;
     UITapGestureRecognizer *profileImageTap;
     
-    
+    UIButton *removeKeypadsButton;
 }
 @property (nonatomic, strong) NSString *facebookIDString,*facebookEmailString;
 @property (nonatomic, assign) BOOL isFacebookDataFetchInLogin;

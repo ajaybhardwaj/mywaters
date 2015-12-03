@@ -59,7 +59,7 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@", pubHelpdesk]]];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"Sorry" msg:@"No contact available." cancel:@"Ok" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"No contact available." cancel:@"Ok" otherButton:nil];
     }
 }
 
@@ -143,28 +143,28 @@
         
         if (!isReportingForChatter) {
             if ([locationField.text length] == 0) {
-                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
         if ([commentField.text length] == 0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([nameField.text length] == 0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([CommonFunctions characterSet1Found:nameField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([phoneField.text length] !=0) {
             if ([CommonFunctions characterSet2Found:phoneField.text]) {
-                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid phone number." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid phone number." cancel:@"OK" otherButton:nil];
                 return;
             }
         }

@@ -30,7 +30,7 @@
 
 - (void) shareSiteOnSocialNetwork {
     
-    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Share on" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Facebook",@"Twitter",@"Cancel",nil];
+    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Share via" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Facebook",@"Twitter",@"Email",@"SMS",@"Cancel",nil];
 }
 
 
@@ -73,6 +73,23 @@
     headerView.frame = newDescLabelLabelFrame;
     
     [aboutTableView setTableHeaderView:headerView];
+}
+
+
+//*************** Method To Create Table Header View
+
+- (void) createTableFooter {
+    
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, aboutTableView.bounds.size.width, 40)];
+    
+    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, aboutTableView.bounds.size.width, 40)];
+    versionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:13];
+    versionLabel.text = [NSString stringWithFormat:@"App Version - %@",[CommonFunctions getAppVersionNumber]];
+    versionLabel.backgroundColor = [UIColor clearColor];
+    versionLabel.textAlignment = NSTextAlignmentCenter;
+    [footerView addSubview:versionLabel];
+    
+    [aboutTableView setTableFooterView:footerView];
 }
 
 
@@ -379,6 +396,7 @@
     
     
     [self createTableHeader];
+    [self createTableFooter];
     
     if (appDelegate.APP_CONFIG_DATA_ARRAY.count==0) {
         isGettingAppConfigData = YES;

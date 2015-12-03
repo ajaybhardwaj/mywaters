@@ -25,7 +25,7 @@
 
 @synthesize quickMap;
 @synthesize destinationLat,destinationLong,isShowingRoute;
-
+@synthesize isComingFromCCTVListing,isComingFromWLSListing;
 
 
 
@@ -668,7 +668,20 @@
     [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
         if (!error) {
             
-            _currentRoute = [response.routes firstObject];
+            
+            NSSortDescriptor *sortDescriptor;
+            sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES];
+            
+            //Get the routes array sorted by distance
+            NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+            NSArray *sortedRoutes;
+            sortedRoutes = [response.routes sortedArrayUsingDescriptors:sortDescriptors];
+            
+            
+            //The fastest route is the one at index 0 of the sorted array
+            _currentRoute = [sortedRoutes objectAtIndex:0];
+//            _currentRoute = [response.routes firstObject];
+            
             [self plotRouteOnMap:_currentRoute];
             
             [CommonFunctions dismissGlobalHUD];
@@ -1149,7 +1162,7 @@
         CGPoint p = [quickMap convertCoordinate:tempFlood.coordinate toPointToView:quickMap];
         CLLocationCoordinate2D newCenter=[mapView convertPoint:p toCoordinateFromView:quickMap];
         [quickMap setCenterCoordinate:newCenter animated:YES];
-        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+12),calloutView.frame.size.width,calloutView.frame.size.height);
+        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+15),calloutView.frame.size.width,calloutView.frame.size.height);
         calloutView.frame = frame;
         
         [quickMap addSubview:calloutView];
@@ -1211,7 +1224,7 @@
         CGPoint p = [quickMap convertCoordinate:tempCCTV.coordinate toPointToView:quickMap];
         CLLocationCoordinate2D newCenter=[mapView convertPoint:p toCoordinateFromView:quickMap];
         [quickMap setCenterCoordinate:newCenter animated:YES];
-        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+12),calloutView.frame.size.width,calloutView.frame.size.height);
+        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+15),calloutView.frame.size.width,calloutView.frame.size.height);
         calloutView.frame = frame;
 
         
@@ -1253,8 +1266,17 @@
         
         [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
             if (succeeded) {
-                
+
                 locationNameImageView.image = image;
+                CGImageRef cgref = [image CGImage];
+                CIImage *cim = [image CIImage];
+                
+                if (cim == nil && cgref == NULL) {
+                    locationNameImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/No_Image_Available.png",appDelegate.RESOURCE_FOLDER_PATH]];
+                }
+            }
+            else {
+                locationNameImageView.image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/No_Image_Available.png",appDelegate.RESOURCE_FOLDER_PATH]];
             }
             
             [activityIndicator stopAnimating];
@@ -1295,7 +1317,7 @@
         CGPoint p = [quickMap convertCoordinate:tempUserFeedback.coordinate toPointToView:quickMap];
         CLLocationCoordinate2D newCenter=[mapView convertPoint:p toCoordinateFromView:quickMap];
         [quickMap setCenterCoordinate:newCenter animated:YES];
-        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+12),calloutView.frame.size.width,calloutView.frame.size.height);
+        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+15),calloutView.frame.size.width,calloutView.frame.size.height);
         calloutView.frame = frame;
         
         
@@ -1381,7 +1403,7 @@
         CGPoint p = [quickMap convertCoordinate:tempWls.coordinate toPointToView:quickMap];
         CLLocationCoordinate2D newCenter=[mapView convertPoint:p toCoordinateFromView:quickMap];
         [quickMap setCenterCoordinate:newCenter animated:YES];
-        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+12),calloutView.frame.size.width,calloutView.frame.size.height);
+        CGRect frame = CGRectMake(quickMap.bounds.size.width/2-(calloutView.frame.size.width)/2,quickMap.bounds.size.height/2 - (calloutView.frame.size.height+15),calloutView.frame.size.width,calloutView.frame.size.height);
         calloutView.frame = frame;
         
         
@@ -2035,6 +2057,49 @@
         [self performSelector:@selector(fetchPUBFloodSubmissionListing) withObject:nil afterDelay:0.5];
     
     
+    if (isComingFromCCTVListing) {
+
+        isShowingCamera = YES;
+        
+        if (appDelegate.CCTV_LISTING_ARRAY.count==0) {
+            
+            isLoadingFloods = NO;
+            isLoadingWLS = NO;
+            isLoadingCCTV = YES;
+            isLoadingFeedback = NO;
+            isLoadingRainMap = NO;
+            
+            [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+            
+            [self fetchCCTVListing];
+        }
+        else {
+            
+            [self generateCCTVAnnotations];
+        }
+        
+        [cctvStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_cctv_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+    
+    
+    if (isComingFromWLSListing) {
+
+        isShowingDrain = YES;
+        
+        btnfilter.hidden = NO;
+        
+        isLoadingFloods = NO;
+        isLoadingWLS = YES;
+        isLoadingCCTV = NO;
+        isLoadingFeedback = NO;
+        isLoadingRainMap = NO;
+        
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+        
+        [self fetchWLSListing];
+        [wlsStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_waterlevel_big.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+    
 }
 
 
@@ -2048,8 +2113,11 @@
     
     [appDelegate.locationManager startUpdatingLocation];
     
-    if (appDelegate.IS_COMING_FROM_DASHBOARD) {
+    if (appDelegate.IS_COMING_FROM_DASHBOARD || isComingFromWLSListing || isComingFromCCTVListing) {
+        
         appDelegate.IS_COMING_FROM_DASHBOARD = NO;
+        isComingFromWLSListing = NO;
+        isComingFromCCTVListing = NO;
         [self.navigationItem setLeftBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomBackButton2Target:self]];
     }
     else {
@@ -2132,6 +2200,39 @@
 //            [currentLocationPopUp removeFromSuperview];
 //        }
 //    }
+    
+    if (appDelegate.IS_USER_FLOOD_SUBMISSION_SUCCESS) {
+        
+        appDelegate.IS_USER_FLOOD_SUBMISSION_SUCCESS = YES;
+        
+        isShowingUserFeedback = YES;
+        isShwoingFinePrint = YES;
+        meteorologicalDisclaimerLabel.hidden = NO;
+        
+        if (isShowingMeteorologicalDisclaimer) {
+            meteorologicalDisclaimerLabel.text = [NSString stringWithFormat:@"%@\n%@",meteorologicalDisclaimerString,userSubmissionFinePrintString];
+        }
+        else {
+            meteorologicalDisclaimerLabel.text = [NSString stringWithFormat:@"%@",userSubmissionFinePrintString];
+        }
+        
+        CGRect newDisclaimerLabelFrame = meteorologicalDisclaimerLabel.frame;
+        newDisclaimerLabelFrame.size.height = [CommonFunctions heightForText:meteorologicalDisclaimerLabel.text font:meteorologicalDisclaimerLabel.font withinWidth:self.view.bounds.size.width]-20;//expectedDescriptionLabelSize.height;
+        meteorologicalDisclaimerLabel.frame = newDisclaimerLabelFrame;
+        
+        isLoadingFloods = NO;
+        isLoadingWLS = NO;
+        isLoadingCCTV = NO;
+        isLoadingFeedback = YES;
+        isLoadingRainMap = NO;
+        
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+        
+        [self fetchUserFloodSubmissionListing];
+        
+        [userFeedbackStackItem._imageButton setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_userfeedback_submission_small.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    }
+    
 }
 
 

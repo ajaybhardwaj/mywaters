@@ -282,24 +282,24 @@
     
     // Commented Out For Version 2.0
     
-//    else if (indexPath.row==1) {
-//        
-//        floodAlertsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
-//        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"floodAlert"] isEqualToString:@"YES"]) {
-//            [floodAlertsSwitch setOn:YES];
-//            isFloodAlertOff = YES;
-//        }
-//        else {
-//            [floodAlertsSwitch setOn:NO];
-//            isFloodAlertOff = NO;
-//        }
-//        [floodAlertsSwitch addTarget:self action:@selector(registerForFloodALerts:) forControlEvents:UIControlEventValueChanged];
-//        cell.accessoryView = floodAlertsSwitch;
-//        
-//        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
-//    }
-    
     else if (indexPath.row==1) {
+        
+        floodAlertsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
+        if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"floodAlert"] isEqualToString:@"YES"]) {
+            [floodAlertsSwitch setOn:YES];
+            isFloodAlertOff = YES;
+        }
+        else {
+            [floodAlertsSwitch setOn:NO];
+            isFloodAlertOff = NO;
+        }
+        [floodAlertsSwitch addTarget:self action:@selector(registerForFloodALerts:) forControlEvents:UIControlEventValueChanged];
+        cell.accessoryView = floodAlertsSwitch;
+        
+        cellSeperator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80-0.5, notificationSettingsTable.bounds.size.width, 0.5)];
+    }
+    
+    else if (indexPath.row==2) {
         
         systemNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0,0, 0, 0)];
         if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"systemNotifications"] isEqualToString:@"YES"]) {
@@ -362,10 +362,10 @@
     //    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications",@"Read Out Message", nil];
     //    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance",@"Notifications will be read out when received.", nil];
     
-//    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications", nil];
-//    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance", nil];
-    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"System Notifications", nil];
-    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"An in-app notification to notify user of app updates or maintenance", nil];
+    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"Flash Flood Warnings",@"System Notifications", nil];
+    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"A push notification to notify user of current flood area",@"An in-app notification to notify user of app updates or maintenance", nil];
+//    tableTitleDataSource = [[NSArray alloc] initWithObjects:@"General Notifications",@"System Notifications", nil];
+//    tableSubTitleDataSource = [[NSArray alloc] initWithObjects:@"",@"An in-app notification to notify user of app updates or maintenance", nil];
     
     
     notificationSettingsTable = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-60) style:UITableViewStylePlain];
@@ -390,11 +390,11 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
-    swipeGesture.numberOfTouchesRequired = 1;
-    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
-    
-    [self.view addGestureRecognizer:swipeGesture];
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(openDeckMenu:)];
+//    swipeGesture.numberOfTouchesRequired = 1;
+//    swipeGesture.direction = (UISwipeGestureRecognizerDirectionRight);
+//    
+//    [self.view addGestureRecognizer:swipeGesture];
     
 }
 

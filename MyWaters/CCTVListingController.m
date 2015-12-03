@@ -112,6 +112,24 @@
 }
 
 
+//*************** Method To Move To Quick Map
+
+- (void) moveToQuickMapView {
+    
+    if (isShowingSearchBar) {
+        [self animateSearchBar];
+    }
+    
+    if (isShowingFilter) {
+        [self animateFilterTable];
+    }
+    
+    QuickMapViewController *viewObj = [[QuickMapViewController alloc] init];
+    viewObj.isComingFromCCTVListing = YES;
+    viewObj.isComingFromWLSListing = NO;
+    [self.navigationController pushViewController:viewObj animated:YES];
+}
+
 
 //*************** Method To Animate Search Bar
 
@@ -204,17 +222,12 @@
         if ([[responseString JSONValue] objectForKey:CCTV_LISTING_RESPONSE_NAME] != (id)[NSNull null]) {
             tempArray = [[responseString JSONValue] objectForKey:CCTV_LISTING_RESPONSE_NAME];
         }
-        else {
-            [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
-            return;
-        }
+
         
         if (tempArray.count==0) {
-            //            cctvPageCount = 0;
+
         }
         else {
-            //            cctvPageCount = cctvPageCount + 1;
-            //            if (appDelegate.CCTV_LISTING_ARRAY.count==0) {
             
             if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
                 [appDelegate.CCTV_LISTING_ARRAY removeAllObjects];
@@ -245,22 +258,26 @@
             
             DebugLog(@"%@",appDelegate.CCTV_LISTING_ARRAY);
             
-            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
-            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-                float v1 = [left floatValue];
-                float v2 = [right floatValue];
-                if (v1 < v2)
-                    return NSOrderedAscending;
-                else if (v1 > v2)
-                    return NSOrderedDescending;
-                else
-                    return NSOrderedSame;
-            }];
             
-            if (selectedFilterIndex==0)
+            
+            if (selectedFilterIndex==0) {
+                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"Name" ascending:YES];
                 [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
-            else
+            }
+            else {
+                
+                NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+                    float v1 = [left floatValue];
+                    float v2 = [right floatValue];
+                    if (v1 < v2)
+                        return NSOrderedAscending;
+                    else if (v1 > v2)
+                        return NSOrderedDescending;
+                    else
+                        return NSOrderedSame;
+                }];
                 [appDelegate.CCTV_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
+            }
             // Temp commented for UAT
             //            if (appDelegate.CCTV_LISTING_ARRAY.count!=0)
             //                [self performSelectorInBackground:@selector(saveCCTVData) withObject:nil];
@@ -544,19 +561,19 @@
     UIButton *btnSearch =  [UIButton buttonWithType:UIButtonTypeCustom];
     [btnSearch setImage:[UIImage imageNamed:@"icn_search"] forState:UIControlStateNormal];
     [btnSearch addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
-    [btnSearch setFrame:CGRectMake(44, 0, 32, 32)];
+    [btnSearch setFrame:CGRectMake(40, 0, 32, 32)];
     
-    //    UIButton *btnLocation =  [UIButton buttonWithType:UIButtonTypeCustom];
-    //    [btnLocation setImage:[UIImage imageNamed:@"icn_location_top"] forState:UIControlStateNormal];
-    //    //    [btnLocation addTarget:self action:@selector(animateSearchBar) forControlEvents:UIControlEventTouchUpInside];
-    //    [btnLocation setFrame:CGRectMake(72, 0, 32, 32)];
+    UIButton *btnLocation =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnLocation setImage:[UIImage imageNamed:@"icn_location_top"] forState:UIControlStateNormal];
+    [btnLocation addTarget:self action:@selector(moveToQuickMapView) forControlEvents:UIControlEventTouchUpInside];
+    [btnLocation setFrame:CGRectMake(80, 0, 32, 32)];
     
     
-    //    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 32)];
-    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
+    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 115, 32)];
+    //    UIView *rightBarButtonItems = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 32)];
     [rightBarButtonItems addSubview:btnfilter];
     [rightBarButtonItems addSubview:btnSearch];
-    //    [rightBarButtonItems addSubview:btnLocation];
+    [rightBarButtonItems addSubview:btnLocation];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightBarButtonItems];
     

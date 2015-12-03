@@ -75,8 +75,8 @@
 # pragma mark - BASE URLS
 #define BASE_URL @"https://pubapps.com.sg:8080/api/v1/"
 
-//#define API_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/api/" // Development
-#define API_BASE_URL @"https://pubapps.com.sg:8889/api/" // Production
+#define API_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/api/" // Development
+//#define API_BASE_URL @"https://pubapps.com.sg:8889/api/" // Production
 
 #define MODULES_API_URL @"Modules/"
 #define WLS_DETAIL_DUPLICATE_MODULES_API_URL @"Modules/"
@@ -96,8 +96,8 @@
 #define LBS_NOTIFICATION_FOR_FLOOD @"LBS/"
 
 //#define IMAGE_BASE_URL @"https://pubapps.com.sg:8080/images/"
-//#define IMAGE_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/uploads/" // Development
-#define IMAGE_BASE_URL @"https://pubapps.com.sg:8889/uploads/" // Production
+#define IMAGE_BASE_URL @"http://52.74.251.44/PUB.MyWater.Api.New/uploads/" // Development
+//#define IMAGE_BASE_URL @"https://pubapps.com.sg:8889/uploads/" // Production
 
 
 #define TWELVE_HOUR_FORECAST @"http://www.nea.gov.sg/api/WebAPI/?dataset=12hrs_forecast&keyref=781CF461BB6606ADE5BD65643F17817407DD6DBD4D056893"

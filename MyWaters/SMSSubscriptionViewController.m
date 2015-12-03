@@ -101,46 +101,46 @@
     
     
     if ([nameField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
     
     if ([CommonFunctions characterSet1Found:nameField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
         return;
     }
     if ([emailField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
     
     if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
         return;
     }
     
     if ([idTypeField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"ID Type is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"ID Type is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
     
     if ([locationField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
     
     if ([identificationNumberField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Identification number is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Identification number is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
     
     if ([mobileField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Mobile number is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Mobile number is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
     
     if ([postalCodeField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Postal code is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Postal code is mandatory." cancel:@"OK" otherButton:nil];
         return;
     }
     

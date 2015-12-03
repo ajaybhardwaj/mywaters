@@ -372,7 +372,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     if (!_wlsController) {
         
         WLSListingViewController *wls = [[WLSListingViewController alloc] init];
-        [wls setTitle:@"Water Level Sensor"];
+        [wls setTitle:@"WLS"];
         _wlsController = [[UINavigationController alloc] initWithRootViewController:wls];
         
         [self setNavigationBarStyle_Transclucent:_wlsController.navigationBar];

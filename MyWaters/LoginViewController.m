@@ -27,6 +27,36 @@
 }
 
 
+
+//*************** Method To Hide Keypads
+
+- (void) hideKeypads {
+    
+    [emailField resignFirstResponder];
+    [passField resignFirstResponder];
+    
+    [UIView beginAnimations:@"emailField" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint viewPOS = self.view.center;
+    
+    if (IS_IPHONE_4_OR_LESS) {
+        viewPOS.y = self.view.bounds.size.height-250;
+    }
+    else if (IS_IPHONE_5) {
+        viewPOS.y = self.view.bounds.size.height-294;
+    }
+    else if (IS_IPHONE_6) {
+        viewPOS.y = self.view.bounds.size.height-344;
+    }
+    else {
+        viewPOS.y = self.view.bounds.size.height-377;
+    }
+    
+    backgroundScrollView.center = viewPOS;
+    [UIView commitAnimations];
+}
+
+
 //*************** Method To Move To Signup View
 
 - (void) moveToSignUpView {
@@ -99,13 +129,13 @@
     if ([CommonFunctions hasConnectivity]) {
         
         if ([emailField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
         }
         else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
         }
         else if ([passField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
         }
         else {
             
@@ -154,8 +184,6 @@
 }
 
 
-
-
 //*************** Method To Go To Facebook App For Signup
 
 - (void) getFacebookDetailsForLogin {
@@ -184,7 +212,7 @@
     
     [login logInWithReadPermissions:[NSArray arrayWithObjects:@"public_profile",@"email", nil] fromViewController:self handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
         if (error) {
-            DebugLog(@"%@--Process error",result);
+            DebugLog(@"%@---%@--Process error",result,[error description]);
         } else if (result.isCancelled) {
             DebugLog(@"Facebook Cancelled");
         } else {
@@ -475,6 +503,7 @@
         backgroundScrollView.center = viewPOS;
         [UIView commitAnimations];
         
+        [self validateLoginParameters];
     }
     return YES;
 }
@@ -635,6 +664,12 @@
         backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 580);
     }
     
+    
+    removeKeypadsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    removeKeypadsButton.frame = CGRectMake(0, 0, backgroundScrollView.bounds.size.width, backgroundScrollView.bounds.size.height);
+    [removeKeypadsButton addTarget:self action:@selector(hideKeypads) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundScrollView addSubview:removeKeypadsButton];
+    [backgroundScrollView sendSubviewToBack:removeKeypadsButton];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

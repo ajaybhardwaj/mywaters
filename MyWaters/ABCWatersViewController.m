@@ -373,6 +373,7 @@
                 UIButton *gridButton = [UIButton buttonWithType:UIButtonTypeCustom];
                 gridButton.frame = CGRectMake(0, 0, gridImage.bounds.size.width, gridImage.bounds.size.height);
                 gridButton.tag = i;
+                gridButton.showsTouchWhenHighlighted = YES;
                 [gridButton addTarget:self action:@selector(moveToDetailsView:) forControlEvents:UIControlEventTouchUpInside];
                 [gridImage addSubview:gridButton];
                 
@@ -471,6 +472,7 @@
                 UIButton *gridButton = [UIButton buttonWithType:UIButtonTypeCustom];
                 gridButton.frame = CGRectMake(0, 0, gridImage.bounds.size.width, gridImage.bounds.size.height);
                 gridButton.tag = i;
+                gridButton.showsTouchWhenHighlighted = YES;
                 [gridButton addTarget:self action:@selector(moveToDetailsView:) forControlEvents:UIControlEventTouchUpInside];
                 [gridImage addSubview:gridButton];
                 

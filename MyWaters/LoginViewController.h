@@ -23,6 +23,7 @@
     UIScrollView *backgroundScrollView;
     
     NSString *facebookIDString;
+    UIButton *removeKeypadsButton;
 }
 @property (assign) bool isUsingFacebookForSignIn;
 @property (strong, nonatomic) FBLoginView *loginView;

@@ -23,24 +23,34 @@
 }
 
 
+//*************** Method To Hide Keypads
+
+- (void) hideKeypads {
+    
+    [currentPassField resignFirstResponder];
+    [newPassField resignFirstResponder];
+    [confirmPassField resignFirstResponder];
+}
+
+
 //*************** Method To Validate Change Password Inputs
 
 - (void) validateChangePasswordParameters {
     
     if ([currentPassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Old Password is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Old Password is mandatory." cancel:@"OK" otherButton:nil];
     }
     else if ([newPassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a new password." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a new password." cancel:@"OK" otherButton:nil];
     }
     else if ([confirmPassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please confirm your new password." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Please confirm your new password." cancel:@"OK" otherButton:nil];
     }
     else if (![confirmPassField.text isEqualToString:newPassField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password and confirm password are not same." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Password and confirm password are not same." cancel:@"OK" otherButton:nil];
     }
     else if ([currentPassField.text isEqualToString:newPassField.text]) {
-        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"New password can not be same as current password." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"New password can not be same as current password." cancel:@"OK" otherButton:nil];
     }
     else {
         
@@ -217,6 +227,12 @@
     [submitButton addTarget:self action:@selector(validateChangePasswordParameters) forControlEvents:UIControlEventTouchUpInside];
     [submitButton setBackgroundColor:RGB(86, 46, 120)];
     [self.view addSubview:submitButton];
+    
+    removeKeypadsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    removeKeypadsButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [removeKeypadsButton addTarget:self action:@selector(hideKeypads) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:removeKeypadsButton];
+    [self.view sendSubviewToBack:removeKeypadsButton];
     
 }
 

@@ -622,69 +622,71 @@
 
 - (void) showBadgesToolTip:(id)sender {
     
-    //    UIImageView *toolTipView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
-    //    toolTipView.backgroundColor = [UIColor whiteColor];
-    //
-    //    CGRect frameValue = sender.frame;
-    //    frameValue.origin.y = frameValue.origin.y + 180;
-    //
-    //    AKETooltip *tooltip = [[AKETooltip alloc] initWithContentView:toolTipView sourceRect:frameValue parentWindow:self.view.window];
-    //
-    //    tooltip.hideShadow = NO;
-    //    tooltip.arrowColor = RGB(85,49,118);
-    //    tooltip.borderColor = [UIColor whiteColor];//RGB(85,49,118);
-    //    tooltip.layer.cornerRadius = 10.0;
-    //    [tooltip show];
-    //
-    //
-    //    NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
-    //
-    //    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    //    activityIndicator.center = CGPointMake(toolTipView.bounds.size.width/2, toolTipView.bounds.size.height/2);
-    //    [toolTipView addSubview:activityIndicator];
-    //    [activityIndicator startAnimating];
-    //
-    //    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
-    //        if (succeeded) {
-    //
-    //            toolTipView.image = image;
-    //
-    //        }
-    //        [activityIndicator stopAnimating];
-    //    }];
+    UIButton *button = (id) sender;
     
-    CustomIOSAlertView *alertView = [[CustomIOSAlertView alloc] init];
+        UIImageView *toolTipView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
+        toolTipView.backgroundColor = [UIColor whiteColor];
     
-    UIImageView *toolTipImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
-    toolTipImageView.layer.cornerRadius = 10.0;
-    toolTipImageView.layer.masksToBounds = YES;
-    toolTipImageView.backgroundColor = [UIColor whiteColor];
+        CGRect frameValue = button.frame;
+        frameValue.origin.y = frameValue.origin.y + 60;
     
-    NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
+        AKETooltip *tooltip = [[AKETooltip alloc] initWithContentView:toolTipView sourceRect:frameValue parentWindow:self.view.window];
     
-    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    activityIndicator.center = CGPointMake(toolTipImageView.bounds.size.width/2, toolTipImageView.bounds.size.height/2);
-    [toolTipImageView addSubview:activityIndicator];
-    [activityIndicator startAnimating];
+        tooltip.hideShadow = NO;
+        tooltip.arrowColor = RGB(85,49,118);
+        tooltip.borderColor = [UIColor whiteColor];//RGB(85,49,118);
+        tooltip.layer.cornerRadius = 10.0;
+        [tooltip show];
     
-    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
-        if (succeeded) {
-            
-            toolTipImageView.image = image;
-            
-        }
-        [activityIndicator stopAnimating];
-    }];
     
-    [alertView setOnButtonTouchUpInside:^(CustomIOSAlertView *alertView, int buttonIndex) {
-        [alertView close];
-    }];
-    [alertView setButtonTitles:[NSMutableArray arrayWithObjects:@"Close", nil]];
-    [alertView setUseMotionEffects:true];
-    [alertView setContainerView:toolTipImageView];
-    [alertView show];
+        NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
     
-    [self.view addSubview:alertView];
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicator.center = CGPointMake(toolTipView.bounds.size.width/2, toolTipView.bounds.size.height/2);
+        [toolTipView addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+    
+        [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+            if (succeeded) {
+    
+                toolTipView.image = image;
+    
+            }
+            [activityIndicator stopAnimating];
+        }];
+    
+//    CustomIOSAlertView *alertView = [[CustomIOSAlertView alloc] init];
+//    
+//    UIImageView *toolTipImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 250.0f, 250.0f)];
+//    toolTipImageView.layer.cornerRadius = 10.0;
+//    toolTipImageView.layer.masksToBounds = YES;
+//    toolTipImageView.backgroundColor = [UIColor whiteColor];
+//    
+//    NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
+//    
+//    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//    activityIndicator.center = CGPointMake(toolTipImageView.bounds.size.width/2, toolTipImageView.bounds.size.height/2);
+//    [toolTipImageView addSubview:activityIndicator];
+//    [activityIndicator startAnimating];
+//    
+//    [CommonFunctions downloadImageWithURL:[NSURL URLWithString:imageURLString] completionBlock:^(BOOL succeeded, UIImage *image) {
+//        if (succeeded) {
+//            
+//            toolTipImageView.image = image;
+//            
+//        }
+//        [activityIndicator stopAnimating];
+//    }];
+//    
+//    [alertView setOnButtonTouchUpInside:^(CustomIOSAlertView *alertView, int buttonIndex) {
+//        [alertView close];
+//    }];
+//    [alertView setButtonTitles:[NSMutableArray arrayWithObjects:@"Close", nil]];
+//    [alertView setUseMotionEffects:true];
+//    [alertView setContainerView:toolTipImageView];
+//    [alertView show];
+//    
+//    [self.view addSubview:alertView];
     
 }
 
@@ -695,10 +697,13 @@
     
     // Use when fetching text data
     NSString *responseString = [request responseString];
+    DebugLog(@"%@",responseString);
     [CommonFunctions dismissGlobalHUD];
     //    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
+        
+        [[SharedObject sharedClass] savePUBUserData:[responseString JSONValue]];
         
         [photosDataSource removeAllObjects];
         [badgesDataSource removeAllObjects];
@@ -760,7 +765,7 @@
     if (tableView==rewardsListingTableView) {
         
         if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null]) {
-            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:rewardsListingTableView.bounds.size.width-85];
+            titleHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:rewardsListingTableView.bounds.size.width-90];
             subtractComponent = subtractComponent + 25;
         }
         
@@ -770,14 +775,15 @@
         }
         
         if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"] != (id)[NSNull null]) {
-            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:rewardsListingTableView.bounds.size.width-85];
+            dateHeight = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"]]] font:[UIFont fontWithName:ROBOTO_MEDIUM size:13.0] withinWidth:rewardsListingTableView.bounds.size.width-90];
             subtractComponent = subtractComponent + 25;
         }
         
-        if ((titleHeight+subTitleHeight+dateHeight) < 90) {
+        if ((titleHeight+subTitleHeight+dateHeight-subtractComponent) < 90) {
             return 90.0f;
         }
         
+        DebugLog(@"Height is %f --- %d",titleHeight+subTitleHeight+dateHeight-subtractComponent,indexPath.row);
         return titleHeight+subTitleHeight+dateHeight-subtractComponent;
         
     }
@@ -966,15 +972,20 @@
         }
         
         
+        
         UILabel *cellTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 5, rewardsListingTableView.bounds.size.width-100, 40)];
-        cellTitleLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"];
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null]) {
+            cellTitleLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"];
+        }
         cellTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:14.0];
         cellTitleLabel.backgroundColor = [UIColor clearColor];
         cellTitleLabel.numberOfLines = 0;
         [cell.contentView addSubview:cellTitleLabel];
         
         CGRect newTitleLabelLabelFrame = cellTitleLabel.frame;
-        newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"]] font:cellTitleLabel.font withinWidth:rewardsListingTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"] != (id)[NSNull null]) {
+            newTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"Name"]] font:cellTitleLabel.font withinWidth:rewardsListingTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        }
         cellTitleLabel.frame = newTitleLabelLabelFrame;
         [cell.contentView addSubview:cellTitleLabel];
         
@@ -982,8 +993,11 @@
         [cellTitleLabel sizeToFit];
         
         
+        
         UILabel *cellPointsLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, cellTitleLabel.frame.origin.y+cellTitleLabel.bounds.size.height+5, rewardsListingTableView.bounds.size.width-100, 13)];
-        cellPointsLabel.text = [NSString stringWithFormat:@"%d",[[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] intValue]];
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] != (id)[NSNull null]) {
+            cellPointsLabel.text = [NSString stringWithFormat:@"%d",[[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] intValue]];
+        }
         cellPointsLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         cellPointsLabel.backgroundColor = [UIColor clearColor];
         cellPointsLabel.textColor = [UIColor lightGrayColor];
@@ -992,14 +1006,19 @@
         
         
         CGRect newSubTitleLabelLabelFrame = cellPointsLabel.frame;
-        newSubTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"]] font:cellPointsLabel.font withinWidth:rewardsListingTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"] != (id)[NSNull null]) {
+            newSubTitleLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"PointsToRedeem"]] font:cellPointsLabel.font withinWidth:rewardsListingTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        }
         cellPointsLabel.frame = newSubTitleLabelLabelFrame;
         [cell.contentView addSubview:cellPointsLabel];
         [cellPointsLabel sizeToFit];
         
         
+        
         UILabel *cellPlaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, cellPointsLabel.frame.origin.y+cellPointsLabel.bounds.size.height+5, rewardsListingTableView.bounds.size.width-100, 35)];
-        cellPlaceLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"];
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"] != (id)[NSNull null]) {
+            cellPlaceLabel.text = [[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"];
+        }
         cellPlaceLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
         cellPlaceLabel.backgroundColor = [UIColor clearColor];
         cellPlaceLabel.textColor = [UIColor lightGrayColor];
@@ -1007,13 +1026,16 @@
         [cell.contentView addSubview:cellPlaceLabel];
         
         CGRect newDateLabelLabelFrame = cellPlaceLabel.frame;
-        newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"]]] font:cellPlaceLabel.font withinWidth:rewardsListingTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        if ([[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"] != (id)[NSNull null]) {
+            newDateLabelLabelFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",[CommonFunctions dateTimeFromString:[[rewardsDataSource objectAtIndex:indexPath.row] objectForKey:@"LocationName"]]] font:cellPlaceLabel.font withinWidth:rewardsListingTableView.bounds.size.width-100];//expectedDescriptionLabelSize.height;
+        }
         cellPlaceLabel.frame = newDateLabelLabelFrame;
         [cell.contentView addSubview:cellPlaceLabel];
         [cellPlaceLabel sizeToFit];
         
         
-        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 99.5, rewardsListingTableView.bounds.size.width, 0.5)];
+        float height = [self tableView:tableView heightForRowAtIndexPath:indexPath];
+        UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, height-0.5, rewardsListingTableView.bounds.size.width, 0.5)];
         [seperatorImage setBackgroundColor:[UIColor lightGrayColor]];
         [cell.contentView addSubview:seperatorImage];
         
@@ -1192,11 +1214,18 @@
     userNameLabel.numberOfLines = 0;
     [self.view addSubview:userNameLabel];
     
+    infoIconButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    infoIconButton.frame = CGRectMake(140, userNameLabel.frame.origin.y+userNameLabel.bounds.size.height+2, 16, 16);
+    [infoIconButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    [infoIconButton addTarget:self action:@selector(showBadgesToolTip:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:infoIconButton];
+
+    
     if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userRewardPoints"] length] !=0)
         pointsValue = [[SharedObject sharedClass] getPUBUserSavedDataValue:@"userRewardPoints"];
     else
         pointsValue = @"0";
-    pointsValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(140, userNameLabel.frame.origin.y+userNameLabel.bounds.size.height, self.view.bounds.size.width-140, 20)];
+    pointsValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(160, userNameLabel.frame.origin.y+userNameLabel.bounds.size.height, self.view.bounds.size.width-160, 20)];
     pointsValueLabel.backgroundColor = [UIColor clearColor];
     pointsValueLabel.textColor = RGB(82, 82, 82);
     pointsValueLabel.font = [UIFont fontWithName:ROBOTO_BOLD size:14.0];
@@ -1321,11 +1350,11 @@
     myBadgesLabel.numberOfLines = 0;
     [badgesBackgroundView addSubview:myBadgesLabel];
     
-    //    infoIconButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    infoIconButton.frame = CGRectMake(myBadgesLabel.frame.origin.x+myBadgesLabel.bounds.size.width, 13, 16, 16);
-    //    [infoIconButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
-    //    [infoIconButton addTarget:self action:@selector(showBadgesToolTip:) forControlEvents:UIControlEventTouchUpInside];
-    //    [badgesBackgroundView addSubview:infoIconButton];
+//        infoIconButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//        infoIconButton.frame = CGRectMake(myBadgesLabel.frame.origin.x+myBadgesLabel.bounds.size.width, 13, 16, 16);
+//        [infoIconButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_info_purple.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+//        [infoIconButton addTarget:self action:@selector(showBadgesToolTip:) forControlEvents:UIControlEventTouchUpInside];
+//        [badgesBackgroundView addSubview:infoIconButton];
     
     badgesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, myBadgesLabel.frame.origin.y+myBadgesLabel.bounds.size.height+10, badgesBackgroundView.bounds.size.width, badgesBackgroundView.bounds.size.height)];
     badgesScrollView.showsHorizontalScrollIndicator = NO;
@@ -1409,7 +1438,7 @@
         else
             pointsValueLabel.text = [NSString stringWithFormat:@"Points: 0"];
         
-        pointsValueLabel.frame = CGRectMake(140, userNameLabel.frame.origin.y+userNameLabel.bounds.size.height, self.view.bounds.size.width-140, 20);
+        pointsValueLabel.frame = CGRectMake(160, userNameLabel.frame.origin.y+userNameLabel.bounds.size.height, self.view.bounds.size.width-160, 20);
     }
     
     if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userProfileImageName"] length] !=0) {

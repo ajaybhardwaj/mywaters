@@ -49,10 +49,10 @@
     
     if ([CommonFunctions hasConnectivity]) {
         if ([emailField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
         }
         else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
         }
         else {
             

@@ -16,14 +16,17 @@
     
     AppDelegate *appDelegate;
     
-    UITableView *wlsListingtable;
+    UITableView *wlsListingtable,*filterTableView;
     
     NSURLConnection *theConnection;
     NSInteger wlsPageCount,wlsTotalCount;
     UISearchBar *listinSearchBar;
-    BOOL isShowingSearchBar,isFiltered;
+    BOOL isShowingSearchBar,isFiltered,isShowingFilter;
     NSMutableArray *filteredDataSource;
     
+    UIButton *hideFilterButton;
+    NSArray *filtersArray;
+    NSInteger selectedFilterIndex;
 }
 @property (strong, nonatomic) NSMutableData *responseData;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;

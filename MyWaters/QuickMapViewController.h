@@ -97,6 +97,6 @@
 
 
 @property (nonatomic, assign) double destinationLat,destinationLong;
-
+@property (nonatomic, assign) BOOL isComingFromCCTVListing,isComingFromWLSListing;
 
 @end

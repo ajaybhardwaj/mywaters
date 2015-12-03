@@ -31,13 +31,13 @@
     
     if ([CommonFunctions hasConnectivity]) {
         if ([newPassField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a new password." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a new password." cancel:@"OK" otherButton:nil];
         }
         else if ([confirmPassField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please confirm your new password." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please confirm your new password." cancel:@"OK" otherButton:nil];
         }
         else if (![confirmPassField.text isEqualToString:newPassField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password and confirm password are not same." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Password and confirm password are not same." cancel:@"OK" otherButton:nil];
         }
         else {
             

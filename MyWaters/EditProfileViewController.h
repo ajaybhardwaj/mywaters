@@ -24,6 +24,8 @@
     UILabel *uploadAvatarLabel;
     
     BOOL isProfilePictureSelected,isChangingName;
+    
+    UIButton *removeKeypadsButton;
 }
 
 @end

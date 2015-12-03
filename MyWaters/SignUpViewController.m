@@ -42,6 +42,55 @@
 }
 
 
+//*************** Method To Hide Keypads
+
+- (void) hideKeypads {
+    
+    [emailField resignFirstResponder];
+    [nameField resignFirstResponder];
+    [passField resignFirstResponder];
+    [retypePassField resignFirstResponder];
+    
+    if (IS_IPHONE_4_OR_LESS) {
+        
+        [UIView beginAnimations:@"retypePass" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = backgroundScrollView.center;
+        viewPOS.y = backgroundScrollView.bounds.size.height-261;
+        self.view.center = viewPOS;
+        [UIView commitAnimations];
+        
+    }
+    else if (IS_IPHONE_5) {
+        
+        [UIView beginAnimations:@"retypePass" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = backgroundScrollView.center;
+        viewPOS.y = backgroundScrollView.bounds.size.height-304;
+        self.view.center = viewPOS;
+        [UIView commitAnimations];
+    }
+    else if (IS_IPHONE_6) {
+        
+        [UIView beginAnimations:@"retypePass" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = backgroundScrollView.center;
+        viewPOS.y = backgroundScrollView.bounds.size.height-353;
+        self.view.center = viewPOS;
+        [UIView commitAnimations];
+    }
+    else if (IS_IPHONE_6P) {
+        
+        [UIView beginAnimations:@"retypePass" context:NULL];
+        [UIView setAnimationDuration:0.5];
+        CGPoint viewPOS = backgroundScrollView.center;
+        viewPOS.y = backgroundScrollView.bounds.size.height-389;
+        self.view.center = viewPOS;
+        [UIView commitAnimations];
+    }
+}
+
+
 //*************** Method To Move Back To Parent View
 
 - (void) pop2Dismiss:(id) sender {
@@ -223,42 +272,42 @@
     
     if ([CommonFunctions hasConnectivity]) {
         if ([emailField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([nameField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([CommonFunctions characterSet1Found:nameField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([passField.text length]==0) {
             if (!isSigningUpViaFacebook) {
-                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
         
         if ([retypePassField.text length]==0) {
             if (!isSigningUpViaFacebook) {
-                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Retype password is mandatory." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Retype password is mandatory." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
         
         if (![passField.text isEqualToString:retypePassField.text]) {
             if (!isSigningUpViaFacebook) {
-                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
@@ -493,6 +542,8 @@
             self.view.center = viewPOS;
             [UIView commitAnimations];
         }
+        
+        [self validateSignUpParameters];
     }
     return YES;
 }
@@ -758,6 +809,12 @@
     if (IS_IPHONE_4_OR_LESS) {
         backgroundScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 580);
     }
+    
+    removeKeypadsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    removeKeypadsButton.frame = CGRectMake(0, 0, backgroundScrollView.bounds.size.width, backgroundScrollView.bounds.size.height);
+    [removeKeypadsButton addTarget:self action:@selector(hideKeypads) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundScrollView addSubview:removeKeypadsButton];
+    [backgroundScrollView sendSubviewToBack:removeKeypadsButton];
 }
 
 

@@ -67,10 +67,12 @@ static UIWindow *window;
 + (void) googleAnalyticsTracking:(NSString*) screenName {
     
     DebugLog(@"%@",screenName);
-    
+    DebugLog(@"Analytics starts here");
     id tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:screenName];
     [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+    
+    DebugLog(@"Analytics ends here");
 }
 
 
@@ -150,7 +152,7 @@ static UIWindow *window;
                                           } else {
                                               // Success
                                               DebugLog(@"%@",results);
-                                              [self showAlertView:nil title:nil msg:@"Sucessfully Posted." cancel:@"OK" otherButton:nil];
+                                              [self showAlertView:nil title:nil msg:@"Successfully Posted." cancel:@"OK" otherButton:nil];
                                               // 0 - For Other modules than ABC Waters
                                               // -1 - For App Sharing
                                               
@@ -201,7 +203,7 @@ static UIWindow *window;
                         if (result == FBWebDialogResultDialogNotCompleted) {
                             // User canceled.
                             NSLog(@"User cancelled.");
-                            [self showAlertView:nil title:nil msg:@"User cancelled sharing" cancel:@"OK" otherButton:nil];
+                            [self showAlertView:nil title:nil msg:@"User cancelled sharing." cancel:@"OK" otherButton:nil];
                         }
                         else {
                             NSDictionary *urlParams = [self parseURLParams:[resultURL query]];

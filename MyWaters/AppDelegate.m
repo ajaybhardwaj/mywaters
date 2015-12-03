@@ -36,6 +36,7 @@ static NSString *const kAllowTracking = @"allowTracking";
 @synthesize RECEIVED_NOTIFICATION_TYPE,IS_PUSH_NOTIFICATION_RECEIVED,PUSH_NOTIFICATION_ALERT_MESSAGE;
 @synthesize IS_CREATING_ACCOUNT;
 @synthesize locationManager;
+@synthesize IS_USER_FLOOD_SUBMISSION_SUCCESS;
 
 //*************** Method To Register Device Toke For Push Notifications
 
@@ -1383,7 +1384,7 @@ static NSString *const kAllowTracking = @"allowTracking";
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     if ([prefs stringForKey:@"floodAlert"] == (id)[NSNull null] || [[prefs stringForKey:@"floodAlert"] length] == 0) {
-        [prefs setValue:@"NO" forKey:@"floodAlert"];
+        [prefs setValue:@"YES" forKey:@"floodAlert"];
     }
     if ([prefs stringForKey:@"generalNotifications"] == (id)[NSNull null] || [[prefs stringForKey:@"generalNotifications"] length] == 0) {
         [prefs setValue:@"YES" forKey:@"generalNotifications"];
@@ -1504,8 +1505,9 @@ static NSString *const kAllowTracking = @"allowTracking";
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
     [self sendHitsInBackground];
+    
     // Commented Out For Version 2.0 AS no flood notifications
-//    [locationManager startMonitoringSignificantLocationChanges];
+    [locationManager startMonitoringSignificantLocationChanges];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

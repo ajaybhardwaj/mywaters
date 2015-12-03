@@ -344,6 +344,8 @@
 		FEAA8EFF1BD526B6007D4C9A /* SMSSubscriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAA8EFE1BD526B6007D4C9A /* SMSSubscriptionViewController.m */; };
 		FEAC50C71BDA0D9400D4D56E /* icn_share_new@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEAC50C51BDA0D9400D4D56E /* icn_share_new@3x.png */; };
 		FEAC50C81BDA0D9400D4D56E /* icn_youtube-1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEAC50C61BDA0D9400D4D56E /* icn_youtube-1@3x.png */; };
+		FEAE81B71C0C469E00B44BD1 /* icn_listing_map@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEAE81B51C0C469E00B44BD1 /* icn_listing_map@2x.png */; };
+		FEAE81B81C0C469E00B44BD1 /* icn_listing_map@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEAE81B61C0C469E00B44BD1 /* icn_listing_map@3x.png */; };
 		FEB02A071AD62D62004B7DDF /* icn_add@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB02A061AD62D62004B7DDF /* icn_add@3x.png */; };
 		FEB13FB41A77658A0061CE74 /* QuickMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */; };
 		FEB13FC11A7766410061CE74 /* icn_abcwaters@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FB61A7766410061CE74 /* icn_abcwaters@3x.png */; };
@@ -370,6 +372,8 @@
 		FEBA99771ADCC62500ED3555 /* meter_bar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA99741ADCC62500ED3555 /* meter_bar@3x.png */; };
 		FEBA997D1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA997B1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png */; };
 		FEBA997E1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA997C1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png */; };
+		FEBB49B61C0FDF580094C460 /* No_Image_Available@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBB49B41C0FDF580094C460 /* No_Image_Available@2x.png */; };
+		FEBB49B71C0FDF580094C460 /* No_Image_Available@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBB49B51C0FDF580094C460 /* No_Image_Available@3x.png */; };
 		FEC3133B1B799CA200AC2E08 /* BadgesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC3133A1B799CA200AC2E08 /* BadgesViewController.m */; };
 		FEC3133E1B799CBA00AC2E08 /* PointsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC3133D1B799CBA00AC2E08 /* PointsViewController.m */; };
 		FEC313411B799CDC00AC2E08 /* PhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC313401B799CDC00AC2E08 /* PhotosViewController.m */; };
@@ -1066,6 +1070,8 @@
 		FEAA8EFE1BD526B6007D4C9A /* SMSSubscriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSSubscriptionViewController.m; sourceTree = "<group>"; };
 		FEAC50C51BDA0D9400D4D56E /* icn_share_new@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_share_new@3x.png"; sourceTree = "<group>"; };
 		FEAC50C61BDA0D9400D4D56E /* icn_youtube-1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_youtube-1@3x.png"; sourceTree = "<group>"; };
+		FEAE81B51C0C469E00B44BD1 /* icn_listing_map@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_listing_map@2x.png"; sourceTree = "<group>"; };
+		FEAE81B61C0C469E00B44BD1 /* icn_listing_map@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_listing_map@3x.png"; sourceTree = "<group>"; };
 		FEB02A061AD62D62004B7DDF /* icn_add@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_add@3x.png"; sourceTree = "<group>"; };
 		FEB13FB21A77658A0061CE74 /* QuickMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickMapViewController.h; sourceTree = "<group>"; };
 		FEB13FB31A77658A0061CE74 /* QuickMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuickMapViewController.m; sourceTree = "<group>"; };
@@ -1095,6 +1101,8 @@
 		FEBA99741ADCC62500ED3555 /* meter_bar@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "meter_bar@3x.png"; sourceTree = "<group>"; };
 		FEBA997B1ADD01EC00ED3555 /* icn_ialert_disabled@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_ialert_disabled@3x.png"; sourceTree = "<group>"; };
 		FEBA997C1ADD01EC00ED3555 /* icn_ialert_enabled@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_ialert_enabled@3x.png"; sourceTree = "<group>"; };
+		FEBB49B41C0FDF580094C460 /* No_Image_Available@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No_Image_Available@2x.png"; sourceTree = "<group>"; };
+		FEBB49B51C0FDF580094C460 /* No_Image_Available@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No_Image_Available@3x.png"; sourceTree = "<group>"; };
 		FEC313391B799CA200AC2E08 /* BadgesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BadgesViewController.h; sourceTree = "<group>"; };
 		FEC3133A1B799CA200AC2E08 /* BadgesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BadgesViewController.m; sourceTree = "<group>"; };
 		FEC3133C1B799CBA00AC2E08 /* PointsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointsViewController.h; sourceTree = "<group>"; };
@@ -2501,6 +2509,8 @@
 		FED72CD01ADB7FC500C4FDDB /* CCTV */ = {
 			isa = PBXGroup;
 			children = (
+				FEAE81B51C0C469E00B44BD1 /* icn_listing_map@2x.png */,
+				FEAE81B61C0C469E00B44BD1 /* icn_listing_map@3x.png */,
 				FEFE9AF81BFAEC9300FFBD66 /* icn_floodinfo_small@2x.png */,
 				FECC28C61BD8A1810000DB0F /* btn_close@3x.png */,
 				FEF51B4B1BF58C7600131021 /* btn_close@2x.png */,
@@ -2660,6 +2670,8 @@
 		FEF4C6CA1ACB9F0600C57304 /* Quick Map */ = {
 			isa = PBXGroup;
 			children = (
+				FEBB49B41C0FDF580094C460 /* No_Image_Available@2x.png */,
+				FEBB49B51C0FDF580094C460 /* No_Image_Available@3x.png */,
 				FE85F3801BF33FCA003FE3CD /* icn_cctv_callout_distance@2x.png */,
 				FE85F3811BF33FCA003FE3CD /* icn_cctv_callout_distance@3x.png */,
 				FE8E1F9C1BEB2D1200E3837A /* icn_location_grey_quickmap@2x.png */,
@@ -2938,6 +2950,7 @@
 				FE6AAFA81B86E22E0041504B /* current_location_icon@3x.png in Resources */,
 				FE99BE3C1A7B7E69000B83E8 /* Roboto-Regular.ttf in Resources */,
 				FEF51B951BF58E5900131021 /* icn_facebook_settings@2x.png in Resources */,
+				FEBB49B61C0FDF580094C460 /* No_Image_Available@2x.png in Resources */,
 				FEF51B3F1BF58B2000131021 /* icn_floodinfo_notification@2x.png in Resources */,
 				FE99BE3D1A7B7E69000B83E8 /* Roboto-Thin.ttf in Resources */,
 				FE8C1C311AB292FA009D33E4 /* icn_avatar@3x.png in Resources */,
@@ -3018,6 +3031,7 @@
 				FEF51B9D1BF58E5900131021 /* icn_waterlevel_below75_big@2x.png in Resources */,
 				FE98F0461ABC16B900D5FB5B /* icn_ARview@3x.png in Resources */,
 				FE98D5F61BE73AE5003862EA /* icn_call@2x.png in Resources */,
+				FEAE81B81C0C469E00B44BD1 /* icn_listing_map@3x.png in Resources */,
 				FE98D5FE1BE73B6E003862EA /* wls_level3@2x.png in Resources */,
 				FE99BE411A7B7E69000B83E8 /* RobotoCondensed-Italic.ttf in Resources */,
 				FE9625771B5617B300A25BCA /* icon_report@3x.png in Resources */,
@@ -3189,6 +3203,7 @@
 				FE85F3821BF33FCA003FE3CD /* icn_cctv_callout_distance@2x.png in Resources */,
 				FE4CD1041B54F1C000A16D02 /* icn_floodinfo_userfeedback_submission_small@3x.png in Resources */,
 				FEB13FDA1A77968B0061CE74 /* quickmap.png in Resources */,
+				FEBB49B71C0FDF580094C460 /* No_Image_Available@3x.png in Resources */,
 				FE8E1F9B1BEAF60700E3837A /* icn_waterlevel_drop_quickmap@3x.png in Resources */,
 				FE25CB651B5C8A0200A5B2B3 /* icn_youtube_settings@3x.png in Resources */,
 				FEF51B4A1BF58B5600131021 /* icn_twitter_whatsup@2x.png in Resources */,
@@ -3261,6 +3276,7 @@
 				FE98F0421ABC16A700D5FB5B /* icn_weather@3x.png in Resources */,
 				FED605E71BA036B500E8630F /* feedback_table_header@3x.png in Resources */,
 				FE98F0361ABBC85B00D5FB5B /* icn_call_yellow@3x.png in Resources */,
+				FEAE81B71C0C469E00B44BD1 /* icn_listing_map@2x.png in Resources */,
 				FEC84B6F1BE74DAE00269BC1 /* icn_about_pub@2x.png in Resources */,
 				FE9F9D2F1BE7207A0047488A /* btn_darkgrey@2x.png in Resources */,
 				FEF51ADE1BF586C000131021 /* FD@2x.png in Resources */,
@@ -3521,8 +3537,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3547,7 +3563,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3569,8 +3585,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -3590,7 +3606,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = NO;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3602,8 +3618,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3620,7 +3636,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -3631,8 +3647,8 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3649,7 +3665,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
@@ -3659,8 +3675,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3675,7 +3691,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Debug;
@@ -3685,8 +3701,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Public Utilities Board - Singapore (8XXHS4PD5K)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ajay Bhardwaj (9GP7986L4F)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -3697,7 +3713,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyWaters.app/MyWaters";
 			};
 			name = Release;

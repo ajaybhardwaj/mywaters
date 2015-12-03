@@ -691,7 +691,7 @@
 
             for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
                 if (![[[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"ID"] isEqualToString:cctvID]) {
-                    if (count!=3) {
+                    if (count!=5) {
                         [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                         count++;
                     }
@@ -854,7 +854,7 @@
         }
         for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
             if ([[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"ID"] != cctvID) {
-                if (count!=3) {
+                if (count!=5) {
                     [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                     count++;
                 }
@@ -920,7 +920,7 @@
         }
         for (int i=0; i<appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW.count; i++) {
             if ([[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i] objectForKey:@"ID"] != cctvID) {
-                if (count!=3) {
+                if (count!=5) {
                     [tempNearByArray addObject:[appDelegate.CCTV_LISTING_ARRAY_FOR_DETAIL_VIEW objectAtIndex:i]];
                     count++;
                 }
@@ -932,7 +932,7 @@
     }
     
     [self refreshContent];
-    [cctvListingTable reloadData];
+//    [cctvListingTable reloadData];
 }
 
 
@@ -942,7 +942,7 @@
     
     if (tableView==cctvListingTable) {
         if (tempNearByArray.count!=0)
-            return 3;
+            return 5;
     }
     else if (tableView==searchTableView) {
         return filterDataSource.count;

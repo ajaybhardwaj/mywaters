@@ -1289,6 +1289,7 @@
                     //                    tipsWebView.scrollView.bounces = NO;
                     
                     videoThumbnailView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, 78)];
+//                    videoThumbnailView.contentMode = UIViewContentModeScaleAspectFill;
                     [columnView addSubview:videoThumbnailView];
                     
                     tipsVideoTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(6, videoThumbnailView.frame.origin.y+videoThumbnailView.bounds.size.height+5, columnView.bounds.size.width-12, columnView.bounds.size.height-(videoThumbnailView.bounds.size.height+25))];
@@ -1610,6 +1611,7 @@
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
                     
                     videoThumbnailView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, 78)];
+//                    videoThumbnailView.contentMode = UIViewContentModeScaleAspectFill;
                     [columnView addSubview:videoThumbnailView];
                     
                     tipsVideoTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(6, videoThumbnailView.frame.origin.y+videoThumbnailView.bounds.size.height+5, columnView.bounds.size.width-12, columnView.bounds.size.height-(videoThumbnailView.bounds.size.height+25))];
@@ -1840,7 +1842,7 @@
         
         if (appDelegate.IS_CREATING_ACCOUNT) {
             appDelegate.IS_CREATING_ACCOUNT = NO;
-            [CommonFunctions showAlertView:nil title:nil msg:@"Account successfully created." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:[[responseString JSONValue] objectForKey:API_MESSAGE] cancel:@"OK" otherButton:nil];
         }
         
     }

@@ -24,6 +24,24 @@
 }
 
 
+//*************** Method To Hide Keypads
+
+- (void) hideKeypads {
+    
+    [emailField resignFirstResponder];
+    [nameField resignFirstResponder];
+    
+    [UIView beginAnimations:@"topMenu" context:NULL];
+    [UIView setAnimationDuration:0.5];
+    CGPoint pos = self.view.center;
+    if (IS_IPHONE_4_OR_LESS)
+        pos.y = 269;
+    else
+        pos.y = 315;
+    self.view.center = pos;
+    [UIView commitAnimations];
+}
+
 
 //*************** Method To Handle Tap Gesture For Profile Pic
 
@@ -52,19 +70,19 @@
     if (button.tag==1) {
         
         if ([nameField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
         if ([CommonFunctions characterSet1Found:nameField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
             return;
         }
         else if ([emailField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
             return;
         }
         else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-            [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
             return;
         }
         else {
@@ -377,15 +395,23 @@
     [updateButton setBackgroundColor:RGB(86, 46, 120)];
     [self.view addSubview:updateButton];
     
-    changePasswordButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [changePasswordButton setTitle:@"CHANGE PASSWORD" forState:UIControlStateNormal];
-    [changePasswordButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
-    changePasswordButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
-    changePasswordButton.tag = 2;
-    changePasswordButton.frame = CGRectMake(0, updateButton.frame.origin.y-50, self.view.bounds.size.width, 45);
-    [changePasswordButton addTarget:self action:@selector(handleEitProfileActions:) forControlEvents:UIControlEventTouchUpInside];
-    [changePasswordButton setBackgroundColor:RGB(200, 0, 0)];
-    [self.view addSubview:changePasswordButton];
+    if ([[[SharedObject sharedClass] getPUBUserSavedDataValue:@"userFacebookID"] length] == 0) {
+        changePasswordButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [changePasswordButton setTitle:@"CHANGE PASSWORD" forState:UIControlStateNormal];
+        [changePasswordButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
+        changePasswordButton.titleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15];
+        changePasswordButton.tag = 2;
+        changePasswordButton.frame = CGRectMake(0, updateButton.frame.origin.y-50, self.view.bounds.size.width, 45);
+        [changePasswordButton addTarget:self action:@selector(handleEitProfileActions:) forControlEvents:UIControlEventTouchUpInside];
+        [changePasswordButton setBackgroundColor:RGB(200, 0, 0)];
+        [self.view addSubview:changePasswordButton];
+    }
+    
+    removeKeypadsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    removeKeypadsButton.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [removeKeypadsButton addTarget:self action:@selector(hideKeypads) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:removeKeypadsButton];
+    [self.view sendSubviewToBack:removeKeypadsButton];
 }
 
 
