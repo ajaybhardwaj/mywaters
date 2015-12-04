@@ -38,8 +38,60 @@
     [phoneField resignFirstResponder];
     [emailField resignFirstResponder];
     
-    [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
+    if (uploadedImageCount!=3) {
+        [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:@"Max 3 pictures allowed." cancel:@"OK" otherButton:nil];
+    }
+    
 }
+
+
+//*************** Method To Clear Uploaded Image
+
+- (void) clearUploadedImage:(id) sender {
+    
+    uploadedImageCount = uploadedImageCount - 1;
+    UIButton *button = (id) sender;
+    
+    if (button.tag==1) {
+        
+        uploadedImageView1.image = nil;
+        removeUploadImageButton1.hidden = YES;
+        
+        if (uploadedImageView2.image!=nil) {
+            uploadedImageView1.image = uploadedImageView2.image;
+            removeUploadImageButton1.hidden = NO;
+            uploadedImageView2.image = nil;
+            removeUploadImageButton2.hidden = YES;
+        }
+        if (uploadedImageView3.image!=nil) {
+            uploadedImageView2.image = uploadedImageView3.image;
+            removeUploadImageButton2.hidden = NO;
+            uploadedImageView3.image = nil;
+            removeUploadImageButton3.hidden = YES;
+        }
+    }
+    else if (button.tag==2) {
+        
+        uploadedImageView2.image = nil;
+        removeUploadImageButton2.hidden = YES;
+        
+        if (uploadedImageView3.image!=nil) {
+            uploadedImageView2.image = uploadedImageView3.image;
+            removeUploadImageButton2.hidden = NO;
+            uploadedImageView3.image = nil;
+            removeUploadImageButton3.hidden = YES;
+        }
+    }
+    else if (button.tag==3) {
+        
+        uploadedImageView2.image = nil;
+        removeUploadImageButton2.hidden = YES;
+    }
+}
+
 
 
 //*************** Method To PUB HelpDesk
@@ -207,19 +259,31 @@
             [parameters addObject:@"Feedback.locationLongitude"];
             [values addObject:[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG]];
             
-            if (isFeedbackImageAvailable) {
+            if (uploadedImageCount>0) {
                 
-                NSData* data = UIImageJPEGRepresentation(picUploadImageView.image, 0.5f);
-                NSString *base64ImageString = [Base64 encode:data];
+                if (uploadedImageView1.image!=nil) {
+                    NSData* data = UIImageJPEGRepresentation(uploadedImageView1.image, 0.5f);
+                    NSString *base64ImageString = [Base64 encode:data];
                 
-                [parameters addObject:@"Feedback.images[0]"];
-                [values addObject:base64ImageString];
-                
+                    [parameters addObject:@"Feedback.images[0]"];
+                    [values addObject:base64ImageString];
+                }
+                if (uploadedImageView2.image!=nil) {
+                    NSData* data = UIImageJPEGRepresentation(uploadedImageView2.image, 0.5f);
+                    NSString *base64ImageString = [Base64 encode:data];
+                    
+                    [parameters addObject:@"Feedback.images[1]"];
+                    [values addObject:base64ImageString];
+                }
+                if (uploadedImageView3.image!=nil) {
+                    NSData* data = UIImageJPEGRepresentation(uploadedImageView3.image, 0.5f);
+                    NSString *base64ImageString = [Base64 encode:data];
+                    
+                    [parameters addObject:@"Feedback.images[2]"];
+                    [values addObject:base64ImageString];
+                }
             }
-            //                else {
-            //                    [CommonFunctions showAlertView:nil title:nil msg:@"Please provide image." cancel:@"OK" otherButton:nil];
-            //                    return;
-            //                }
+
         }
         
         if (isReportingForChatter) {
@@ -339,11 +403,11 @@
 
 - (void) createFeedbackTableHeader {
     
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 120)];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 140)];
     [headerView setBackgroundColor:RGB(247, 247, 247)];
     
     
-    picUploadImageView =[[UIImageView alloc] initWithFrame:CGRectMake((headerView.bounds.size.width/2)-40, 20, 100, 100)];
+    picUploadImageView =[[UIImageView alloc] initWithFrame:CGRectMake((headerView.bounds.size.width/2)-35, 20, 70, 70)];
     [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_feedback_new.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [headerView addSubview:picUploadImageView];
     picUploadImageView.userInteractionEnabled = YES;
@@ -410,19 +474,28 @@
         
         [CommonFunctions showAlertView:self title:[[responseString JSONValue] objectForKey:@"Message"] msg:nil cancel:@"OK" otherButton:nil];
         
-        isFeedbackImageAvailable = NO;
         [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_feedback_new.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        
+        uploadedImageView1.image = nil;
+        uploadedImageView2.image = nil;
+        uploadedImageView3.image = nil;
+        uploadedImageCount = 0;
+        
+        removeUploadImageButton1.hidden = YES;
+        removeUploadImageButton2.hidden = YES;
+        removeUploadImageButton3.hidden = YES;
+        
         commentField.text = @"";
-        emailField.text = @"";
-        phoneField.text = @"";
-        nameField.text = @"";
-        locationField.text = @"";
+//        emailField.text = @"";
+//        phoneField.text = @"";
+//        nameField.text = @"";
+//        locationField.text = @"";
         
         tempCommentString = @"";
-        tempEmailString = @"";
-        tempPhoneString = @"";
-        tempLocationString = @"";
-        tempNameString = @"";
+//        tempEmailString = @"";
+//        tempPhoneString = @"";
+//        tempLocationString = @"";
+//        tempNameString = @"";
         
         appDelegate.IS_USER_LOCATION_SELECTED_BY_LONG_PRESS = NO;
         appDelegate.LONG_PRESS_USER_LOCATION_LAT = 0.0;
@@ -488,8 +561,21 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
-    [picUploadImageView setImage:chosenImage];
-    isFeedbackImageAvailable = YES;
+    
+    uploadedImageCount = uploadedImageCount + 1;
+    
+    if (uploadedImageCount==1) {
+        [uploadedImageView1 setImage:chosenImage];
+        removeUploadImageButton1.hidden = NO;
+    }
+    else if (uploadedImageCount==2) {
+        [uploadedImageView2 setImage:chosenImage];
+        removeUploadImageButton2.hidden = NO;
+    }
+    else if (uploadedImageCount==3) {
+        [uploadedImageView3 setImage:chosenImage];
+        removeUploadImageButton3.hidden = NO;
+    }
     
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
@@ -498,7 +584,6 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     
-    isFeedbackImageAvailable = NO;
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
 }
@@ -1004,6 +1089,7 @@
     // Do any additional setup after loading the view.
     
     appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    uploadedImageCount = 0;
     
     if (!isReportingForChatter)
         [self.navigationItem setRightBarButtonItem:[[CustomButtons sharedInstance] _PYaddCustomRightBarButton2Target:self withSelector:@selector(callPUBHelpdesk) withIconName:@"icn_call"]];
@@ -1036,7 +1122,7 @@
     backgroundScrollView.userInteractionEnabled = YES;
     
     
-    picUploadImageView =[[UIImageView alloc] initWithFrame:CGRectMake((backgroundScrollView.bounds.size.width/2)-50, 20, 100, 100)];
+    picUploadImageView =[[UIImageView alloc] initWithFrame:CGRectMake((backgroundScrollView.bounds.size.width/2)-35, 10, 70, 70)];
     [picUploadImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_feedback_new.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [backgroundScrollView addSubview:picUploadImageView];
     picUploadImageView.userInteractionEnabled = YES;
@@ -1044,9 +1130,49 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showActionSheet)];
     [picUploadImageView addGestureRecognizer:tap];
     
+    uploadedImageView1 =[[UIImageView alloc] initWithFrame:CGRectMake((backgroundScrollView.bounds.size.width-180)/4, picUploadImageView.frame.origin.y+picUploadImageView.bounds.size.height+20, 60, 60)];
+    [uploadedImageView1 setBackgroundColor:[UIColor whiteColor]];
+    [backgroundScrollView addSubview:uploadedImageView1];
+    uploadedImageView1.userInteractionEnabled = YES;
     
+    removeUploadImageButton1 = [UIButton buttonWithType:UIButtonTypeCustom];
+    removeUploadImageButton1.frame = CGRectMake(uploadedImageView1.bounds.size.width-9, -9, 18, 18);
+    [removeUploadImageButton1 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/remove_icon.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    removeUploadImageButton1.tag = 1;
+    [removeUploadImageButton1 addTarget:self action:@selector(clearUploadedImage:) forControlEvents:UIControlEventTouchUpInside];
+    [uploadedImageView1 addSubview:removeUploadImageButton1];
+    [uploadedImageView1 bringSubviewToFront:removeUploadImageButton1];
+    removeUploadImageButton1.hidden = YES;
     
-    locationField = [[UITextField alloc] initWithFrame:CGRectMake(10, picUploadImageView.frame.origin.y+picUploadImageView.bounds.size.height+30, backgroundScrollView.bounds.size.width-20, 40)];
+    uploadedImageView2 =[[UIImageView alloc] initWithFrame:CGRectMake(((backgroundScrollView.bounds.size.width-180)/4)*2+60, picUploadImageView.frame.origin.y+picUploadImageView.bounds.size.height+20, 60, 60)];
+    [uploadedImageView2 setBackgroundColor:[UIColor whiteColor]];
+    [backgroundScrollView addSubview:uploadedImageView2];
+    uploadedImageView2.userInteractionEnabled = YES;
+    
+    removeUploadImageButton2 = [UIButton buttonWithType:UIButtonTypeCustom];
+    removeUploadImageButton2.frame = CGRectMake(uploadedImageView2.bounds.size.width-9, -9, 18, 18);
+    [removeUploadImageButton2 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/remove_icon.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    removeUploadImageButton2.tag = 2;
+    [removeUploadImageButton2 addTarget:self action:@selector(clearUploadedImage:) forControlEvents:UIControlEventTouchUpInside];
+    [uploadedImageView2 addSubview:removeUploadImageButton2];
+    [uploadedImageView2 bringSubviewToFront:removeUploadImageButton2];
+    removeUploadImageButton2.hidden = YES;
+    
+    uploadedImageView3 =[[UIImageView alloc] initWithFrame:CGRectMake(((backgroundScrollView.bounds.size.width-180)/4)*3+120, picUploadImageView.frame.origin.y+picUploadImageView.bounds.size.height+20, 60, 60)];
+    [uploadedImageView3 setBackgroundColor:[UIColor whiteColor]];
+    [backgroundScrollView addSubview:uploadedImageView3];
+    uploadedImageView3.userInteractionEnabled = YES;
+    
+    removeUploadImageButton3 = [UIButton buttonWithType:UIButtonTypeCustom];
+    removeUploadImageButton3.frame = CGRectMake(uploadedImageView3.bounds.size.width-9, -9, 18, 18);
+    [removeUploadImageButton3 setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/remove_icon.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+    removeUploadImageButton3.tag = 3;
+    [removeUploadImageButton3 addTarget:self action:@selector(clearUploadedImage:) forControlEvents:UIControlEventTouchUpInside];
+    [uploadedImageView3 addSubview:removeUploadImageButton3];
+    [uploadedImageView3 bringSubviewToFront:removeUploadImageButton3];
+    removeUploadImageButton3.hidden = YES;
+    
+    locationField = [[UITextField alloc] initWithFrame:CGRectMake(10, uploadedImageView1.frame.origin.y+uploadedImageView1.bounds.size.height+30, backgroundScrollView.bounds.size.width-20, 40)];
     locationField.textColor = RGB(35, 35, 35);
     locationField.font = [UIFont fontWithName:ROBOTO_MEDIUM size:15.0];
     locationField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
@@ -1064,7 +1190,7 @@
     
     
     UIButton *locationButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    locationButton.frame = CGRectMake(backgroundScrollView.bounds.size.width-30, picUploadImageView.frame.origin.y+picUploadImageView.bounds.size.height+40, 20, 20);
+    locationButton.frame = CGRectMake(backgroundScrollView.bounds.size.width-30, uploadedImageView1.frame.origin.y+uploadedImageView1.bounds.size.height+40, 20, 20);
     [locationButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_location.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
     [locationButton addTarget:self action:@selector(moveToLongPressUserLocationView) forControlEvents:UIControlEventTouchUpInside];
     [backgroundScrollView addSubview:locationButton];

@@ -24,13 +24,14 @@
     UITextField *feedbackTypeField,*locationField,*nameField,*phoneField,*emailField;
     SAMTextView *commentField;
     
-    NSInteger fieldIndex;
+    NSInteger fieldIndex,uploadedImageCount;
     UIView *pickerbackground;
     UIPickerView *feedbackPickerView;
     NSInteger selectedPickerIndex;
     
-    UIImageView *picUploadImageView;
-    BOOL isFeedbackImageAvailable,_moveToBottom;
+    UIImageView *picUploadImageView,*uploadedImageView1,*uploadedImageView2,*uploadedImageView3;
+    BOOL _moveToBottom;
+    UIButton *removeUploadImageButton1,*removeUploadImageButton2,*removeUploadImageButton3;
     
     CLLocationCoordinate2D currentLocation;
     

@@ -442,6 +442,8 @@
 		FED999B71BAAAC65007BEE55 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FED999A51BAAAC65007BEE55 /* UIImageView+HighlightedWebCache.m */; };
 		FED999B81BAAAC65007BEE55 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FED999A71BAAAC65007BEE55 /* UIImageView+WebCache.m */; };
 		FED999B91BAAAC65007BEE55 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FED999A91BAAAC65007BEE55 /* UIView+WebCacheOperation.m */; };
+		FEDCA69B1C11388400561CF9 /* remove_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEDCA6991C11388400561CF9 /* remove_icon@2x.png */; };
+		FEDCA69C1C11388400561CF9 /* remove_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEDCA69A1C11388400561CF9 /* remove_icon@3x.png */; };
 		FEE04EAD1AD781C900BEA6C6 /* icn_announcements_notification@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE04EA71AD781C900BEA6C6 /* icn_announcements_notification@3x.png */; };
 		FEE04EAE1AD781C900BEA6C6 /* icn_events_notification@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE04EA81AD781C900BEA6C6 /* icn_events_notification@3x.png */; };
 		FEE04EAF1AD781C900BEA6C6 /* icn_floodinfo_notification@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEE04EA91AD781C900BEA6C6 /* icn_floodinfo_notification@3x.png */; };
@@ -1200,6 +1202,8 @@
 		FED999A71BAAAC65007BEE55 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		FED999A81BAAAC65007BEE55 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		FED999A91BAAAC65007BEE55 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		FEDCA6991C11388400561CF9 /* remove_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "remove_icon@2x.png"; sourceTree = "<group>"; };
+		FEDCA69A1C11388400561CF9 /* remove_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "remove_icon@3x.png"; sourceTree = "<group>"; };
 		FEE04EA71AD781C900BEA6C6 /* icn_announcements_notification@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_announcements_notification@3x.png"; sourceTree = "<group>"; };
 		FEE04EA81AD781C900BEA6C6 /* icn_events_notification@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_events_notification@3x.png"; sourceTree = "<group>"; };
 		FEE04EA91AD781C900BEA6C6 /* icn_floodinfo_notification@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_floodinfo_notification@3x.png"; sourceTree = "<group>"; };
@@ -1806,6 +1810,8 @@
 		FE9C8CAC1A847A18001074DC /* Feedback */ = {
 			isa = PBXGroup;
 			children = (
+				FEDCA6991C11388400561CF9 /* remove_icon@2x.png */,
+				FEDCA69A1C11388400561CF9 /* remove_icon@3x.png */,
 				FEF51BB51BF5DA7A00131021 /* icn_feedback_new@2x.png */,
 				FEF51BB61BF5DA7A00131021 /* icn_feedback_new@3x.png */,
 				FED605E61BA036B500E8630F /* feedback_table_header@3x.png */,
@@ -2908,6 +2914,7 @@
 				FE99BE371A7B7E69000B83E8 /* Roboto-Italic.ttf in Resources */,
 				FE7DC7AF1BE9A6C300EEDFCF /* icn_help_closebutton@2x.png in Resources */,
 				FE78C3031B0F17E900D909FD /* icn_menu@3x.png in Resources */,
+				FEDCA69C1C11388400561CF9 /* remove_icon@3x.png in Resources */,
 				FE4F37691A8863390028903C /* btn_darkgrey@3x.png in Resources */,
 				FE9F9D341BE7207A0047488A /* image_background@2x.png in Resources */,
 				FED72CD71ADB7FED00C4FDDB /* icn_exploremap_cctv@3x.png in Resources */,
@@ -3184,6 +3191,7 @@
 				FE0BD2511AC16C9D005A4CC3 /* icn_directions_purple@3x.png in Resources */,
 				FEF51B121BF5889900131021 /* icn_poloroid_white@2x.png in Resources */,
 				FE99BE0A1A7B63FB000B83E8 /* profile_rewards_detail.png in Resources */,
+				FEDCA69B1C11388400561CF9 /* remove_icon@2x.png in Resources */,
 				FEF51B9C1BF58E5900131021 /* icn_waterlevel_90@2x.png in Resources */,
 				FE8E1F9A1BEAF60700E3837A /* icn_waterlevel_drop_quickmap@2x.png in Resources */,
 				FEA7302B1A772FDD00D274A6 /* Images.xcassets in Resources */,
