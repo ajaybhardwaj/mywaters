@@ -67,12 +67,10 @@ static UIWindow *window;
 + (void) googleAnalyticsTracking:(NSString*) screenName {
     
     DebugLog(@"%@",screenName);
-    DebugLog(@"Analytics starts here");
+
     id tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:screenName];
     [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
-    
-    DebugLog(@"Analytics ends here");
 }
 
 
@@ -89,7 +87,6 @@ static UIWindow *window;
 }
 
 //*************** Function To Hide Global MBProgressView
-
 
 + (void)dismissGlobalHUD {
     
@@ -132,7 +129,6 @@ static UIWindow *window;
     AppDelegate *appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     // Present share dialog
     
-    
     BOOL isInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fb://"]];
     appDelegate.IS_SHARING_ON_SOCIAL_MEDIA = YES;
     
@@ -148,32 +144,40 @@ static UIWindow *window;
                                           if(error) {
                                               // An error occurred, we need to handle the error
                                               // See: https://developers.facebook.com/docs/ios/errors
+                                              
                                               [self showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
                                           } else {
                                               // Success
                                               DebugLog(@"%@",results);
-                                              [self showAlertView:nil title:nil msg:@"Successfully Posted." cancel:@"OK" otherButton:nil];
-                                              // 0 - For Other modules than ABC Waters
-                                              // -1 - For App Sharing
+                                              if ([[results objectForKey:@"completionGesture"] isEqualToString:@"cancel"]) {
+                                                  [self showAlertView:nil title:nil msg:@"Sharing cancelled." cancel:@"OK" otherButton:nil];
+                                              }
+                                              else if ([[results objectForKey:@"completionGesture"] isEqualToString:@"post"]) {
+                                                  [self showAlertView:nil title:nil msg:@"Shared!" cancel:@"OK" otherButton:nil];
+                                                  
+                                                  // 0 - For Other modules than ABC Waters
+                                                  // -1 - For App Sharing
+                                                  
+                                                  if ([[NSString stringWithFormat:@"%@",abcIdString] isEqualToString:@"0"]) {
+                                                      NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
+                                                      NSArray *values = [[NSArray alloc] initWithObjects:@"5",@"0",@"1",[CommonFunctions getAppVersionNumber], nil];
+                                                      
+                                                      [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                                                  }
+                                                  else if ([[NSString stringWithFormat:@"%@",abcIdString] isEqualToString:@"-1"]) {
+                                                      NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionType",@"version", nil];
+                                                      NSArray *values = [[NSArray alloc] initWithObjects:@"5",@"1",[CommonFunctions getAppVersionNumber], nil];
+                                                      
+                                                      [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                                                  }
+                                                  else {
+                                                      NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
+                                                      NSArray *values = [[NSArray alloc] initWithObjects:@"5",abcIdString,@"1",[CommonFunctions getAppVersionNumber], nil];
+                                                      
+                                                      [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+                                                  }
+                                              }
                                               
-                                              if ([[NSString stringWithFormat:@"%@",abcIdString] isEqualToString:@"0"]) {
-                                                  NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
-                                                  NSArray *values = [[NSArray alloc] initWithObjects:@"5",@"0",@"1",[CommonFunctions getAppVersionNumber], nil];
-                                                  
-                                                  [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
-                                              }
-                                              else if ([[NSString stringWithFormat:@"%@",abcIdString] isEqualToString:@"-1"]) {
-                                                  NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionType",@"version", nil];
-                                                  NSArray *values = [[NSArray alloc] initWithObjects:@"5",@"1",[CommonFunctions getAppVersionNumber], nil];
-                                                  
-                                                  [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
-                                              }
-                                              else {
-                                                  NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
-                                                  NSArray *values = [[NSArray alloc] initWithObjects:@"5",abcIdString,@"1",[CommonFunctions getAppVersionNumber], nil];
-                                                  
-                                                  [self grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
-                                              }
                                           }
                                       }];
     }
@@ -202,24 +206,21 @@ static UIWindow *window;
                     else {
                         if (result == FBWebDialogResultDialogNotCompleted) {
                             // User canceled.
-                            NSLog(@"User cancelled.");
-                            [self showAlertView:nil title:nil msg:@"User cancelled sharing." cancel:@"OK" otherButton:nil];
+                            [self showAlertView:nil title:nil msg:@"Sharing cancelled." cancel:@"OK" otherButton:nil];
                         }
                         else {
                             NSDictionary *urlParams = [self parseURLParams:[resultURL query]];
                             
                             if (![urlParams valueForKey:@"post_id"]) {
                                 // User canceled.
-                                NSLog(@"User cancelled.");
-                                [self showAlertView:nil title:nil msg:@"User cancelled sharing" cancel:@"OK" otherButton:nil];
+                                [self showAlertView:nil title:nil msg:@"Sharing cancelled." cancel:@"OK" otherButton:nil];
                             }
                             else {
                                 // User clicked the Share button
                                 
                                 //                        NSLog(@"fb web dialog result=====>%@",result);
                                 NSString *result = [NSString stringWithFormat: @"Posted story, id: %@", [urlParams valueForKey:@"post_id"]];
-                                NSLog(@"result %@", result);
-                                [self showAlertView:nil title:nil msg:@"Sucessfully Posted." cancel:@"OK" otherButton:nil];
+                                [self showAlertView:nil title:nil msg:@"Shared!" cancel:@"OK" otherButton:nil];
                                 
                                 
                                 // 0 - For Other modules than ABC Waters
@@ -282,7 +283,7 @@ static UIWindow *window;
                 outout = @"Post Canceled";
                 break;
             case SLComposeViewControllerResultDone: {
-                outout = @"Successfully Posted";
+                outout = @"Shared!";
                 
                 if (![abcIdString isEqualToString:@"0"]) {
                     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionID",@"ActionType",@"version", nil];
@@ -302,7 +303,7 @@ static UIWindow *window;
             default:
                 break;
         }
-        UIAlertView *myalertView = [[UIAlertView alloc]initWithTitle:nil message:outout delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        UIAlertView *myalertView = [[UIAlertView alloc]initWithTitle:nil message:outout delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [myalertView show];
     }];
 }

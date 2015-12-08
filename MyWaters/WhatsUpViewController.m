@@ -155,7 +155,7 @@
         [self pullToRefreshTable];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -322,7 +322,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (tableView==exploreTableView) {
-        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedURL"] != (id)[NSNull null]) {
+        if ([[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedURL"] != (id)[NSNull null] && [[[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedURL"] length] != 0) {
             
             WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
             viewObj.webUrl = [[chatterDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedURL"];
@@ -332,7 +332,7 @@
         }
     }
     else if (tableView==feedTableView) {
-        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedURL"] != (id)[NSNull null]) {
+        if ([[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedURL"] != (id)[NSNull null] && [[[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedURL"] length] != 0) {
             
             WebViewUrlViewController *viewObj = [[WebViewUrlViewController alloc] init];
             viewObj.webUrl = [[feedDataSource objectAtIndex:indexPath.row] objectForKey:@"FeedURL"];

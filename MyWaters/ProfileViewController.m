@@ -639,7 +639,7 @@
         [tooltip show];
     
     
-        NSString *imageURLString = [NSString stringWithFormat:@"%@/info/badge.png",IMAGE_BASE_URL];
+        NSString *imageURLString = [NSString stringWithFormat:@"%@/info/reward.png",IMAGE_BASE_URL];
     
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         activityIndicator.center = CGPointMake(toolTipView.bounds.size.width/2, toolTipView.bounds.size.height/2);
@@ -1173,7 +1173,7 @@
     self.view.backgroundColor = RGB(247, 247, 247);
     
     if (appDelegate.IS_SKIPPING_USER_LOGIN) {
-        [CommonFunctions showAlertView:self title:nil msg:@"To access profile, Please login." cancel:nil otherButton:@"OK",nil];
+        [CommonFunctions showAlertView:self title:nil msg:@"Login to access profile." cancel:nil otherButton:@"OK",nil];
         return;
     }
     

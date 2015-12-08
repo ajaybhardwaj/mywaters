@@ -18,7 +18,7 @@
     
     NSDictionary *nowCastWeatherData,*twelveHourWeatherData,*threeDayWeatherData;
     
-    UILabel *threeHourDateTimeLabel;
+    UILabel *threeHourDateTimeLabel,*weatherTitleLabel;
     UIImageView *threeHourBigIcon;
     
     UILabel *twelveHourTempLabel;

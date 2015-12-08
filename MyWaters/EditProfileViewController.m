@@ -70,19 +70,19 @@
     if (button.tag==1) {
         
         if ([nameField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
             return;
         }
         if ([CommonFunctions characterSet1Found:nameField.text]) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Provide valid name." cancel:@"OK" otherButton:nil];
             return;
         }
         else if ([emailField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
             return;
         }
         else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Provide  valid e-mail address." cancel:@"OK" otherButton:nil];
             return;
         }
         else {
@@ -160,7 +160,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Camera not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }
@@ -175,7 +175,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }

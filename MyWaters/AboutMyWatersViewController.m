@@ -351,11 +351,11 @@
         
         else if (indexPath.row==6) {
             
-            [CommonFunctions showAlertView:self title:nil msg:@"By tapping on OK, you will be subscribed to Friends of Water." cancel:nil otherButton:@"OK",@"Cancel",nil];
+            [CommonFunctions showAlertView:self title:nil msg:@"Tap OK to be a Friend of Water." cancel:nil otherButton:@"OK",@"Cancel",nil];
         }
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 

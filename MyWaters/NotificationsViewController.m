@@ -123,7 +123,7 @@
         [self pullToRefreshTable];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -427,7 +427,14 @@
             [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_floodinfo_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         }
         else if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Type"] intValue]==5) {
-            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_iAlerts_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+//            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/icn_iAlerts_notification.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_3.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        }
+        else if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Type"] intValue]==6) {
+            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_1.png",appDelegate.RESOURCE_FOLDER_PATH]]];
+        }
+        else if ([[[tableDataSource objectAtIndex:indexPath.row] objectForKey:@"Type"] intValue]==7) {
+            [cellImageView setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wls_detail_2.png",appDelegate.RESOURCE_FOLDER_PATH]]];
         }
         [cell.contentView addSubview:cellImageView];
         

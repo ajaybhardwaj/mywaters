@@ -290,7 +290,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Camera not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }
@@ -305,7 +305,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }
@@ -676,7 +676,7 @@
             [self presentViewController:picker animated:YES completion:NULL];
         }
         else {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Device does not have camera." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Camera not found." cancel:@"OK" otherButton:nil];
         }
         
     }
@@ -697,7 +697,7 @@
             [self presentViewController:picker animated:YES completion:NULL];
         }
         else {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Photo library does not exists." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Photo library not found." cancel:@"OK" otherButton:nil];
         }
     }
 }

@@ -81,12 +81,12 @@
     
     if ([CommonFunctions hasConnectivity]) {
     if ([locationField.text length] == 0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
         return;
     }
     
     if ([commentField.text length] == 0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
         return;
     }
     
@@ -123,7 +123,7 @@
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_FLOOD_SUBMISSION]];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
     
 }
@@ -249,7 +249,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Camera not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }
@@ -264,7 +264,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }

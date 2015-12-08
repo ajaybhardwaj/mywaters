@@ -53,7 +53,7 @@ static NSString *const kAllowTracking = @"allowTracking";
 
 - (void) getConfigData {
     
-//    [CommonFunctions grabGetRequest:@"ConfigData/" delegate:self isNSData:NO accessToken:@"NA"];
+    //    [CommonFunctions grabGetRequest:@"ConfigData/" delegate:self isNSData:NO accessToken:@"NA"];
     [CommonFunctions grabGetRequest:@"ConfigData" delegate:self isNSData:NO accessToken:@"NA"];
 }
 
@@ -142,7 +142,7 @@ static NSString *const kAllowTracking = @"allowTracking";
             }
             
             if ([[CommonFunctions getAppVersionNumber] intValue] < [configAppVersion intValue]) {
-                [CommonFunctions showAlertView:self title:nil msg:@"New app update is available." cancel:nil otherButton:@"Update",@"Cancel",nil];
+                [CommonFunctions showAlertView:self title:nil msg:@"App update available." cancel:nil otherButton:@"Update",@"Cancel",nil];
             }
         }
         
@@ -163,7 +163,7 @@ static NSString *const kAllowTracking = @"allowTracking";
                     localNotif.alertBody = [NSString stringWithFormat:@"%@ From %@ - Till %@",[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Description"],[CommonFunctions dateTimeFromString:[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidFrom"]],[CommonFunctions dateTimeFromString:[[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"ValidTo"]]];
                     if (IS_IOS9())
                         localNotif.alertTitle = [[SYSTEM_NOTIFICATIONS_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Title"];
-
+                    
                     localNotif.soundName = UILocalNotificationDefaultSoundName;
                     localNotif.applicationIconBadgeNumber = 1;
                     
@@ -549,7 +549,7 @@ static NSString *const kAllowTracking = @"allowTracking";
             if (sqlite3_step(statement) == SQLITE_DONE)
             {
                 DebugLog(@"Row inserted");
-                [CommonFunctions showAlertView:nil title:nil msg:@"Added as favourite." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Favourites added!" cancel:@"OK" otherButton:nil];
             }
             
             else {
@@ -570,7 +570,7 @@ static NSString *const kAllowTracking = @"allowTracking";
             if (sqlite3_step(statement) == SQLITE_DONE)
             {
                 DebugLog(@"Rows Deleted");
-                [CommonFunctions showAlertView:nil title:nil msg:@"Removed from favourites." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Favourites removed." cancel:@"OK" otherButton:nil];
             }
             
             else {
@@ -797,8 +797,8 @@ static NSString *const kAllowTracking = @"allowTracking";
                     imageName = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"image"];
                 
                 if ([[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"timeText"] != (id)[NSNull null])
-                        timeValue = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"timeText"];
-
+                    timeValue = [[EVENTS_LISTING_ARRAY objectAtIndex:i] objectForKey:@"timeText"];
+                
                 
                 NSString *insertSQL = [NSString stringWithFormat: @"INSERT INTO events (eventId, eventTitle, eventDescription, eventLat, eventlong, eventPhone, eventAddress, eventStartDate, eventEndDate, eventImageName, eventTime) VALUES (\"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\", \"%@\",, \"%@\")", eventID,titleString,descriptionString,latValue,longValue,phoneNoString,addressString,startDateString,endDateString,imageName,timeValue];
                 const char *insert_stmt = [insertSQL UTF8String];
@@ -1025,7 +1025,7 @@ static NSString *const kAllowTracking = @"allowTracking";
                     NSString *isCertified = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 11)];
                     NSString *favId = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 18)];
                     NSString *hasPOI = [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 20)];
-
+                    
                     [favouriteDict setObject:favId forKey:@"id"];
                     [favouriteDict setObject:nameValue forKey:@"siteName"];
                     [favouriteDict setObject:lat forKey:@"locationLatitude"];
@@ -1333,9 +1333,21 @@ static NSString *const kAllowTracking = @"allowTracking";
     }
     
     [locationManager stopUpdatingLocation];
-
+    
 }
 
+
+#pragma mark - Split view
+
+- (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
+//    if ([secondaryViewController isKindOfClass:[UINavigationController class]] && [[(UINavigationController *)secondaryViewController topViewController] isKindOfClass:[HomeViewController class]] && ([(HomeViewController *)[(UINavigationController *)secondaryViewController topViewController] detailItem] == nil)) {
+    if ([secondaryViewController isKindOfClass:[UINavigationController class]] && [[(UINavigationController *)secondaryViewController topViewController] isKindOfClass:[iPadHomeViewController class]]) {
+        // Return YES to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
+        return YES;
+    } else {
+        return NO;
+    }
+}
 
 
 # pragma mark - App Lifecycle Methods
@@ -1407,11 +1419,38 @@ static NSString *const kAllowTracking = @"allowTracking";
     [self.window makeKeyAndVisible];
     self.window.backgroundColor = RGB(247, 247, 247);
     
-    [self createViewDeckController];
-    [self.window setRootViewController:_rootDeckController];
-    
-    _rootDeckController.navigationController.interactivePopGestureRecognizer.enabled = NO;
-    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        
+        _splitViewController = [[UISplitViewController alloc] init];
+        iPadMenuViewController *root = [[iPadMenuViewController alloc] init];
+        iPadHomeViewController *detail = [[iPadHomeViewController alloc] init];
+        UINavigationController *rootNav = [[UINavigationController alloc] initWithRootViewController:root];
+        UINavigationController *detailNav = [[UINavigationController alloc] initWithRootViewController:detail];
+        rootNav.topViewController.navigationItem.leftBarButtonItem = _splitViewController.displayModeButtonItem;
+        _splitViewController.viewControllers = [NSArray arrayWithObjects:rootNav, detailNav, nil];
+        _splitViewController.delegate = self;
+        [self.window setRootViewController:(UIViewController*)_splitViewController];
+        
+//        _splitViewController = (UISplitViewController *)self.window.rootViewController;
+//        iPadHomeViewController *ipadHome = [[iPadHomeViewController alloc] init];
+//        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:ipadHome];
+//        navigationController.topViewController.navigationItem.leftBarButtonItem = _splitViewController.displayModeButtonItem;
+//        _splitViewController.delegate = self;
+//        [self.window setRootViewController:navigationController];
+        
+//        UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
+//        UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
+//        navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem;
+//        splitViewController.delegate = self;
+        
+    }
+    else {
+        [self createViewDeckController];
+        [self.window setRootViewController:_rootDeckController];
+        
+        _rootDeckController.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+
     
 #ifdef __IPHONE_8_0
     
@@ -1433,10 +1472,10 @@ static NSString *const kAllowTracking = @"allowTracking";
     self.window.backgroundColor = RGB(247, 247, 247);
     
     if ([CommonFunctions hasConnectivity]) {
-            [self getConfigData];
+        [self getConfigData];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
     
     /////// GOOGLE ANALYTICS ///////
@@ -1512,7 +1551,7 @@ static NSString *const kAllowTracking = @"allowTracking";
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-
+    
     [locationManager startUpdatingLocation];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
@@ -1525,7 +1564,7 @@ static NSString *const kAllowTracking = @"allowTracking";
             [self registerDeviceToken];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -1538,7 +1577,7 @@ static NSString *const kAllowTracking = @"allowTracking";
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
-
+    
     [GAI sharedInstance].optOut = ![[NSUserDefaults standardUserDefaults] boolForKey:kAllowTracking];
     
     [FBAppEvents activateApp];
@@ -1573,13 +1612,13 @@ static NSString *const kAllowTracking = @"allowTracking";
 # pragma mark - APN Methods For Push Notification
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-
+    
     DebugLog(@"%@",userInfo);
     
     IS_PUSH_NOTIFICATION_RECEIVED = YES;
     RECEIVED_NOTIFICATION_TYPE = [[userInfo objectForKey:@"type"] intValue];
     PUSH_NOTIFICATION_ALERT_MESSAGE = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
-
+    
     DebugLog(@"%ld---%@",(long)RECEIVED_NOTIFICATION_TYPE,PUSH_NOTIFICATION_ALERT_MESSAGE);
     
     //    {

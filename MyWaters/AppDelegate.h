@@ -18,8 +18,10 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "ARViewController.h"
 #import "GAI.h"
+#import "iPadHomeViewController.h"
+#import "iPadMenuViewController.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate,IIViewDeckControllerDelegate,CLLocationManagerDelegate,UIAlertViewDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate,IIViewDeckControllerDelegate,CLLocationManagerDelegate,UIAlertViewDelegate,UISplitViewControllerDelegate> {
     
     NSString *DATABASE_PATH;
     
@@ -30,6 +32,8 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) IIViewDeckController *rootDeckController;
+@property (strong, nonatomic) UISplitViewController *splitViewController;
+
 @property (nonatomic,assign) sqlite3 *database;
 @property (nonatomic, assign) NSInteger left_deck_width,screen_width;
 @property (nonatomic, strong) NSString *RESOURCE_FOLDER_PATH;

@@ -151,12 +151,13 @@
         
         NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"version", nil];
         NSArray *values = [[NSArray alloc] initWithObjects:@"3",[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],[CommonFunctions getAppVersionNumber], nil];
+//        NSArray *values = [[NSArray alloc] initWithObjects:@"3",@"12345",[CommonFunctions getAppVersionNumber], nil];
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
         
         [self pullToRefreshTable];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -535,7 +536,7 @@
             }
             else {
                 [self animateFilterTable];
-                [CommonFunctions showAlertView:nil title:nil msg:@"Turn on location to filter by distance." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Turn on Location Services." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -617,6 +618,8 @@
                 if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
                     viewObj.phoneNoString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
                 
+                
+                DebugLog(@"%@",[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"]);
                 if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
                     viewObj.addressString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"];
                 

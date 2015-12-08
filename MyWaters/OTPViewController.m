@@ -37,7 +37,7 @@
     
 //    if ([otpField1.text length] ==0 || [otpField2.text length] ==0 || [otpField3.text length] ==0 || [otpField4.text length] ==0 || [otpField5.text length] ==0 || [otpField6.text length] ==0) {
     if ([otpField1.text length] != 6) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Please enter your six digit OTP code." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Enter your six digit OTP code." cancel:@"OK" otherButton:nil];
     }
     else {
         
@@ -120,7 +120,7 @@
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,VERIFICATION_API_URL]];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 

@@ -22,13 +22,13 @@
 - (void) skipSignUpProcess {
     
     //    if ([emailField.text length]==0) {
-    //        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+    //        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Required info missing." cancel:@"OK" otherButton:nil];
     //    }
     //    else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-    //        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+    //        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Provide  valid e-mail address." cancel:@"OK" otherButton:nil];
     //    }
     //    else if ([passField.text length]==0) {
-    //        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+    //        [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Required info missing." cancel:@"OK" otherButton:nil];
     //    }
     //    else {
     //        [self submitLoginCredentials];
@@ -272,42 +272,42 @@
     
     if ([CommonFunctions hasConnectivity]) {
         if ([emailField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Email is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Provide  valid e-mail address." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([nameField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([CommonFunctions characterSet1Found:nameField.text]) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Provide valid name." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([passField.text length]==0) {
             if (!isSigningUpViaFacebook) {
-                [CommonFunctions showAlertView:nil title:nil msg:@"Password is mandatory." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
         
         if ([retypePassField.text length]==0) {
             if (!isSigningUpViaFacebook) {
-                [CommonFunctions showAlertView:nil title:nil msg:@"Retype password is mandatory." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
         
         if (![passField.text isEqualToString:retypePassField.text]) {
             if (!isSigningUpViaFacebook) {
-                [CommonFunctions showAlertView:nil title:nil msg:@"Password & retype password does not match." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Passwords do not match." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
@@ -368,7 +368,7 @@
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,SIGNUP_API_URL]];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -566,7 +566,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Camera not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }
@@ -581,7 +581,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }

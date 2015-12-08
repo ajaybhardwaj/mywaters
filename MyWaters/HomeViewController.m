@@ -594,6 +594,7 @@
             [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
             parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"pushtoken", nil];
             values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"], nil];
+//            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],@"12345", nil];
             
             [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
         }
@@ -601,7 +602,7 @@
         
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
         return;
     }
 }

@@ -167,11 +167,11 @@
          //         }
          
          if (!tempLocationString)
-             tempLocationString = [[NSString alloc] initWithFormat:@"%@ %@, %@",subThoroughFareString,thoroughFareString,localityString];
+             tempLocationString = [[NSString alloc] initWithFormat:@"%@ %@ %@",subThoroughFareString,thoroughFareString,localityString];
          else
-             tempLocationString = [NSString stringWithFormat:@"%@ %@, %@",subThoroughFareString,thoroughFareString,localityString];
+             tempLocationString = [NSString stringWithFormat:@"%@ %@ %@",subThoroughFareString,thoroughFareString,localityString];
          
-         locationField.text = [NSString stringWithFormat:@"%@ %@, %@",subThoroughFareString,thoroughFareString,localityString];
+         locationField.text = [NSString stringWithFormat:@"%@ %@ %@",subThoroughFareString,thoroughFareString,localityString];
      }];
 }
 
@@ -195,35 +195,35 @@
         
         if (!isReportingForChatter) {
             if ([locationField.text length] == 0) {
-                [CommonFunctions showAlertView:nil title:nil msg:@"Location is mandatory." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
         if ([commentField.text length] == 0) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Comment is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([nameField.text length] == 0) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Name is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([CommonFunctions characterSet1Found:nameField.text]) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid name." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Provide valid name." cancel:@"OK" otherButton:nil];
             return;
         }
         
         if ([phoneField.text length] !=0) {
             if ([CommonFunctions characterSet2Found:phoneField.text]) {
-                [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid phone number." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Provide valid contact number." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
         
         if ([emailField.text length] !=0) {
             if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:@"Sorry!" msg:@"Provide  valid e-mail address." cancel:@"OK" otherButton:nil];
                 return;
             }
         }
@@ -303,7 +303,7 @@
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,FEEDBACK_API_URL]];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -534,7 +534,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Camera not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }
@@ -549,7 +549,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry..!!" message:@"Photo library not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }

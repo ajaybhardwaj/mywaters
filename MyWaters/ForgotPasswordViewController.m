@@ -49,10 +49,10 @@
     
     if ([CommonFunctions hasConnectivity]) {
         if ([emailField.text length]==0) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Email id is mandatory." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
         }
         else if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a valid email." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Provide  valid e-mail address." cancel:@"OK" otherButton:nil];
         }
         else {
             
@@ -74,7 +74,7 @@
         }
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 

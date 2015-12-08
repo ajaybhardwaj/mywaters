@@ -51,7 +51,7 @@
         [self pullToRefreshTable];
     }
     else {
-        [CommonFunctions showAlertView:nil title:@"No internet connectivity." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Connection error. Check your internet connection." msg:nil cancel:@"OK" otherButton:nil];
     }
 }
 
@@ -359,7 +359,7 @@
             else {
                 
                 [self animateFilterTable];
-                [CommonFunctions showAlertView:nil title:nil msg:@"Turn on location to filter by distance." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Turn on Location Services." cancel:@"OK" otherButton:nil];
             }
         }
         

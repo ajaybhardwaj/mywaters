@@ -529,7 +529,7 @@
             [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
         }
         else {
-            [CommonFunctions showAlertView:nil title:nil msg:@"To upload photo, Please login." cancel:nil otherButton:@"OK",nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Login to upload photo." cancel:nil otherButton:@"OK",nil];
         }
     }
 }
@@ -904,7 +904,7 @@
      [CommonFunctions showActionSheet:self containerView:self.view.window title:@"Select Source" msg:nil cancel:nil tag:1 destructive:nil otherButton:@"Take Photo",@"Photo Library",@"Cancel",nil];
      }
      else {
-     [CommonFunctions showAlertView:nil title:nil msg:@"To upload photo, Please login." cancel:nil otherButton:@"OK",nil];
+     [CommonFunctions showAlertView:nil title:nil msg:@"Login to upload photo." cancel:nil otherButton:@"OK",nil];
      }
      */
     
@@ -972,7 +972,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"Device does not have camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"Camera not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }
@@ -987,7 +987,7 @@
                 [self presentViewController:picker animated:YES completion:NULL];
             }
             else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"Photo library does not exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"Photo library not found." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert show];
             }
         }

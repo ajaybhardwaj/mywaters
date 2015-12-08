@@ -92,6 +92,8 @@
 		FE76B43E1BF82DAB00250067 /* SAMTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76B43D1BF82DAB00250067 /* SAMTextView.m */; };
 		FE78C2FB1B0ED75500D909FD /* default_no_image.png in Resources */ = {isa = PBXBuildFile; fileRef = FE78C2FA1B0ED75500D909FD /* default_no_image.png */; };
 		FE78C3031B0F17E900D909FD /* icn_menu@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE78C3021B0F17E900D909FD /* icn_menu@3x.png */; };
+		FE78F77F1C16BD31000AFAED /* iPadMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE78F77E1C16BD31000AFAED /* iPadMenuViewController.m */; };
+		FE78F7851C16D0A9000AFAED /* iPadHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE78F7841C16D0A9000AFAED /* iPadHomeViewController.m */; };
 		FE7C6CBE1AC8FA4C00912145 /* AboutMyWatersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7C6CBD1AC8FA4C00912145 /* AboutMyWatersViewController.m */; };
 		FE7DC7AF1BE9A6C300EEDFCF /* icn_help_closebutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7DC7AD1BE9A6C200EEDFCF /* icn_help_closebutton@2x.png */; };
 		FE7DC7B31BE9A6DC00EEDFCF /* icn_helpicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7DC7B11BE9A6DC00EEDFCF /* icn_helpicon@2x.png */; };
@@ -748,6 +750,10 @@
 		FE76B43D1BF82DAB00250067 /* SAMTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMTextView.m; sourceTree = "<group>"; };
 		FE78C2FA1B0ED75500D909FD /* default_no_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = default_no_image.png; sourceTree = "<group>"; };
 		FE78C3021B0F17E900D909FD /* icn_menu@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_menu@3x.png"; sourceTree = "<group>"; };
+		FE78F77D1C16BD31000AFAED /* iPadMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadMenuViewController.h; sourceTree = "<group>"; };
+		FE78F77E1C16BD31000AFAED /* iPadMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iPadMenuViewController.m; sourceTree = "<group>"; };
+		FE78F7831C16D0A9000AFAED /* iPadHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadHomeViewController.h; sourceTree = "<group>"; };
+		FE78F7841C16D0A9000AFAED /* iPadHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iPadHomeViewController.m; sourceTree = "<group>"; };
 		FE7C6CBC1AC8FA4C00912145 /* AboutMyWatersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutMyWatersViewController.h; sourceTree = "<group>"; };
 		FE7C6CBD1AC8FA4C00912145 /* AboutMyWatersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutMyWatersViewController.m; sourceTree = "<group>"; };
 		FE7DC7AD1BE9A6C200EEDFCF /* icn_help_closebutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_help_closebutton@2x.png"; sourceTree = "<group>"; };
@@ -1942,6 +1948,7 @@
 		FEA7301C1A772FDD00D274A6 /* MyWaters */ = {
 			isa = PBXGroup;
 			children = (
+				FEB0FB451C157C4C0099E3E6 /* iPad Design */,
 				FE822B501BD5E409007845E7 /* Tips */,
 				FEFB4CC81BB931220040F105 /* OTP Verification */,
 				FEBA996D1ADCB3FE00ED3555 /* Water Level Sensors */,
@@ -2374,6 +2381,25 @@
 				FEB02A061AD62D62004B7DDF /* icn_add@3x.png */,
 			);
 			name = ARView;
+			sourceTree = "<group>";
+		};
+		FEB0FB451C157C4C0099E3E6 /* iPad Design */ = {
+			isa = PBXGroup;
+			children = (
+				FE78F77D1C16BD31000AFAED /* iPadMenuViewController.h */,
+				FE78F77E1C16BD31000AFAED /* iPadMenuViewController.m */,
+				FEB0FB461C157C570099E3E6 /* Home */,
+			);
+			name = "iPad Design";
+			sourceTree = "<group>";
+		};
+		FEB0FB461C157C570099E3E6 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				FE78F7831C16D0A9000AFAED /* iPadHomeViewController.h */,
+				FE78F7841C16D0A9000AFAED /* iPadHomeViewController.m */,
+			);
+			name = Home;
 			sourceTree = "<group>";
 		};
 		FEB13FB51A7766300061CE74 /* Side Menu */ = {
@@ -3378,6 +3404,7 @@
 				FE97AE691AE885FF00545D0E /* EditProfileViewController.m in Sources */,
 				FE0274C71B8F0206006E947E /* XMLReader.m in Sources */,
 				FEE65A711B8ABB55002C5C6D /* ASIHTTPRequest.m in Sources */,
+				FE78F77F1C16BD31000AFAED /* iPadMenuViewController.m in Sources */,
 				FED999B61BAAAC65007BEE55 /* UIImage+WebP.m in Sources */,
 				FEA730521A7733F900D274A6 /* AuxilaryUIService.m in Sources */,
 				FEFC8EBF1BBBD3BE00139944 /* CustomAnnotationView.m in Sources */,
@@ -3445,6 +3472,7 @@
 				FEA730841A77343D00D274A6 /* ViewControllerHelper.m in Sources */,
 				FEE65A741B8ABB55002C5C6D /* Reachability.m in Sources */,
 				FEE65A851B8AC39E002C5C6D /* SBJSON.m in Sources */,
+				FE78F7851C16D0A9000AFAED /* iPadHomeViewController.m in Sources */,
 				FEE65A731B8ABB55002C5C6D /* ASINetworkQueue.m in Sources */,
 				FE82AC5E1A92E34100CCC94D /* MarkerView.m in Sources */,
 				FEE65A831B8AC39E002C5C6D /* NSObject+SBJSON.m in Sources */,
@@ -3645,6 +3673,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
@@ -3674,6 +3703,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "fa20b6d2-b83c-4ea9-94eb-941c24eb5843";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;

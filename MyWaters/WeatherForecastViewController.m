@@ -83,18 +83,15 @@
             iconImageName = @"CD.png";
         }
         else if ([[iconArray objectAtIndex:i] isEqualToString:@"HZ"]) {
-            // Add Image For Hazy
             iconImageName = @"HZ.png";
         }
         else if ([[iconArray objectAtIndex:i] isEqualToString:@"WD"]) {
-            // Add image for windy
             iconImageName = @"WD.png";
         }
         else if ([[iconArray objectAtIndex:i] isEqualToString:@"RA"]) {
             iconImageName = @"RA.png";
         }
         else if ([[iconArray objectAtIndex:i] isEqualToString:@"PS"]) {
-            // Add image for passing showers
             iconImageName = @"PS.png";
         }
         else if ([[iconArray objectAtIndex:i] isEqualToString:@"SH"]) {
@@ -143,33 +140,43 @@
         
         if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"FD"]) {
             iconImageName = @"FD.png";
+            weatherTitleLabel.text = @"FAIR";
         }
         else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"FN"]) {
             iconImageName = @"FN.png";
+            weatherTitleLabel.text = @"FAIR";
         }
         else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"PC"]) {
             iconImageName = @"PC.png";
+            weatherTitleLabel.text = @"PARTLY CLOUDY";
         }
         else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"CD"]) {
             iconImageName = @"CD.png";
+            weatherTitleLabel.text = @"CLOUDY";
         }
         else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"HZ"]) {
             iconImageName = @"HZ.png";
+            weatherTitleLabel.text = @"HAZY";
         }
         else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"WD"]) {
             iconImageName = @"WD.png";
+            weatherTitleLabel.text = @"WINDY";
         }
         else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"RA"]) {
             iconImageName = @"RA.png";
+            weatherTitleLabel.text = @"RAINY";
         }
         else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"PS"]) {
             iconImageName = @"PS.png";
+            weatherTitleLabel.text = @"PASSING SHOWERS";
         }
         else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"SH"]) {
             iconImageName = @"SH.png";
+            weatherTitleLabel.text = @"SHOWERS";
         }
         else if ([[twelveHourWeatherData objectForKey:@"wxmain"] isEqualToString:@"TS"]) {
             iconImageName = @"TS.png";
+            weatherTitleLabel.text = @"THUNDERY SHOWERS";
         }
         [threeHourBigIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,iconImageName]]];
 //        threeHourDateTimeLabel.text = [NSString stringWithFormat:@"%@ @ %@",issueDate,[[twelveHourWeatherData objectForKey:@"forecastIssue"] objectForKey:@"_time"]];
@@ -269,33 +276,43 @@
     
     if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"FD"]) {
         iconImageName = @"FD.png";
+        weatherTitleLabel.text = @"FAIR";
     }
     else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"FN"]) {
         iconImageName = @"FN.png";
+        weatherTitleLabel.text = @"FAIR";
     }
     else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"PC"]) {
         iconImageName = @"PC.png";
+        weatherTitleLabel.text = @"PARTLY CLOUDY";
     }
     else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"CD"]) {
         iconImageName = @"CD.png";
+        weatherTitleLabel.text = @"CLOUDY";
     }
     else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"HA"] || [[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"HZ"]) {
         iconImageName = @"HZ.png";
+        weatherTitleLabel.text = @"HAZY";
     }
     else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"WD"]) {
         iconImageName = @"WD.png";
+        weatherTitleLabel.text = @"WINDY";
     }
     else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"RA"]) {
         iconImageName = @"RA.png";
+        weatherTitleLabel.text = @"RAINY";
     }
     else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"PS"]) {
         iconImageName = @"PS.png";
+        weatherTitleLabel.text = @"PASSING SHOWERS";
     }
     else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"SH"]) {
         iconImageName = @"SH.png";
+        weatherTitleLabel.text = @"SHOWERS";
     }
     else if ([[[tempArray objectAtIndex:0] objectForKey:@"_icon"] isEqualToString:@"TS"]) {
         iconImageName = @"TS.png";
+        weatherTitleLabel.text = @"THUNDERY SHOWERS";
     }
     [threeHourBigIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",appDelegate.RESOURCE_FOLDER_PATH,iconImageName]]];
     
@@ -319,6 +336,12 @@
     [threeHourBigIcon setImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/sunny.png",appDelegate.RESOURCE_FOLDER_PATH]]];
     [self.view addSubview:threeHourBigIcon];
     
+    
+    weatherTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, threeHourBigIcon.frame.origin.y+threeHourBigIcon.bounds.size.height, self.view.bounds.size.width, 20)];
+    weatherTitleLabel.textAlignment = NSTextAlignmentCenter;
+    weatherTitleLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:16.0];
+    weatherTitleLabel.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:weatherTitleLabel];
     
     twelveHourTempLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, threeHourBigIcon.frame.origin.y+threeHourBigIcon.bounds.size.height+30, self.view.bounds.size.width, 30)];
     twelveHourTempLabel.textAlignment = NSTextAlignmentCenter;

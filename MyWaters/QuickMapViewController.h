@@ -24,7 +24,7 @@
 #import "CCTVMapAnnoations.h"
 #import "FloodMapAnnotations.h"
 
-@interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UPStackMenuDelegate,CMPopTipViewDelegate> {
+@interface QuickMapViewController : UIViewController <MKMapViewDelegate,UITableViewDataSource,UITableViewDelegate,UPStackMenuDelegate,CMPopTipViewDelegate,UISearchBarDelegate,UITextFieldDelegate> {
     
     AppDelegate *appDelegate;
     BOOL isControlMaximize,isShowingFilter;
@@ -85,6 +85,8 @@
     
     
     UIButton *hideFilterButton;
+    
+    UISearchBar *locationSearchBar;
     
 }
 @property (nonatomic, strong) id currentPopTipViewTarget;

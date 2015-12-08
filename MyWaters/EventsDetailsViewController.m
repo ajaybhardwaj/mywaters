@@ -343,7 +343,7 @@
     eventTitle.numberOfLines = 0;
     
     CGRect newTitleFrame = eventTitle.frame;
-    newTitleFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",titleString] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:directionButton.bounds.size.width-80];
+    newTitleFrame.size.height = [CommonFunctions heightForText:[NSString stringWithFormat:@"%@",titleString] font:[UIFont fontWithName:ROBOTO_MEDIUM size:14.0] withinWidth:directionButton.bounds.size.width-90];
     eventTitle.frame = newTitleFrame;
     [directionButton addSubview:eventTitle];
 //    [eventTitle sizeToFit];
@@ -392,7 +392,7 @@
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
     CGRect newDescriptionLabelFrame = descriptionLabel.frame;
-    newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width-40];//expectedDescriptionLabelSize.height;
+    newDescriptionLabelFrame.size.height = [CommonFunctions heightForText:descriptionString font:descriptionLabel.font withinWidth:bgScrollView.bounds.size.width-50];//expectedDescriptionLabelSize.height;
     descriptionLabel.frame = newDescriptionLabelFrame;
     [bgScrollView addSubview:descriptionLabel];
     [descriptionLabel sizeToFit];
@@ -446,7 +446,7 @@
     [bgScrollView addSubview:locationLabel];
     
     
-    UILabel *locationValueLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, locationLabel.frame.origin.y+locationLabel.bounds.size.height+5, bgScrollView.bounds.size.width, 40)];
+    UILabel *locationValueLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, locationLabel.frame.origin.y+locationLabel.bounds.size.height-5, bgScrollView.bounds.size.width, 32)];
     locationValueLabel.backgroundColor = [UIColor whiteColor];
     locationValueLabel.text = [NSString stringWithFormat:@"%@",addressString];
     locationValueLabel.textColor = [UIColor darkGrayColor];
@@ -455,14 +455,14 @@
     locationValueLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
     CGRect newLocationLabelFrame = locationValueLabel.frame;
-    newLocationLabelFrame.size.height = [CommonFunctions heightForText:addressString font:locationValueLabel.font withinWidth:bgScrollView.bounds.size.width-40];//expectedDescriptionLabelSize.height;
+    newLocationLabelFrame.size.height = [CommonFunctions heightForText:addressString font:locationValueLabel.font withinWidth:bgScrollView.bounds.size.width-30];//expectedDescriptionLabelSize.height;
     locationValueLabel.frame = newLocationLabelFrame;
     [bgScrollView addSubview:locationValueLabel];
-    [locationValueLabel sizeToFit];
+//    [locationValueLabel sizeToFit];
     
     
     
-    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+startDateLabel.bounds.size.height+startDateValueLabel.bounds.size.height+endDateLabel.bounds.size.height+endDateValueLabel.bounds.size.height+locationLabel.bounds.size.height+locationValueLabel.bounds.size.height+timeLabel.bounds.size.height+100);
+    bgScrollView.contentSize = CGSizeMake(self.view.bounds.size.width, eventImageView.bounds.size.height+directionButton.bounds.size.height+eventInfoLabel.bounds.size.height+descriptionLabel.bounds.size.height+startDateLabel.bounds.size.height+startDateValueLabel.bounds.size.height+endDateLabel.bounds.size.height+endDateValueLabel.bounds.size.height+locationLabel.bounds.size.height+locationValueLabel.bounds.size.height+timeLabel.bounds.size.height+120);
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideTopMenu)];
     // prevents the scroll view from swallowing up the touch event of child buttons

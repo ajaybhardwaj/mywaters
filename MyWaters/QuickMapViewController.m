@@ -54,6 +54,9 @@
     if (isShowingFilter) {
         [self animateFilterTable];
     }
+    
+    hideFilterButton.hidden = YES;
+    [locationSearchBar resignFirstResponder];
 }
 
 
@@ -294,6 +297,8 @@
         
     }
     else {
+        [locationSearchBar resignFirstResponder];
+        
         hideFilterButton.hidden = NO;
         if (isShwoingFinePrint) {
             meteorologicalDisclaimerLabel.hidden = YES;
@@ -504,7 +509,7 @@
         }
         
         if (count==0) {
-            [CommonFunctions showAlertView:nil title:nil msg:@"No data found for selected filter." cancel:@"OK" otherButton:nil];
+            [CommonFunctions showAlertView:nil title:nil msg:@"Data not found." cancel:@"OK" otherButton:nil];
         }
     }
 }
@@ -774,7 +779,7 @@
 
             }
             else {
-                [CommonFunctions showAlertView:nil title:nil msg:@"No CCTVs data available." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Data not found." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -831,7 +836,7 @@
 
             }
             else {
-                [CommonFunctions showAlertView:nil title:nil msg:@"No water level sensors data available." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Data not found." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -844,14 +849,14 @@
                 [self generateUserFloodSubmissionAnnotations];
 
                 if (!appDelegate.IS_SKIPPING_USER_LOGIN)
-                    [CommonFunctions showAlertView:nil title:nil msg:@"To submit flood information, long press on map to drop pin." cancel:@"OK" otherButton:nil];
+                    [CommonFunctions showAlertView:nil title:nil msg:@"Long press on Quick Map to drop pin." cancel:@"OK" otherButton:nil];
 
             }
             else {
                 if (!appDelegate.IS_SKIPPING_USER_LOGIN)
-                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No user feedbacks data available.\nTo submit flood information, long press on map to drop pin."] cancel:@"OK" otherButton:nil];
+                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"Data not found.\nLong press on Quick Map to drop pin."] cancel:@"OK" otherButton:nil];
                 else
-                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"No user feedbacks data available.\nLogin to submit flood information."] cancel:@"OK" otherButton:nil];
+                    [CommonFunctions showAlertView:nil title:nil msg:[NSString stringWithFormat:@"Data not found.\nLogin to report flood."] cancel:@"OK" otherButton:nil];
 //                [CommonFunctions showAlertView:nil title:nil msg:@"No data available." cancel:@"OK" otherButton:nil];
             }
         }
@@ -865,7 +870,7 @@
                 [self generatePUBFloodSubmissionAnnotations];
             }
             else {
-                [CommonFunctions showAlertView:nil title:nil msg:@"No floods data available." cancel:@"OK" otherButton:nil];
+                [CommonFunctions showAlertView:nil title:nil msg:@"Data not found." cancel:@"OK" otherButton:nil];
             }
         }
         
@@ -1646,7 +1651,7 @@
     }
     else if (index==0) {
         
-        [CommonFunctions showAlertView:nil title:@"Rain Map will be coming soon." msg:nil cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:@"Coming soon." msg:nil cancel:@"OK" otherButton:nil];
         
         // Commented Out As This Feature Wil Be Available in Release 2.0
         /*
@@ -1729,6 +1734,65 @@
 }
 
 
+//# pragma mark - UITextFieldDelegate Methods
+//
+//- (void)textFieldDidBeginEditing:(UITextField *)textField {
+//    
+//    hideFilterButton.hidden = NO;
+//}
+//
+//
+//- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+//    
+//    return YES;
+//}
+
+# pragma mark - UISearchBarDelegate Methods
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    
+    return YES;
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    
+    hideFilterButton.hidden = NO;
+}
+
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    
+    if (searchBar==locationSearchBar) {
+        
+        hideFilterButton.hidden = YES;
+        
+        [locationSearchBar resignFirstResponder];
+        
+        CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+        [geocoder geocodeAddressString:locationSearchBar.text
+                     completionHandler:^(NSArray* placemarks, NSError* error){
+                         if (placemarks && placemarks.count > 0) {
+                             CLPlacemark *topResult = [placemarks objectAtIndex:0];
+                             MKPlacemark *placemark = [[MKPlacemark alloc] initWithPlacemark:topResult];
+                             
+                             MKCoordinateRegion region = quickMap.region;
+                             region.center = placemark.region.center;
+                             region.span.latitudeDelta = 0.013f;
+                             region.span.longitudeDelta = 0.013f;
+                             
+                             [quickMap setRegion:region animated:YES];
+//                             [quickMap addAnnotation:placemark];
+                         }
+                         else {
+                             [CommonFunctions showAlertView:nil title:nil msg:@"No location found." cancel:@"OK" otherButton:nil];
+                         }
+                     }
+         ];
+    }
+}
+
+
+
 # pragma mark - View Lifecycle Methods
 
 - (void) viewDidLoad {
@@ -1800,6 +1864,32 @@
         [quickMap addGestureRecognizer:lpgr];
     }
     
+    
+    
+    locationSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 40)];
+    locationSearchBar.delegate = self;
+    locationSearchBar.placeholder = @"Search by location...";
+    [locationSearchBar setBackgroundImage:[[UIImage alloc] init]];
+    locationSearchBar.backgroundColor = [UIColor whiteColor];
+    [quickMap addSubview:locationSearchBar];
+    
+    for (id object in [locationSearchBar subviews]) {
+        
+        if ([object isKindOfClass:[UITextField class]]) {
+            
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setFont:[UIFont fontWithName:ROBOTO_REGULAR size:14]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 20)]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setLeftViewMode:UITextFieldViewModeAlways];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBorderStyle:UITextBorderStyleNone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextAlignment:NSTextAlignmentLeft];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setPlaceholder:@"Search..."];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setClearButtonMode:UITextFieldViewModeWhileEditing];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setReturnKeyType:UIReturnKeyDone];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor whiteColor]];
+            [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDelegate:self];
+        }
+    }
     
     
     isShowingFlood = YES;
@@ -1913,7 +2003,9 @@
     
     isLoadingFloods = YES;
     
-    meteorologicalDisclaimerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 15)];
+    
+    // Frame set to add after location search bar
+    meteorologicalDisclaimerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.view.bounds.size.width, 15)];
     meteorologicalDisclaimerLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:10.0];
     meteorologicalDisclaimerLabel.textColor = [UIColor whiteColor];
     meteorologicalDisclaimerLabel.backgroundColor = [UIColor blackColor];

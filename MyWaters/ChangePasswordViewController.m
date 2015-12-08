@@ -38,19 +38,19 @@
 - (void) validateChangePasswordParameters {
     
     if ([currentPassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Old Password is mandatory." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Enter old password." cancel:@"OK" otherButton:nil];
     }
     else if ([newPassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Please provide a new password." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Enter new password." cancel:@"OK" otherButton:nil];
     }
     else if ([confirmPassField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Please confirm your new password." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Confirm new password." cancel:@"OK" otherButton:nil];
     }
     else if (![confirmPassField.text isEqualToString:newPassField.text]) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Password and confirm password are not same." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"Passwords do not match." cancel:@"OK" otherButton:nil];
     }
     else if ([currentPassField.text isEqualToString:newPassField.text]) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"New password can not be same as current password." cancel:@"OK" otherButton:nil];
+        [CommonFunctions showAlertView:nil title:nil msg:@"New password cannot be the same as the current password." cancel:@"OK" otherButton:nil];
     }
     else {
         
