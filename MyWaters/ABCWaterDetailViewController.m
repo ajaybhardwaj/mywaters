@@ -516,6 +516,12 @@
     //        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
     
     ARViewController *viewObj = [[ARViewController alloc] init];
+    if ([titleString isEqualToString:@"MacRitchie Reservoir"]) {
+        viewObj.isShowingMacRitchieReservoir = YES;
+    }
+    else {
+        viewObj.isShowingMacRitchieReservoir = NO;
+    }
     viewObj.abcWaterSiteID = abcSiteId;
     [self.navigationController pushViewController:viewObj animated:NO];
 }

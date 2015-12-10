@@ -1546,7 +1546,7 @@ static NSString *const kAllowTracking = @"allowTracking";
     [self sendHitsInBackground];
     
     // Commented Out For Version 2.0 AS no flood notifications
-    [locationManager startMonitoringSignificantLocationChanges];
+    //    [locationManager startMonitoringSignificantLocationChanges];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

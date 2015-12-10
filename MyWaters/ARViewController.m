@@ -21,7 +21,16 @@
 @end
 
 @implementation ARViewController
-@synthesize abcWaterSiteID;
+@synthesize abcWaterSiteID,isShowingMacRitchieReservoir;
+
+
+//*************** Method To Move Three D Wally View
+
+- (void) moveToThreeDWallyView {
+    
+    ThreeDWallyViewController *viewObj = [[ThreeDWallyViewController alloc] init];
+    [self.navigationController pushViewController:viewObj animated:NO];
+}
 
 
 //*************** Method To Move To Photo Gallery
@@ -849,11 +858,6 @@
     [self.view addSubview:toolBar];
     
     
-    
-    //    CGAffineTransform rotationTransform = CGAffineTransformIdentity;
-    //    rotationTransform = CGAffineTransformRotate(rotationTransform, degreesToRadians(90));
-    //    toolBar.transform = rotationTransform;
-    
     overlayScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.bounds.size.width, self.view.bounds.size.height)];
     overlayScrollview.backgroundColor = [UIColor blackColor];
     overlayScrollview.showsHorizontalScrollIndicator = NO;
@@ -862,8 +866,14 @@
     [self.view addSubview:overlayScrollview];
     overlayScrollview.hidden = YES;
     
-    //    overlayScrollview.transform = rotationTransform;
     
+    if (isShowingMacRitchieReservoir) {
+        UIButton *arThreeDButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        arThreeDButton.frame = CGRectMake(self.view.bounds.size.width-60, self.view.bounds.size.height-60, 50, 50);
+        [arThreeDButton setBackgroundImage:[[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/wallyAR.png",appDelegate.RESOURCE_FOLDER_PATH]] forState:UIControlStateNormal];
+        [arThreeDButton addTarget:self action:@selector(moveToThreeDWallyView) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:arThreeDButton];
+    }
     
     imageUploadOptionsTable = [[UITableView alloc] initWithFrame:CGRectMake(0.0, self.view.bounds.size.height, self.view.bounds.size.width, 200.0) style:UITableViewStyleGrouped];
     imageUploadOptionsTable.delegate = self;
@@ -871,9 +881,6 @@
     [self.view addSubview:imageUploadOptionsTable];
     imageUploadOptionsTable.scrollEnabled = NO;
     imageUploadOptionsTable.alwaysBounceVertical = NO;
-    
-    
-    //    imageUploadOptionsTable.transform = rotationTransform;
     
     [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationLandscapeRight];
     
@@ -885,12 +892,6 @@
     NSArray *values = [[NSArray alloc] initWithObjects:@"4",abcWaterSiteID,@"1",[CommonFunctions getAppVersionNumber], nil];
     
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
-    
-    //    UIButton *tempButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    //    tempButton.frame = CGRectMake(100, 100, 50, 50);
-    //    [tempButton setTitle:@"Options" forState:UIControlStateNormal];
-    //    [tempButton addTarget:self action:@selector(animatePictureOptionsTable) forControlEvents:UIControlEventTouchUpInside];
-    //    [self.view addSubview:tempButton];
     
 }
 
@@ -926,14 +927,14 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     
-    //    [appDelegate setShouldRotate:NO];
-    //    [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
+        [appDelegate setShouldRotate:NO];
+        [[UIDevice currentDevice] setOrientation:UIInterfaceOrientationPortrait];
     
-    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
-    {
-        [req cancel];
-        [req setDelegate:nil];
-    }
+//    for (ASIHTTPRequest *req in ASIHTTPRequest.sharedQueue.operations)
+//    {
+//        [req cancel];
+//        [req setDelegate:nil];
+//    }
     
     [self.navigationController setNavigationBarHidden:NO];
 }

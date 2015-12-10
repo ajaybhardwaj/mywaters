@@ -16,6 +16,7 @@
 #import "UILabel + Extension.h"
 #import "FGalleryViewController.h"
 #import "UINavigationController+Orientations.h"
+#import "ThreeDWallyViewController.h"
 
 @interface ARViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate, ARLocationDelegate, ARDelegate, ARMarkerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,UITableViewDataSource,UITableViewDelegate,FGalleryViewControllerDelegate> {
     
@@ -39,6 +40,7 @@
     UIToolbar *toolBar;
     
     BOOL isShowingImagePicker;
+    
 }
 
 @property (weak, nonatomic) MKMapView *mapView;
@@ -46,5 +48,6 @@
 @property (nonatomic, strong) NSArray *locations;
 @property (nonatomic, strong) MKUserLocation *userLocation;
 @property (nonatomic, strong) NSString *abcWaterSiteID;
+@property (nonatomic, assign) BOOL isShowingMacRitchieReservoir;
 
 @end
