@@ -73,12 +73,18 @@
     WLSMapAnnotations *wlsAnnotation;
     NSMutableArray *pubFloodAnnotationsArray,*wlsAnnotationsArray;
     
+    
+    UIView *customDefaultLocationView;
+    MKMapView *defaultLocationMapView;
+    BOOL isDefaultLocationSelected;
+    
     //*************** Demo App UI Variables
     UIButton *quickMapButton,*whatsUpButton,*cctvButton,*reportButton;
     
     UIWebView *tipsWebView;
     UILabel *tipsVideoTitleLabel;
     UIImageView *videoThumbnailView;
+    
     
     
 }

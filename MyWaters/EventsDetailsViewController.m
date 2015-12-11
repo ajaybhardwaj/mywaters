@@ -360,10 +360,11 @@
     [directionButton addSubview:arrowIcon];
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        
-        distanceLabel.text = @"";
-        arrowIcon.hidden = YES;
-        directionButton.enabled = NO;
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            distanceLabel.text = @"";
+            arrowIcon.hidden = YES;
+            directionButton.enabled = NO;
+        }
     }
     
     eventInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height+5, self.view.bounds.size.width, 40)];

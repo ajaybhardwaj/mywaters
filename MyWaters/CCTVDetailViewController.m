@@ -150,10 +150,11 @@
     distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        
-        distanceLabel.text = @"";
-        arrowIcon.hidden = YES;
-        directionButton.enabled = NO;
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            distanceLabel.text = @"";
+            arrowIcon.hidden = YES;
+            directionButton.enabled = NO;
+        }
     }
     
     [cctvListingTable reloadData];
@@ -246,10 +247,11 @@
     [directionButton addSubview:arrowIcon];
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        
-        distanceLabel.text = @"";
-        arrowIcon.hidden = YES;
-        directionButton.enabled = NO;
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            distanceLabel.text = @"";
+            arrowIcon.hidden = YES;
+            directionButton.enabled = NO;
+        }
     }
     
     cctvListingTable = [[UITableView alloc] initWithFrame:CGRectMake(0, directionButton.frame.origin.y+directionButton.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height-(directionButton.bounds.size.height+topImageView.bounds.size.height+64))];
@@ -990,8 +992,9 @@
     [cell.contentView addSubview:subTitleLabel];
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        
-        subTitleLabel.text = @"";
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            subTitleLabel.text = @"";
+        }
     }
     
     

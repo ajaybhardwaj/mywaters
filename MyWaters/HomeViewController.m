@@ -29,6 +29,121 @@
 }
 
 
+//*************** Method To Handle Long Press Gesture For Default Location PIN
+
+- (void) handleLongPressForDefaultLocation:(UIGestureRecognizer *)gestureRecognizer {
+    
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
+        return;
+    
+    isDefaultLocationSelected = YES;
+    
+    CGPoint touchPoint = [gestureRecognizer locationInView:defaultLocationMapView];
+    CLLocationCoordinate2D touchMapCoordinate = [defaultLocationMapView convertPoint:touchPoint toCoordinateFromView:defaultLocationMapView];
+    
+    longPressLocationAnnotation = [[QuickMapAnnotations alloc] init];
+    longPressLocationAnnotation.title = @"You are here.";
+    longPressLocationAnnotation.coordinate = touchMapCoordinate;
+    appDelegate.CURRENT_LOCATION_LAT = longPressLocationAnnotation.coordinate.latitude;
+    appDelegate.CURRENT_LOCATION_LONG = longPressLocationAnnotation.coordinate.longitude;
+    appDelegate.USER_CURRENT_LOCATION_COORDINATE = touchMapCoordinate;
+    
+    [defaultLocationMapView addAnnotation:longPressLocationAnnotation];
+    [defaultLocationMapView selectAnnotation:longPressLocationAnnotation animated:YES];
+}
+
+
+//*************** Method To Hide Default Location Selection View & Call Dashboard API
+
+- (void) hideLocationView {
+    
+    if (isDefaultLocationSelected) {
+        
+        backgroundScrollView.alpha = 1.0;
+        backgroundScrollView.userInteractionEnabled = YES;
+        
+        isDefaultLocationSelected = NO;
+        
+        customDefaultLocationView.transform = CGAffineTransformIdentity;
+        [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            customDefaultLocationView.transform = CGAffineTransformMakeScale(0.01, 0.01);
+        } completion:^(BOOL finished){
+            customDefaultLocationView.hidden = YES;
+        }];
+        
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+        NSArray *parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon",@"pushtoken", nil];
+        NSArray *values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], [[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],nil];
+        [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:@"Please select your default location." cancel:@"OK" otherButton:nil];
+    }
+    
+}
+
+
+//*************** Method To Create Default Location Selection View
+
+- (void) createDefaultLocationView {
+    
+    backgroundScrollView.alpha = 0.3;
+    backgroundScrollView.userInteractionEnabled = NO;
+    
+    
+    customDefaultLocationView = [[UIView alloc] initWithFrame:CGRectMake(20, self.view.bounds.size.height/2 - 170, self.view.bounds.size.width-40, 300)];
+    customDefaultLocationView.layer.cornerRadius = 10.0;
+    customDefaultLocationView.layer.masksToBounds = YES;
+    customDefaultLocationView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    customDefaultLocationView.layer.borderWidth = 2.0;
+    customDefaultLocationView.backgroundColor = RGB(247, 247, 247);
+    [self.view addSubview:customDefaultLocationView];
+    
+    UILabel *instructionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, customDefaultLocationView.bounds.size.width, 40)];
+    instructionLabel.backgroundColor = [UIColor clearColor];
+    instructionLabel.font = [UIFont fontWithName:ROBOTO_MEDIUM size:12.0];
+    instructionLabel.numberOfLines = 0;
+    instructionLabel.textAlignment = NSTextAlignmentCenter;
+    instructionLabel.text = @"Long press to select default location.";
+    [customDefaultLocationView addSubview:instructionLabel];
+    
+    defaultLocationMapView = [[MKMapView alloc] initWithFrame:CGRectMake(2, 40, customDefaultLocationView.bounds.size.width, 210)];
+    defaultLocationMapView.delegate = self;
+    [defaultLocationMapView setMapType:MKMapTypeStandard];
+    [defaultLocationMapView setZoomEnabled:YES];
+    defaultLocationMapView.showsUserLocation = YES;
+    [customDefaultLocationView addSubview:defaultLocationMapView];
+    CLLocation *tempLocation = [[CLLocation alloc] initWithLatitude:1.3000 longitude:103.800];
+    
+    MKCoordinateRegion mapRegion;
+    mapRegion.center = [tempLocation coordinate];
+    mapRegion.span.latitudeDelta = 0.5f;
+    mapRegion.span.longitudeDelta = 0.5f;
+    [defaultLocationMapView setRegion:mapRegion animated: NO];
+    
+    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressForDefaultLocation:)];
+    lpgr.minimumPressDuration = 1.0; //user needs to press for 2 seconds
+    [defaultLocationMapView addGestureRecognizer:lpgr];
+    
+    UIButton *submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [submitButton setTitle:@"USE THIS LOCATION" forState:UIControlStateNormal];
+    [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    submitButton.titleLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
+    submitButton.frame = CGRectMake(10, 255, customDefaultLocationView.bounds.size.width-20, 40);
+    [submitButton addTarget:self action:@selector(hideLocationView) forControlEvents:UIControlEventTouchUpInside];
+    [submitButton setBackgroundColor:RGB(68, 78, 98)];
+    [customDefaultLocationView addSubview:submitButton];
+    
+    
+    customDefaultLocationView.transform = CGAffineTransformMakeScale(0.01, 0.01);
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        customDefaultLocationView.transform = CGAffineTransformIdentity;
+    } completion:^(BOOL finished){
+        // do something once the animation finishes, put it here
+    }];
+}
+
+
 
 //*************** Method To Move To Profile View
 
@@ -574,6 +689,8 @@
         
         NSArray *parameters,*values;
         
+        DebugLog(@"Lat: %f---Long: %f",appDelegate.CURRENT_LOCATION_LAT,appDelegate.CURRENT_LOCATION_LONG);
+        
         if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
             
             if (appDelegate.CURRENT_LOCATION_LAT != 0.0 && appDelegate.CURRENT_LOCATION_LONG != 0.0) {
@@ -591,11 +708,14 @@
         }
         else {
             
-            [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-            parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"pushtoken", nil];
-            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"], nil];
-//            values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],@"12345", nil];
+            if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+                [self createDefaultLocationView];
+                return;
+            }
             
+            [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+            NSArray *parameters = [[NSArray alloc] initWithObjects:@"IsDashboard",@"version",@"Lat",@"Lon",@"pushtoken", nil];
+            NSArray *values = [[NSArray alloc] initWithObjects:@"true",[CommonFunctions getAppVersionNumber],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LAT],[NSString stringWithFormat:@"%f",appDelegate.CURRENT_LOCATION_LONG], [[SharedObject sharedClass] getPUBUserSavedDataValue:@"device_token"],nil];
             [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
         }
         
@@ -665,22 +785,35 @@
         
     }
     else {
-        
-        CLLocation *tempLocation = [[CLLocation alloc] initWithLatitude:1.3000 longitude:103.800];
-        
-        MKCoordinateRegion mapRegion;
-        mapRegion.center = [tempLocation coordinate];
-        mapRegion.span.latitudeDelta = 0.5f;
-        mapRegion.span.longitudeDelta = 0.5f;
-        [quickMap setRegion:mapRegion animated: YES];
-        
-        [quickMap removeAnnotations:pubFloodAnnotationsArray];
-        [quickMap removeAnnotations:wlsAnnotationsArray];
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            CLLocation *tempLocation = [[CLLocation alloc] initWithLatitude:1.3000 longitude:103.800];
+            
+            MKCoordinateRegion mapRegion;
+            mapRegion.center = [tempLocation coordinate];
+            mapRegion.span.latitudeDelta = 0.5f;
+            mapRegion.span.longitudeDelta = 0.5f;
+            [quickMap setRegion:mapRegion animated: YES];
+            
+            [quickMap removeAnnotations:pubFloodAnnotationsArray];
+            [quickMap removeAnnotations:wlsAnnotationsArray];
+        }
+        else {
+            CLLocation *tempLocation = [[CLLocation alloc] initWithLatitude:1.3000 longitude:103.800];
+            
+            MKCoordinateRegion mapRegion;
+            mapRegion.center = [tempLocation coordinate];
+            mapRegion.span.latitudeDelta = 0.5f;
+            mapRegion.span.longitudeDelta = 0.5f;
+            [quickMap setRegion:mapRegion animated: YES];
+            
+            [quickMap removeAnnotations:pubFloodAnnotationsArray];
+            [quickMap removeAnnotations:wlsAnnotationsArray];
+        }
         
     }
-
     
-
+    
+    
     
     // WLS Content Refresh
     if (wlsDataArray != (id)[NSNull null] && wlsDataArray.count!=0) {
@@ -711,8 +844,17 @@
             waterSensorDrainDepthImage.hidden = NO;
         }
         else {
-            waterSensorDrainDepthLabel.text = @"";
-            waterSensorDrainDepthImage.hidden = YES;
+            if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+                waterSensorDrainDepthLabel.text = @"";
+                waterSensorDrainDepthImage.hidden = YES;
+            }
+            else {
+                desinationLocationWLS.latitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"latitude"] doubleValue];
+                desinationLocationWLS.longitude = [[[wlsDataArray objectAtIndex:0] objectForKey:@"longitude"] doubleValue];
+                NSString *wlsDistanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationWLS]];
+                waterSensorDrainDepthLabel.text = wlsDistanceString;
+                waterSensorDrainDepthImage.hidden = NO;
+            }
         }
         
         if ([[[wlsDataArray objectAtIndex:0] objectForKey:@"waterLevelType"] intValue]==1) {
@@ -762,8 +904,18 @@
             cctvDistanceImage.hidden = NO;
         }
         else {
-            cctvDistanceLabel.text = @"";
-            cctvDistanceImage.hidden = YES;
+            if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+                cctvDistanceLabel.text = @"";
+                cctvDistanceImage.hidden = YES;
+            }
+            else {
+                CLLocationCoordinate2D desinationLocationCCTV;
+                desinationLocationCCTV.latitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lat"] doubleValue];
+                desinationLocationCCTV.longitude = [[[cctvDataArray objectAtIndex:0] objectForKey:@"Lon"] doubleValue];
+                NSString *cctvDistanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationCCTV]];
+                cctvDistanceLabel.text = cctvDistanceString;
+                cctvDistanceImage.hidden = NO;
+            }
         }
     }
     else {
@@ -802,8 +954,18 @@
             abcWatersDistanceImage.hidden = NO;
         }
         else {
-            abcWatersDistanceImage.hidden = YES;
-            abcWatersDistanceLabel.text = @"";
+            if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+                abcWatersDistanceImage.hidden = YES;
+                abcWatersDistanceLabel.text = @"";
+            }
+            else {
+                CLLocationCoordinate2D desinationLocationABCWaters;
+                desinationLocationABCWaters.latitude = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLatitude"] doubleValue];
+                desinationLocationABCWaters.longitude = [[[abcWatersDataArray objectAtIndex:0] objectForKey:@"locationLongitude"] doubleValue];
+                NSString *distanceString = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocationABCWaters]];
+                abcWatersDistanceLabel.text = distanceString;
+                abcWatersDistanceImage.hidden = NO;
+            }
         }
         
         if (![[[abcWatersDataArray objectAtIndex:0] objectForKey:@"isCertified"] intValue]) {
@@ -1084,10 +1246,10 @@
                     quickMap.delegate = self;
                     [quickMap setMapType:MKMapTypeStandard];
                     [quickMap setZoomEnabled:YES];
-//                    [quickMap setScrollEnabled:NO];
+                    //                    [quickMap setScrollEnabled:NO];
                     quickMap.showsUserLocation = YES;
                     quickMap.layer.cornerRadius = 10;
-//                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
+                    //                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
                     [columnView addSubview:quickMap];
                     
                     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
@@ -1101,7 +1263,8 @@
                         CLLocation *tempLocation = [[CLLocation alloc] initWithLatitude:1.3000 longitude:103.800];
                         
                         MKCoordinateRegion mapRegion;
-                        mapRegion.center = [tempLocation coordinate];
+                        //                        mapRegion.center = [tempLocation coordinate];
+                        mapRegion.center = appDelegate.USER_CURRENT_LOCATION_COORDINATE;
                         mapRegion.span.latitudeDelta = 0.5f;
                         mapRegion.span.longitudeDelta = 0.5f;
                         [quickMap setRegion:mapRegion animated: YES];
@@ -1290,7 +1453,7 @@
                     //                    tipsWebView.scrollView.bounces = NO;
                     
                     videoThumbnailView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, 78)];
-//                    videoThumbnailView.contentMode = UIViewContentModeScaleAspectFill;
+                    //                    videoThumbnailView.contentMode = UIViewContentModeScaleAspectFill;
                     [columnView addSubview:videoThumbnailView];
                     
                     tipsVideoTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(6, videoThumbnailView.frame.origin.y+videoThumbnailView.bounds.size.height+5, columnView.bounds.size.width-12, columnView.bounds.size.height-(videoThumbnailView.bounds.size.height+25))];
@@ -1380,10 +1543,10 @@
                     quickMap.delegate = self;
                     [quickMap setMapType:MKMapTypeStandard];
                     [quickMap setZoomEnabled:YES];
-//                    [quickMap setScrollEnabled:NO];
+                    //                    [quickMap setScrollEnabled:NO];
                     quickMap.showsUserLocation = YES;
                     quickMap.layer.cornerRadius = 10;
-//                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
+                    //                    quickMap.userTrackingMode = MKUserTrackingModeFollow;
                     [columnView addSubview:quickMap];
                     
                     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
@@ -1612,7 +1775,7 @@
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==7) {
                     
                     videoThumbnailView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, 78)];
-//                    videoThumbnailView.contentMode = UIViewContentModeScaleAspectFill;
+                    //                    videoThumbnailView.contentMode = UIViewContentModeScaleAspectFill;
                     [columnView addSubview:videoThumbnailView];
                     
                     tipsVideoTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(6, videoThumbnailView.frame.origin.y+videoThumbnailView.bounds.size.height+5, columnView.bounds.size.width-12, columnView.bounds.size.height-(videoThumbnailView.bounds.size.height+25))];
@@ -2235,6 +2398,7 @@
     [self fetchDashboardData];
     [self createDynamicUIColumns];
     
+    //    [self createDefaultLocationView];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

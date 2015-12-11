@@ -411,8 +411,9 @@
         [cell.contentView addSubview:subTitleLabel];
         
         if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-            
-            subTitleLabel.text = @"";
+            if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+                subTitleLabel.text = @"";
+            }
         }
         
         UIImageView *seperatorImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 79.5, favouritesListingTableView.bounds.size.width, 0.5)];

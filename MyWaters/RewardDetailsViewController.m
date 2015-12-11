@@ -171,10 +171,11 @@
     [directionButton addSubview:arrowIcon];
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        
-        distanceLabel.text = @"";
-        arrowIcon.hidden = YES;
-        directionButton.enabled = NO;
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            distanceLabel.text = @"";
+            arrowIcon.hidden = YES;
+            directionButton.enabled = NO;
+        }
     }
     
     

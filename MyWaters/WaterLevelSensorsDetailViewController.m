@@ -723,10 +723,11 @@
     distanceLabel.text = [NSString stringWithFormat:@"%@ KM",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        
-        distanceLabel.text = @"";
-        arrowIcon.hidden = YES;
-        directionButton.enabled = NO;
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            distanceLabel.text = @"";
+            arrowIcon.hidden = YES;
+            directionButton.enabled = NO;
+        }
     }
     
     [wlsListingTable reloadData];
@@ -884,10 +885,11 @@
     [directionButton addSubview:arrowIcon];
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        
-        distanceLabel.text = @"";
-        arrowIcon.hidden = YES;
-        directionButton.enabled = NO;
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            distanceLabel.text = @"";
+            arrowIcon.hidden = YES;
+            directionButton.enabled = NO;
+        }
     }
     
     wlsListingTable = [[UITableView alloc] init];
@@ -1473,8 +1475,9 @@
     [cell.contentView addSubview:subTitleLabel];
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        
-        subTitleLabel.text = @"";
+        if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+            subTitleLabel.text = @"";
+        }
     }
     
     

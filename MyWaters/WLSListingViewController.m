@@ -596,8 +596,9 @@
         [cell.contentView addSubview:subTitleLabel];
         
         if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-            
-            subTitleLabel.text = @"";
+            if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+                subTitleLabel.text = @"";
+            }
         }
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

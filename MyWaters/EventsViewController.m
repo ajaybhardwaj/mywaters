@@ -872,8 +872,9 @@
         [cell.contentView addSubview:distanceLabel];
         
         if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-            
-            distanceLabel.text = @"";
+            if (appDelegate.CURRENT_LOCATION_LAT == 0.0 && appDelegate.CURRENT_LOCATION_LONG == 0.0) {
+                distanceLabel.text = @"";
+            }
         }
         
         

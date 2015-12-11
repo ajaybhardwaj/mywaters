@@ -1557,6 +1557,11 @@ static NSString *const kAllowTracking = @"allowTracking";
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
     
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+        CURRENT_LOCATION_LAT = 0.0;
+        CURRENT_LOCATION_LONG = 0.0;
+    }
+    
     if ([CommonFunctions hasConnectivity]) {
         [self getConfigData];
         // Register Device Token
