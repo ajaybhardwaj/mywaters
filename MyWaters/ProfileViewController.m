@@ -586,7 +586,7 @@
                         NSFileManager *fileManger=[NSFileManager defaultManager];
                         NSError* error;
                         
-                        if (![fileManger fileExistsAtPath:destinationPath]){
+                        if (![fileManger fileExistsAtPath:destinationPath]) {
                             
                             if([[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:NO attributes:nil error:&error])
                                 ;// success

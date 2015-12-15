@@ -111,6 +111,133 @@
 
 
 
+//*************** Method For Creating MFMail Composer
+
+- (void) showMailComposer:(NSString*) appStoreUrl {
+
+    NSString *sharingString = [NSString stringWithFormat:@"Click the link to download MyWaters from App Store to stay updated! - %@",appStoreUrl];
+
+        Class mailClass = (NSClassFromString(@"MFMailComposeViewController"));
+    
+            if (mailClass != nil) {
+                //Test to ensure that device is configured for sending mails
+                if ([mailClass canSendMail]) {
+    
+                    if ([[UIDevice currentDevice].systemVersion floatValue] < 6.0) {
+                    }
+                    else {
+                        [[UINavigationBar appearance] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+                    }
+    
+                    MFMailComposeViewController *mailpicker = [[MFMailComposeViewController alloc] init];
+                    [[mailpicker navigationBar] setTintColor:RGB(134, 144, 156)];
+                    mailpicker.mailComposeDelegate = self;
+    
+                    [mailpicker setSubject:[NSString stringWithFormat:@"MyWaters - iOS App"]];
+                    [mailpicker setMessageBody:sharingString isHTML:NO];
+                    [self presentViewController:mailpicker animated:YES completion:nil];
+                }
+    
+                else {
+    
+                    [CommonFunctions showAlertView:nil title:nil msg:@"This device is not configured to send E-mails." cancel:@"OK" otherButton:nil];
+                }
+            }
+}
+
+
+//*************** Method For Creating MSMessage Composer
+
+- (void) showMessageComposer:(NSString*) appStoreUrl {
+    
+    MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+    
+    if ([MFMessageComposeViewController canSendText]) {
+        
+        controller.body = [NSString stringWithFormat:@"Download MyWater iOS app - %@",appStoreUrl];
+        controller.messageComposeDelegate = self;
+        [self presentViewController:controller animated:YES completion:NULL];
+    }
+    else {
+        
+        [CommonFunctions showAlertView:nil title:nil msg:@"This device is not configured to send SMS." cancel:@"OK" otherButton:nil];
+    }
+}
+
+
+# pragma mark - MFMessageComposeViewControllerDelegate Methods
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    
+    NSString *msg = nil;
+    
+    switch (result)
+    {
+        case MessageComposeResultCancelled:
+            [controller dismissViewControllerAnimated:YES completion:^(void){}];
+            break;
+        case MessageComposeResultFailed:
+            
+            msg = @"Fail to send.";
+            break;
+        case MessageComposeResultSent:
+            
+            msg = @"SMS sent";
+            break;
+        default:
+            
+            msg = @"There seems to be problems sending. Please try again.";
+            break;
+    }
+    
+    if (msg) {
+
+        [CommonFunctions showAlertView:nil title:nil msg:msg cancel:@"OK" otherButton:nil];
+    }
+    
+    [controller dismissViewControllerAnimated:YES completion:^(void){}];
+}
+
+
+
+# pragma mark - MFMailComposeViewControllerDelegate Methods
+
+-(void) mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
+
+    [self dismissViewControllerAnimated:YES completion:nil];
+
+    switch (result) {
+
+        case MFMailComposeResultCancelled:
+
+            break;
+
+        case MFMailComposeResultSaved:
+
+            break;
+
+        case MFMailComposeResultSent: {
+            
+            NSArray *parameters = [[NSArray alloc] initWithObjects:@"ActionDone",@"ActionType",@"version", nil];
+            NSArray *values = [[NSArray alloc] initWithObjects:@"6",@"1",[CommonFunctions getAppVersionNumber], nil];
+            
+            [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:nil isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,USER_PROFILE_ACTIONS]];
+            }
+
+            break;
+
+        case MFMailComposeResultFailed:
+
+            break;
+
+        default:
+
+            break;
+    }
+}
+
+
+
 # pragma mark - UIAlertViewDelegate Methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -118,9 +245,6 @@
     if (buttonIndex==0) {
         
         [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-        //        appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        //        appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-        //        appDelegate.hud.labelText = @"Loading...";
         
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         NSMutableArray *values = [[NSMutableArray alloc] init];
@@ -158,6 +282,30 @@
                 }
             }
             [CommonFunctions sharePostOnTwitter:appUrl title:@"Download MyWaters app from app store." view:self abcIDValue:@"-1"];
+        }
+        else if (buttonIndex==2) {
+            
+            NSString *appUrl;
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSShareURL"]) {
+                    appUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            
+            [self showMailComposer:appUrl];
+        }
+        else if (buttonIndex==3) {
+            
+            NSString *appUrl;
+            for (int i=0; i<appDelegate.APP_CONFIG_DATA_ARRAY.count; i++) {
+                if ([[[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Code"] isEqualToString:@"iOSShareURL"]) {
+                    appUrl = [[appDelegate.APP_CONFIG_DATA_ARRAY objectAtIndex:i] objectForKey:@"Value"];
+                    break;
+                }
+            }
+            
+            [self showMessageComposer:appUrl];
         }
     }
 }

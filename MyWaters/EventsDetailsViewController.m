@@ -447,7 +447,7 @@
     [bgScrollView addSubview:locationLabel];
     
     
-    UILabel *locationValueLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, locationLabel.frame.origin.y+locationLabel.bounds.size.height-5, bgScrollView.bounds.size.width, 32)];
+    UILabel *locationValueLabel = [[UILabel___Extension alloc] initWithFrame:CGRectMake(0, locationLabel.frame.origin.y+locationLabel.bounds.size.height, bgScrollView.bounds.size.width, 32)];
     locationValueLabel.backgroundColor = [UIColor whiteColor];
     locationValueLabel.text = [NSString stringWithFormat:@"%@",addressString];
     locationValueLabel.textColor = [UIColor darkGrayColor];
@@ -456,10 +456,9 @@
     locationValueLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
     CGRect newLocationLabelFrame = locationValueLabel.frame;
-    newLocationLabelFrame.size.height = [CommonFunctions heightForText:addressString font:locationValueLabel.font withinWidth:bgScrollView.bounds.size.width-30];//expectedDescriptionLabelSize.height;
+    newLocationLabelFrame.size.height = [CommonFunctions heightForText:addressString font:locationValueLabel.font withinWidth:bgScrollView.bounds.size.width]-15;//expectedDescriptionLabelSize.height;
     locationValueLabel.frame = newLocationLabelFrame;
     [bgScrollView addSubview:locationValueLabel];
-//    [locationValueLabel sizeToFit];
     
     
     

@@ -12,8 +12,9 @@
 #import "ViewControllerHelper.h"
 #import "AppDelegate.h"
 #import "WebViewUrlViewController.h"
+#import <MessageUI/MessageUI.h>
 
-@interface AboutMyWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
+@interface AboutMyWatersViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate> {
     
     AppDelegate *appDelegate;
     

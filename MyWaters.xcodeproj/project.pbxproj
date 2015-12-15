@@ -21,6 +21,7 @@
 		FE17457F1BBA780F001B231B /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE17457A1BBA780F001B231B /* FBSDKLoginKit.framework */; };
 		FE1745801BBA780F001B231B /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE17457B1BBA780F001B231B /* FBSDKShareKit.framework */; };
 		FE1745811BBA780F001B231B /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE17457B1BBA780F001B231B /* FBSDKShareKit.framework */; };
+		FE19EE451C1FBC3C0057724C /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE19EE441C1FBC3C0057724C /* MessageUI.framework */; };
 		FE25CB651B5C8A0200A5B2B3 /* icn_youtube_settings@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE25CB641B5C8A0200A5B2B3 /* icn_youtube_settings@3x.png */; };
 		FE2BED321AD3DBB60039C317 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE2BED311AD3DBB60039C317 /* AVFoundation.framework */; };
 		FE3238F41B576B4F00BB3DA8 /* login_top_volley@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3238F31B576B4F00BB3DA8 /* login_top_volley@3x.png */; };
@@ -100,6 +101,9 @@
 		FE78C3031B0F17E900D909FD /* icn_menu@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE78C3021B0F17E900D909FD /* icn_menu@3x.png */; };
 		FE78F77F1C16BD31000AFAED /* iPadMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE78F77E1C16BD31000AFAED /* iPadMenuViewController.m */; };
 		FE78F7851C16D0A9000AFAED /* iPadHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE78F7841C16D0A9000AFAED /* iPadHomeViewController.m */; };
+		FE7BDB381C1E840000A6E2A3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7BDB351C1E840000A6E2A3 /* Default-568h@2x.png */; };
+		FE7BDB391C1E840000A6E2A3 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7BDB361C1E840000A6E2A3 /* Default.png */; };
+		FE7BDB3A1C1E840000A6E2A3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7BDB371C1E840000A6E2A3 /* Default@2x.png */; };
 		FE7C6CBE1AC8FA4C00912145 /* AboutMyWatersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7C6CBD1AC8FA4C00912145 /* AboutMyWatersViewController.m */; };
 		FE7DC7AF1BE9A6C300EEDFCF /* icn_help_closebutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7DC7AD1BE9A6C200EEDFCF /* icn_help_closebutton@2x.png */; };
 		FE7DC7B31BE9A6DC00EEDFCF /* icn_helpicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE7DC7B11BE9A6DC00EEDFCF /* icn_helpicon@2x.png */; };
@@ -374,9 +378,9 @@
 		FEB13FD51A778D2B0061CE74 /* whatsup_feed.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD31A778D2B0061CE74 /* whatsup_feed.png */; };
 		FEB13FD91A77968B0061CE74 /* quickmap_expanded.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD71A77968B0061CE74 /* quickmap_expanded.png */; };
 		FEB13FDA1A77968B0061CE74 /* quickmap.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB13FD81A77968B0061CE74 /* quickmap.png */; };
-		FEB8BA411BFC7389007959A2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB8BA401BFC7389007959A2 /* Default-568h@2x.png */; };
-		FEB8BA441BFC73F5007959A2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB8BA421BFC73F5007959A2 /* Default.png */; };
-		FEB8BA451BFC73F5007959A2 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB8BA431BFC73F5007959A2 /* Default@2x.png */; };
+		FEB8BA411BFC7389007959A2 /* Default-568h@2x_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB8BA401BFC7389007959A2 /* Default-568h@2x_old.png */; };
+		FEB8BA441BFC73F5007959A2 /* Default_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB8BA421BFC73F5007959A2 /* Default_old.png */; };
+		FEB8BA451BFC73F5007959A2 /* Default@2x_old.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB8BA431BFC73F5007959A2 /* Default@2x_old.png */; };
 		FEBA99701ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEBA996F1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m */; };
 		FEBA99751ADCC62500ED3555 /* icn_meter_line@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA99721ADCC62500ED3555 /* icn_meter_line@3x.png */; };
 		FEBA99761ADCC62500ED3555 /* icn_time@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBA99731ADCC62500ED3555 /* icn_time@3x.png */; };
@@ -665,6 +669,7 @@
 		FE1745791BBA780F001B231B /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../../../Documents/FacebookSDK-MyWaters/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		FE17457A1BBA780F001B231B /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../../../Documents/FacebookSDK-MyWaters/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		FE17457B1BBA780F001B231B /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "../../../../Documents/FacebookSDK-MyWaters/FBSDKShareKit.framework"; sourceTree = "<group>"; };
+		FE19EE441C1FBC3C0057724C /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		FE25CB641B5C8A0200A5B2B3 /* icn_youtube_settings@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_youtube_settings@3x.png"; sourceTree = "<group>"; };
 		FE2BED311AD3DBB60039C317 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		FE3238F31B576B4F00BB3DA8 /* login_top_volley@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login_top_volley@3x.png"; sourceTree = "<group>"; };
@@ -769,6 +774,9 @@
 		FE78F77E1C16BD31000AFAED /* iPadMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iPadMenuViewController.m; sourceTree = "<group>"; };
 		FE78F7831C16D0A9000AFAED /* iPadHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadHomeViewController.h; sourceTree = "<group>"; };
 		FE78F7841C16D0A9000AFAED /* iPadHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iPadHomeViewController.m; sourceTree = "<group>"; };
+		FE7BDB351C1E840000A6E2A3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		FE7BDB361C1E840000A6E2A3 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		FE7BDB371C1E840000A6E2A3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		FE7C6CBC1AC8FA4C00912145 /* AboutMyWatersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutMyWatersViewController.h; sourceTree = "<group>"; };
 		FE7C6CBD1AC8FA4C00912145 /* AboutMyWatersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutMyWatersViewController.m; sourceTree = "<group>"; };
 		FE7DC7AD1BE9A6C200EEDFCF /* icn_help_closebutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_help_closebutton@2x.png"; sourceTree = "<group>"; };
@@ -1118,9 +1126,9 @@
 		FEB13FD31A778D2B0061CE74 /* whatsup_feed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whatsup_feed.png; sourceTree = "<group>"; };
 		FEB13FD71A77968B0061CE74 /* quickmap_expanded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quickmap_expanded.png; sourceTree = "<group>"; };
 		FEB13FD81A77968B0061CE74 /* quickmap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = quickmap.png; sourceTree = "<group>"; };
-		FEB8BA401BFC7389007959A2 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		FEB8BA421BFC73F5007959A2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		FEB8BA431BFC73F5007959A2 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		FEB8BA401BFC7389007959A2 /* Default-568h@2x_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x_old.png"; sourceTree = "<group>"; };
+		FEB8BA421BFC73F5007959A2 /* Default_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default_old.png; sourceTree = "<group>"; };
+		FEB8BA431BFC73F5007959A2 /* Default@2x_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x_old.png"; sourceTree = "<group>"; };
 		FEBA996E1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterLevelSensorsDetailViewController.h; sourceTree = "<group>"; };
 		FEBA996F1ADCB41700ED3555 /* WaterLevelSensorsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaterLevelSensorsDetailViewController.m; sourceTree = "<group>"; };
 		FEBA99721ADCC62500ED3555 /* icn_meter_line@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_meter_line@3x.png"; sourceTree = "<group>"; };
@@ -1443,6 +1451,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE19EE451C1FBC3C0057724C /* MessageUI.framework in Frameworks */,
 				FE5F44F01BF966170024D0AB /* CoreData.framework in Frameworks */,
 				FE41D50F1BDD2D55008834EF /* UIKit.framework in Frameworks */,
 				FE41D50D1BDD2CE7008834EF /* QuartzCore.framework in Frameworks */,
@@ -1939,9 +1948,13 @@
 		FEA730111A772FDD00D274A6 = {
 			isa = PBXGroup;
 			children = (
-				FEB8BA421BFC73F5007959A2 /* Default.png */,
-				FEB8BA431BFC73F5007959A2 /* Default@2x.png */,
-				FEB8BA401BFC7389007959A2 /* Default-568h@2x.png */,
+				FE19EE441C1FBC3C0057724C /* MessageUI.framework */,
+				FE7BDB351C1E840000A6E2A3 /* Default-568h@2x.png */,
+				FE7BDB361C1E840000A6E2A3 /* Default.png */,
+				FE7BDB371C1E840000A6E2A3 /* Default@2x.png */,
+				FEB8BA421BFC73F5007959A2 /* Default_old.png */,
+				FEB8BA431BFC73F5007959A2 /* Default@2x_old.png */,
+				FEB8BA401BFC7389007959A2 /* Default-568h@2x_old.png */,
 				FE83028C1BFC0F08003FF75F /* iApps.gpx */,
 				FE5F44EF1BF966170024D0AB /* CoreData.framework */,
 				FE41D50E1BDD2D55008834EF /* UIKit.framework */,
@@ -2954,6 +2967,7 @@
 				FE98D5F81BE73B35003862EA /* icn_3dots_horizontal@2x.png in Resources */,
 				FE5A46AA1A8C57AF00517FB5 /* icn_share@3x.png in Resources */,
 				FE99BE341A7B7E69000B83E8 /* Roboto-BlackItalic.ttf in Resources */,
+				FE7BDB391C1E840000A6E2A3 /* Default.png in Resources */,
 				FEC3134C1B79A35800AC2E08 /* icn_award_white@3x.png in Resources */,
 				FE98D6091BE73C45003862EA /* icn_location_pink@2x.png in Resources */,
 				FE9F9D5B1BE722BB0047488A /* icn_settings@2x.png in Resources */,
@@ -2969,6 +2983,7 @@
 				FE9F9D371BE7207B0047488A /* otpline@2x.png in Resources */,
 				FE6C81D61B155E6F00A8FEDB /* abc_water_temp22.jpg in Resources */,
 				FEA37B451BBE5E8A006A8514 /* FN@3x.png in Resources */,
+				FE7BDB381C1E840000A6E2A3 /* Default-568h@2x.png in Resources */,
 				FE99BE351A7B7E69000B83E8 /* Roboto-Bold.ttf in Resources */,
 				FEF51B0E1BF5889900131021 /* icn_info_purple@2x.png in Resources */,
 				FEFD024F1BC510AB002E2177 /* wls_cross@3x.png in Resources */,
@@ -3051,7 +3066,7 @@
 				FE9F9D3F1BE720E90047488A /* image_waterwally@2x.png in Resources */,
 				FE8C1C381AB292FA009D33E4 /* icn_quickmap_car@3x.png in Resources */,
 				FEC631F61B2AC7910006A885 /* temp_feedback@3x.png in Resources */,
-				FEB8BA411BFC7389007959A2 /* Default-568h@2x.png in Resources */,
+				FEB8BA411BFC7389007959A2 /* Default-568h@2x_old.png in Resources */,
 				FE99BE3E1A7B7E69000B83E8 /* Roboto-ThinItalic.ttf in Resources */,
 				FE99BE3F1A7B7E69000B83E8 /* RobotoCondensed-Bold.ttf in Resources */,
 				FE6D15151BCB56C500F0A344 /* icn_speaker_mute@3x.png in Resources */,
@@ -3079,7 +3094,7 @@
 				FE6679BE1ACD334A0036198D /* icn_floodinfo_small_greyout@3x.png in Resources */,
 				FE98D5FD1BE73B6E003862EA /* wls_level2@2x.png in Resources */,
 				FEA37B461BBE5E8A006A8514 /* HZ@3x.png in Resources */,
-				FEB8BA451BFC73F5007959A2 /* Default@2x.png in Resources */,
+				FEB8BA451BFC73F5007959A2 /* Default@2x_old.png in Resources */,
 				FEF51AF31BF587E900131021 /* icn_ARview@2x.png in Resources */,
 				FEF51B801BF58D7300131021 /* wls_cross@2x.png in Resources */,
 				FED72CDA1ADB7FED00C4FDDB /* icn_share_cctv@3x.png in Resources */,
@@ -3252,7 +3267,7 @@
 				FEF51B281BF58A5A00131021 /* icn_location_quick_map@2x.png in Resources */,
 				FE8652141BC4BE6600BA5689 /* rainmaptemp.png in Resources */,
 				FE3239021B57980F00BB3DA8 /* icn_location_top@3x.png in Resources */,
-				FEB8BA441BFC73F5007959A2 /* Default.png in Resources */,
+				FEB8BA441BFC73F5007959A2 /* Default_old.png in Resources */,
 				FEF51B411BF58B2000131021 /* icn_iAlerts_notification@2x.png in Resources */,
 				FE99BE091A7B63FB000B83E8 /* profile_rewards.png in Resources */,
 				FEE04EAF1AD781C900BEA6C6 /* icn_floodinfo_notification@3x.png in Resources */,
@@ -3359,6 +3374,7 @@
 				FE9F9D2F1BE7207A0047488A /* btn_darkgrey@2x.png in Resources */,
 				FEF51ADE1BF586C000131021 /* FD@2x.png in Resources */,
 				FE4CD0FD1B54C11300A16D02 /* wls_level3@3x.png in Resources */,
+				FE7BDB3A1C1E840000A6E2A3 /* Default@2x.png in Resources */,
 				FE8E1F9E1BEB2D1200E3837A /* icn_location_grey_quickmap@2x.png in Resources */,
 				FED605E51BA0359700E8630F /* icn_refresh_white@3x.png in Resources */,
 				FEF51B7D1BF58D7300131021 /* meter_bar@2x.png in Resources */,

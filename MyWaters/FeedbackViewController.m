@@ -1361,8 +1361,17 @@
         [self getAddressFromLatLon:location];
     }
     else {
-        CLLocation *location = [[CLLocation alloc] initWithLatitude:appDelegate.CURRENT_LOCATION_LAT longitude:appDelegate.CURRENT_LOCATION_LONG];
-        [self getAddressFromLatLon:location];
+        
+        if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+            if (appDelegate.CURRENT_LOCATION_LAT != 0.0 && appDelegate.CURRENT_LOCATION_LONG != 0.0) {
+                CLLocation *location = [[CLLocation alloc] initWithLatitude:appDelegate.CURRENT_LOCATION_LAT longitude:appDelegate.CURRENT_LOCATION_LONG];
+                [self getAddressFromLatLon:location];
+            }
+        }
+        else {
+            tempLocationString = @"";
+            locationField.text = @"";
+        }
     }
     
 }

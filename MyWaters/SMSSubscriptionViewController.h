@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "WebViewUrlViewController.h"
 
-@interface SMSSubscriptionViewController : UIViewController <UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate> {
+@interface SMSSubscriptionViewController : UIViewController <UITextFieldDelegate,UIPickerViewDataSource,UIPickerViewDelegate,UIAlertViewDelegate> {
     
     AppDelegate *appDelegate;
     

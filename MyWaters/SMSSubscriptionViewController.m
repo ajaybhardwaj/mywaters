@@ -95,162 +95,251 @@
 }
 
 
+//*************** Method To Request OTP
+
+- (BOOL) SMSOTPRequest:(NSString*) Mobile {
+    
+    if ([CommonFunctions hasConnectivity]) {
+        
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+        
+        //NSURL *url = [NSURL URLWithString:@"http://207.82.13.198/PUB_FMAS/Public/OTPRequest.ashx"];
+        NSURL *url = [NSURL URLWithString:@"https://www.pubfmas.com.sg/PUB_FMAS/Public/OTPRequest.ashx"];
+        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+        [request setTimeOutSeconds:20];
+        [request setPostValue:@"1ac9e66fde53ecb4adf8f22f82aff0bc" forKey:@"Key"];
+        [request setPostValue:@"OTPRequest" forKey:@"Action"];
+        [request setPostValue:Mobile forKey:@"Mobile"];
+        [request startSynchronous];
+        NSError *error = [request error];
+        if (!error) {
+            NSString *response = [request responseString];
+            
+            NSRange titleResultsRange = [response rangeOfString:@"1:" options:NSCaseInsensitiveSearch];
+            if (titleResultsRange.length > 0)
+            {
+                [CommonFunctions dismissGlobalHUD];
+                return YES;
+            }
+            else
+            {
+                [CommonFunctions dismissGlobalHUD];
+                return NO;
+            }
+            
+        }
+        
+        [CommonFunctions dismissGlobalHUD];
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                            message:[error localizedDescription]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil ];
+        [alertView show];
+        return NO;
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        return NO;
+    }
+}
+
+
+
+//*************** Method To Verify OTP
+
+-(BOOL) SMSOTPVerify:(NSString*) Mobile verifyNum:(NSString*) verifyNum {
+    
+    if ([CommonFunctions hasConnectivity]) {
+        
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+        //NSURL *url = [NSURL URLWithString:@"http://207.82.13.198/PUB_FMAS/Public/OTPVerify.ashx"];
+        NSURL *url = [NSURL URLWithString:@"https://www.pubfmas.com.sg/PUB_FMAS/Public/OTPVerify.ashx"];
+        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+        [request setTimeOutSeconds:20];
+        //[request setPostValue:@"a0546b9a95dc414688b5ced7fc23feda" forKey:@"Key"];
+        [request setPostValue:@"1ac9e66fde53ecb4adf8f22f82aff0bc" forKey:@"Key"];
+        [request setPostValue:@"OTPVerify" forKey:@"Action"];
+        [request setPostValue:Mobile forKey:@"Mobile"];
+        [request setPostValue:verifyNum forKey:@"OTP"];
+        [request startSynchronous];
+        NSError *error = [request error];
+        if (!error) {
+            NSString *response = [request responseString];
+            NSLog(@"verify response: %@", response);
+            
+            NSRange titleResultsRange = [response rangeOfString:@"1:" options:NSCaseInsensitiveSearch];
+            if (titleResultsRange.length > 0)
+            {
+                //action 'after i found , want to add that array in arrayNew.
+                [CommonFunctions dismissGlobalHUD];
+                return YES;
+            }
+            else
+            {
+                [CommonFunctions dismissGlobalHUD];
+                NSString *msg = [NSString stringWithFormat:@"%@\nPlease call PUB 24hr Call Centre to report failure to subscribe.", response];
+                
+                UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                    message:msg
+                                                                   delegate:self
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil ];
+                [alertView show];
+                return NO;
+            }
+            
+        }
+        
+        [CommonFunctions dismissGlobalHUD];
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                            message:[error localizedDescription]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil ];
+        [alertView show];
+        return NO;
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+        return NO;
+    }
+}
+
+
 //*************** Method To Validate Inputs
 
 - (void) validateInputParameters {
     
-    
-    if ([nameField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([CommonFunctions characterSet1Found:nameField.text]) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Provide valid name." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    if ([emailField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Provide  valid e-mail address." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([idTypeField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([locationField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([identificationNumberField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([mobileField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    if ([postalCodeField.text length]==0) {
-        [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
-        return;
-    }
-    
-    
-    NSURL *url = [NSURL URLWithString:@"http://207.82.13.198/PUB_FMAS/Public/SubscribeWaterSensorAlert.ashx"];
-    //    NSURL *url = [NSURL URLWithString:@"https://www.pubfmas.com.sg/PUB_FMAS/Public/SubscribeWaterSensorAlert.ashx"];
-    __block ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
-    [request setTimeOutSeconds:20];
-    [request setPostValue:@"1ac9e66fde53ecb4adf8f22f82aff0bc" forKey:@"Key"];
-    [request setPostValue:@"Subscribe" forKey:@"Action"];
-    [request setPostValue:nameField.text forKey:@"Name"];
-    [request setPostValue:idTypeField.text forKey:@"IDType"];
-    [request setPostValue:identificationNumberField.text forKey:@"IDNum"];
-    [request setPostValue:emailField.text forKey:@"Email"];
-    [request setPostValue:mobileField.text forKey:@"Mobile"];
-    [request setPostValue:postalCodeField.text forKey:@"PostalCode"];
-    [request setPostValue:[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:pickerSelectedIndex] objectForKey:@"id"] forKey:@"StationCode"];
-    [request setPostValue:@"0" forKey:@"HRWFlag"];
-    [request setPostValue:@"1" forKey:@"WSAFlag"];
-    //    [request startSynchronous];
-    
-    
-    [request setCompletionBlock:^{
-        // Use when fetching text data
-        NSString *responseString = [request responseString];
-        DebugLog(@"%@",responseString);
-        // Use when fetching binary data
-        //        NSData *responseData = [request responseData];
+    if ([CommonFunctions hasConnectivity]) {
+        if ([nameField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
+            return;
+        }
         
-        [CommonFunctions showAlertView:nil title:nil msg:@"You have subscribed to SMS Alert." cancel:@"OK" otherButton:nil];
-        nameField.text = @"";
-        emailField.text = @"";
-        identificationNumberField.text = @"";
-        mobileField.text = @"";
-        postalCodeField.text = @"";
-        idTypeField.text = @"";
-        locationField.text = @"";
-        pickerSelectedIndex = 0;
+        if ([CommonFunctions characterSet1Found:nameField.text]) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Provide valid name." cancel:@"OK" otherButton:nil];
+            return;
+        }
+        if ([emailField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
+            return;
+        }
         
-    }];
-    [request setFailedBlock:^{
-        NSError *error = [request error];
-        [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+        if (![CommonFunctions NSStringIsValidEmail:emailField.text]) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Provide  valid e-mail address." cancel:@"OK" otherButton:nil];
+            return;
+        }
         
-    }];
-    [request startAsynchronous];
-    
-    //    //NSLog(@"request: %@", request.postBody);
-    //    NSError *error = [request error];
-    //    if (!error) {
-    //        NSString *response = [request responseString];
-    //        DebugLog(@"%@",response);
-    ////        NSRange titleResultsRange3 = [response rangeOfString:@"<html>"];
-    ////        if (titleResultsRange3.location != NSNotFound)
-    ////        {
-    ////            NSLog(@"found <html> !!!!!");
-    ////            /*NSString *msg = [NSString stringWithFormat:@"Please call PUB 24hr Call Centre to report failure to subscribe."];
-    ////             UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-    ////             message:msg
-    ////             delegate:self
-    ////             cancelButtonTitle:@"OK"
-    ////             otherButtonTitles:nil ];
-    ////             [alertView show];
-    ////             [alertView release];*/
-    ////            return 3;
-    ////            //return NO;
-    ////        }
-    ////        NSLog(@"response: %@", response);
-    ////
-    ////        NSRange titleResultsRange = [response rangeOfString:@"1:" options:NSCaseInsensitiveSearch];
-    ////        NSRange titleResultsRange2 = [response rangeOfString:@"2:" options:NSCaseInsensitiveSearch];
-    ////
-    ////        if (titleResultsRange.length > 0)
-    ////        {
-    ////            return 1;
-    ////            //return YES;
-    ////        }
-    ////        else if(titleResultsRange2.length > 0)
-    ////        {
-    ////            //action 'after i found , want to add that array in arrayNew.
-    ////            return 2;
-    ////            //return YES;
-    ////        }
-    ////        else
-    ////        {
-    ////            /*NSString *msg = [NSString stringWithFormat:@"%@\nPlease call PUB 24hr Call Centre to report failure to subscribe.", response];
-    ////             UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-    ////             message:msg
-    ////             delegate:self
-    ////             cancelButtonTitle:@"OK"
-    ////             otherButtonTitles:nil ];
-    ////             [alertView show];
-    ////             [alertView release];*/
-    ////            //return NO;
-    ////            return 3;
-    ////        }
-    //
-    //        [CommonFunctions showAlertView:nil title:nil msg:@"You have subscribed to SMS Alert." cancel:@"OK" otherButton:nil];
-    //        nameField.text = @"";
-    //        emailField.text = @"";
-    //        identificationNumberField.text = @"";
-    //        mobileField.text = @"";
-    //        postalCodeField.text = @"";
-    //        idTypeField.text = @"";
-    //        locationField.text = @"";
-    //        pickerSelectedIndex = 0;
-    //    }
-    //    else {
-    //        [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
-    //    }
+        if ([idTypeField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
+            return;
+        }
+        
+        if ([locationField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
+            return;
+        }
+        
+        if ([identificationNumberField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
+            return;
+        }
+        
+        if ([mobileField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
+            return;
+        }
+        
+        if ([postalCodeField.text length]==0) {
+            [CommonFunctions showAlertView:nil title:nil msg:@"Required info missing." cancel:@"OK" otherButton:nil];
+            return;
+        }
+        
+        [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
+
+        //    NSURL *url = [NSURL URLWithString:@"http://207.82.13.198/PUB_FMAS/Public/SubscribeWaterSensorAlert.ashx"];
+        NSURL *url = [NSURL URLWithString:@"https://www.pubfmas.com.sg/PUB_FMAS/Public/SubscribeWaterSensorAlert.ashx"];
+        __block ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+        [request setTimeOutSeconds:20];
+        [request setPostValue:@"1ac9e66fde53ecb4adf8f22f82aff0bc" forKey:@"Key"];
+        [request setPostValue:@"Subscribe" forKey:@"Action"];
+        [request setPostValue:nameField.text forKey:@"Name"];
+        [request setPostValue:idTypeField.text forKey:@"IDType"];
+        [request setPostValue:identificationNumberField.text forKey:@"IDNum"];
+        [request setPostValue:emailField.text forKey:@"Email"];
+        [request setPostValue:mobileField.text forKey:@"Mobile"];
+        [request setPostValue:postalCodeField.text forKey:@"PostalCode"];
+        [request setPostValue:[[appDelegate.WLS_LISTING_ARRAY objectAtIndex:pickerSelectedIndex] objectForKey:@"id"] forKey:@"StationCode"];
+        [request setPostValue:@"0" forKey:@"HRWFlag"];
+        [request setPostValue:@"1" forKey:@"WSAFlag"];
+        
+        
+        [request setCompletionBlock:^{
+            // Use when fetching text data
+            //NSLog(@"request: %@", request.postBody);
+            
+            [CommonFunctions dismissGlobalHUD];
+            
+            NSError *error = [request error];
+            if (!error) {
+                NSString *response = [request responseString];
+                NSRange titleResultsRange3 = [response rangeOfString:@"<html>"];
+                if (titleResultsRange3.location != NSNotFound)
+                {
+                    NSLog(@"found <html> !!!!!");
+                    //                responseInteger = 3;
+                    //return NO;
+                }
+                NSLog(@"response: %@", response);
+                
+                NSRange titleResultsRange = [response rangeOfString:@"1:" options:NSCaseInsensitiveSearch];
+                NSRange titleResultsRange2 = [response rangeOfString:@"2:" options:NSCaseInsensitiveSearch];
+                
+                if (titleResultsRange.length > 0)
+                {
+                    //responseInteger = 1;
+                    //return YES;
+                    // Show OTP View Here
+                    
+                    if ([self SMSOTPRequest:mobileField.text]) {
+                        
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"CONFIRMATION" message:@"One-Time-PIN" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Cancel",@"Yes",nil];
+                        alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+                        alert.tag = 12;
+                        [alert show];
+                    }
+                    
+                }
+                else if(titleResultsRange2.length > 0)
+                {
+                    //action 'after i found , want to add that array in arrayNew.
+                    //responseInteger = 2;
+                    //return YES;
+                    // Show Alert To Cancel Subscription
+                    
+                    [CommonFunctions showAlertView:self title:nil msg:@"Overwrite the current subscription?" cancel:nil otherButton:@"Cancel",@"Yes",nil];
+                }
+                else
+                {
+                    //responseInteger = 3;
+                    //Show Error Alert Here
+                    [CommonFunctions showAlertView:nil title:nil msg:@"Please call PUB 24hr Call Centre to report failure to subscribe." cancel:@"OK" otherButton:nil];
+                }
+            }
+            
+            
+        }];
+        [request setFailedBlock:^{
+            NSError *error = [request error];
+            [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
+            
+        }];
+        [request startAsynchronous];
+    }
+    else {
+        [CommonFunctions showAlertView:nil title:nil msg:@"No internet connectivity." cancel:@"OK" otherButton:nil];
+    }
 }
 
 
@@ -489,15 +578,87 @@
 - (void) fetchWLSListing {
     
     [CommonFunctions showGlobalProgressHUDWithTitle:@"Loading..."];
-//    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
-//    appDelegate.hud.labelText = @"Loading...";
+    //    appDelegate.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    //    appDelegate.hud.mode = MBProgressHUDModeIndeterminate;
+    //    appDelegate.hud.labelText = @"Loading...";
     
     //    NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"PushToken",@"SortBy",@"version", nil];
     //    NSArray *values = [[NSArray alloc] initWithObjects:@"6",[prefs stringForKey:@"device_token"],[NSString stringWithFormat:@"1"],@"1.0", nil];
     NSArray *parameters = [[NSArray alloc] initWithObjects:@"ListGetMode[0]",@"SortBy",@"version", nil];
     NSArray *values = [[NSArray alloc] initWithObjects:@"6",[NSString stringWithFormat:@"1"],[CommonFunctions getAppVersionNumber], nil];
     [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
+}
+
+
+# pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (alertView.tag==12) {
+        if (buttonIndex==1) {
+            UITextField *textfield = [alertView textFieldAtIndex:0];
+            if ([textfield.text length]==0) {
+                [CommonFunctions showAlertView:nil title:nil msg:@"Enter your OTP code." cancel:@"OK" otherButton:nil];
+                
+                UIAlertView *alert1 = [[UIAlertView alloc] initWithTitle:@"CONFIRMATION" message:@"One-Time-PIN" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Cancel",@"Yes",nil];
+                alert1.alertViewStyle = UIAlertViewStylePlainTextInput;
+                alert1.tag = 12;
+                [alert1 show];
+            }
+            else {
+                if ([self SMSOTPVerify:textfield.text verifyNum:mobileField.text]) {
+                    
+                    nameField.text = @"";
+                    emailField.text = @"";
+                    identificationNumberField.text = @"";
+                    mobileField.text = @"";
+                    postalCodeField.text = @"";
+                    idTypeField.text = @"";
+                    locationField.text = @"";
+                    pickerSelectedIndex = 0;
+                    
+                    [CommonFunctions showAlertView:nil title:nil msg:@"You have subscribed to SMS Alert." cancel:@"OK" otherButton:nil];
+                }
+            }
+        }
+    }
+    else if (alertView.tag==14) {
+        if (buttonIndex==1) {
+            UITextField *textfield = [alertView textFieldAtIndex:0];
+            if ([textfield.text length]==0) {
+                [CommonFunctions showAlertView:nil title:nil msg:@"Enter your OTP code." cancel:@"OK" otherButton:nil];
+                
+                UIAlertView *alert1 = [[UIAlertView alloc] initWithTitle:@"CONFIRMATION" message:@"One-Time-PIN" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Cancel",@"Yes",nil];
+                alert1.alertViewStyle = UIAlertViewStylePlainTextInput;
+                alert1.tag = 14;
+                [alert1 show];
+            }
+            else {
+                if ([self SMSOTPVerify:textfield.text verifyNum:mobileField.text]) {
+                    
+                    nameField.text = @"";
+                    emailField.text = @"";
+                    identificationNumberField.text = @"";
+                    mobileField.text = @"";
+                    postalCodeField.text = @"";
+                    idTypeField.text = @"";
+                    locationField.text = @"";
+                    pickerSelectedIndex = 0;
+                    
+                    [CommonFunctions showAlertView:nil title:nil msg:@"Your subscription has been updated." cancel:@"OK" otherButton:nil];
+                }
+            }
+        }
+    }
+    else {
+        if (buttonIndex==1) {
+            
+            UIAlertView *alert1 = [[UIAlertView alloc] initWithTitle:@"CONFIRMATION" message:@"One-Time-PIN" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Cancel",@"Yes",nil];
+            alert1.alertViewStyle = UIAlertViewStylePlainTextInput;
+            alert1.tag = 14;
+            [alert1 show];
+        }
+    }
 }
 
 
@@ -509,7 +670,7 @@
     NSString *responseString = [request responseString];
     DebugLog(@"%@",responseString);
     [CommonFunctions dismissGlobalHUD];
-//    [appDelegate.hud hide:YES];
+    //    [appDelegate.hud hide:YES];
     
     if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == true) {
         //    if ([[[responseString JSONValue] objectForKey:API_ACKNOWLEDGE] intValue] == false) {
@@ -530,7 +691,7 @@
     DebugLog(@"%@",[error description]);
     [CommonFunctions showAlertView:nil title:nil msg:[error description] cancel:@"OK" otherButton:nil];
     [CommonFunctions dismissGlobalHUD];
-//    [appDelegate.hud hide:YES];
+    //    [appDelegate.hud hide:YES];
 }
 
 
