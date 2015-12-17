@@ -24,6 +24,8 @@
     
     NSString *facebookIDString;
     UIButton *removeKeypadsButton;
+    
+    UIView *loginBottomSectionView;
 }
 @property (assign) bool isUsingFacebookForSignIn;
 @property (strong, nonatomic) FBLoginView *loginView;

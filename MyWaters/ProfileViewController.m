@@ -334,7 +334,7 @@
                             else
                             {
                                 DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
-                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+//                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
                             }
                         }
                         
@@ -403,7 +403,7 @@
                             else
                             {
                                 DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
-                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+//                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
                             }
                         }
                         
@@ -512,7 +512,7 @@
                             else
                             {
                                 DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
-                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+//                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
                             }
                         }
                         
@@ -593,7 +593,7 @@
                             else
                             {
                                 DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
-                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+//                                NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
                             }
                         }
                         
@@ -956,7 +956,7 @@
                         else
                         {
                             DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
-                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+//                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
                         }
                     }
                     

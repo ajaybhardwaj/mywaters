@@ -182,6 +182,14 @@
     NSDictionary *xmlDictionary = [NSDictionary dictionaryWithXMLString:responseString];
     twelveHourForecastDictionary = [[xmlDictionary objectForKey:@"channel"] valueForKey:@"item"];
     
+    if (twelveHourForecastDictionary.count==0) {
+        noWeatherDataLabel.hidden = NO;
+        return;
+    }
+    else {
+        noWeatherDataLabel.hidden = YES;
+    }
+    
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         if ([[twelveHourForecastDictionary objectForKey:@"wxmain"] isEqualToString:@"FD"]) {
             bigTempSubtitle.text = @"FAIR";
@@ -318,6 +326,14 @@
     [tempArray sortUsingDescriptors:[NSArray arrayWithObjects:sortByDistance,nil]];
     
     DebugLog(@"%@",tempArray);
+    
+    if (tempArray.count==0) {
+        noWeatherDataLabel.hidden = NO;
+        return;
+    }
+    else {
+        noWeatherDataLabel.hidden = YES;
+    }
     
     NSString *iconImageName;
     
@@ -1377,6 +1393,16 @@
                     bigTimeLabel.textAlignment = NSTextAlignmentCenter;
                     [columnView addSubview:bigTimeLabel];
                     
+                    noWeatherDataLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, columnView.bounds.size.height-20)];
+                    noWeatherDataLabel.text = @"No data available.";
+                    noWeatherDataLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
+                    noWeatherDataLabel.textColor = [UIColor lightGrayColor];
+                    noWeatherDataLabel.backgroundColor = [UIColor whiteColor];
+                    noWeatherDataLabel.numberOfLines = 0;
+                    noWeatherDataLabel.textAlignment = NSTextAlignmentCenter;
+                    [columnView addSubview:noWeatherDataLabel];
+                    noWeatherDataLabel.hidden = YES;
+                    
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
                     
@@ -1671,6 +1697,16 @@
                     bigTimeLabel.numberOfLines = 0;
                     bigTimeLabel.textAlignment = NSTextAlignmentCenter;
                     [columnView addSubview:bigTimeLabel];
+                    
+                    noWeatherDataLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, columnView.bounds.size.width, columnView.bounds.size.height-20)];
+                    noWeatherDataLabel.text = @"No data available.";
+                    noWeatherDataLabel.font = [UIFont fontWithName:ROBOTO_REGULAR size:14];
+                    noWeatherDataLabel.textColor = [UIColor lightGrayColor];
+                    noWeatherDataLabel.backgroundColor = [UIColor whiteColor];
+                    noWeatherDataLabel.numberOfLines = 0;
+                    noWeatherDataLabel.textAlignment = NSTextAlignmentCenter;
+                    [columnView addSubview:noWeatherDataLabel];
+                    noWeatherDataLabel.hidden = YES;
                     
                 }
                 else if ([[[appDelegate.DASHBOARD_PREFERENCES_ARRAY objectAtIndex:i] objectForKey:@"id"] intValue]==4) {
@@ -2330,7 +2366,7 @@
                         else
                         {
                             DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
-                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+//                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
                         }
                     }
                     

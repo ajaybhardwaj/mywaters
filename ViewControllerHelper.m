@@ -81,6 +81,7 @@ static ViewControllerHelper *sharedViewHelper = nil;
     _currentDeckIndex = -1;
     [appDelegate removeNotificationsReadData];
     
+    appDelegate.IS_SKIPPING_USER_LOGIN = NO;
     
     
     [[appDelegate rootDeckController] closeLeftView];

@@ -151,7 +151,7 @@
         
         DebugLog(@"%@--%@",parameters,values);
         
-//        NSArray *values = [[NSArray alloc] initWithObjects:@"3",@"12345",[CommonFunctions getAppVersionNumber], nil];
+        //        NSArray *values = [[NSArray alloc] initWithObjects:@"3",@"12345",[CommonFunctions getAppVersionNumber], nil];
         [CommonFunctions grabPostRequest:parameters paramtersValue:values delegate:self isNSData:NO baseUrl:[NSString stringWithFormat:@"%@%@",API_BASE_URL,MODULES_API_URL]];
         
         [self pullToRefreshTable];
@@ -310,12 +310,19 @@
                 NSMutableDictionary *dict = [appDelegate.EVENTS_LISTING_ARRAY[idx] mutableCopy];
                 
                 CLLocationCoordinate2D desinationLocation;
-                desinationLocation.latitude = [dict[@"locationLatitude"] doubleValue];
-                desinationLocation.longitude = [dict[@"locationLongitude"] doubleValue];
                 
-                
-                dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
-                appDelegate.EVENTS_LISTING_ARRAY[idx] = dict;
+                if (dict[@"locationLatitude"] != (id)[NSNull null] && dict[@"locationLongitude"] != (id)[NSNull null]) {
+                    
+                    desinationLocation.latitude = [dict[@"locationLatitude"] doubleValue];
+                    desinationLocation.longitude = [dict[@"locationLongitude"] doubleValue];
+                    
+                    
+                    dict[@"distance"] = [CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation];//[NSString stringWithFormat:@"%@",[CommonFunctions kilometersfromPlace:currentLocation andToPlace:desinationLocation]];
+                    appDelegate.EVENTS_LISTING_ARRAY[idx] = dict;
+                }
+                else {
+                    dict[@"distance"] = @"0.0";
+                }
                 
             }
             
@@ -470,18 +477,18 @@
         
         if (indexPath.row==0) {
             
-//            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+            //            NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
             NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
-//            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-//                float v1 = [left floatValue];
-//                float v2 = [right floatValue];
-//                if (v1 < v2)
-//                    return NSOrderedAscending;
-//                else if (v1 > v2)
-//                    return NSOrderedDescending;
-//                else
-//                    return NSOrderedSame;
-//            }];
+            //            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            //                float v1 = [left floatValue];
+            //                float v2 = [right floatValue];
+            //                if (v1 < v2)
+            //                    return NSOrderedAscending;
+            //                else if (v1 > v2)
+            //                    return NSOrderedDescending;
+            //                else
+            //                    return NSOrderedSame;
+            //            }];
             
             [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByDate,nil]];
             
@@ -492,17 +499,17 @@
         }
         else if (indexPath.row==1) {
             NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-//            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
-//            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
-//                float v1 = [left floatValue];
-//                float v2 = [right floatValue];
-//                if (v1 < v2)
-//                    return NSOrderedAscending;
-//                else if (v1 > v2)
-//                    return NSOrderedDescending;
-//                else
-//                    return NSOrderedSame;
-//            }];
+            //            NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+            //            NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
+            //                float v1 = [left floatValue];
+            //                float v2 = [right floatValue];
+            //                if (v1 < v2)
+            //                    return NSOrderedAscending;
+            //                else if (v1 > v2)
+            //                    return NSOrderedDescending;
+            //                else
+            //                    return NSOrderedSame;
+            //            }];
             
             [appDelegate.EVENTS_LISTING_ARRAY sortUsingDescriptors:[NSArray arrayWithObjects:sortByName,nil]];
             
@@ -514,8 +521,8 @@
         else if (indexPath.row==2) {
             
             if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
-//                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-//                NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
+                //                NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+                //                NSSortDescriptor *sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:YES];
                 NSSortDescriptor *sortByDistance = [[NSSortDescriptor alloc] initWithKey:@"distance" ascending:YES comparator:^(id left, id right) {
                     float v1 = [left floatValue];
                     float v2 = [right floatValue];
@@ -551,104 +558,104 @@
             [self animateSearchBar];
         }
         
-            EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
+        EventsDetailsViewController *viewObj = [[EventsDetailsViewController alloc] init];
+        
+        if (isFiltered) {
             
-            if (isFiltered) {
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
-                    viewObj.eventID = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"id"];
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
-                    viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"];
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
-                    viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-                    viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-                    viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
-                    viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
-                    viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"location"];
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
-                    viewObj.startDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"];
-                    viewObj.startDateString = [CommonFunctions dateWithoutTimeString:viewObj.startDateString];
-                }
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
-                    viewObj.endDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"];
-                    viewObj.endDateString = [CommonFunctions dateWithoutTimeString:viewObj.endDateString];
-                }
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
-                    viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
-                    viewObj.imageName = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"];
-                }
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
-                    viewObj.isSubscribed = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
-                
-                if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"] != (id)[NSNull null])
-                    viewObj.timeValueString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"];
-                
-            }
-            else {
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
-                    viewObj.eventID = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"];
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
-                    viewObj.titleString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"];
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
-                    viewObj.descriptionString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
-                    viewObj.latValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
-                    viewObj.longValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
-                    viewObj.phoneNoString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
-                
-                
-                DebugLog(@"%@",[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"]);
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
-                    viewObj.addressString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"];
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
-                    viewObj.startDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"];
-                    viewObj.startDateString = [CommonFunctions dateWithoutTimeString:viewObj.startDateString];
-                }
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
-                    viewObj.endDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"];
-                    viewObj.endDateString = [CommonFunctions dateWithoutTimeString:viewObj.endDateString];;
-                }
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
-                    viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
-                    viewObj.imageName = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
-                }
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
-                    viewObj.isSubscribed = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
-                
-                if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"] != (id)[NSNull null])
-                    viewObj.timeValueString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"];
-                
-                
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
+                viewObj.eventID = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"id"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
+                viewObj.titleString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"title"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
+                viewObj.descriptionString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"description"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+                viewObj.latValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+                viewObj.longValue = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
+                viewObj.phoneNoString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
+                viewObj.addressString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"location"];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
+                viewObj.startDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"startDate"];
+                viewObj.startDateString = [CommonFunctions dateWithoutTimeString:viewObj.startDateString];
             }
             
-            [self.navigationController pushViewController:viewObj animated:YES];
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
+                viewObj.endDateString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"endDate"];
+                viewObj.endDateString = [CommonFunctions dateWithoutTimeString:viewObj.endDateString];
+            }
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
+                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"]];
+                viewObj.imageName = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"image"];
+            }
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
+                viewObj.isSubscribed = [[[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+            
+            if ([[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"] != (id)[NSNull null])
+                viewObj.timeValueString = [[filteredDataSource objectAtIndex:indexPath.row] objectForKey:@"timeText"];
+            
         }
+        else {
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"] != (id)[NSNull null])
+                viewObj.eventID = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"id"];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"] != (id)[NSNull null])
+                viewObj.titleString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"title"];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"] != (id)[NSNull null])
+                viewObj.descriptionString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"description"];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] != (id)[NSNull null])
+                viewObj.latValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLatitude"] doubleValue];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] != (id)[NSNull null])
+                viewObj.longValue = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"locationLongitude"] doubleValue];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"] != (id)[NSNull null])
+                viewObj.phoneNoString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"phoneNo"];
+            
+            
+            DebugLog(@"%@",[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"]);
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"] != (id)[NSNull null])
+                viewObj.addressString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"location"];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"] != (id)[NSNull null]) {
+                viewObj.startDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"startDate"];
+                viewObj.startDateString = [CommonFunctions dateWithoutTimeString:viewObj.startDateString];
+            }
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"] != (id)[NSNull null]) {
+                viewObj.endDateString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"endDate"];
+                viewObj.endDateString = [CommonFunctions dateWithoutTimeString:viewObj.endDateString];;
+            }
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"] != (id)[NSNull null]) {
+                viewObj.imageUrl = [NSString stringWithFormat:@"%@%@",IMAGE_BASE_URL,[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"]];
+                viewObj.imageName = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"image"];
+            }
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] != (id)[NSNull null])
+                viewObj.isSubscribed = [[[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"isSubscribed"] intValue];
+            
+            if ([[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"] != (id)[NSNull null])
+                viewObj.timeValueString = [[appDelegate.EVENTS_LISTING_ARRAY objectAtIndex:indexPath.row] objectForKey:@"timeText"];
+            
+            
+        }
+        
+        [self.navigationController pushViewController:viewObj animated:YES];
+    }
     
 }
 
@@ -752,7 +759,7 @@
                         else
                         {
                             DebugLog(@"[%@] ERROR: attempting to write create MyTasks directory", [self class]);
-                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
+                            //                            NSAssert( FALSE, @"Failed to create directory maybe out of disk space?");
                         }
                     }
                     

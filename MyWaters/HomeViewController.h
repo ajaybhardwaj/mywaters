@@ -49,6 +49,7 @@
     
     UILabel *bigWeatherTempTitle,*smallWeatherTempTitle1,*smallWeatherTempTitle2,*bigTempSubtitle,*smallTempSubtitle1,*smallTempSubtitle2,*bigTimeLabel,*smallTimeLabel1,*smallTimeLabel2;
     UIButton *bigWeatherIcon,*smallWeatherIcon1,*smallWeatherIcon2;
+    UILabel *noWeatherDataLabel;
     
     UITableView *eventsListingTable,*whatsUpListingTable;
     NSMutableArray *eventsDataSource,*whatsUpFeedDataSource;
